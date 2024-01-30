@@ -1,5 +1,6 @@
 import type { OpenAPIV3 } from "openapi-types";
 import debug from "debug";
+import type { Result } from "../results";
 import { dereferenceSchema } from "../transform";
 import { setupAjv, setupRouter } from "./setup";
 import { comparePathParameters } from "./pathParameters";
@@ -11,16 +12,19 @@ const debugSetup = debug("setup");
 const debugComparison = debug("comparison");
 const debugInteraction = debug("interaction");
 
-export async function* compare(oas: OpenAPIV3.Document, pact) {
+export async function* compare(
+  oas: OpenAPIV3.Document,
+  pact,
+): AsyncIterable<Partial<Result>[]> {
   debugSetup("start");
   const ajv = setupAjv();
   debugSetup("end ajv");
-  const flatOas = await dereferenceSchema(oas) as OpenAPIV3.Document;
+  const flatOas = (await dereferenceSchema(oas)) as OpenAPIV3.Document;
   debugSetup("end dereference");
   const router = setupRouter(flatOas);
   debugSetup("end router");
 
-  debugComparison("start")
+  debugComparison("start");
   for (const interaction of pact.interactions) {
     debugInteraction("start");
     const route = router.find(
@@ -29,34 +33,25 @@ export async function* compare(oas: OpenAPIV3.Document, pact) {
     );
 
     if (!route) {
-      yield [interaction, [], []];
+      yield [];
       debugInteraction("end");
       continue;
     }
 
-    const pathComparison = comparePathParameters(ajv, route);
-    const queryComparison = compareQueryParameters(ajv, route);
+    const pathResults = comparePathParameters(ajv, route);
+    const queryResults = compareQueryParameters(ajv, route);
     // TODO: headerComparison
     // TODO: cookieComparison
-    const reqBodyComparison = compareReqBody(ajv, route, interaction);
-    const resBodyComparison = compareResBody(ajv, route, interaction);
+    const reqBodyResults = compareReqBody(ajv, route, interaction);
+    const resBodyResults = compareResBody(ajv, route, interaction);
 
     yield [
-      interaction,
-      [
-        ...pathComparison.errors,
-        ...queryComparison.errors,
-        ...reqBodyComparison.errors,
-        ...resBodyComparison.errors,
-      ],
-      [
-        ...pathComparison.warnings,
-        ...queryComparison.warnings,
-        ...reqBodyComparison.warnings,
-        ...resBodyComparison.warnings,
-      ],
+      ...pathResults,
+      ...queryResults,
+      ...reqBodyResults,
+      ...resBodyResults,
     ];
     debugInteraction("end");
   }
-  debugComparison("end")
+  debugComparison("end");
 }

@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import yaml from "js-yaml";
 import { compare } from "./compare";
+import type { Result } from "./results";
 
 const parse = (spec: string) => {
   try {
@@ -11,20 +12,19 @@ const parse = (spec: string) => {
 };
 
 async function run(oas, pact) {
-  for await (const [interaction, errors, warnings] of compare(
+  const results: Result[] = [];
+
+  for await (const interactionResults of compare(
     oas,
     pact,
   )) {
-    if (errors.length || warnings.length) {
-      console.log(
-        JSON.stringify(
-          { interaction: interaction.description, warnings, errors },
-          null,
-          2,
-        ),
-      );
-    }
-  }
+    results.push(...interactionResults.map((r) => ({
+      ...r,
+      source: "spec-mock-validation",
+    } as Result)));
+  };
+
+  console.log(results)
 }
 
 const pact = parse(fs.readFileSync(process.argv[2], "utf-8"));

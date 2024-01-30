@@ -1,16 +1,16 @@
 import type Ajv from "ajv/dist/2019";
 import type Router from "find-my-way";
 import type { OpenAPIV3 } from "openapi-types";
+import type { Result } from "../results";
 import { transformRequestSchema } from "../transform";
 
 export function compareReqBody(
   ajv: Ajv,
   route: Router.FindResult<Router.HTTPVersion.V1>,
   interaction,
-) {
+): Partial<Result>[] {
   const { operation, path } = route.store;
-  const errors = [];
-  const warnings = [];
+  const results: Partial<Result>[] = [];
 
   const { body } = interaction.request;
   if (body) {
@@ -18,11 +18,7 @@ export function compareReqBody(
     const contentType: string = headers.get("content-type")?.split(";")[0];
 
     const request = operation.requestBody as OpenAPIV3.RequestBodyObject;
-    if (!request.content) {
-      warnings.push({
-        error: `Request body has no schema`,
-      });
-    } else {
+    if (request.content) {
       const schema = request.content[contentType]?.schema;
       if (schema) {
         const schemaId = `request-${path}-${contentType}`;
@@ -32,11 +28,11 @@ export function compareReqBody(
           validate = ajv.getSchema(schemaId);
         }
         if (!validate(body)) {
-          errors.push(...validate.errors);
+          results.push(...validate.errors);
         }
       }
     }
   }
 
-  return { errors, warnings };
+  return results;
 }

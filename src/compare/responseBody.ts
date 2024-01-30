@@ -1,16 +1,16 @@
 import type Ajv from "ajv/dist/2019";
 import type Router from "find-my-way";
 import type { OpenAPIV3 } from "openapi-types";
+import type { Result } from "../results";
 import { transformResponseSchema } from "../transform";
 
 export function compareResBody(
   ajv: Ajv,
   route: Router.FindResult<Router.HTTPVersion.V1>,
   interaction,
-) {
+): Partial<Result>[] {
   const { operation, path } = route.store;
-  const errors = [];
-  const warnings = [];
+  const results: Partial<Result>[] = [];
 
   const { body, status } = interaction.response;
   const headers = new Headers(interaction.request.headers);
@@ -18,22 +18,27 @@ export function compareResBody(
 
   const response = operation.responses[status] as OpenAPIV3.ResponseObject;
   if (!response) {
-    errors.push({
+    results.push({
       code: "response.status.unknown",
       message: `Response status code not defined in spec file: ${status}`,
+      type: "error",
     });
   }
   if (!response && contentType) {
-    warnings.push({
+    results.push({
       code: "request.accept.unknown",
-      message: "Request Accept header is defined but the spec does not specify any mime-types to produce",
-    })
+      message:
+        "Request Accept header is defined but the spec does not specify any mime-types to produce",
+      type: "warning",
+    });
   }
   if (response && !response.content) {
-    warnings.push({
+    results.push({
       code: "response.content-type.unknown",
-      message: "Response Content-Type header is defined but the spec does not specify any mime-types to produce",
-    })
+      message:
+        "Response Content-Type header is defined but the spec does not specify any mime-types to produce",
+      type: "warning",
+    });
   }
 
   if (response && response.content) {
@@ -46,10 +51,10 @@ export function compareResBody(
         validate = ajv.getSchema(schemaId);
       }
       if (!validate(body)) {
-        errors.push(...validate.errors);
+        results.push(...validate.errors);
       }
     }
   }
 
-  return { errors, warnings };
+  return results;
 }

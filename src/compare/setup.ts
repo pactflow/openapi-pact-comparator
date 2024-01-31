@@ -34,7 +34,8 @@ export function setupRouter(
       router.on(method.toUpperCase() as HTTPMethod, path, () => {}, {
         method,
         operation,
-        path: oasPath
+        path: oasPath,
+        securitySchemes: oas.components.securitySchemes || {},
       });
     }
   }

@@ -53,7 +53,7 @@ export async function* compare(
             pathMethod: null,
             pathName: null,
             specFile: "oas.yaml",
-            value: flatOas.paths,
+            value: flatOas.paths, // FIXME: this can be big! do we really want to replicate nearly all of the oas?
           },
           type: "error",
         },

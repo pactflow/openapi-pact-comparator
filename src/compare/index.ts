@@ -65,14 +65,12 @@ export async function* compare(
       continue;
     }
 
+    yield compareReqPath(ajv, route);
+    yield compareReqHeader(ajv, route, interaction, index);
+    yield compareReqQuery(ajv, route, interaction, index);
+    yield compareReqBody(ajv, route, interaction, index);
+    yield compareResBody(ajv, route, interaction, index);
 
-    yield [
-      ...compareReqPath(ajv, route),
-      ...compareReqHeader(ajv, route, interaction, index),
-      ...compareReqQuery(ajv, route, interaction, index),
-      ...compareReqBody(ajv, route, interaction, index),
-      ...compareResBody(ajv, route, interaction, index),
-    ];
     debugInteraction("end");
   }
   debugComparison("end");

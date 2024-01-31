@@ -1,6 +1,9 @@
 import type { OpenAPIV3 } from "openapi-types";
-import debug from "debug";
+import type { Pact } from "../documents/pact";
 import type { Result } from "../results";
+import type { HTTPMethod } from "find-my-way";
+
+import debug from "debug";
 import { dereferenceSchema } from "../transform";
 import { setupAjv, setupRouter } from "./setup";
 import { compareReqPath } from "./requestPath";
@@ -15,7 +18,7 @@ const debugInteraction = debug("interaction");
 
 export async function* compare(
   oas: OpenAPIV3.Document,
-  pact,
+  pact: Pact,
 ): AsyncIterable<Result> {
   debugSetup("start");
   const ajv = setupAjv();
@@ -29,7 +32,10 @@ export async function* compare(
   for (const [index, interaction] of pact.interactions.entries()) {
     debugInteraction("start");
     const { method, path, query } = interaction.request;
-    const route = router.find(method, [path, query].filter(Boolean).join("?"));
+    const route = router.find(
+      method as HTTPMethod,
+      [path, query].filter(Boolean).join("?"),
+    );
 
     if (!route) {
       yield {

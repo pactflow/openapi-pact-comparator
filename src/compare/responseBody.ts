@@ -1,6 +1,7 @@
 import type Ajv from "ajv/dist/2019";
 import type Router from "find-my-way";
 import type { OpenAPIV3 } from "openapi-types";
+import type { Interaction } from "../documents/pact";
 import type { Result } from "../results";
 import { transformResponseSchema } from "../transform";
 import { get } from "lodash-es";
@@ -10,7 +11,7 @@ const DEFAULT_CONTENT_TYPE = "application/json";
 export function* compareResBody(
   ajv: Ajv,
   route: Router.FindResult<Router.HTTPVersion.V1>,
-  interaction,
+  interaction: Interaction,
   index: number,
 ): Iterable<Result> {
   const { method, operation, path } = route.store;
@@ -72,10 +73,7 @@ export function* compareResBody(
               interactionDescription: interaction.description,
               interactionState: interaction.providerState || "[none]",
               location: [
-                "[root]",
-                `interactions[${index}]`,
-                "response",
-                "body",
+                `[root].interactions[${index}].response.body`,
                 instancePath,
               ]
                 .filter(Boolean)

@@ -1,6 +1,7 @@
 import type Ajv from "ajv/dist/2019";
 import type Router from "find-my-way";
 import type { OpenAPIV3 } from "openapi-types";
+import type { Interaction } from "../documents/pact";
 import type { Result } from "../results";
 
 const standardHttpRequestHeaders = [
@@ -42,7 +43,7 @@ const standardHttpRequestHeaders = [
 export function* compareReqHeader(
   ajv: Ajv,
   route: Router.FindResult<Router.HTTPVersion.V1>,
-  interaction,
+  interaction: Interaction,
   index: number,
 ): Iterable<Result> {
   const { method, operation, path, securitySchemes } = route.store;
@@ -116,7 +117,9 @@ export function* compareReqHeader(
     const scheme = securitySchemes[key];
     if (
       scheme.in === "header" &&
-      (operation.security || []).some((s) => !!s[scheme.name])
+      (operation.security || []).some(
+        (s: OpenAPIV3.SecuritySchemeObject) => !!s[scheme.name],
+      )
     ) {
       headers.delete(scheme.name);
     }

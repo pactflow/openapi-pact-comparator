@@ -1,13 +1,14 @@
 import type Ajv from "ajv/dist/2019";
 import type Router from "find-my-way";
 import type { OpenAPIV3 } from "openapi-types";
+import type { Interaction } from "../documents/pact";
 import type { Result } from "../results";
 import { transformRequestSchema } from "../transform";
 
 export function* compareReqBody(
   ajv: Ajv,
   route: Router.FindResult<Router.HTTPVersion.V1>,
-  interaction,
+  interaction: Interaction,
   index: number,
 ): Iterable<Result> {
   const { operation, path } = route.store;

@@ -42,10 +42,7 @@ export async function* compare(
           message: `Path or method not defined in spec file: ${interaction.request.method} ${interaction.request.path}`,
           mockDetails: {
             interactionDescription: interaction.description,
-            interactionState:
-              interaction.providerState ||
-              interaction.provider_state ||
-              "[none]",
+            interactionState: interaction.providerState || "[none]",
             location: `[root].interactions[${index}].request.path`,
             mockFile: "pact.json",
             value: interaction.request.path,

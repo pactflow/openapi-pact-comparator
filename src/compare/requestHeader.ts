@@ -31,8 +31,7 @@ export function compareReqHeader(
         "Request Accept header is defined but the spec does not specify any mime-types to produce",
       mockDetails: {
         interactionDescription: interaction.description,
-        interactionState:
-          interaction.providerState || interaction.provider_state || "[none]",
+        interactionState: interaction.providerState || "[none]",
         location: `[root].interactions[${index}].request.headers.Accept`,
         mockFile: "pact.json",
         value: requestContentType,
@@ -60,8 +59,7 @@ export function compareReqHeader(
         "Response Content-Type header is defined but the spec does not specify any mime-types to produce",
       mockDetails: {
         interactionDescription: interaction.description,
-        interactionState:
-          interaction.providerState || interaction.provider_state || "[none]",
+        interactionState: interaction.providerState || "[none]",
         location: `[root].interactions[${index}].response.headers.Content-Type`,
         mockFile: "pact.json",
         value: responseContentType,
@@ -95,8 +93,7 @@ export function compareReqHeader(
       message: `Request header is not defined in the spec file: ${key}`,
       mockDetails: {
         interactionDescription: interaction.description,
-        interactionState:
-          interaction.providerState || interaction.provider_state || "[none]",
+        interactionState: interaction.providerState || "[none]",
         location: `[root].interactions[${index}].request.headers.${key}`,
         mockFile: "pact.json",
         value: String(headers[key]),

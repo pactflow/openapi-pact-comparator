@@ -35,7 +35,7 @@ export function compareReqQuery(
       }
     }
 
-    delete searchParams[parameter.name]
+    delete searchParams[parameter.name];
   }
 
   for (const key in searchParams) {
@@ -44,10 +44,7 @@ export function compareReqQuery(
       message: `Query parameter is not defined in the spec file: ${key}`,
       mockDetails: {
         interactionDescription: interaction.description,
-        interactionState:
-          interaction.providerState ||
-          interaction.provider_state ||
-          "[none]",
+        interactionState: interaction.providerState || "[none]",
         location: `[root].interactions[${index}].request.query.${key}`,
         mockFile: "pact.json",
         value: String(searchParams[key]),
@@ -61,7 +58,7 @@ export function compareReqQuery(
         value: operation,
       },
       type: "warning",
-    })
+    });
   }
 
   return results;

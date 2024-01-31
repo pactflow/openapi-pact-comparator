@@ -27,10 +27,7 @@ export function compareResBody(
       message: `Response status code not defined in spec file: ${status}`,
       mockDetails: {
         interactionDescription: interaction.description,
-        interactionState:
-          interaction.providerState ||
-          interaction.provider_state ||
-          "[none]",
+        interactionState: interaction.providerState || "[none]",
         location: `[root].interactions[${index}].response.status`,
         mockFile: "pact.json",
         value: status,
@@ -77,10 +74,7 @@ export function compareResBody(
               message: `Response body is incompatible with the response body schema in the spec file: ${message}`,
               mockDetails: {
                 interactionDescription: interaction.description,
-                interactionState:
-                  interaction.providerState ||
-                  interaction.provider_state ||
-                  "[none]",
+                interactionState: interaction.providerState || "[none]",
                 location: [
                   "[root]",
                   `interactions[${index}]`,

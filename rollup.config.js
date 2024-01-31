@@ -6,7 +6,7 @@ import commonjs from "@rollup/plugin-commonjs";
 export default {
   input: "src/cli.ts",
   output: {
-    file: "dist/demo.mjs",
+    file: "dist/cli.mjs",
     format: "es",
   },
   plugins: [typescript(), json(), nodeResolve(), commonjs()],

@@ -25,23 +25,25 @@ export function compareResBody(
     results.push({
       code: "response.status.unknown",
       message: `Response status code not defined in spec file: ${status}`,
+      mockDetails: {
+        interactionDescription: interaction.description,
+        interactionState:
+          interaction.providerState ||
+          interaction.provider_state ||
+          "[none]",
+        location: `[root].interactions[${index}].response.status`,
+        mockFile: "pact.json",
+        value: status,
+      },
+      source: "spec-mock-validation",
+      specDetails: {
+        location: `[root].paths.${path}.${method}.responses`,
+        pathMethod: method,
+        pathName: path,
+        specFile: "oas.yaml",
+        value: operation.responses,
+      },
       type: "error",
-    });
-  }
-  if (!response && contentType) {
-    results.push({
-      code: "request.accept.unknown",
-      message:
-        "Request Accept header is defined but the spec does not specify any mime-types to produce",
-      type: "warning",
-    });
-  }
-  if (response && !response.content) {
-    results.push({
-      code: "response.content-type.unknown",
-      message:
-        "Response Content-Type header is defined but the spec does not specify any mime-types to produce",
-      type: "warning",
     });
   }
 

@@ -21,7 +21,6 @@ type WarningCode =
   | "request.content-type.unknown"
   | "request.header.unknown"
   | "request.query.unknown"
-  | "response.body.unknown"
   | "response.content-type.unknown"
   | "response.header.undefined"
   | "response.status.default";

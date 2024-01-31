@@ -25,7 +25,7 @@ export async function* compare(
   debugSetup("end router");
 
   debugComparison("start");
-  for (const interaction of pact.interactions) {
+  for (const [index, interaction] of pact.interactions.entries()) {
     debugInteraction("start");
     const route = router.find(
       interaction.request.method,
@@ -33,7 +33,31 @@ export async function* compare(
     );
 
     if (!route) {
-      yield [];
+      yield [
+        {
+          code: "request.path-or-method.unknown",
+          message: `Path or method not defined in spec file: ${interaction.request.method} ${interaction.request.path}`,
+          mockDetails: {
+            interactionDescription: interaction.description,
+            interactionState:
+              interaction.providerState ||
+              interaction.provider_state ||
+              "[none]",
+            location: `[root].interactions[${index}].request.path`,
+            mockFile: "pact.json",
+            value: interaction.request.path,
+          },
+          source: "spec-mock-validation",
+          specDetails: {
+            location: "[root].paths",
+            pathMethod: null,
+            pathName: null,
+            specFile: "oas.yaml",
+            value: flatOas.paths,
+          },
+          type: "error",
+        },
+      ];
       debugInteraction("end");
       continue;
     }
@@ -42,8 +66,8 @@ export async function* compare(
     const queryResults = compareQueryParameters(ajv, route);
     // TODO: headerComparison
     // TODO: cookieComparison
-    const reqBodyResults = compareReqBody(ajv, route, interaction);
-    const resBodyResults = compareResBody(ajv, route, interaction);
+    const reqBodyResults = compareReqBody(ajv, route, interaction, index);
+    const resBodyResults = compareResBody(ajv, route, interaction, index);
 
     yield [
       ...pathResults,

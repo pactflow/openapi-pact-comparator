@@ -24,7 +24,6 @@ export function setupRouter(
   oas: OpenAPIV3.Document,
 ): Router.Instance<Router.HTTPVersion.V1> {
   const router = Router({
-    caseSensitive: false,
     ignoreTrailingSlash: true,
   });
   for (const oasPath in oas.paths) {
@@ -33,8 +32,9 @@ export function setupRouter(
       const operation = oas.paths[oasPath][method];
       operation.parameters ||= [];
       router.on(method.toUpperCase() as HTTPMethod, path, () => {}, {
+        method,
         operation,
-        path,
+        path: oasPath
       });
     }
   }

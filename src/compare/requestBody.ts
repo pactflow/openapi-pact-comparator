@@ -8,6 +8,7 @@ export function compareReqBody(
   ajv: Ajv,
   route: Router.FindResult<Router.HTTPVersion.V1>,
   interaction,
+  index: number,
 ): Partial<Result>[] {
   const { operation, path } = route.store;
   const results: Partial<Result>[] = [];

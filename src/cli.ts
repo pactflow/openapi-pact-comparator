@@ -14,17 +14,24 @@ const parse = (spec: string) => {
 async function run(oas, pact) {
   const results: Result[] = [];
 
-  for await (const interactionResults of compare(
-    oas,
-    pact,
-  )) {
-    results.push(...interactionResults.map((r) => ({
-      ...r,
-      source: "spec-mock-validation",
-    } as Result)));
-  };
+  for await (const interactionResults of compare(oas, pact)) {
+    results.push(...(interactionResults as Result[]));
+  }
 
-  console.log(results)
+  const errors = results.filter((r) => r.type === "error");
+  const warnings = results.filter((r) => r.type === "warning");
+
+  console.log(
+    JSON.stringify(
+      {
+        errors,
+        success: errors.length === 0,
+        warnings,
+      },
+      null,
+      2,
+    ),
+  );
 }
 
 const pact = parse(fs.readFileSync(process.argv[2], "utf-8"));

@@ -3,9 +3,10 @@ import debug from "debug";
 import type { Result } from "../results";
 import { dereferenceSchema } from "../transform";
 import { setupAjv, setupRouter } from "./setup";
-import { comparePathParameters } from "./pathParameters";
-import { compareQueryParameters } from "./queryParameters";
+import { compareReqPath } from "./requestPath";
+import { compareReqQuery } from "./requestQuery";
 import { compareReqBody } from "./requestBody";
+import { compareReqHeader } from "./requestHeader";
 import { compareResBody } from "./responseBody";
 
 const debugSetup = debug("setup");
@@ -29,7 +30,9 @@ export async function* compare(
     debugInteraction("start");
     const route = router.find(
       interaction.request.method,
-      `${interaction.request.path}?${interaction.request.query}`,
+      [interaction.request.path, interaction.request.query]
+        .filter(Boolean)
+        .join("?"),
     );
 
     if (!route) {
@@ -62,18 +65,13 @@ export async function* compare(
       continue;
     }
 
-    const pathResults = comparePathParameters(ajv, route);
-    const queryResults = compareQueryParameters(ajv, route);
-    // TODO: headerComparison
-    // TODO: cookieComparison
-    const reqBodyResults = compareReqBody(ajv, route, interaction, index);
-    const resBodyResults = compareResBody(ajv, route, interaction, index);
 
     yield [
-      ...pathResults,
-      ...queryResults,
-      ...reqBodyResults,
-      ...resBodyResults,
+      ...compareReqPath(ajv, route),
+      ...compareReqHeader(ajv, route, interaction, index),
+      ...compareReqQuery(ajv, route, interaction, index),
+      ...compareReqBody(ajv, route, interaction, index),
+      ...compareResBody(ajv, route, interaction, index),
     ];
     debugInteraction("end");
   }

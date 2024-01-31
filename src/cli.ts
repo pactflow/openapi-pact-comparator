@@ -1,5 +1,7 @@
 import fs from "node:fs";
+import { resolve } from "node:path";
 import yaml from "js-yaml";
+import { cloneDeep } from "lodash-es";
 import { compare } from "./compare";
 import type { Result } from "./results";
 
@@ -11,11 +13,23 @@ const parse = (spec: string) => {
   }
 };
 
-async function run(oas, pact) {
+async function run() {
+  const pactFile = resolve(process.argv[2]);
+  const oasFile = resolve(process.argv[3]);
+  const pact = parse(fs.readFileSync(pactFile, "utf-8"));
+  const oas = parse(fs.readFileSync(oasFile, "utf-8"));
   const results: Result[] = [];
 
   for await (const interactionResults of compare(oas, pact)) {
-    results.push(...(interactionResults as Result[]));
+    results.push(
+      ...interactionResults.map((r) => {
+        const modified = cloneDeep(r);
+
+        modified.mockDetails.mockFile = pactFile;
+        modified.specDetails.specFile = oasFile;
+        return modified as Result;
+      }),
+    );
   }
 
   const errors = results.filter((r) => r.type === "error");
@@ -25,6 +39,9 @@ async function run(oas, pact) {
     JSON.stringify(
       {
         errors,
+        failureReason: `Mock file "${resolve(
+          process.argv[2],
+        )}" is not compatible with spec file "${resolve(process.argv[3])}"`,
         success: errors.length === 0,
         warnings,
       },
@@ -34,7 +51,4 @@ async function run(oas, pact) {
   );
 }
 
-const pact = parse(fs.readFileSync(process.argv[2], "utf-8"));
-const oas = parse(fs.readFileSync(process.argv[3], "utf-8"));
-
-run(oas, pact);
+run();

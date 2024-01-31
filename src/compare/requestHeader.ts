@@ -39,14 +39,13 @@ const standardHttpRequestHeaders = [
   "warning",
 ];
 
-export function compareReqHeader(
+export function* compareReqHeader(
   ajv: Ajv,
   route: Router.FindResult<Router.HTTPVersion.V1>,
   interaction,
   index: number,
-): Partial<Result>[] {
+): Iterable<Result> {
   const { method, operation, path, securitySchemes } = route.store;
-  const results: Partial<Result>[] = [];
 
   const { status } = interaction.response;
   const headers = new Headers(interaction.request.headers);
@@ -58,7 +57,7 @@ export function compareReqHeader(
     ) &&
     requestContentType
   ) {
-    results.push({
+    yield {
       code: "request.accept.unknown",
       message:
         "Request Accept header is defined but the spec does not specify any mime-types to produce",
@@ -78,14 +77,14 @@ export function compareReqHeader(
         value: operation,
       },
       type: "warning",
-    });
+    };
   }
 
   let responseContentType: string = new Headers(interaction.response.headers)
     .get("content-type")
     ?.split(";")[0];
   if (!operation.responses[status]?.content && responseContentType) {
-    results.push({
+    yield {
       code: "response.content-type.unknown",
       message:
         "Response Content-Type header is defined but the spec does not specify any mime-types to produce",
@@ -105,7 +104,7 @@ export function compareReqHeader(
         value: operation,
       },
       type: "warning",
-    });
+    };
   }
 
   // ignore standard headers
@@ -133,7 +132,7 @@ export function compareReqHeader(
 
   for (const key in interaction.request.headers) {
     if (headers.has(key)) {
-      results.push({
+      yield {
         code: "request.header.unknown",
         message: `Request header is not defined in the spec file: ${key}`,
         mockDetails: {
@@ -152,9 +151,7 @@ export function compareReqHeader(
           value: operation,
         },
         type: "warning",
-      });
+      };
     }
   }
-
-  return results;
 }

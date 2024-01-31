@@ -3,14 +3,13 @@ import type Router from "find-my-way";
 import type { OpenAPIV3 } from "openapi-types";
 import type { Result } from "../results";
 
-export function compareReqQuery(
+export function* compareReqQuery(
   ajv: Ajv,
   route: Router.FindResult<Router.HTTPVersion.V1>,
   interaction,
-  index,
-): Partial<Result>[] {
+  index: number,
+): Iterable<Result> {
   const { method, operation, path } = route.store;
-  const results: Partial<Result>[] = [];
 
   const searchParams = new URLSearchParams(route.searchParams);
 
@@ -23,7 +22,7 @@ export function compareReqQuery(
   }
 
   for (const [key, value] of searchParams.entries()) {
-    results.push({
+    yield {
       code: "request.query.unknown",
       message: `Query parameter is not defined in the spec file: ${key}`,
       mockDetails: {
@@ -42,8 +41,6 @@ export function compareReqQuery(
         value: operation,
       },
       type: "warning",
-    });
+    };
   }
-
-  return results;
 }

@@ -3,12 +3,11 @@ import type Router from "find-my-way";
 import type { OpenAPIV3 } from "openapi-types";
 import type { Result } from "../results";
 
-export function compareReqPath(
+export function* compareReqPath(
   ajv: Ajv,
   route: Router.FindResult<Router.HTTPVersion.V1>,
-): Partial<Result>[] {
+): Iterable<Result> {
   const { operation, path } = route.store;
-  const results: Partial<Result>[] = [];
 
   for (const parameter of (
     operation.parameters as OpenAPIV3.ParameterObject[]
@@ -20,9 +19,9 @@ export function compareReqPath(
       validate = ajv.getSchema(schemaId);
     }
     if (!validate(route.params[parameter.name])) {
-      results.push(...validate.errors);
+      for (const error of validate.errors) {
+        // yield {};
+      }
     }
   }
-
-  return results;
 }

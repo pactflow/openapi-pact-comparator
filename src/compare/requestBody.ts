@@ -4,14 +4,13 @@ import type { OpenAPIV3 } from "openapi-types";
 import type { Result } from "../results";
 import { transformRequestSchema } from "../transform";
 
-export function compareReqBody(
+export function* compareReqBody(
   ajv: Ajv,
   route: Router.FindResult<Router.HTTPVersion.V1>,
   interaction,
   index: number,
-): Partial<Result>[] {
+): Iterable<Result> {
   const { operation, path } = route.store;
-  const results: Partial<Result>[] = [];
 
   const { body } = interaction.request;
   if (body) {
@@ -29,11 +28,11 @@ export function compareReqBody(
           validate = ajv.getSchema(schemaId);
         }
         if (!validate(body)) {
-          results.push(...validate.errors);
+          for (const error of validate.errors) {
+            // yield {}
+          }
         }
       }
     }
   }
-
-  return results;
 }

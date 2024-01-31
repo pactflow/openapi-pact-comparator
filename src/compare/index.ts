@@ -16,7 +16,7 @@ const debugInteraction = debug("interaction");
 export async function* compare(
   oas: OpenAPIV3.Document,
   pact,
-): AsyncIterable<Partial<Result>[]> {
+): AsyncIterable<Result> {
   debugSetup("start");
   const ajv = setupAjv();
   debugSetup("end ajv");
@@ -28,45 +28,39 @@ export async function* compare(
   debugComparison("start");
   for (const [index, interaction] of pact.interactions.entries()) {
     debugInteraction("start");
-    const route = router.find(
-      interaction.request.method,
-      [interaction.request.path, interaction.request.query]
-        .filter(Boolean)
-        .join("?"),
-    );
+    const { method, path, query } = interaction.request;
+    const route = router.find(method, [path, query].filter(Boolean).join("?"));
 
     if (!route) {
-      yield [
-        {
-          code: "request.path-or-method.unknown",
-          message: `Path or method not defined in spec file: ${interaction.request.method} ${interaction.request.path}`,
-          mockDetails: {
-            interactionDescription: interaction.description,
-            interactionState: interaction.providerState || "[none]",
-            location: `[root].interactions[${index}].request.path`,
-            mockFile: "pact.json",
-            value: interaction.request.path,
-          },
-          source: "spec-mock-validation",
-          specDetails: {
-            location: "[root].paths",
-            pathMethod: null,
-            pathName: null,
-            specFile: "oas.yaml",
-            value: flatOas.paths, // FIXME: this can be big! do we really want to replicate nearly all of the oas?
-          },
-          type: "error",
+      yield {
+        code: "request.path-or-method.unknown",
+        message: `Path or method not defined in spec file: ${method} ${path}`,
+        mockDetails: {
+          interactionDescription: interaction.description,
+          interactionState: interaction.providerState || "[none]",
+          location: `[root].interactions[${index}].request.path`,
+          mockFile: "pact.json",
+          value: interaction.request.path,
         },
-      ];
+        source: "spec-mock-validation",
+        specDetails: {
+          location: "[root].paths",
+          pathMethod: null,
+          pathName: null,
+          specFile: "oas.yaml",
+          value: flatOas.paths, // FIXME: this can be big! do we really want to replicate nearly all of the oas?
+        },
+        type: "error",
+      };
       debugInteraction("end");
       continue;
     }
 
-    yield compareReqPath(ajv, route);
-    yield compareReqHeader(ajv, route, interaction, index);
-    yield compareReqQuery(ajv, route, interaction, index);
-    yield compareReqBody(ajv, route, interaction, index);
-    yield compareResBody(ajv, route, interaction, index);
+    yield* compareReqPath(ajv, route);
+    yield* compareReqHeader(ajv, route, interaction, index);
+    yield* compareReqQuery(ajv, route, interaction, index);
+    yield* compareReqBody(ajv, route, interaction, index);
+    yield* compareResBody(ajv, route, interaction, index);
 
     debugInteraction("end");
   }

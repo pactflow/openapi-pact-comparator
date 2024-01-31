@@ -7,14 +7,13 @@ import { get } from "lodash-es";
 
 const DEFAULT_CONTENT_TYPE = "application/json";
 
-export function compareResBody(
+export function* compareResBody(
   ajv: Ajv,
   route: Router.FindResult<Router.HTTPVersion.V1>,
   interaction,
   index: number,
-): Partial<Result>[] {
+): Iterable<Result> {
   const { method, operation, path } = route.store;
-  const results: Partial<Result>[] = [];
 
   const { body, status } = interaction.response;
   const headers = new Headers(interaction.request.headers);
@@ -22,7 +21,7 @@ export function compareResBody(
 
   const response = operation.responses[status] as OpenAPIV3.ResponseObject;
   if (!response) {
-    results.push({
+    yield {
       code: "response.status.unknown",
       message: `Response status code not defined in spec file: ${status}`,
       mockDetails: {
@@ -41,7 +40,7 @@ export function compareResBody(
         value: operation.responses,
       },
       type: "error",
-    });
+    };
   }
 
   if (response && response.content) {
@@ -55,53 +54,47 @@ export function compareResBody(
         validate = ajv.getSchema(schemaId);
       }
       if (!validate(body)) {
-        results.push(
-          ...validate.errors.map((error) => {
-            const message =
-              error.keyword === "additionalProperties"
-                ? `${error.message} - ${error.params.additionalProperty}`
-                : error.message;
+        for (const error of validate.errors) {
+          const message =
+            error.keyword === "additionalProperties"
+              ? `${error.message} - ${error.params.additionalProperty}`
+              : error.message;
 
-            const instancePath = error.instancePath
-              .replace(/\//g, ".")
-              .substring(1);
-            const schemaPath = error.schemaPath
-              .replace(/\//g, ".")
-              .substring(2);
+          const instancePath = error.instancePath
+            .replace(/\//g, ".")
+            .substring(1);
+          const schemaPath = error.schemaPath.replace(/\//g, ".").substring(2);
 
-            return {
-              code: "response.body.incompatible",
-              message: `Response body is incompatible with the response body schema in the spec file: ${message}`,
-              mockDetails: {
-                interactionDescription: interaction.description,
-                interactionState: interaction.providerState || "[none]",
-                location: [
-                  "[root]",
-                  `interactions[${index}]`,
-                  "response",
-                  "body",
-                  instancePath,
-                ]
-                  .filter(Boolean)
-                  .join("."),
-                mockFile: "pact.json",
-                value: instancePath ? get(body, instancePath) : body,
-              },
-              source: "spec-mock-validation",
-              specDetails: {
-                location: `[root].paths.${path}.${method}.responses.${status}.content.${contentType}.schema.${schemaPath}`,
-                pathMethod: method,
-                pathName: path,
-                specFile: "oas.yaml",
-                value: get(validate.schema, schemaPath),
-              },
-              type: "error",
-            } as Result;
-          }),
-        );
+          yield {
+            code: "response.body.incompatible",
+            message: `Response body is incompatible with the response body schema in the spec file: ${message}`,
+            mockDetails: {
+              interactionDescription: interaction.description,
+              interactionState: interaction.providerState || "[none]",
+              location: [
+                "[root]",
+                `interactions[${index}]`,
+                "response",
+                "body",
+                instancePath,
+              ]
+                .filter(Boolean)
+                .join("."),
+              mockFile: "pact.json",
+              value: instancePath ? get(body, instancePath) : body,
+            },
+            source: "spec-mock-validation",
+            specDetails: {
+              location: `[root].paths.${path}.${method}.responses.${status}.content.${contentType}.schema.${schemaPath}`,
+              pathMethod: method,
+              pathName: path,
+              specFile: "oas.yaml",
+              value: get(validate.schema, schemaPath),
+            },
+            type: "error",
+          };
+        }
       }
     }
   }
-
-  return results;
 }

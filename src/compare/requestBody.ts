@@ -4,6 +4,12 @@ import type { OpenAPIV3 } from "openapi-types";
 import type { Interaction } from "../documents/pact";
 import type { Result } from "../results";
 import { get } from "lodash-es";
+import {
+  baseMockDetails,
+  formatErrorMessage,
+  formatInstancePath,
+  formatSchemaPath,
+} from "../formatters";
 import { transformRequestSchema } from "../transform";
 
 export function* compareReqBody(
@@ -11,7 +17,7 @@ export function* compareReqBody(
   route: Router.FindResult<Router.HTTPVersion.V1>,
   interaction: Interaction,
   index: number,
-): Iterable<Result> {
+): Iterable<Partial<Result>> {
   const { operation, path } = route.store;
 
   const { body } = interaction.request;
@@ -31,33 +37,22 @@ export function* compareReqBody(
         if (!validate(body)) {
           for (const error of validate.errors) {
             const method = interaction.request.method.toLowerCase();
-            const message =
-              error.keyword === "additionalProperties"
-                ? `${error.message} - ${error.params.additionalProperty}`
-                : error.message;
-            const instancePath = error.instancePath
-              .replace(/\//g, ".")
-              .substring(1);
-            const schemaPath = error.schemaPath
-              .replace(/\//g, ".")
-              .substring(2);
+            const message = formatErrorMessage(error);
+            const instancePath = formatInstancePath(error.instancePath);
+            const schemaPath = formatSchemaPath(error.schemaPath);
 
             yield {
               code: "request.body.incompatible",
               message: `Request body is incompatible with the request body schema in the spec file: ${message}`,
               mockDetails: {
-                interactionDescription: interaction.description,
-                interactionState: interaction.providerState || "[none]",
+                ...baseMockDetails(interaction),
                 location: `[root].interactions[${index}].request.body.${instancePath}`,
-                mockFile: "pact.json",
                 value: instancePath ? get(body, instancePath) : body,
               },
-              source: "spec-mock-validation",
               specDetails: {
                 location: `[root].paths.${path}.${method}.requestBody.content.${contentType}.schema.${schemaPath}`,
                 pathMethod: method,
                 pathName: path,
-                specFile: "oas.yaml",
                 value: get(validate.schema, schemaPath),
               },
               type: "error",

@@ -11,6 +11,7 @@ import { compareReqQuery } from "./requestQuery";
 import { compareReqBody } from "./requestBody";
 import { compareReqHeader } from "./requestHeader";
 import { compareResBody } from "./responseBody";
+import { baseMockDetails } from "../formatters";
 
 const debugSetup = debug("setup");
 const debugComparison = debug("comparison");
@@ -19,7 +20,7 @@ const debugInteraction = debug("interaction");
 export async function* compare(
   oas: OpenAPIV3.Document,
   pact: Pact,
-): AsyncIterable<Result> {
+): AsyncIterable<Partial<Result>> {
   debugSetup("start");
   const ajv = setupAjv();
   debugSetup("end ajv");
@@ -42,18 +43,14 @@ export async function* compare(
         code: "request.path-or-method.unknown",
         message: `Path or method not defined in spec file: ${method} ${path}`,
         mockDetails: {
-          interactionDescription: interaction.description,
-          interactionState: interaction.providerState || "[none]",
+          ...baseMockDetails(interaction),
           location: `[root].interactions[${index}].request.path`,
-          mockFile: "pact.json",
           value: interaction.request.path,
         },
-        source: "spec-mock-validation",
         specDetails: {
           location: "[root].paths",
           pathMethod: null,
           pathName: null,
-          specFile: "oas.yaml",
           value: flatOas.paths, // FIXME: this can be big! do we really want to replicate nearly all of the oas?
         },
         type: "error",

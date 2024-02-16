@@ -20,11 +20,32 @@ async function run() {
   const warnings: Result[] = [];
 
   for await (const result of compare(oas, pact)) {
-    result.mockDetails.mockFile = pactFile;
-    result.specDetails.specFile = oasFile;
-
     const target = result.type === "error" ? errors : warnings;
-    target.push(result);
+    // explicitly rebuild result to get correct sort order
+    target.push({
+      code: result.code,
+      message: result.message,
+      mockDetails: result.mockDetails
+        ? {
+            interactionDescription: result.mockDetails?.interactionDescription,
+            interactionState: result.mockDetails?.interactionState,
+            location: result.mockDetails?.location,
+            mockFile: pactFile,
+            value: result.mockDetails?.value,
+          }
+        : undefined,
+      source: "spec-mock-validation",
+      specDetails: result.specDetails
+        ? {
+            location: result.specDetails?.location,
+            pathMethod: result.specDetails.pathMethod,
+            pathName: result.specDetails?.pathName,
+            specFile: oasFile,
+            value: result.specDetails?.value,
+          }
+        : undefined,
+      type: result.type,
+    });
   }
 
   console.log(

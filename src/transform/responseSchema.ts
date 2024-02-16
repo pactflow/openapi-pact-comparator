@@ -40,7 +40,6 @@ export const transformResponseSchema = (originalSchema: SchemaObject) => {
       each(s.allOf, (ss) => {
         delete ss.additionalProperties;
         if (ss.allOf) {
-
           // traversal is depth-first; if nested allOf, remove
           // unevaluatedProperties from previously set deeper schema
           delete ss.unevaluatedProperties;

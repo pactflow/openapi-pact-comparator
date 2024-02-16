@@ -7,12 +7,12 @@ export interface Interaction {
     method: string;
     path: string;
     query?: string;
-  }
+  };
   response: {
     body: unknown;
     headers: Record<string, string>;
     status: number;
-  }
+  };
 }
 
 export interface Pact {

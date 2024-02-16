@@ -16,7 +16,7 @@ unnecessarily recompiled for every interaction with no reuse.
 
 ## How is this better?
 
-Schemas are compiled once, and reused where possible.  For the same operation,
+Schemas are compiled once, and reused where possible. For the same operation,
 the schema reuse is approximately 40x faster.
 
 Further, instead of iterating through an array of routes, we use [Radix

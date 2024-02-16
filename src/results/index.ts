@@ -32,7 +32,7 @@ export interface Result {
     interactionDescription: string | null;
     interactionState: string | null;
     location: string;
-    mockFile: string;
+    mockFile?: string;
     value: any;
   };
   source: "spec-mock-validation";
@@ -40,7 +40,7 @@ export interface Result {
     location: string;
     pathMethod: string | null;
     pathName: string | null;
-    specFile: string;
+    specFile?: string;
     value: any;
   };
   type: "error" | "warning";

@@ -3,6 +3,7 @@ import type Router from "find-my-way";
 import type { OpenAPIV3 } from "openapi-types";
 import type { Interaction } from "../documents/pact";
 import type { Result } from "../results";
+import { baseMockDetails } from "../formatters";
 
 const standardHttpRequestHeaders = [
   "accept",
@@ -45,7 +46,7 @@ export function* compareReqHeader(
   route: Router.FindResult<Router.HTTPVersion.V1>,
   interaction: Interaction,
   index: number,
-): Iterable<Result> {
+): Iterable<Partial<Result>> {
   const { method, operation, path, securitySchemes } = route.store;
 
   const { status } = interaction.response;
@@ -63,18 +64,14 @@ export function* compareReqHeader(
       message:
         "Request Accept header is defined but the spec does not specify any mime-types to produce",
       mockDetails: {
-        interactionDescription: interaction.description,
-        interactionState: interaction.providerState || "[none]",
+        ...baseMockDetails(interaction),
         location: `[root].interactions[${index}].request.headers.Accept`,
-        mockFile: "pact.json",
         value: requestContentType,
       },
-      source: "spec-mock-validation",
       specDetails: {
         location: `[root].paths.${path}.${method}`,
         pathMethod: method,
         pathName: path,
-        specFile: "oas.yaml",
         value: operation,
       },
       type: "warning",
@@ -90,18 +87,14 @@ export function* compareReqHeader(
       message:
         "Response Content-Type header is defined but the spec does not specify any mime-types to produce",
       mockDetails: {
-        interactionDescription: interaction.description,
-        interactionState: interaction.providerState || "[none]",
+        ...baseMockDetails(interaction),
         location: `[root].interactions[${index}].response.headers.Content-Type`,
-        mockFile: "pact.json",
         value: responseContentType,
       },
-      source: "spec-mock-validation",
       specDetails: {
         location: `[root].paths.${path}.${method}`,
         pathMethod: method,
         pathName: path,
-        specFile: "oas.yaml",
         value: operation,
       },
       type: "warning",
@@ -139,18 +132,14 @@ export function* compareReqHeader(
         code: "request.header.unknown",
         message: `Request header is not defined in the spec file: ${key}`,
         mockDetails: {
-          interactionDescription: interaction.description,
-          interactionState: interaction.providerState || "[none]",
+          ...baseMockDetails(interaction),
           location: `[root].interactions[${index}].request.headers.${key}`,
-          mockFile: "pact.json",
           value: String(headers.get(key)),
         },
-        source: "spec-mock-validation",
         specDetails: {
           location: `[root].paths.${path}.${method}`,
           pathMethod: method,
           pathName: path,
-          specFile: "oas.yaml",
           value: operation,
         },
         type: "warning",

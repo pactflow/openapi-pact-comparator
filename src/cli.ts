@@ -1,5 +1,4 @@
 import fs from "node:fs";
-import { resolve } from "node:path";
 import yaml from "js-yaml";
 import { compare } from "./compare";
 import type { Result } from "./results";
@@ -13,8 +12,8 @@ const parse = (spec: string) => {
 };
 
 async function run() {
-  const pactFile = resolve(process.argv[2]);
-  const oasFile = resolve(process.argv[3]);
+  const pactFile = process.argv[2];
+  const oasFile = process.argv[3];
   const pact = parse(fs.readFileSync(pactFile, "utf-8"));
   const oas = parse(fs.readFileSync(oasFile, "utf-8"));
   const errors: Result[] = [];

@@ -3,8 +3,8 @@ import type Router from "find-my-way";
 import type { OpenAPIV3 } from "openapi-types";
 import type { Interaction } from "../documents/pact";
 import type { Result } from "../results";
-import { transformResponseSchema } from "../transform";
 import { get } from "lodash-es";
+import { transformResponseSchema } from "../transform";
 
 const DEFAULT_CONTENT_TYPE = "application/json";
 
@@ -60,7 +60,6 @@ export function* compareResBody(
             error.keyword === "additionalProperties"
               ? `${error.message} - ${error.params.additionalProperty}`
               : error.message;
-
           const instancePath = error.instancePath
             .replace(/\//g, ".")
             .substring(1);

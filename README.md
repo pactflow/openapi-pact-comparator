@@ -5,7 +5,7 @@
 This repo compares OpenAPI schemas and Pact contracts to determine if they are
 compatible.
 
-## Whay about `swagger-mock-validator`?
+## What about `swagger-mock-validator`?
 
 SWM is no longer developed by Atlassian and maintenance is token over by
 PactFlow. However, the codebase is dated, and is very convoluted for what it is

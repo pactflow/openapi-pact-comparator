@@ -3,6 +3,7 @@ import type Router from "find-my-way";
 import type { OpenAPIV3 } from "openapi-types";
 import type { Interaction } from "../documents/pact";
 import type { Result } from "../results";
+import { get } from "lodash-es";
 import { transformRequestSchema } from "../transform";
 
 export function* compareReqBody(
@@ -17,7 +18,6 @@ export function* compareReqBody(
   if (body) {
     const headers = new Headers(interaction.request.headers);
     const contentType: string = headers.get("content-type")?.split(";")[0];
-
     const request = operation.requestBody as OpenAPIV3.RequestBodyObject;
     if (request.content) {
       const schema = request.content[contentType]?.schema;
@@ -30,7 +30,38 @@ export function* compareReqBody(
         }
         if (!validate(body)) {
           for (const error of validate.errors) {
-            // yield {}
+            const method = interaction.request.method.toLowerCase();
+            const message =
+              error.keyword === "additionalProperties"
+                ? `${error.message} - ${error.params.additionalProperty}`
+                : error.message;
+            const instancePath = error.instancePath
+              .replace(/\//g, ".")
+              .substring(1);
+            const schemaPath = error.schemaPath
+              .replace(/\//g, ".")
+              .substring(2);
+
+            yield {
+              code: "request.body.incompatible",
+              message: `Request body is incompatible with the request body schema in the spec file: ${message}`,
+              mockDetails: {
+                interactionDescription: interaction.description,
+                interactionState: interaction.providerState || "[none]",
+                location: `[root].interactions[${index}].request.body.${instancePath}`,
+                mockFile: "pact.json",
+                value: instancePath ? get(body, instancePath) : body,
+              },
+              source: "spec-mock-validation",
+              specDetails: {
+                location: `[root].paths.${path}.${method}.requestBody.content.${contentType}.schema.${schemaPath}`,
+                pathMethod: method,
+                pathName: path,
+                specFile: "oas.yaml",
+                value: get(validate.schema, schemaPath),
+              },
+              type: "error",
+            };
           }
         }
       }

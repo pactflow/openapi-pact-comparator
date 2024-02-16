@@ -1,0 +1,13 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: OAS
+paths:
+  /path:
+    get:
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json: {}
+components: {}

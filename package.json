@@ -9,7 +9,8 @@
     "postinstall": "patch-package",
     "prettier": "prettier --check .",
     "prettier:fix": "prettier --cache --write .",
-    "start": "node dist/cli.mjs"
+    "start": "node dist/cli.mjs",
+    "test": "vitest"
   },
   "keywords": [],
   "author": "",
@@ -37,6 +38,7 @@
     "@types/node": "^20.11.8",
     "prettier": "^3.2.5",
     "rollup": "^4.9.6",
-    "tslib": "^2.6.2"
+    "tslib": "^2.6.2",
+    "vitest": "^1.2.2"
   }
 }

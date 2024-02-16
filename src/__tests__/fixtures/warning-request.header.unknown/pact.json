@@ -1,0 +1,21 @@
+{
+  "interactions": [
+    {
+      "description": "description",
+      "providerState": "",
+      "request": {
+        "method": "GET",
+        "path": "/path",
+        "headers": {
+          "x-unknown-header": "unknown-value"
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    }
+  ]
+}

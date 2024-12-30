@@ -19,7 +19,7 @@ const parseBody = (body: unknown, contentType: string) => {
   }
 
   return body;
-}
+};
 
 export function* compareReqBody(
   ajv: Ajv,

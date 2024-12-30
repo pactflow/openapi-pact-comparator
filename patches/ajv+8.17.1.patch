@@ -1,8 +1,8 @@
 diff --git a/node_modules/ajv/dist/compile/validate/dataType.js b/node_modules/ajv/dist/compile/validate/dataType.js
-index 1732d46..038b3cf 100644
+index 6d03e0d..8e19a97 100644
 --- a/node_modules/ajv/dist/compile/validate/dataType.js
 +++ b/node_modules/ajv/dist/compile/validate/dataType.js
-@@ -93,13 +93,13 @@ function coerceData(it, types, coerceTo) {
+@@ -94,13 +94,13 @@ function coerceData(it, types, coerceTo) {
              case "number":
                  gen
                      .elseIf((0, codegen_1._) `${dataType} == "boolean" || ${data} === null

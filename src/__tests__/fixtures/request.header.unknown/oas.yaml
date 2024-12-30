@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
-  version: 1.0.0
   title: OAS
+  version: 1.0.0
 paths:
   /path:
     get:
@@ -10,4 +10,3 @@ paths:
           description: Success
           content:
             application/json: {}
-components: {}

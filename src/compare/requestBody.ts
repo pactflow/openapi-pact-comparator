@@ -1,4 +1,5 @@
 import type Ajv from "ajv/dist/2019";
+import querystring from "node:querystring";
 import type Router from "find-my-way";
 import type { OpenAPIV3 } from "openapi-types";
 import type { Interaction } from "../documents/pact";
@@ -11,6 +12,14 @@ import {
   formatSchemaPath,
 } from "../formatters";
 import { transformRequestSchema } from "../transform";
+
+const parseBody = (body: unknown, contentType: string) => {
+  if (contentType.startsWith("application/x-www-form-urlencoded")) {
+    return querystring.parse(body as string);
+  }
+
+  return body;
+}
 
 export function* compareReqBody(
   ajv: Ajv,
@@ -34,7 +43,7 @@ export function* compareReqBody(
           ajv.addSchema(transformRequestSchema(schema), schemaId);
           validate = ajv.getSchema(schemaId);
         }
-        if (!validate(body)) {
+        if (!validate(parseBody(body, contentType))) {
           for (const error of validate.errors) {
             const method = interaction.request.method.toLowerCase();
             const message = formatErrorMessage(error);

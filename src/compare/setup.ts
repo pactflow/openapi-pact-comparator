@@ -35,7 +35,7 @@ export function setupRouter(
         method,
         operation,
         path: oasPath,
-        securitySchemes: oas.components.securitySchemes || {},
+        securitySchemes: oas.components?.securitySchemes || {},
       });
     }
   }

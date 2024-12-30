@@ -1,0 +1,22 @@
+{
+  "interactions": [
+    {
+      "description": "description",
+      "providerState": "",
+      "request": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "path": "/login",
+        "method": "POST",
+        "body": {
+          "email": "a@a.com"
+        }
+      },
+      "response": {
+        "body": {},
+        "status": 201
+      }
+    }
+  ]
+}

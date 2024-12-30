@@ -1,0 +1,20 @@
+{
+  "interactions": [
+    {
+      "description": "description",
+      "providerState": "",
+      "request": {
+        "headers": {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        "path": "/login",
+        "method": "POST",
+        "body": "email=a@a.com"
+      },
+      "response": {
+        "body": {},
+        "status": 201
+      }
+    }
+  ]
+}

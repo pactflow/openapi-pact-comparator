@@ -11,6 +11,7 @@ import { compareReqQuery } from "./requestQuery";
 import { compareReqBody } from "./requestBody";
 import { compareReqHeader } from "./requestHeader";
 import { compareResBody } from "./responseBody";
+import { compareResHeader } from "./responseHeader";
 import { baseMockDetails } from "../results";
 
 const debugSetup = debug("setup");
@@ -63,6 +64,7 @@ export async function* compare(
     yield* compareReqHeader(ajv, route, interaction, index);
     yield* compareReqQuery(ajv, route, interaction, index);
     yield* compareReqBody(ajv, route, interaction, index);
+    yield* compareResHeader(ajv, route, interaction, index);
     yield* compareResBody(ajv, route, interaction, index);
 
     debugInteraction("end");

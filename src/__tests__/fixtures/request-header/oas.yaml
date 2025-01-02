@@ -5,6 +5,12 @@ info:
 paths:
   /path:
     get:
+      parameters:
+        - in: header
+          name: x-custom
+          required: true
+          schema:
+            type: number
       responses:
         "200":
           description: Success

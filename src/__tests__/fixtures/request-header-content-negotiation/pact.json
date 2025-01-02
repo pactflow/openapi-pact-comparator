@@ -29,34 +29,6 @@
       }
     },
     {
-      "description": "unknown response content-type",
-      "providerState": "",
-      "request": {
-        "method": "GET",
-        "path": "/no-content"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/xxx"
-        }
-      }
-    },
-    {
-      "description": "incompatible response content-type",
-      "providerState": "",
-      "request": {
-        "method": "GET",
-        "path": "/with-content"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/xxx"
-        }
-      }
-    },
-    {
       "description": "successful read content negotiation",
       "providerState": "",
       "request": {

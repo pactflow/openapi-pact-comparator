@@ -26,7 +26,8 @@ export function* compareReqQuery(
     operation.parameters as OpenAPIV3.ParameterObject[]
   ).filter((p) => p.in === "query")) {
     const schema: SchemaObject = parameter.schema;
-    if (searchParams[parameter.name] && schema) {
+    const value = searchParams[parameter.name];
+    if (value && schema) {
       schema.components = components;
       const schemaId = `request-query-${method}-${path}-${parameter.name}`;
       let validate = ajv.getSchema(schemaId);
@@ -34,7 +35,7 @@ export function* compareReqQuery(
         ajv.addSchema(schema, schemaId);
         validate = ajv.getSchema(schemaId);
       }
-      if (!validate(searchParams[parameter.name])) {
+      if (!validate(value)) {
         for (const error of validate.errors) {
           const message = formatErrorMessage(error);
           const instancePath = formatInstancePath(error.instancePath);
@@ -46,9 +47,7 @@ export function* compareReqQuery(
             mockDetails: {
               ...baseMockDetails(interaction),
               location: `[root].interactions[${index}].request.query.${parameter.name}.${instancePath}`,
-              value: instancePath
-                ? get(searchParams[parameter.name], instancePath)
-                : searchParams[parameter.name],
+              value: instancePath ? get(value, instancePath) : value,
             },
             source: "spec-mock-validation",
             specDetails: {

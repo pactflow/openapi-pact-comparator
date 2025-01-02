@@ -1,18 +1,28 @@
 [
   {
     "code": "request.header.unknown",
-    "message": "Request header is not defined in the spec file: x-unknown-header",
+    "message": "Request header is not defined in the spec file: x-bad-custom",
     "mockDetails": {
-      "interactionDescription": "description",
+      "interactionDescription": "bad header key",
       "interactionState": "[none]",
-      "location": "[root].interactions[0].request.headers.x-unknown-header",
-      "value": "unknown-value"
+      "location": "[root].interactions[0].request.headers.x-bad-custom",
+      "value": "value"
     },
     "specDetails": {
       "location": "[root].paths./path.get",
       "pathMethod": "get",
       "pathName": "/path",
       "value": {
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-custom",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Success",
@@ -20,10 +30,26 @@
               "application/json": {}
             }
           }
-        },
-        "parameters": []
+        }
       }
     },
     "type": "warning"
+  },
+  {
+    "code": "request.header.incompatible",
+    "message": "Value is incompatible with the parameter defined in the spec file: must be number",
+    "mockDetails": {
+      "interactionDescription": "bad header value",
+      "interactionState": "[none]",
+      "location": "[root].interactions[1].request.headers.x-custom.",
+      "value": "abc"
+    },
+    "specDetails": {
+      "location": "[root].paths./path.get.x-custom.schema.type",
+      "pathMethod": "get",
+      "pathName": "/path",
+      "value": "number"
+    },
+    "type": "error"
   }
 ]

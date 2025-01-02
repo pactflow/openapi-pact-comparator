@@ -1,11 +1,11 @@
 [
   {
     "code": "request.header.unknown",
-    "message": "Request header is not defined in the spec file: X-API-Key",
+    "message": "Request header is not defined in the spec file: x-api-key",
     "mockDetails": {
       "interactionDescription": "FIXME: should not error - a request to a apikey auth endpoint",
       "interactionState": "[none]",
-      "location": "[root].interactions[6].request.headers.X-API-Key",
+      "location": "[root].interactions[6].request.headers.x-api-key",
       "value": "dXNlcjpwYXNzd29yZAo="
     },
     "specDetails": {
@@ -41,11 +41,11 @@
   },
   {
     "code": "request.header.unknown",
-    "message": "Request header is not defined in the spec file: X-API-Key",
+    "message": "Request header is not defined in the spec file: x-api-key",
     "mockDetails": {
       "interactionDescription": "FIXME: should not error - a request to a apikey auth endpoint with credentials lacking required scope",
       "interactionState": "[none]",
-      "location": "[root].interactions[8].request.headers.X-API-Key",
+      "location": "[root].interactions[8].request.headers.x-api-key",
       "value": "YmFkOnBhc3N3b3JkCg=="
     },
     "specDetails": {

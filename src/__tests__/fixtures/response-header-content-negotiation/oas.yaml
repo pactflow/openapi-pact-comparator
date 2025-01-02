@@ -1,0 +1,26 @@
+openapi: 3.0.0
+info:
+  title: OAS
+  version: 1.0.0
+paths:
+  /no-content:
+    get:
+      responses:
+        "200":
+          content: {}
+  /with-content:
+    get:
+      responses:
+        "200":
+          content:
+            application/aaa: {}
+            application/bbb: {}
+  /submit-content:
+    post:
+      requestBody:
+        content:
+          application/aaa: {}
+          application/bbb: {}
+        required: true
+      responses:
+        "201": {}

@@ -1,9 +1,16 @@
+import type { SchemaObject } from "ajv";
 import type Ajv from "ajv/dist/2019";
 import type Router from "find-my-way";
 import type { OpenAPIV3 } from "openapi-types";
 import type { Interaction } from "../documents/pact";
 import type { Result } from "../results";
-import { baseMockDetails } from "../results";
+import { get } from "lodash-es";
+import {
+  baseMockDetails,
+  formatErrorMessage,
+  formatInstancePath,
+  formatSchemaPath,
+} from "../results";
 import { findMatchingType, standardHttpRequestHeaders } from "./utils/content";
 
 export function* compareReqHeader(
@@ -133,58 +140,11 @@ export function* compareReqHeader(
     }
   }
 
-  // response content-type
-  // ---------------------
-  const responseHeaders = new Headers(interaction.response.headers);
-  const responseContentType =
-    responseHeaders.get("content-type")?.split(";")[0] || "";
-  if (responseContentType) {
-    if (availableResponseContentType.length === 0) {
-      yield {
-        code: "response.content-type.unknown",
-        message:
-          "Response Content-Type header is defined but the spec does not specify any mime-types to produce",
-        mockDetails: {
-          ...baseMockDetails(interaction),
-          location: `[root].interactions[${index}].response.headers.Content-Type`,
-          value: responseContentType,
-        },
-        specDetails: {
-          location: `[root].paths.${path}.${method}`,
-          pathMethod: method,
-          pathName: path,
-          value: operation,
-        },
-        type: "warning",
-      };
-    } else if (
-      !findMatchingType(responseContentType, availableResponseContentType)
-    ) {
-      yield {
-        code: "response.content-type.incompatible",
-        message:
-          "Response Content-Type header is incompatible with the mime-types the spec defines to produce",
-        mockDetails: {
-          ...baseMockDetails(interaction),
-          location: `[root].interactions[${index}].response.headers.Content-Type`,
-          value: responseContentType,
-        },
-        specDetails: {
-          location: `[root].paths.${path}.${method}`,
-          pathMethod: method,
-          pathName: path,
-          value: operation,
-        },
-        type: "error",
-      };
-    }
-  }
-
-  // ignore standard headers
+  // ignored headers
+  // ---------------
   for (const key of standardHttpRequestHeaders) {
     requestHeaders.delete(key);
   }
-
   for (const key in securitySchemes) {
     const scheme = securitySchemes[key];
     if (
@@ -197,32 +157,66 @@ export function* compareReqHeader(
     }
   }
 
+  // other headers
+  // -------------
   for (const parameter of (
     operation.parameters as OpenAPIV3.ParameterObject[]
   ).filter((p) => p.in === "header")) {
-    // FIXME: validate headers
+    const schema: SchemaObject = parameter.schema;
+    const value = requestHeaders.get(parameter.name);
+    if (value && schema) {
+      schema.components = components;
+      const schemaId = `request-header-${method}-${path}-${parameter.name}`;
+      let validate = ajv.getSchema(schemaId);
+      if (!validate) {
+        ajv.addSchema(schema, schemaId);
+        validate = ajv.getSchema(schemaId);
+      }
+      if (!validate(value)) {
+        for (const error of validate.errors) {
+          const message = formatErrorMessage(error);
+          const instancePath = formatInstancePath(error.instancePath);
+          const schemaPath = formatSchemaPath(error.schemaPath);
 
-    requestHeaders.delete(parameter.name);
+          yield {
+            code: "request.header.incompatible",
+            message: `Value is incompatible with the parameter defined in the spec file: ${message}`,
+            mockDetails: {
+              ...baseMockDetails(interaction),
+              location: `[root].interactions[${index}].request.headers.${parameter.name}.${instancePath}`,
+              value: instancePath ? get(value, instancePath) : value,
+            },
+            specDetails: {
+              location: `[root].paths.${path}.${method}.${parameter.name}.schema.${schemaPath}`,
+              pathMethod: method,
+              pathName: path,
+              value: get(validate.schema, schemaPath),
+            },
+            type: "error",
+          };
+        }
+      }
+
+      requestHeaders.delete(parameter.name);
+    }
   }
 
-  for (const key in interaction.request.headers) {
-    if (requestHeaders.has(key)) {
-      yield {
-        code: "request.header.unknown",
-        message: `Request header is not defined in the spec file: ${key}`,
-        mockDetails: {
-          ...baseMockDetails(interaction),
-          location: `[root].interactions[${index}].request.headers.${key}`,
-          value: String(requestHeaders.get(key)),
-        },
-        specDetails: {
-          location: `[root].paths.${path}.${method}`,
-          pathMethod: method,
-          pathName: path,
-          value: operation,
-        },
-        type: "warning",
-      };
-    }
+  for (const [key, value] of requestHeaders.entries()) {
+    yield {
+      code: "request.header.unknown",
+      message: `Request header is not defined in the spec file: ${key}`,
+      mockDetails: {
+        ...baseMockDetails(interaction),
+        location: `[root].interactions[${index}].request.headers.${key}`,
+        value: value,
+      },
+      specDetails: {
+        location: `[root].paths.${path}.${method}`,
+        pathMethod: method,
+        pathName: path,
+        value: operation,
+      },
+      type: "warning",
+    };
   }
 }

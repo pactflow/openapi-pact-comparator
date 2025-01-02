@@ -51,63 +51,12 @@
     "type": "error"
   },
   {
-    "code": "response.content-type.unknown",
-    "message": "Response Content-Type header is defined but the spec does not specify any mime-types to produce",
-    "mockDetails": {
-      "interactionDescription": "unknown response content-type",
-      "interactionState": "[none]",
-      "location": "[root].interactions[2].response.headers.Content-Type",
-      "value": "application/xxx"
-    },
-    "specDetails": {
-      "location": "[root].paths./no-content.get",
-      "pathMethod": "get",
-      "pathName": "/no-content",
-      "value": {
-        "responses": {
-          "200": {
-            "content": {}
-          }
-        },
-        "parameters": []
-      }
-    },
-    "type": "warning"
-  },
-  {
-    "code": "response.content-type.incompatible",
-    "message": "Response Content-Type header is incompatible with the mime-types the spec defines to produce",
-    "mockDetails": {
-      "interactionDescription": "incompatible response content-type",
-      "interactionState": "[none]",
-      "location": "[root].interactions[3].response.headers.Content-Type",
-      "value": "application/xxx"
-    },
-    "specDetails": {
-      "location": "[root].paths./with-content.get",
-      "pathMethod": "get",
-      "pathName": "/with-content",
-      "value": {
-        "responses": {
-          "200": {
-            "content": {
-              "application/aaa": {},
-              "application/bbb": {}
-            }
-          }
-        },
-        "parameters": []
-      }
-    },
-    "type": "error"
-  },
-  {
     "code": "request.content-type.unknown",
     "message": "Request content-type header is defined but the spec does not specify any mime-types to consume",
     "mockDetails": {
       "interactionDescription": "foo",
       "interactionState": "[none]",
-      "location": "[root].interactions[5].request.headers.Content-Type",
+      "location": "[root].interactions[3].request.headers.Content-Type",
       "value": "application/xxx"
     },
     "specDetails": {
@@ -133,7 +82,7 @@
     "mockDetails": {
       "interactionDescription": "bar",
       "interactionState": "[none]",
-      "location": "[root].interactions[6].request.headers.Content-Type",
+      "location": "[root].interactions[4].request.headers.Content-Type",
       "value": "application/xxx"
     },
     "specDetails": {
@@ -162,7 +111,7 @@
     "mockDetails": {
       "interactionDescription": "bar",
       "interactionState": "[none]",
-      "location": "[root].interactions[7].request.headers.ContentType",
+      "location": "[root].interactions[5].request.headers.ContentType",
       "value": ""
     },
     "specDetails": {

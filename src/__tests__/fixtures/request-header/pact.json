@@ -1,13 +1,47 @@
 {
   "interactions": [
     {
-      "description": "description",
+      "description": "bad header key",
       "providerState": "",
       "request": {
         "method": "GET",
         "path": "/path",
         "headers": {
-          "x-unknown-header": "unknown-value"
+          "x-bad-custom": "value"
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    },
+    {
+      "description": "bad header value",
+      "providerState": "",
+      "request": {
+        "method": "GET",
+        "path": "/path",
+        "headers": {
+          "x-custom": "abc"
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    },
+    {
+      "description": "good header",
+      "providerState": "",
+      "request": {
+        "method": "GET",
+        "path": "/path",
+        "headers": {
+          "x-custom": "123"
         }
       },
       "response": {

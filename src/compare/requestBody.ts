@@ -28,13 +28,14 @@ export function* compareReqBody(
   interaction: Interaction,
   index: number,
 ): Iterable<Partial<Result>> {
-  const { components, operation, path } = route.store;
+  const { components, method, operation, path } = route.store;
 
   const { body } = interaction.request;
   if (body) {
     const headers = new Headers(interaction.request.headers);
     const contentType: string = headers.get("content-type")?.split(";")[0];
     const request = operation.requestBody as OpenAPIV3.RequestBodyObject;
+    const value = parseBody(body, contentType);
     if (request.content) {
       const schema: SchemaObject = request.content[contentType]?.schema;
       if (schema) {
@@ -45,9 +46,8 @@ export function* compareReqBody(
           ajv.addSchema(transformRequestSchema(schema), schemaId);
           validate = ajv.getSchema(schemaId);
         }
-        if (!validate(parseBody(body, contentType))) {
+        if (!validate(value)) {
           for (const error of validate.errors) {
-            const method = interaction.request.method.toLowerCase();
             const message = formatErrorMessage(error);
             const instancePath = formatInstancePath(error.instancePath);
             const schemaPath = formatSchemaPath(error.schemaPath);
@@ -58,7 +58,7 @@ export function* compareReqBody(
               mockDetails: {
                 ...baseMockDetails(interaction),
                 location: `[root].interactions[${index}].request.body.${instancePath}`,
-                value: instancePath ? get(body, instancePath) : body,
+                value: instancePath ? get(value, instancePath) : value,
               },
               specDetails: {
                 location: `[root].paths.${path}.${method}.requestBody.content.${contentType}.schema.${schemaPath}`,

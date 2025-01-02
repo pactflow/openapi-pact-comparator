@@ -1,0 +1,48 @@
+{
+  "interactions": [
+    {
+      "description": "incompatible response header",
+      "providerState": "",
+      "request": {
+        "method": "GET",
+        "path": "/path"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json",
+          "specified": "abc"
+        }
+      }
+    },
+    {
+      "description": "unknown response header",
+      "providerState": "",
+      "request": {
+        "method": "GET",
+        "path": "/path"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json",
+          "unspecified": "foo"
+        }
+      }
+    },
+    {
+      "description": "succesful response",
+      "providerState": "",
+      "request": {
+        "method": "GET",
+        "path": "/path"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    }
+  ]
+}

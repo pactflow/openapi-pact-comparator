@@ -6,14 +6,14 @@ type ErrorCode =
   | "request.authorization.missing" // TODO
   | "request.body.incompatible"
   | "request.content-type.incompatible"
-  | "request.header.incompatible" // TODO
+  | "request.header.incompatible"
   | "request.path-or-method.unknown" // TODO: needs test
   | "request.query.incompatible"
   | "response.body.incompatible"
   | "response.body.unknown" // TODO
   | "response.content-type.incompatible"
-  | "response.header.incompatible" // TODO
-  | "response.header.unknown" // TODO
+  | "response.header.incompatible"
+  | "response.header.unknown"
   | "response.status.unknown";
 
 type WarningCode =

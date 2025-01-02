@@ -1,0 +1,42 @@
+[
+  {
+    "code": "response.header.incompatible",
+    "message": "Value is incompatible with the parameter defined in the spec file: must be number",
+    "mockDetails": {
+      "interactionDescription": "incompatible response header",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].response.headers.specified.",
+      "value": "abc"
+    },
+    "specDetails": {
+      "location": "[root].paths./path.get.responses.200.headers.specified.schema.type",
+      "pathMethod": "get",
+      "pathName": "/path",
+      "value": "number"
+    },
+    "type": "error"
+  },
+  {
+    "code": "response.header.unknown",
+    "message": "Response header is not defined in the spec file: unspecified",
+    "mockDetails": {
+      "interactionDescription": "unknown response header",
+      "interactionState": "[none]",
+      "location": "[root].interactions[1].response.headers.unspecified",
+      "value": "foo"
+    },
+    "specDetails": {
+      "location": "[root].paths./path.get.responses.200.headers",
+      "pathMethod": "get",
+      "pathName": "/path",
+      "value": {
+        "specified": {
+          "schema": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "type": "error"
+  }
+]

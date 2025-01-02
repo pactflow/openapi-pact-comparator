@@ -24,10 +24,9 @@ export function* compareReqHeader(
   const availableRequestContentType = Object.keys(
     operation.requestBody?.content || {},
   );
-  const availableResponseContentType = Object.values(operation.responses || {})
-    .map((r: OpenAPIV3.ResponseObject) => r.content || {})
-    .map((c) => Object.keys(c))
-    .flat();
+  const availableResponseContentType = Object.keys(
+    operation.responses[interaction.response.status]?.content || {},
+  );
 
   // request accept
   // --------------
@@ -159,9 +158,8 @@ export function* compareReqHeader(
 
   // other headers
   // -------------
-  for (const parameter of (
-    operation.parameters as OpenAPIV3.ParameterObject[]
-  ).filter((p) => p.in === "header")) {
+  const isHeader = (p: OpenAPIV3.ParameterObject) => p.in === "header";
+  for (const parameter of operation.parameters.filter(isHeader)) {
     const schema: SchemaObject = parameter.schema;
     const value = requestHeaders.get(parameter.name);
     if (value && schema) {
@@ -196,19 +194,18 @@ export function* compareReqHeader(
           };
         }
       }
-
       requestHeaders.delete(parameter.name);
     }
   }
 
-  for (const [key, value] of requestHeaders.entries()) {
+  for (const [headerName, headerValue] of requestHeaders.entries()) {
     yield {
       code: "request.header.unknown",
-      message: `Request header is not defined in the spec file: ${key}`,
+      message: `Request header is not defined in the spec file: ${headerName}`,
       mockDetails: {
         ...baseMockDetails(interaction),
-        location: `[root].interactions[${index}].request.headers.${key}`,
-        value: value,
+        location: `[root].interactions[${index}].request.headers.${headerName}`,
+        value: headerValue,
       },
       specDetails: {
         location: `[root].paths.${path}.${method}`,

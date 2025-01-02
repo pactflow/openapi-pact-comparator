@@ -8,7 +8,7 @@
     "dev": "tsx src/cli.ts",
     "postinstall": "patch-package",
     "prettier": "prettier --check .",
-    "prettier:fix": "prettier --cache --write .",
+    "prettier:fix": "prettier --cache --list-different --write .",
     "start": "node dist/cli.mjs",
     "test": "vitest"
   },

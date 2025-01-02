@@ -1,0 +1,126 @@
+{
+  "interactions": [
+    {
+      "description": "unknown request accept",
+      "providerState": "",
+      "request": {
+        "method": "GET",
+        "path": "/no-content",
+        "headers": {
+          "accept": "application/xxx"
+        }
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "incompatible request accept",
+      "providerState": "",
+      "request": {
+        "method": "GET",
+        "path": "/with-content",
+        "headers": {
+          "accept": "application/xxx"
+        }
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "unknown response content-type",
+      "providerState": "",
+      "request": {
+        "method": "GET",
+        "path": "/no-content"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/xxx"
+        }
+      }
+    },
+    {
+      "description": "incompatible response content-type",
+      "providerState": "",
+      "request": {
+        "method": "GET",
+        "path": "/with-content"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/xxx"
+        }
+      }
+    },
+    {
+      "description": "successful read content negotiation",
+      "providerState": "",
+      "request": {
+        "method": "GET",
+        "path": "/with-content",
+        "headers": {
+          "accept": "application/aaa"
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/aaa"
+        }
+      }
+    },
+    {
+      "description": "foo",
+      "request": {
+        "method": "POST",
+        "path": "/submit-no-content",
+        "headers": {
+          "content-type": "application/xxx"
+        }
+      },
+      "response": {
+        "status": 201
+      }
+    },
+    {
+      "description": "bar",
+      "request": {
+        "method": "POST",
+        "path": "/submit-content",
+        "headers": {
+          "content-type": "application/xxx"
+        }
+      },
+      "response": {
+        "status": 201
+      }
+    },
+    {
+      "description": "bar",
+      "request": {
+        "method": "POST",
+        "path": "/submit-content"
+      },
+      "response": {
+        "status": 201
+      }
+    },
+    {
+      "description": "succesful write content negotiation",
+      "request": {
+        "method": "POST",
+        "path": "/submit-content",
+        "headers": {
+          "content-type": "application/aaa"
+        }
+      },
+      "response": {
+        "status": 201
+      }
+    }
+  ]
+}

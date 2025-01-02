@@ -4,42 +4,7 @@ import type { OpenAPIV3 } from "openapi-types";
 import type { Interaction } from "../documents/pact";
 import type { Result } from "../results";
 import { baseMockDetails } from "../results";
-
-const standardHttpRequestHeaders = [
-  "accept",
-  "accept-charset",
-  "accept-datetime",
-  "accept-encoding",
-  "accept-language",
-  "authorization",
-  "cache-control",
-  "connection",
-  "content-length",
-  "content-md5",
-  "content-type",
-  "cookie",
-  "date",
-  "expect",
-  "forwarded",
-  "from",
-  "host",
-  "if-match",
-  "if-modified-since",
-  "if-none-match",
-  "if-range",
-  "if-unmodified-since",
-  "max-forwards",
-  "origin",
-  "pragma",
-  "proxy-authorization",
-  "range",
-  "referer",
-  "te",
-  "upgrade",
-  "user-agent",
-  "via",
-  "warning",
-];
+import { findMatchingType, standardHttpRequestHeaders } from "./utils/content";
 
 export function* compareReqHeader(
   ajv: Ajv,
@@ -49,61 +14,175 @@ export function* compareReqHeader(
 ): Iterable<Partial<Result>> {
   const { components, method, operation, path, securitySchemes } = route.store;
 
-  const { status } = interaction.response;
-  const headers = new Headers(interaction.request.headers);
+  const availableRequestContentType = Object.keys(
+    operation.requestBody?.content || {},
+  );
+  const availableResponseContentType = Object.values(operation.responses)
+    .map((r: OpenAPIV3.ResponseObject) => r.content || {})
+    .map((c) => Object.keys(c))
+    .flat();
 
-  let requestContentType: string = headers.get("accept")?.split(";")[0];
-  if (
-    !Object.values(operation.responses).some(
-      (r: OpenAPIV3.ResponseObject) => r?.content,
-    ) &&
-    requestContentType
-  ) {
-    yield {
-      code: "request.accept.unknown",
-      message:
-        "Request Accept header is defined but the spec does not specify any mime-types to produce",
-      mockDetails: {
-        ...baseMockDetails(interaction),
-        location: `[root].interactions[${index}].request.headers.Accept`,
-        value: requestContentType,
-      },
-      specDetails: {
-        location: `[root].paths.${path}.${method}`,
-        pathMethod: method,
-        pathName: path,
-        value: operation,
-      },
-      type: "warning",
-    };
+  // request accept
+  // --------------
+  const requestHeaders = new Headers(interaction.request.headers);
+  const requestAccept: string =
+    requestHeaders.get("accept")?.split(";")[0] || "";
+  if (requestAccept) {
+    if (availableResponseContentType.length === 0) {
+      yield {
+        code: "request.accept.unknown",
+        message:
+          "Request Accept header is defined but the spec does not specify any mime-types to produce",
+        mockDetails: {
+          ...baseMockDetails(interaction),
+          location: `[root].interactions[${index}].request.headers.Accept`,
+          value: requestAccept,
+        },
+        specDetails: {
+          location: `[root].paths.${path}.${method}`,
+          pathMethod: method,
+          pathName: path,
+          value: operation,
+        },
+        type: "warning",
+      };
+    } else if (!findMatchingType(requestAccept, availableResponseContentType)) {
+      yield {
+        code: "request.accept.incompatible",
+        message:
+          "Request Accept header is incompatible with the mime-types the spec defines to produce",
+        mockDetails: {
+          ...baseMockDetails(interaction),
+          location: `[root].interactions[${index}].request.headers.Accept`,
+          value: requestAccept,
+        },
+        specDetails: {
+          location: `[root].paths.${path}.${method}`,
+          pathMethod: method,
+          pathName: path,
+          value: operation,
+        },
+        type: "error",
+      };
+    }
   }
 
-  let responseContentType: string = new Headers(interaction.response.headers)
-    .get("content-type")
-    ?.split(";")[0];
-  if (!operation.responses[status]?.content && responseContentType) {
-    yield {
-      code: "response.content-type.unknown",
-      message:
-        "Response Content-Type header is defined but the spec does not specify any mime-types to produce",
-      mockDetails: {
-        ...baseMockDetails(interaction),
-        location: `[root].interactions[${index}].response.headers.Content-Type`,
-        value: responseContentType,
-      },
-      specDetails: {
-        location: `[root].paths.${path}.${method}`,
-        pathMethod: method,
-        pathName: path,
-        value: operation,
-      },
-      type: "warning",
-    };
+  // request content-type
+  // --------------------
+  const requestContentType: string =
+    requestHeaders.get("content-type")?.split(";")[0] || "";
+  if (requestContentType) {
+    if (availableRequestContentType.length === 0) {
+      yield {
+        code: "request.content-type.unknown",
+        message:
+          "Request content-type header is defined but the spec does not specify any mime-types to consume",
+        mockDetails: {
+          ...baseMockDetails(interaction),
+          location: `[root].interactions[${index}].request.headers.Content-Type`,
+          value: requestContentType,
+        },
+        specDetails: {
+          location: `[root].paths.${path}.${method}`,
+          pathMethod: method,
+          pathName: path,
+          value: operation,
+        },
+        type: "warning",
+      };
+    } else if (
+      !findMatchingType(requestContentType, availableRequestContentType)
+    ) {
+      yield {
+        code: "request.content-type.incompatible",
+        message:
+          "Request Content-Type header is incompatible with the mime-types the spec accepts to consume",
+        mockDetails: {
+          ...baseMockDetails(interaction),
+          location: `[root].interactions[${index}].request.headers.Content-Type`,
+          value: requestContentType,
+        },
+        specDetails: {
+          location: `[root].paths.${path}.${method}`,
+          pathMethod: method,
+          pathName: path,
+          value: operation,
+        },
+        type: "error",
+      };
+    }
+  } else {
+    if (availableRequestContentType.length) {
+      yield {
+        code: "request.content-type.missing",
+        message:
+          "Request content type header is not defined but spec specifies mime-types to consume",
+        mockDetails: {
+          ...baseMockDetails(interaction),
+          location: `[root].interactions[${index}].request.headers.ContentType`,
+          value: requestContentType,
+        },
+        specDetails: {
+          location: `[root].paths.${path}.${method}`,
+          pathMethod: method,
+          pathName: path,
+          value: operation,
+        },
+        type: "warning",
+      };
+    }
+  }
+
+  // response content-type
+  // ---------------------
+  const responseHeaders = new Headers(interaction.response.headers);
+  const responseContentType =
+    responseHeaders.get("content-type")?.split(";")[0] || "";
+  if (responseContentType) {
+    if (availableResponseContentType.length === 0) {
+      yield {
+        code: "response.content-type.unknown",
+        message:
+          "Response Content-Type header is defined but the spec does not specify any mime-types to produce",
+        mockDetails: {
+          ...baseMockDetails(interaction),
+          location: `[root].interactions[${index}].response.headers.Content-Type`,
+          value: responseContentType,
+        },
+        specDetails: {
+          location: `[root].paths.${path}.${method}`,
+          pathMethod: method,
+          pathName: path,
+          value: operation,
+        },
+        type: "warning",
+      };
+    } else if (
+      !findMatchingType(responseContentType, availableResponseContentType)
+    ) {
+      yield {
+        code: "response.content-type.incompatible",
+        message:
+          "Response Content-Type header is incompatible with the mime-types the spec defines to produce",
+        mockDetails: {
+          ...baseMockDetails(interaction),
+          location: `[root].interactions[${index}].response.headers.Content-Type`,
+          value: responseContentType,
+        },
+        specDetails: {
+          location: `[root].paths.${path}.${method}`,
+          pathMethod: method,
+          pathName: path,
+          value: operation,
+        },
+        type: "error",
+      };
+    }
   }
 
   // ignore standard headers
   for (const key of standardHttpRequestHeaders) {
-    headers.delete(key);
+    requestHeaders.delete(key);
   }
 
   for (const key in securitySchemes) {
@@ -114,7 +193,7 @@ export function* compareReqHeader(
         (s: OpenAPIV3.SecuritySchemeObject) => !!s[scheme.name],
       )
     ) {
-      headers.delete(scheme.name);
+      requestHeaders.delete(scheme.name);
     }
   }
 
@@ -123,18 +202,18 @@ export function* compareReqHeader(
   ).filter((p) => p.in === "header")) {
     // FIXME: validate headers
 
-    headers.delete(parameter.name);
+    requestHeaders.delete(parameter.name);
   }
 
   for (const key in interaction.request.headers) {
-    if (headers.has(key)) {
+    if (requestHeaders.has(key)) {
       yield {
         code: "request.header.unknown",
         message: `Request header is not defined in the spec file: ${key}`,
         mockDetails: {
           ...baseMockDetails(interaction),
           location: `[root].interactions[${index}].request.headers.${key}`,
-          value: String(headers.get(key)),
+          value: String(requestHeaders.get(key)),
         },
         specDetails: {
           location: `[root].paths.${path}.${method}`,

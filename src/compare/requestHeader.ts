@@ -3,7 +3,7 @@ import type Router from "find-my-way";
 import type { OpenAPIV3 } from "openapi-types";
 import type { Interaction } from "../documents/pact";
 import type { Result } from "../results";
-import { baseMockDetails } from "../formatters";
+import { baseMockDetails } from "../results";
 
 const standardHttpRequestHeaders = [
   "accept",
@@ -47,7 +47,7 @@ export function* compareReqHeader(
   interaction: Interaction,
   index: number,
 ): Iterable<Partial<Result>> {
-  const { method, operation, path, securitySchemes } = route.store;
+  const { components, method, operation, path, securitySchemes } = route.store;
 
   const { status } = interaction.response;
   const headers = new Headers(interaction.request.headers);

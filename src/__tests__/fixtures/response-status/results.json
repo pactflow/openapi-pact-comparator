@@ -1,0 +1,26 @@
+[
+  {
+    "code": "response.status.unknown",
+    "message": "Response status code not defined in spec file: 302",
+    "mockDetails": {
+      "interactionDescription": "error: unspecified status code",
+      "interactionState": "when redirect exists",
+      "location": "[root].interactions[0].response.status",
+      "value": 302
+    },
+    "specDetails": {
+      "location": "[root].paths./animal.get.responses",
+      "pathMethod": "get",
+      "pathName": "/animal",
+      "value": {
+        "200": {
+          "content": {}
+        },
+        "404": {
+          "content": {}
+        }
+      }
+    },
+    "type": "error"
+  }
+]

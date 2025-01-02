@@ -1,0 +1,82 @@
+[
+  {
+    "code": "request.header.unknown",
+    "message": "Request header is not defined in the spec file: X-API-Key",
+    "mockDetails": {
+      "interactionDescription": "FIXME: should not error - a request to a apikey auth endpoint",
+      "interactionState": "[none]",
+      "location": "[root].interactions[6].request.headers.X-API-Key",
+      "value": "dXNlcjpwYXNzd29yZAo="
+    },
+    "specDetails": {
+      "location": "[root].paths./apikey.get",
+      "pathMethod": "get",
+      "pathName": "/apikey",
+      "value": {
+        "summary": "ApiKey authenticated endpoint",
+        "description": "Endpoint secured by ApiKey auth",
+        "operationId": "getApiKeyAuth",
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          },
+          "401": {
+            "description": "unauthenticated"
+          },
+          "403": {
+            "description": "unauthorized"
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": [
+              "Admin"
+            ]
+          }
+        ],
+        "parameters": []
+      }
+    },
+    "type": "warning"
+  },
+  {
+    "code": "request.header.unknown",
+    "message": "Request header is not defined in the spec file: X-API-Key",
+    "mockDetails": {
+      "interactionDescription": "FIXME: should not error - a request to a apikey auth endpoint with credentials lacking required scope",
+      "interactionState": "[none]",
+      "location": "[root].interactions[8].request.headers.X-API-Key",
+      "value": "YmFkOnBhc3N3b3JkCg=="
+    },
+    "specDetails": {
+      "location": "[root].paths./apikey.get",
+      "pathMethod": "get",
+      "pathName": "/apikey",
+      "value": {
+        "summary": "ApiKey authenticated endpoint",
+        "description": "Endpoint secured by ApiKey auth",
+        "operationId": "getApiKeyAuth",
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          },
+          "401": {
+            "description": "unauthenticated"
+          },
+          "403": {
+            "description": "unauthorized"
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": [
+              "Admin"
+            ]
+          }
+        ],
+        "parameters": []
+      }
+    },
+    "type": "warning"
+  }
+]

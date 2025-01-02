@@ -1,0 +1,55 @@
+{
+  "interactions": [
+    {
+      "description": "error: detail is null",
+      "request": {
+        "method": "GET",
+        "path": "/animal"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "name": "name",
+          "detail": null
+        }
+      }
+    },
+    {
+      "description": "success",
+      "request": {
+        "method": "GET",
+        "path": "/animal"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "name": "name",
+          "detail": {
+            "foo": "bar",
+            "bar": false,
+            "baz": 1,
+            "bat": [
+              true,
+              "string",
+              1,
+              {
+                "foo": "bar",
+                "bar": false,
+                "baz": 1,
+                "bat": ["you get the idea..."],
+                "qix": null
+              }
+            ],
+            "qix": null
+          }
+        }
+      }
+    }
+  ]
+}

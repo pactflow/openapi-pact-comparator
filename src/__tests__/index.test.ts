@@ -15,21 +15,30 @@ const parse = (spec: string) => {
 const FIXTURES = path.join(__dirname, "fixtures");
 
 for (const entry of fs.readdirSync(FIXTURES)) {
-  it(entry, async () => {
+  const runTest = async () => {
     const dir = path.join(FIXTURES, entry);
     const pactFile = path.join(dir, "pact.json");
     const oasFile = path.join(dir, "oas.yaml");
+    const resultFile = path.join(dir, "results.json");
 
     const pact = parse(await fs.promises.readFile(pactFile, "utf-8"));
     const oas = parse(await fs.promises.readFile(oasFile, "utf-8"));
 
-    let count = 0;
+    const results = [];
     for await (const result of compare(oas, pact)) {
-      const resultFile = path.join(
-        dir,
-        `result-${String(count++).padStart(2, "0")}.json`,
-      );
-      expect(result).toMatchFileSnapshot(resultFile);
+      results.push(result);
     }
-  });
+
+    await expect(JSON.stringify(results, null, 2)).toMatchFileSnapshot(
+      resultFile,
+    );
+  };
+
+  if (entry.endsWith("skip")) {
+    it.skip(entry.replace(/\.skip$/, ""));
+  } else if (entry.endsWith("only")) {
+    it.only(entry.replace(/\.only/, ""), runTest);
+  } else {
+    it(entry, runTest);
+  }
 }

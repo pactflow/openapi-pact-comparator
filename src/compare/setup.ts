@@ -2,6 +2,7 @@ import type { OpenAPIV3 } from "openapi-types";
 import Ajv from "ajv/dist/2019";
 import addFormats from "ajv-formats";
 import Router, { HTTPMethod } from "find-my-way";
+import qs from "qs";
 
 export function setupAjv(): Ajv {
   const ajv = new Ajv({
@@ -25,6 +26,7 @@ export function setupRouter(
 ): Router.Instance<Router.HTTPVersion.V1> {
   const router = Router({
     ignoreTrailingSlash: true,
+    querystringParser: (str: string): unknown => qs.parse(str, { comma: true }),
   });
   for (const oasPath in oas.paths) {
     const path = oasPath.replaceAll(/{(.*?)\}/g, ":$1");
@@ -32,6 +34,7 @@ export function setupRouter(
       const operation = oas.paths[oasPath][method];
       operation.parameters ||= [];
       router.on(method.toUpperCase() as HTTPMethod, path, () => {}, {
+        components: oas.components,
         method,
         operation,
         path: oasPath,

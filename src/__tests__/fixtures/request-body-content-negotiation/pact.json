@@ -1,0 +1,55 @@
+{
+  "interactions": [
+    {
+      "description": "FIXME: should error about unsupported accept type",
+      "request": {
+        "method": "POST",
+        "path": "/animals",
+        "headers": {
+          "content-type": "application/json"
+        },
+        "body": {
+          "name": "Rover",
+          "genus": "Canis"
+        }
+      },
+      "response": {
+        "status": 201
+      }
+    },
+    {
+      "description": "success: POST v1",
+      "request": {
+        "method": "POST",
+        "path": "/animals",
+        "headers": {
+          "content-type": "application/json;version=1.0.0"
+        },
+        "body": {
+          "name": "Rover",
+          "genus": "Canis"
+        }
+      },
+      "response": {
+        "status": 201
+      }
+    },
+    {
+      "description": "success: POST v2",
+      "request": {
+        "method": "POST",
+        "path": "/animals",
+        "headers": {
+          "content-type": "application/json;version=2.0.0"
+        },
+        "body": {
+          "name": "Rover",
+          "species": "C. familiaris"
+        }
+      },
+      "response": {
+        "status": 201
+      }
+    }
+  ]
+}

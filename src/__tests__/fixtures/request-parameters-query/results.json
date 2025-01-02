@@ -1,0 +1,74 @@
+[
+  {
+    "code": "request.query.incompatible",
+    "message": "Value is incompatible with the parameter defined in the spec file: must be integer",
+    "mockDetails": {
+      "interactionDescription": "a request using form style with exploded query parameters",
+      "interactionState": "[none]",
+      "location": "[root].interactions[2].request.query.id.2",
+      "value": "abc"
+    },
+    "source": "spec-mock-validation",
+    "specDetails": {
+      "location": "[root].paths./explode-true.get.id.schema.items.type",
+      "pathMethod": "get",
+      "pathName": "/explode-true",
+      "value": "integer"
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.query.incompatible",
+    "message": "Value is incompatible with the parameter defined in the spec file: must be integer",
+    "mockDetails": {
+      "interactionDescription": "a request using form style with exploded query parameters",
+      "interactionState": "[none]",
+      "location": "[root].interactions[3].request.query.id.2",
+      "value": "abc"
+    },
+    "source": "spec-mock-validation",
+    "specDetails": {
+      "location": "[root].paths./explode-true.get.id.schema.items.type",
+      "pathMethod": "get",
+      "pathName": "/explode-true",
+      "value": "integer"
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.query.incompatible",
+    "message": "Value is incompatible with the parameter defined in the spec file: must be integer",
+    "mockDetails": {
+      "interactionDescription": "a request using form style with non-exploded query parameters",
+      "interactionState": "[none]",
+      "location": "[root].interactions[4].request.query.id.2",
+      "value": "abc"
+    },
+    "source": "spec-mock-validation",
+    "specDetails": {
+      "location": "[root].paths./explode-false.get.id.schema.items.type",
+      "pathMethod": "get",
+      "pathName": "/explode-false",
+      "value": "integer"
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.query.incompatible",
+    "message": "Value is incompatible with the parameter defined in the spec file: must be integer",
+    "mockDetails": {
+      "interactionDescription": "a request using form style with non-exploded query parameters",
+      "interactionState": "[none]",
+      "location": "[root].interactions[5].request.query.id.2",
+      "value": "abc"
+    },
+    "source": "spec-mock-validation",
+    "specDetails": {
+      "location": "[root].paths./explode-false.get.id.schema.items.type",
+      "pathMethod": "get",
+      "pathName": "/explode-false",
+      "value": "integer"
+    },
+    "type": "error"
+  }
+]

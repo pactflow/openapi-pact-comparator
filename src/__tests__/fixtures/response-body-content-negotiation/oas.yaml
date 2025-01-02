@@ -1,0 +1,40 @@
+openapi: 3.1.0
+info:
+  title: Content Negotiation Example
+  version: 1.0.0
+paths:
+  /animal:
+    get:
+      responses:
+        "200":
+          content:
+            application/json;version=1.0.0:
+              schema:
+                $ref: "#/components/schemas/Animal"
+            application/json;version=2.0.0:
+              schema:
+                $ref: "#/components/schemas/AnimalV2"
+components:
+  schemas:
+    AnimalV2:
+      type: object
+      required:
+        - name
+        - species
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+        species:
+          type: string
+    Animal:
+      type: object
+      required:
+        - name
+        - genus
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+        genus:
+          type: string

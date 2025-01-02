@@ -1,21 +1,22 @@
+import type { SchemaObject } from "ajv";
 import type Ajv from "ajv/dist/2019";
-import querystring from "node:querystring";
 import type Router from "find-my-way";
 import type { OpenAPIV3 } from "openapi-types";
 import type { Interaction } from "../documents/pact";
 import type { Result } from "../results";
 import { get } from "lodash-es";
+import qs from "qs";
 import {
   baseMockDetails,
   formatErrorMessage,
   formatInstancePath,
   formatSchemaPath,
-} from "../formatters";
+} from "../results";
 import { transformRequestSchema } from "../transform";
 
 const parseBody = (body: unknown, contentType: string) => {
   if (contentType.startsWith("application/x-www-form-urlencoded")) {
-    return querystring.parse(body as string);
+    return qs.parse(body as string);
   }
 
   return body;
@@ -27,7 +28,7 @@ export function* compareReqBody(
   interaction: Interaction,
   index: number,
 ): Iterable<Partial<Result>> {
-  const { operation, path } = route.store;
+  const { components, operation, path } = route.store;
 
   const { body } = interaction.request;
   if (body) {
@@ -35,8 +36,9 @@ export function* compareReqBody(
     const contentType: string = headers.get("content-type")?.split(";")[0];
     const request = operation.requestBody as OpenAPIV3.RequestBodyObject;
     if (request.content) {
-      const schema = request.content[contentType]?.schema;
+      const schema: SchemaObject = request.content[contentType]?.schema;
       if (schema) {
+        schema.components = components;
         const schemaId = `request-${path}-${contentType}`;
         let validate = ajv.getSchema(schemaId);
         if (!validate) {

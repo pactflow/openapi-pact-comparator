@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
+    "lib": ["ES2021.String"],
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "target": "esnext"

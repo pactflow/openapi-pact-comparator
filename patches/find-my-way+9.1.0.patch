@@ -1,0 +1,22 @@
+diff --git a/node_modules/find-my-way/index.d.ts b/node_modules/find-my-way/index.d.ts
+index fc14c73..b59a08f 100644
+--- a/node_modules/find-my-way/index.d.ts
++++ b/node_modules/find-my-way/index.d.ts
+@@ -71,6 +71,8 @@ declare namespace Router {
+     deriveConstraint<Context>(req: Req<V>, ctx?: Context) : T,
+   }
+ 
++  type QuerystringParser = (s: string) => unknown;
++
+   interface Config<V extends HTTPVersion> {
+     ignoreTrailingSlash?: boolean;
+ 
+@@ -82,6 +84,8 @@ declare namespace Router {
+ 
+     maxParamLength?: number;
+ 
++    querystringParser?: QuerystringParser;
++
+     defaultRoute?(
+       req: Req<V>,
+       res: Res<V>

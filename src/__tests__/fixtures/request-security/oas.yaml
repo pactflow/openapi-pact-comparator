@@ -1,0 +1,162 @@
+openapi: 3.1.0
+info:
+  title: security
+  version: 1.0.0
+paths:
+  /basic:
+    get:
+      responses:
+        "200":
+          description: successful operation
+        "401":
+          description: unauthenticated
+        "403":
+          description: unauthorized
+      security:
+        - BasicAuth: [Admin]
+  /bearer:
+    get:
+      responses:
+        "200":
+          description: successful operation
+        "401":
+          description: unauthenticated
+        "403":
+          description: unauthorized
+      security:
+        - BearerAuth: [Admin]
+  /apikey:
+    get:
+      summary: ApiKey authenticated endpoint
+      description: Endpoint secured by ApiKey auth
+      operationId: getApiKeyAuth
+      responses:
+        "200":
+          description: successful operation
+        "401":
+          description: unauthenticated
+        "403":
+          description: unauthorized
+      security:
+        - ApiKeyAuth: [Admin]
+  /cookie:
+    get:
+      summary: ApiKeyCookie authenticated endpoint
+      description: Endpoint secured by an ApiKey in a secure cookie
+      operationId: getApiKeyAuthCookie
+      responses:
+        "200":
+          description: successful operation
+        "401":
+          description: unauthenticated
+        "403":
+          description: unauthorized
+      security:
+        - ApiKeyCookieAuth: [Admin]
+  /mutualtls:
+    get:
+      summary: MutualTLS authenticated endpoint
+      description: Endpoint secured by MutualTLS auth
+      operationId: getMutualTLSAuth
+      responses:
+        "200":
+          description: successful operation
+        "401":
+          description: unauthenticated
+        "403":
+          description: unauthorized
+      security:
+        - MutualTLS: [Admin]
+  /oidc:
+    get:
+      summary: OIDC authenticated endpoint
+      description: Endpoint secured by OIDC auth
+      operationId: getOIDCAuth
+      responses:
+        "200":
+          description: successful operation
+        "401":
+          description: unauthenticated
+        "403":
+          description: unauthorized
+      security:
+        - OpenID: [Admin]
+  /oauth2:
+    get:
+      summary: OAuth2 authenticated endpoint
+      description: Endpoint secured by OAuth2 auth
+      operationId: getOAuth2Auth
+      responses:
+        "200":
+          description: successful operation
+        "401":
+          description: unauthenticated
+        "403":
+          description: unauthorized
+      security:
+        - OAuth2: [Admin]
+  /multiple-and:
+    get:
+      summary: Multiple authenticated endpoint
+      description: Endpoint secured by Multiple auth mechanisms that must all be satisfied
+      operationId: getMultipleAuth
+      responses:
+        "200":
+          description: successful operation
+        "401":
+          description: unauthenticated
+        "403":
+          description: unauthorized
+      security:
+        - OAuth2: [Admin]
+          OpenID: [Admin]
+          ApiKey: [Admin]
+          BearerAuth: [Admin]
+  /multiple-or:
+    get:
+      summary: OAuth2 authenticated endpoint
+      description: Endpoint secured by OAuth2 auth
+      operationId: getOAuth2Auth
+      responses:
+        "200":
+          description: successful operation
+        "401":
+          description: unauthenticated
+        "403":
+          description: unauthorized
+      security:
+        - OAuth2: [Admin]
+        - OpenID: [Admin]
+        - ApiKey: [Admin]
+        - BearerAuth: [Admin]
+components:
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+    BearerAuth:
+      type: http
+      scheme: bearer
+    ApiKeyCookieAuth:
+      type: apiKey
+      in: cookie
+      name: ASECURESESSIONID
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+    MutualTLS:
+      type: mutualTLS
+    OpenID:
+      type: openIdConnect
+      openIdConnectUrl: https://example.com/.well-known/openid-configuration
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://example.com/oauth/authorize
+          tokenUrl: https://example.com/oauth/token
+          scopes:
+            read: Grants read access
+            write: Grants write access
+            admin: Grants access to admin operations

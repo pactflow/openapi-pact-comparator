@@ -1,3 +1,4 @@
+import type { SchemaObject } from "ajv";
 import type Ajv from "ajv/dist/2019";
 import type Router from "find-my-way";
 import type { OpenAPIV3 } from "openapi-types";
@@ -9,7 +10,7 @@ import {
   formatErrorMessage,
   formatInstancePath,
   formatSchemaPath,
-} from "../formatters";
+} from "../results";
 import { transformResponseSchema } from "../transform";
 
 const DEFAULT_CONTENT_TYPE = "application/json";
@@ -20,7 +21,7 @@ export function* compareResBody(
   interaction: Interaction,
   index: number,
 ): Iterable<Partial<Result>> {
-  const { method, operation, path } = route.store;
+  const { components, method, operation, path } = route.store;
 
   const { body, status } = interaction.response;
   const headers = new Headers(interaction.request.headers);
@@ -48,9 +49,10 @@ export function* compareResBody(
 
   if (response && response.content) {
     contentType ||= DEFAULT_CONTENT_TYPE;
-    const schema = response.content[contentType]?.schema;
+    const schema: SchemaObject = response.content[contentType]?.schema;
     if (schema && body) {
-      const schemaId = `response-${path}-${status}-${contentType}`;
+      schema.components = components;
+      const schemaId = `response-${method}-${path}-${status}-${contentType}`;
       let validate = ajv.getSchema(schemaId);
       if (!validate) {
         ajv.addSchema(transformResponseSchema(schema), schemaId);

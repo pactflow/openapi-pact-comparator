@@ -1,0 +1,21 @@
+{
+  "interactions": [
+    {
+      "description": "success: never validates binary content",
+      "request": {
+        "headers": {
+          "Accept": "image/png"
+        },
+        "method": "GET",
+        "path": "/binary"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "image/png"
+        },
+        "body": "some base64 encoded body (this is the format pact uses, which various across spec versions)"
+      }
+    }
+  ]
+}

@@ -7,7 +7,7 @@ export function* compareReqPath(
   ajv: Ajv,
   route: Router.FindResult<Router.HTTPVersion.V1>,
 ): Iterable<Result> {
-  const { operation, path } = route.store;
+  const { components, operation, path } = route.store;
 
   for (const parameter of (
     operation.parameters as OpenAPIV3.ParameterObject[]

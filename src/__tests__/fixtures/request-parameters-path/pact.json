@@ -1,0 +1,64 @@
+{
+  "interactions": [
+    {
+      "description": "FIXME: this should fail",
+      "request": {
+        "method": "GET",
+        "path": "/integer/abc"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "success: integer path parameter",
+      "request": {
+        "method": "GET",
+        "path": "/integer/1"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "FIXME: this should fail",
+      "request": {
+        "method": "GET",
+        "path": "/boolean/abc"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "success: boolean path parameter",
+      "request": {
+        "method": "GET",
+        "path": "/boolean/true"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "a request using simple style with exploded path parameters",
+      "request": {
+        "method": "GET",
+        "path": "/explode-true/1,2,3"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "a request using simple style with non-exploded path parameters",
+      "request": {
+        "method": "GET",
+        "path": "/explode-false/1,2,3"
+      },
+      "response": {
+        "status": 200
+      }
+    }
+  ]
+}

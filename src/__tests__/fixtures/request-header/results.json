@@ -1,0 +1,29 @@
+[
+  {
+    "code": "request.header.unknown",
+    "message": "Request header is not defined in the spec file: x-unknown-header",
+    "mockDetails": {
+      "interactionDescription": "description",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].request.headers.x-unknown-header",
+      "value": "unknown-value"
+    },
+    "specDetails": {
+      "location": "[root].paths./path.get",
+      "pathMethod": "get",
+      "pathName": "/path",
+      "value": {
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {}
+            }
+          }
+        },
+        "parameters": []
+      }
+    },
+    "type": "warning"
+  }
+]

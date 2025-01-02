@@ -1,0 +1,38 @@
+openapi: 3.0.0
+info:
+  title: OAS
+  version: 1.0.0
+
+paths:
+  /login:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/request"
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/request"
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/request"
+      responses:
+        "201":
+          description: Success
+          content:
+            application/json: {}
+
+components:
+  schemas:
+    request:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      required:
+        - email
+        - password

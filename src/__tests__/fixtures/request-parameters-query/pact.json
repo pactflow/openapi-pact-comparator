@@ -1,0 +1,81 @@
+{
+  "interactions": [
+    {
+      "description": "query in object form",
+      "request": {
+        "method": "GET",
+        "path": "/object",
+        "query": {
+          "person[id]": "1",
+          "person[name]": "fred",
+          "person[address][street]": "123 Fake St",
+          "person[address][city]": "Melbourne",
+          "person[address][state]": "VIC",
+          "person[address][postcode]": "3000"
+        }
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "query in string form",
+      "request": {
+        "method": "GET",
+        "path": "/object",
+        "query": "person[id]=1&person[name]=fred&person[address][street]some%20street&person[address][city]=Melbourne&person[address][state]=VIC&person[address][postcode]=3000"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "a request using form style with exploded query parameters",
+      "request": {
+        "method": "GET",
+        "path": "/explode-true",
+        "query": {
+          "id": ["1", "2", "abc"]
+        }
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "a request using form style with exploded query parameters",
+      "request": {
+        "method": "GET",
+        "path": "/explode-true",
+        "query": "id=1&id=2&id=abc"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "a request using form style with non-exploded query parameters",
+      "request": {
+        "method": "GET",
+        "path": "/explode-false",
+        "query": {
+          "id": ["1", "2", "abc"]
+        }
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "a request using form style with non-exploded query parameters",
+      "request": {
+        "method": "GET",
+        "path": "/explode-false",
+        "query": "id=1,2,abc"
+      },
+      "response": {
+        "status": 200
+      }
+    }
+  ]
+}

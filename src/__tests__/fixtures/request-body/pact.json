@@ -1,0 +1,88 @@
+{
+  "interactions": [
+    {
+      "description": "error: missing password",
+      "providerState": "",
+      "request": {
+        "method": "POST",
+        "path": "/login",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "email": "a@a.com"
+        }
+      },
+      "response": {
+        "status": 201,
+        "body": {}
+      }
+    },
+    {
+      "description": "success",
+      "providerState": "",
+      "request": {
+        "method": "POST",
+        "path": "/login",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "email": "a@a.com",
+          "password": "password"
+        }
+      },
+      "response": {
+        "status": 201,
+        "body": {}
+      }
+    },
+    {
+      "description": "error: missing password",
+      "providerState": "",
+      "request": {
+        "method": "POST",
+        "path": "/login",
+        "headers": {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        "body": "email=a@a.com"
+      },
+      "response": {
+        "status": 201,
+        "body": {}
+      }
+    },
+    {
+      "description": "success",
+      "providerState": "",
+      "request": {
+        "method": "POST",
+        "path": "/login",
+        "headers": {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        "body": "email=a@a.com&password=password"
+      },
+      "response": {
+        "status": 201,
+        "body": {}
+      }
+    },
+    {
+      "description": "unsupported, always return as success",
+      "request": {
+        "method": "POST",
+        "path": "/login",
+        "headers": {
+          "Content-Type": "multipart/form-data"
+        },
+        "body": ""
+      },
+      "response": {
+        "status": 201,
+        "body": {}
+      }
+    }
+  ]
+}

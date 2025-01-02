@@ -1,0 +1,37 @@
+{
+  "interactions": [
+    {
+      "description": "error: unspecified status code",
+      "providerState": "when redirect exists",
+      "request": {
+        "method": "GET",
+        "path": "/animal"
+      },
+      "response": {
+        "status": 302
+      }
+    },
+    {
+      "description": "success: 200",
+      "providerState": "when animal exists",
+      "request": {
+        "method": "GET",
+        "path": "/animal"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "a request to get a Dog",
+      "providerState": "there is no dog with an id of 1",
+      "request": {
+        "method": "GET",
+        "path": "/animal"
+      },
+      "response": {
+        "status": 404
+      }
+    }
+  ]
+}

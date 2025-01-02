@@ -1,0 +1,80 @@
+openapi: 3.1.0
+info:
+  title: query parameters
+  version: 1.0.0
+paths:
+  /object:
+    get:
+      parameters:
+        - in: query
+          name: person
+          required: true
+          schema:
+            $ref: "#/components/schemas/Person"
+          style: deepObject
+          explode: true
+      responses:
+        "200": {}
+  /explode-true:
+    get:
+      parameters:
+        - in: query
+          name: id
+          required: true
+          schema:
+            type: array
+            items:
+              type: integer
+            minItems: 1
+          style: form
+          explode: true
+      responses:
+        "200": {}
+  /explode-false:
+    get:
+      parameters:
+        - in: query
+          name: id
+          required: true
+          schema:
+            type: array
+            items:
+              type: integer
+            minItems: 1
+          style: form
+          explode: false
+          allowReserved: false
+      responses:
+        "200": {}
+components:
+  schemas:
+    Person:
+      type: object
+      required:
+        - id
+        - name
+      additionalProperties: false
+      properties:
+        id:
+          type: number
+        name:
+          type: string
+        address:
+          $ref: "#/components/schemas/Address"
+    Address:
+      type: object
+      required:
+        - street
+        - city
+        - state
+        - postcode
+      additionalProperties: false
+      properties:
+        street:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        postcode:
+          type: integer

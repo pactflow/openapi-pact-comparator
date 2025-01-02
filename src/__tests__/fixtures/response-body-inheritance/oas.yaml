@@ -1,0 +1,53 @@
+openapi: 3.1.0
+info:
+  title: using allOf/oneOf for inheritance
+  version: 1.0.0
+paths:
+  /animal:
+    get:
+      responses:
+        "200":
+          content:
+            "application/json":
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Cat"
+                  - $ref: "#/components/schemas/Dog"
+                discriminator:
+                  propertyName: petType
+                required:
+                  - petType
+components:
+  schemas:
+    Pet:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+    Dog:
+      properties:
+        petType:
+          const: Dog
+      allOf:
+        - $ref: "#/components/schemas/Pet"
+        - type: object
+          properties:
+            bark:
+              type: boolean
+            breed:
+              type: string
+              enum: [Dingo, Husky, Retriever, Shepherd]
+    Cat:
+      properties:
+        petType:
+          const: Cat
+      allOf:
+        - $ref: "#/components/schemas/Pet"
+        - type: object
+          properties:
+            hunts:
+              type: boolean
+            age:
+              type: integer

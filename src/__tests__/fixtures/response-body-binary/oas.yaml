@@ -1,0 +1,14 @@
+openapi: 3.1.0
+info:
+  title: binary payloads
+  version: 1.0.0
+paths:
+  "/binary":
+    get:
+      responses:
+        "200":
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary

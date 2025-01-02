@@ -1,0 +1,54 @@
+{
+  "interactions": [
+    {
+      "description": "FIXME: this should fail",
+      "request": {
+        "method": "GET",
+        "path": "/animal",
+        "headers": {
+          "accept": "application/json"
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": {
+          "fixme": "should error about unsupported accept type"
+        }
+      }
+    },
+    {
+      "description": "success: GET v1",
+      "request": {
+        "method": "GET",
+        "path": "/animal",
+        "headers": {
+          "accept": "application/json;version=1.0.0"
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": {
+          "name": "Rover",
+          "genus": "Canis"
+        }
+      }
+    },
+    {
+      "description": "success: GET v2",
+      "request": {
+        "method": "GET",
+        "path": "/animal",
+        "headers": {
+          "accept": "application/json;version=2.0.0"
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": {
+          "name": "Rover",
+          "species": "C. familiaris"
+        }
+      }
+    }
+  ]
+}

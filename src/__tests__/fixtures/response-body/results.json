@@ -1,0 +1,18 @@
+[
+  {
+    "code": "response.body.incompatible",
+    "message": "Response body is incompatible with the response body schema in the spec file: must be object",
+    "mockDetails": {
+      "interactionDescription": "error: detail is null",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].response.body.detail",
+      "value": null
+    },
+    "specDetails": {
+      "location": "[root].paths./animal.get.responses.200.content.application/json.schema.type",
+      "pathMethod": "get",
+      "pathName": "/animal"
+    },
+    "type": "error"
+  }
+]

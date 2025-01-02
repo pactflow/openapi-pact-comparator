@@ -1,0 +1,238 @@
+{
+  "interactions": [
+    {
+      "description": "a request to a basic auth endpoint",
+      "request": {
+        "method": "GET",
+        "path": "/basic",
+        "headers": {
+          "Authorization": "Basic dXNlcjpwYXNzd29yZAo="
+        }
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "a request to a basic auth endpoint with no credentials",
+      "request": {
+        "method": "GET",
+        "path": "/basic"
+      },
+      "response": {
+        "status": 401
+      }
+    },
+    {
+      "description": "a request to a basic auth endpoint with credentials lacking required scope",
+      "request": {
+        "method": "GET",
+        "path": "/basic",
+        "headers": {
+          "Authorization": "Basic YmFkOnBhc3N3b3JkCg=="
+        }
+      },
+      "response": {
+        "status": 403
+      }
+    },
+    {
+      "description": "a request to a bearer auth endpoint",
+      "request": {
+        "method": "GET",
+        "path": "/bearer",
+        "headers": {
+          "Authorization": "Bearer dXNlcjpwYXNzd29yZAo="
+        }
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "a request to a bearer auth endpoint with no credentials",
+      "request": {
+        "method": "GET",
+        "path": "/bearer"
+      },
+      "response": {
+        "status": 401
+      }
+    },
+    {
+      "description": "a request to a bearer auth endpoint with credentials lacking required scope",
+      "request": {
+        "method": "GET",
+        "path": "/bearer",
+        "headers": {
+          "Authorization": "Bearer YmFkOnBhc3N3b3JkCg=="
+        }
+      },
+      "response": {
+        "status": 403
+      }
+    },
+    {
+      "description": "FIXME: should not error - a request to a apikey auth endpoint",
+      "request": {
+        "method": "GET",
+        "path": "/apikey",
+        "headers": {
+          "X-API-Key": "dXNlcjpwYXNzd29yZAo="
+        }
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "a request to a apikey auth endpoint with no credentials",
+      "request": {
+        "method": "GET",
+        "path": "/apikey"
+      },
+      "response": {
+        "status": 401
+      }
+    },
+    {
+      "description": "FIXME: should not error - a request to a apikey auth endpoint with credentials lacking required scope",
+      "request": {
+        "method": "GET",
+        "path": "/apikey",
+        "headers": {
+          "X-API-Key": "YmFkOnBhc3N3b3JkCg=="
+        }
+      },
+      "response": {
+        "status": 403
+      }
+    },
+    {
+      "description": "a request to a cookie-based apikey auth endpoint",
+      "request": {
+        "method": "GET",
+        "path": "/cookie",
+        "headers": {
+          "Cookie": "ASECURESESSIONID: dXNlcjpwYXNzd29yZAo="
+        }
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "a request to a cookie-based apikey auth endpoint with no credentials",
+      "request": {
+        "method": "GET",
+        "path": "/cookie"
+      },
+      "response": {
+        "status": 401
+      }
+    },
+    {
+      "description": "a request to a cookie-based apikey auth endpoint with credentials lacking required scope",
+      "request": {
+        "method": "GET",
+        "path": "/cookie",
+        "headers": {
+          "Cookie": "ASECURESESSIONID: YmFkOnBhc3N3b3JkCg=="
+        }
+      },
+      "response": {
+        "status": 403
+      }
+    },
+    {
+      "description": "a request to a mutualtls auth endpoint",
+      "request": {
+        "method": "GET",
+        "path": "/mutualtls"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "a request to a mutualtls auth endpoint with no credentials",
+      "request": {
+        "method": "GET",
+        "path": "/mutualtls"
+      },
+      "response": {
+        "status": 401
+      }
+    },
+    {
+      "description": "a request to a mutualtls auth endpoint with credentials lacking required scope",
+      "request": {
+        "method": "GET",
+        "path": "/mutualtls"
+      },
+      "response": {
+        "status": 403
+      }
+    },
+    {
+      "description": "a request to a oidc auth endpoint",
+      "request": {
+        "method": "GET",
+        "path": "/oidc"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "a request to a oidc auth endpoint with no credentials",
+      "request": {
+        "method": "GET",
+        "path": "/oidc"
+      },
+      "response": {
+        "status": 401
+      }
+    },
+    {
+      "description": "a request to a oidc auth endpoint with credentials lacking required scope",
+      "request": {
+        "method": "GET",
+        "path": "/oidc"
+      },
+      "response": {
+        "status": 403
+      }
+    },
+    {
+      "description": "a request to a oauth2 auth endpoint",
+      "request": {
+        "method": "GET",
+        "path": "/oauth2"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "a request to a oauth2 auth endpoint with no credentials",
+      "request": {
+        "method": "GET",
+        "path": "/oauth2"
+      },
+      "response": {
+        "status": 401
+      }
+    },
+    {
+      "description": "a request to a oauth2 auth endpoint with credentials lacking required scope",
+      "request": {
+        "method": "GET",
+        "path": "/oauth2"
+      },
+      "response": {
+        "status": 403
+      }
+    }
+  ]
+}

@@ -17,7 +17,7 @@ export function* compareReqHeader(
   const availableRequestContentType = Object.keys(
     operation.requestBody?.content || {},
   );
-  const availableResponseContentType = Object.values(operation.responses)
+  const availableResponseContentType = Object.values(operation.responses || {})
     .map((r: OpenAPIV3.ResponseObject) => r.content || {})
     .map((c) => Object.keys(c))
     .flat();

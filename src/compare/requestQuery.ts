@@ -26,7 +26,7 @@ export function* compareReqQuery(
     operation.parameters as OpenAPIV3.ParameterObject[]
   ).filter((p) => p.in === "query")) {
     const schema: SchemaObject = parameter.schema;
-    if (schema) {
+    if (searchParams[parameter.name] && schema) {
       schema.components = components;
       const schemaId = `request-query-${method}-${path}-${parameter.name}`;
       let validate = ajv.getSchema(schemaId);

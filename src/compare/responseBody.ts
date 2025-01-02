@@ -27,7 +27,7 @@ export function* compareResBody(
   const headers = new Headers(interaction.request.headers);
   let contentType: string = headers.get("accept")?.split(";")[0];
 
-  const response = operation.responses[status] as OpenAPIV3.ResponseObject;
+  const response = operation.responses?.[status] as OpenAPIV3.ResponseObject;
   if (!response) {
     yield {
       code: "response.status.unknown",

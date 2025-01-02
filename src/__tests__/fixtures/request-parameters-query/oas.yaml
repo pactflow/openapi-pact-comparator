@@ -46,6 +46,17 @@ paths:
           allowReserved: false
       responses:
         "200": {}
+  /unknown-params:
+    get:
+      parameters:
+        - in: query
+          name: name
+          required: true
+          schema:
+            type: string
+      responses:
+        "200": {}
+
 components:
   schemas:
     Person:

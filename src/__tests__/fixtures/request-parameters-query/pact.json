@@ -76,6 +76,17 @@
       "response": {
         "status": 200
       }
+    },
+    {
+      "description": "unknown query parameters",
+      "request": {
+        "method": "GET",
+        "path": "/unknown-params",
+        "query": "param=unknown"
+      },
+      "response": {
+        "status": 200
+      }
     }
   ]
 }

@@ -23,7 +23,7 @@ type WarningCode =
   | "request.content-type.missing"
   | "request.content-type.unknown"
   | "request.header.unknown"
-  | "request.query.unknown" // needs test
+  | "request.query.unknown"
   | "response.content-type.unknown"
   | "response.header.undefined" // TODO
   | "response.status.default"; // TODO

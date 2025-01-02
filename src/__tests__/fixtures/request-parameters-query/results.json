@@ -70,5 +70,36 @@
       "value": "integer"
     },
     "type": "error"
+  },
+  {
+    "code": "request.query.unknown",
+    "message": "Query parameter is not defined in the spec file: param",
+    "mockDetails": {
+      "interactionDescription": "unknown query parameters",
+      "interactionState": "[none]",
+      "location": "[root].interactions[6].request.query.param",
+      "value": "unknown"
+    },
+    "specDetails": {
+      "location": "[root].paths./unknown-params.get",
+      "pathMethod": "get",
+      "pathName": "/unknown-params",
+      "value": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {}
+        }
+      }
+    },
+    "type": "warning"
   }
 ]

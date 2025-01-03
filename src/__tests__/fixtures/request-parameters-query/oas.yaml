@@ -14,7 +14,8 @@ paths:
           style: deepObject
           explode: true
       responses:
-        "200": {}
+        "200":
+          description: description
   /explode-true:
     get:
       parameters:
@@ -29,7 +30,8 @@ paths:
           style: form
           explode: true
       responses:
-        "200": {}
+        "200":
+          description: description
   /explode-false:
     get:
       parameters:
@@ -45,7 +47,8 @@ paths:
           explode: false
           allowReserved: false
       responses:
-        "200": {}
+        "200":
+          description: description
   /unknown-params:
     get:
       parameters:
@@ -55,7 +58,8 @@ paths:
           schema:
             type: string
       responses:
-        "200": {}
+        "200":
+          description: description
 
 components:
   schemas:

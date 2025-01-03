@@ -5,6 +5,7 @@ import type { Result } from "../results";
 import type { HTTPMethod } from "find-my-way";
 
 import debug from "debug";
+import SwaggerParser from "@apidevtools/swagger-parser";
 import { setupAjv, setupRouter } from "./setup";
 import { compareReqPath } from "./requestPath";
 import { compareReqQuery } from "./requestQuery";
@@ -22,7 +23,14 @@ export async function* compare(
   oas: OpenAPIV3.Document,
   pact: Pact,
 ): AsyncIterable<Partial<Result>> {
-  // TODO: validate oas and pact
+  // TODO: validate pact too
+  // validation
+  await SwaggerParser.bundle(oas, {
+    dereference: {
+      circular: "ignore",
+    },
+  });
+
   debugSetup("start");
   const ajv = setupAjv();
   debugSetup("end ajv");
@@ -60,7 +68,7 @@ export async function* compare(
       continue;
     }
 
-    yield* compareReqPath(ajv, route);
+    yield* compareReqPath(ajv, route, interaction, index);
     yield* compareReqHeader(ajv, route, interaction, index);
     yield* compareReqQuery(ajv, route, interaction, index);
     yield* compareReqBody(ajv, route, interaction, index);

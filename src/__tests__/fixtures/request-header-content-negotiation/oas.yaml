@@ -7,11 +7,13 @@ paths:
     get:
       responses:
         "200":
+          description: description
           content: {}
   /with-content:
     get:
       responses:
         "200":
+          description: description
           content:
             application/aaa: {}
             application/bbb: {}
@@ -21,7 +23,8 @@ paths:
         content: {}
         required: true
       responses:
-        "201": {}
+        "201":
+          description: description
   /submit-content:
     post:
       requestBody:
@@ -30,4 +33,5 @@ paths:
           application/bbb: {}
         required: true
       responses:
-        "201": {}
+        "201":
+          description: description

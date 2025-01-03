@@ -1,7 +1,7 @@
 {
   "interactions": [
     {
-      "description": "FIXME: this should fail",
+      "description": "invalid path, should be integer",
       "request": {
         "method": "GET",
         "path": "/integer/abc"
@@ -21,7 +21,7 @@
       }
     },
     {
-      "description": "FIXME: this should fail",
+      "description": "invalid path, should be boolean",
       "request": {
         "method": "GET",
         "path": "/boolean/abc"

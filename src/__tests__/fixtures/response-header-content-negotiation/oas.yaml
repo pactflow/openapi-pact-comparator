@@ -6,11 +6,13 @@ paths:
   /no-content:
     get:
       responses:
-        "200": {}
+        "200":
+          description: description
   /with-content:
     get:
       responses:
         "200":
+          description: description
           content:
             application/aaa:
               schema: {}
@@ -26,4 +28,5 @@ paths:
             schema: {}
         required: true
       responses:
-        "201": {}
+        "201":
+          description: description

@@ -20,9 +20,9 @@ paths:
               $ref: "#/components/schemas/request"
       responses:
         "201":
-          description: Success
+          description: description
           content:
-            application/json:
+            "application/json":
               schema: {}
 
 components:

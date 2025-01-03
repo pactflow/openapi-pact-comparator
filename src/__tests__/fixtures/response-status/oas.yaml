@@ -7,10 +7,12 @@ paths:
     get:
       responses:
         "200":
+          description: description
           content:
             "application/json":
               schema: {}
         "404":
+          description: description
           content:
             "application/json":
               schema: {}

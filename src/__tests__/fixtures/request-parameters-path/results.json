@@ -1,1 +1,147 @@
-[]
+[
+  {
+    "code": "request.path-or-method.unknown",
+    "message": "Path or method not defined in spec file: id must be integer",
+    "mockDetails": {
+      "interactionDescription": "invalid path, should be integer",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].request.path",
+      "value": "abc"
+    },
+    "specDetails": {
+      "location": "[root].paths./integer/{id}.get.parameters[0].schema.type",
+      "pathMethod": "get",
+      "pathName": "/integer/{id}",
+      "value": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "description"
+          }
+        }
+      }
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.path-or-method.unknown",
+    "message": "Path or method not defined in spec file: id must be boolean",
+    "mockDetails": {
+      "interactionDescription": "invalid path, should be boolean",
+      "interactionState": "[none]",
+      "location": "[root].interactions[2].request.path",
+      "value": "abc"
+    },
+    "specDetails": {
+      "location": "[root].paths./boolean/{id}.get.parameters[0].schema.type",
+      "pathMethod": "get",
+      "pathName": "/boolean/{id}",
+      "value": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "description"
+          }
+        }
+      }
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.path-or-method.unknown",
+    "message": "Path or method not defined in spec file: id must be array",
+    "mockDetails": {
+      "interactionDescription": "a request using simple style with exploded path parameters",
+      "interactionState": "[none]",
+      "location": "[root].interactions[4].request.path",
+      "value": "1,2,3"
+    },
+    "specDetails": {
+      "location": "[root].paths./explode-true/{id}.get.parameters[0].schema.type",
+      "pathMethod": "get",
+      "pathName": "/explode-true/{id}",
+      "value": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              },
+              "minItems": 1
+            },
+            "style": "simple",
+            "explode": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "description"
+          }
+        }
+      }
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.path-or-method.unknown",
+    "message": "Path or method not defined in spec file: id must be array",
+    "mockDetails": {
+      "interactionDescription": "a request using simple style with non-exploded path parameters",
+      "interactionState": "[none]",
+      "location": "[root].interactions[5].request.path",
+      "value": "1,2,3"
+    },
+    "specDetails": {
+      "location": "[root].paths./explode-false/{id}.get.parameters[0].schema.type",
+      "pathMethod": "get",
+      "pathName": "/explode-false/{id}",
+      "value": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              },
+              "minItems": 1
+            },
+            "style": "simple",
+            "explode": false,
+            "allowReserved": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "description"
+          }
+        }
+      }
+    },
+    "type": "error"
+  }
+]

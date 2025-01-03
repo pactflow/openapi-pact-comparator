@@ -15,7 +15,8 @@ paths:
               $ref: "#/components/schemas/AnimalV2"
         required: true
       responses:
-        "201": {}
+        "201":
+          description: description
 components:
   schemas:
     AnimalV1:

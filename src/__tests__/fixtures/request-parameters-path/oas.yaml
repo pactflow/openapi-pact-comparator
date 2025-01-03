@@ -12,7 +12,8 @@ paths:
           schema:
             type: integer
       responses:
-        "200": {}
+        "200":
+          description: description
   /boolean/{id}:
     get:
       parameters:
@@ -22,7 +23,8 @@ paths:
           schema:
             type: boolean
       responses:
-        "200": {}
+        "200":
+          description: description
   /explode-true/{id}:
     get:
       parameters:
@@ -37,7 +39,8 @@ paths:
           style: simple
           explode: true
       responses:
-        "200": {}
+        "200":
+          description: description
   /explode-false/{id}:
     get:
       parameters:
@@ -53,4 +56,5 @@ paths:
           explode: false
           allowReserved: false
       responses:
-        "200": {}
+        "200":
+          description: description

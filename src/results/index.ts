@@ -7,7 +7,7 @@ type ErrorCode =
   | "request.body.incompatible"
   | "request.content-type.incompatible"
   | "request.header.incompatible"
-  | "request.path-or-method.unknown" // TODO
+  | "request.path-or-method.unknown"
   | "request.query.incompatible"
   | "response.body.incompatible"
   | "response.body.unknown"

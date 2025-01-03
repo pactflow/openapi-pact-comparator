@@ -64,7 +64,8 @@ export function* compareReqBody(
         type: "error",
       };
     } else {
-      const schema: SchemaObject = operation.requestBody.content[contentType]?.schema;
+      const schema: SchemaObject =
+        operation.requestBody.content[contentType]?.schema;
       const value = parseBody(body, contentType);
 
       if (schema && value) {

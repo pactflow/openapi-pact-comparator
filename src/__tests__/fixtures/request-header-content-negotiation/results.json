@@ -15,6 +15,7 @@
       "value": {
         "responses": {
           "200": {
+            "description": "description",
             "content": {}
           }
         },
@@ -39,6 +40,7 @@
       "value": {
         "responses": {
           "200": {
+            "description": "description",
             "content": {
               "application/aaa": {},
               "application/bbb": {}
@@ -69,7 +71,9 @@
           "required": true
         },
         "responses": {
-          "201": {}
+          "201": {
+            "description": "description"
+          }
         },
         "parameters": []
       }
@@ -98,7 +102,9 @@
           "required": true
         },
         "responses": {
-          "201": {}
+          "201": {
+            "description": "description"
+          }
         },
         "parameters": []
       }
@@ -127,7 +133,9 @@
           "required": true
         },
         "responses": {
-          "201": {}
+          "201": {
+            "description": "description"
+          }
         },
         "parameters": []
       }

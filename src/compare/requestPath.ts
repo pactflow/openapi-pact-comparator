@@ -19,7 +19,9 @@ export function* compareReqPath(
 ): Iterable<Partial<Result>> {
   const { components, method, operation, path } = route.store;
 
-  for (const [parameterIndex, parameter] of operation.parameters.entries()) {
+  for (const [parameterIndex, parameter] of (
+    operation.parameters || []
+  ).entries()) {
     if (parameter.in !== "path") {
       continue;
     }
@@ -36,22 +38,23 @@ export function* compareReqPath(
       }
       if (!validate(value)) {
         for (const error of validate.errors) {
+          // FIXME: find-my-way is handling path params
           const message = formatErrorMessage(error);
           const instancePath = formatInstancePath(error.instancePath);
           const schemaPath = formatSchemaPath(error.schemaPath);
 
           yield {
             code: "request.path-or-method.unknown",
-            message: `Path or method not defined in spec file: ${parameter.name} ${message}`,
+            message: `Path or method not defined in spec file: ${method.toUpperCase()} ${interaction.request.path}`,
             mockDetails: {
               ...baseMockDetails(interaction),
               location: `[root].interactions[${index}].request.path`,
-              value: instancePath ? get(value, instancePath) : value,
+              value: interaction.request.path,
             },
             specDetails: {
-              location: `${schemaId}.schema.${schemaPath}`,
-              pathMethod: method,
-              pathName: path,
+              location: `[root].paths`,
+              pathMethod: null,
+              pathName: null,
               value: operation,
             },
             type: "error",

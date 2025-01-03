@@ -1,17 +1,17 @@
 [
   {
     "code": "request.path-or-method.unknown",
-    "message": "Path or method not defined in spec file: id must be integer",
+    "message": "Path or method not defined in spec file: GET /integer/abc",
     "mockDetails": {
       "interactionDescription": "invalid path, should be integer",
       "interactionState": "[none]",
       "location": "[root].interactions[0].request.path",
-      "value": "abc"
+      "value": "/integer/abc"
     },
     "specDetails": {
-      "location": "[root].paths./integer/{id}.get.parameters[0].schema.type",
-      "pathMethod": "get",
-      "pathName": "/integer/{id}",
+      "location": "[root].paths",
+      "pathMethod": null,
+      "pathName": null,
       "value": {
         "parameters": [
           {
@@ -34,17 +34,17 @@
   },
   {
     "code": "request.path-or-method.unknown",
-    "message": "Path or method not defined in spec file: id must be boolean",
+    "message": "Path or method not defined in spec file: GET /boolean/abc",
     "mockDetails": {
       "interactionDescription": "invalid path, should be boolean",
       "interactionState": "[none]",
       "location": "[root].interactions[2].request.path",
-      "value": "abc"
+      "value": "/boolean/abc"
     },
     "specDetails": {
-      "location": "[root].paths./boolean/{id}.get.parameters[0].schema.type",
-      "pathMethod": "get",
-      "pathName": "/boolean/{id}",
+      "location": "[root].paths",
+      "pathMethod": null,
+      "pathName": null,
       "value": {
         "parameters": [
           {
@@ -67,17 +67,17 @@
   },
   {
     "code": "request.path-or-method.unknown",
-    "message": "Path or method not defined in spec file: id must be array",
+    "message": "Path or method not defined in spec file: GET /explode-true/1,2,3",
     "mockDetails": {
       "interactionDescription": "a request using simple style with exploded path parameters",
       "interactionState": "[none]",
       "location": "[root].interactions[4].request.path",
-      "value": "1,2,3"
+      "value": "/explode-true/1,2,3"
     },
     "specDetails": {
-      "location": "[root].paths./explode-true/{id}.get.parameters[0].schema.type",
-      "pathMethod": "get",
-      "pathName": "/explode-true/{id}",
+      "location": "[root].paths",
+      "pathMethod": null,
+      "pathName": null,
       "value": {
         "parameters": [
           {
@@ -106,17 +106,17 @@
   },
   {
     "code": "request.path-or-method.unknown",
-    "message": "Path or method not defined in spec file: id must be array",
+    "message": "Path or method not defined in spec file: GET /explode-false/1,2,3",
     "mockDetails": {
       "interactionDescription": "a request using simple style with non-exploded path parameters",
       "interactionState": "[none]",
       "location": "[root].interactions[5].request.path",
-      "value": "1,2,3"
+      "value": "/explode-false/1,2,3"
     },
     "specDetails": {
-      "location": "[root].paths./explode-false/{id}.get.parameters[0].schema.type",
-      "pathMethod": "get",
-      "pathName": "/explode-false/{id}",
+      "location": "[root].paths",
+      "pathMethod": null,
+      "pathName": null,
       "value": {
         "parameters": [
           {

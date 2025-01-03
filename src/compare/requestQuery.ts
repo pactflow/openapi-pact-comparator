@@ -21,7 +21,9 @@ export function* compareReqQuery(
 
   const searchParams = Object.assign({}, route.searchParams);
 
-  for (const [parameterIndex, parameter] of operation.parameters.entries()) {
+  for (const [parameterIndex, parameter] of (
+    operation.parameters || []
+  ).entries()) {
     if (parameter.in !== "query") {
       continue;
     }
@@ -72,7 +74,7 @@ export function* compareReqQuery(
       mockDetails: {
         ...baseMockDetails(interaction),
         location: `[root].interactions[${index}].request.query.${key}`,
-        value: String(value),
+        value: value,
       },
       specDetails: {
         location: `[root].paths.${path}.${method}`,

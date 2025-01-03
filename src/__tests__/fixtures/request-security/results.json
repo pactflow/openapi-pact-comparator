@@ -33,8 +33,7 @@
               "Admin"
             ]
           }
-        ],
-        "parameters": []
+        ]
       }
     },
     "type": "warning"
@@ -73,8 +72,7 @@
               "Admin"
             ]
           }
-        ],
-        "parameters": []
+        ]
       }
     },
     "type": "warning"

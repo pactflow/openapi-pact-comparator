@@ -5,7 +5,7 @@
     "mockDetails": {
       "interactionDescription": "unknown response content-type",
       "interactionState": "[none]",
-      "location": "[root].interactions[0].response.headers.Content-Type",
+      "location": "[root].interactions[0].response.headers.content-type",
       "value": "application/xxx"
     },
     "specDetails": {
@@ -17,8 +17,7 @@
           "200": {
             "description": "description"
           }
-        },
-        "parameters": []
+        }
       }
     },
     "type": "warning"
@@ -29,29 +28,17 @@
     "mockDetails": {
       "interactionDescription": "incompatible response content-type",
       "interactionState": "[none]",
-      "location": "[root].interactions[1].response.headers.Content-Type",
+      "location": "[root].interactions[1].response.headers.content-type",
       "value": "application/xxx"
     },
     "specDetails": {
-      "location": "[root].paths./with-content.get",
+      "location": "[root].paths./with-content.get.responses.200.content",
       "pathMethod": "get",
       "pathName": "/with-content",
-      "value": {
-        "responses": {
-          "200": {
-            "description": "description",
-            "content": {
-              "application/aaa": {
-                "schema": {}
-              },
-              "application/bbb": {
-                "schema": {}
-              }
-            }
-          }
-        },
-        "parameters": []
-      }
+      "value": [
+        "application/aaa",
+        "application/bbb"
+      ]
     },
     "type": "error"
   }

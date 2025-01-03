@@ -5,7 +5,7 @@
     "mockDetails": {
       "interactionDescription": "unknown request accept",
       "interactionState": "[none]",
-      "location": "[root].interactions[0].request.headers.Accept",
+      "location": "[root].interactions[0].request.headers.accept",
       "value": "application/xxx"
     },
     "specDetails": {
@@ -18,8 +18,7 @@
             "description": "description",
             "content": {}
           }
-        },
-        "parameters": []
+        }
       }
     },
     "type": "warning"
@@ -30,25 +29,17 @@
     "mockDetails": {
       "interactionDescription": "incompatible request accept",
       "interactionState": "[none]",
-      "location": "[root].interactions[1].request.headers.Accept",
+      "location": "[root].interactions[1].request.headers.accept",
       "value": "application/xxx"
     },
     "specDetails": {
       "location": "[root].paths./with-content.get",
       "pathMethod": "get",
       "pathName": "/with-content",
-      "value": {
-        "responses": {
-          "200": {
-            "description": "description",
-            "content": {
-              "application/aaa": {},
-              "application/bbb": {}
-            }
-          }
-        },
-        "parameters": []
-      }
+      "value": [
+        "application/aaa",
+        "application/bbb"
+      ]
     },
     "type": "error"
   },
@@ -58,7 +49,7 @@
     "mockDetails": {
       "interactionDescription": "foo",
       "interactionState": "[none]",
-      "location": "[root].interactions[3].request.headers.Content-Type",
+      "location": "[root].interactions[3].request.headers.content-type",
       "value": "application/xxx"
     },
     "specDetails": {
@@ -74,8 +65,7 @@
           "201": {
             "description": "description"
           }
-        },
-        "parameters": []
+        }
       }
     },
     "type": "warning"
@@ -86,28 +76,17 @@
     "mockDetails": {
       "interactionDescription": "bar",
       "interactionState": "[none]",
-      "location": "[root].interactions[4].request.headers.Content-Type",
+      "location": "[root].interactions[4].request.headers.content-type",
       "value": "application/xxx"
     },
     "specDetails": {
-      "location": "[root].paths./submit-content.post",
+      "location": "[root].paths./submit-content.post.requestBody.content",
       "pathMethod": "post",
       "pathName": "/submit-content",
-      "value": {
-        "requestBody": {
-          "content": {
-            "application/aaa": {},
-            "application/bbb": {}
-          },
-          "required": true
-        },
-        "responses": {
-          "201": {
-            "description": "description"
-          }
-        },
-        "parameters": []
-      }
+      "value": [
+        "application/aaa",
+        "application/bbb"
+      ]
     },
     "type": "error"
   },
@@ -117,7 +96,7 @@
     "mockDetails": {
       "interactionDescription": "bar",
       "interactionState": "[none]",
-      "location": "[root].interactions[5].request.headers.ContentType",
+      "location": "[root].interactions[5].request.headers.content-type",
       "value": ""
     },
     "specDetails": {
@@ -136,8 +115,7 @@
           "201": {
             "description": "description"
           }
-        },
-        "parameters": []
+        }
       }
     },
     "type": "warning"

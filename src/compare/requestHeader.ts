@@ -41,7 +41,7 @@ export function* compareReqHeader(
           "Request Accept header is defined but the spec does not specify any mime-types to produce",
         mockDetails: {
           ...baseMockDetails(interaction),
-          location: `[root].interactions[${index}].request.headers.Accept`,
+          location: `[root].interactions[${index}].request.headers.accept`,
           value: requestAccept,
         },
         specDetails: {
@@ -59,14 +59,14 @@ export function* compareReqHeader(
           "Request Accept header is incompatible with the mime-types the spec defines to produce",
         mockDetails: {
           ...baseMockDetails(interaction),
-          location: `[root].interactions[${index}].request.headers.Accept`,
+          location: `[root].interactions[${index}].request.headers.accept`,
           value: requestAccept,
         },
         specDetails: {
           location: `[root].paths.${path}.${method}`,
           pathMethod: method,
           pathName: path,
-          value: operation,
+          value: availableResponseContentType,
         },
         type: "error",
       };
@@ -85,7 +85,7 @@ export function* compareReqHeader(
           "Request content-type header is defined but the spec does not specify any mime-types to consume",
         mockDetails: {
           ...baseMockDetails(interaction),
-          location: `[root].interactions[${index}].request.headers.Content-Type`,
+          location: `[root].interactions[${index}].request.headers.content-type`,
           value: requestContentType,
         },
         specDetails: {
@@ -105,14 +105,14 @@ export function* compareReqHeader(
           "Request Content-Type header is incompatible with the mime-types the spec accepts to consume",
         mockDetails: {
           ...baseMockDetails(interaction),
-          location: `[root].interactions[${index}].request.headers.Content-Type`,
+          location: `[root].interactions[${index}].request.headers.content-type`,
           value: requestContentType,
         },
         specDetails: {
-          location: `[root].paths.${path}.${method}`,
+          location: `[root].paths.${path}.${method}.requestBody.content`,
           pathMethod: method,
           pathName: path,
-          value: operation,
+          value: availableRequestContentType,
         },
         type: "error",
       };
@@ -125,7 +125,7 @@ export function* compareReqHeader(
           "Request content type header is not defined but spec specifies mime-types to consume",
         mockDetails: {
           ...baseMockDetails(interaction),
-          location: `[root].interactions[${index}].request.headers.ContentType`,
+          location: `[root].interactions[${index}].request.headers.content-type`,
           value: requestContentType,
         },
         specDetails: {
@@ -158,7 +158,9 @@ export function* compareReqHeader(
 
   // other headers
   // -------------
-  for (const [parameterIndex, parameter] of operation.parameters.entries()) {
+  for (const [parameterIndex, parameter] of (
+    operation.parameters || []
+  ).entries()) {
     if (parameter.in !== "header") {
       continue;
     }

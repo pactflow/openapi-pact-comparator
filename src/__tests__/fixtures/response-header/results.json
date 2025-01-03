@@ -26,13 +26,21 @@
       "value": "foo"
     },
     "specDetails": {
-      "location": "[root].paths./path.get.responses.200.headers",
+      "location": "[root].paths./path.get.responses.200",
       "pathMethod": "get",
       "pathName": "/path",
       "value": {
-        "specified": {
-          "schema": {
-            "type": "number"
+        "description": "Success",
+        "headers": {
+          "specified": {
+            "schema": {
+              "type": "number"
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {}
           }
         }
       }

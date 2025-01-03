@@ -1,4 +1,6 @@
 {
+  "consumer": { "name": "consumer" },
+  "provider": { "name": "provider" },
   "interactions": [
     {
       "description": "error: unknown type",

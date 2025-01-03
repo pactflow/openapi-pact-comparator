@@ -37,7 +37,7 @@ export function* compareResHeader(
           "Response Content-Type header is defined but the spec does not specify any mime-types to produce",
         mockDetails: {
           ...baseMockDetails(interaction),
-          location: `[root].interactions[${index}].response.headers.Content-Type`,
+          location: `[root].interactions[${index}].response.headers.content-type`,
           value: responseContentType,
         },
         specDetails: {
@@ -57,14 +57,14 @@ export function* compareResHeader(
           "Response Content-Type header is incompatible with the mime-types the spec defines to produce",
         mockDetails: {
           ...baseMockDetails(interaction),
-          location: `[root].interactions[${index}].response.headers.Content-Type`,
+          location: `[root].interactions[${index}].response.headers.content-type`,
           value: responseContentType,
         },
         specDetails: {
-          location: `[root].paths.${path}.${method}`,
+          location: `[root].paths.${path}.${method}.responses.${interaction.response.status}.content`,
           pathMethod: method,
           pathName: path,
-          value: operation,
+          value: availableResponseContentType,
         },
         type: "error",
       };
@@ -137,10 +137,10 @@ export function* compareResHeader(
         value: headerValue,
       },
       specDetails: {
-        location: `[root].paths.${path}.${method}.responses.${interaction.response.status}.headers`,
+        location: `[root].paths.${path}.${method}.responses.${interaction.response.status}`,
         pathMethod: method,
         pathName: path,
-        value: operation.responses[interaction.response.status].headers,
+        value: operation.responses[interaction.response.status],
       },
       type: "error",
     };

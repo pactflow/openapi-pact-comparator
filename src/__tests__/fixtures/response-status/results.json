@@ -14,10 +14,18 @@
       "pathName": "/animal",
       "value": {
         "200": {
-          "content": {}
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
         },
         "404": {
-          "content": {}
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
         }
       }
     },

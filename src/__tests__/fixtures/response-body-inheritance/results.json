@@ -5,7 +5,7 @@
     "mockDetails": {
       "interactionDescription": "error: unknown type",
       "interactionState": "[none]",
-      "location": "[root].interactions[0].response.body",
+      "location": "[root].interactions[0].response.body.",
       "value": {
         "petType": "Spider"
       }

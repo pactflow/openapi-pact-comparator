@@ -45,7 +45,7 @@
       "value": "abc"
     },
     "specDetails": {
-      "location": "[root].paths./path.get.x-custom.schema.type",
+      "location": "[root].paths./path.get.parameters[0].schema.type",
       "pathMethod": "get",
       "pathName": "/path",
       "value": "number"

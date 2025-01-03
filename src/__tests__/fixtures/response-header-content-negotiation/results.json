@@ -14,9 +14,7 @@
       "pathName": "/no-content",
       "value": {
         "responses": {
-          "200": {
-            "content": {}
-          }
+          "200": {}
         },
         "parameters": []
       }
@@ -40,8 +38,12 @@
         "responses": {
           "200": {
             "content": {
-              "application/aaa": {},
-              "application/bbb": {}
+              "application/aaa": {
+                "schema": {}
+              },
+              "application/bbb": {
+                "schema": {}
+              }
             }
           }
         },

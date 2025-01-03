@@ -12,6 +12,7 @@ import {
   formatSchemaPath,
 } from "../results";
 import { transformResponseSchema } from "../transform";
+import { findMatchingType } from "./utils/content";
 
 const DEFAULT_CONTENT_TYPE = "application/json";
 
@@ -22,10 +23,8 @@ export function* compareResBody(
   index: number,
 ): Iterable<Partial<Result>> {
   const { components, method, operation, path } = route.store;
-
   const { body, status } = interaction.response;
-  const headers = new Headers(interaction.request.headers);
-  let contentType: string = headers.get("accept")?.split(";")[0];
+  const requestHeaders = new Headers(interaction.request.headers);
 
   const response = operation.responses?.[status] as OpenAPIV3.ResponseObject;
   if (!response) {
@@ -45,46 +44,66 @@ export function* compareResBody(
       },
       type: "error",
     };
-  }
-
-  if (response && response.content) {
-    contentType ||= DEFAULT_CONTENT_TYPE;
+  } else if (response.content) {
+    const availableResponseContentTypes = Object.keys(response.content || {});
+    const contentType = findMatchingType(
+      requestHeaders.get("accept") || DEFAULT_CONTENT_TYPE,
+      availableResponseContentTypes,
+    );
     const schema: SchemaObject = response.content[contentType]?.schema;
-    if (schema && body) {
-      schema.components = components;
-      const schemaId = `response-${method}-${path}-${status}-${contentType}`;
-      let validate = ajv.getSchema(schemaId);
-      if (!validate) {
-        ajv.addSchema(transformResponseSchema(schema), schemaId);
-        validate = ajv.getSchema(schemaId);
-      }
-      if (!validate(body)) {
-        for (const error of validate.errors) {
-          const message = formatErrorMessage(error);
-          const instancePath = formatInstancePath(error.instancePath);
-          const schemaPath = formatSchemaPath(error.schemaPath);
+    const value = body;
 
-          yield {
-            code: "response.body.incompatible",
-            message: `Response body is incompatible with the response body schema in the spec file: ${message}`,
-            mockDetails: {
-              ...baseMockDetails(interaction),
-              location: [
-                `[root].interactions[${index}].response.body`,
-                instancePath,
-              ]
-                .filter(Boolean)
-                .join("."),
-              value: instancePath ? get(body, instancePath) : body,
-            },
-            specDetails: {
-              location: `[root].paths.${path}.${method}.responses.${status}.content.${contentType}.schema.${schemaPath}`,
-              pathMethod: method,
-              pathName: path,
-              value: get(validate.schema, schemaPath),
-            },
-            type: "error",
-          };
+    if (body) {
+      if (!response.content[contentType]?.schema) {
+        yield {
+          code: "response.body.unknown",
+          message: "No matching schema found for response body",
+          mockDetails: {
+            ...baseMockDetails(interaction),
+            location: `[root].interactions[${index}].response.body`,
+            value: value,
+          },
+          specDetails: {
+            location: `[root].paths.${path}.${method}.responses.${status}.content`,
+            pathMethod: method,
+            pathName: path,
+            value: response.content,
+          },
+          type: "error",
+        };
+      }
+
+      if (schema && value) {
+        schema.components = components;
+        const schemaId = `[root].paths.${path}.${method}.responses.${status}.content.${contentType}`;
+        let validate = ajv.getSchema(schemaId);
+        if (!validate) {
+          ajv.addSchema(transformResponseSchema(schema), schemaId);
+          validate = ajv.getSchema(schemaId);
+        }
+        if (!validate(value)) {
+          for (const error of validate.errors) {
+            const message = formatErrorMessage(error);
+            const instancePath = formatInstancePath(error.instancePath);
+            const schemaPath = formatSchemaPath(error.schemaPath);
+
+            yield {
+              code: "response.body.incompatible",
+              message: `Response body is incompatible with the response body schema in the spec file: ${message}`,
+              mockDetails: {
+                ...baseMockDetails(interaction),
+                location: `[root].interactions[${index}].response.body.${instancePath}`,
+                value: instancePath ? get(value, instancePath) : value,
+              },
+              specDetails: {
+                location: `${schemaId}.schema.${schemaPath}`,
+                pathMethod: method,
+                pathName: path,
+                value: get(validate.schema, schemaPath),
+              },
+              type: "error",
+            };
+          }
         }
       }
     }

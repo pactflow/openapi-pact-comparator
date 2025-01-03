@@ -1,7 +1,6 @@
 import type { SchemaObject } from "ajv";
 import type Ajv from "ajv/dist/2019";
 import type Router from "find-my-way";
-import type { OpenAPIV3 } from "openapi-types";
 import type { Interaction } from "../documents/pact";
 import type { Result } from "../results";
 import { get } from "lodash-es";
@@ -11,7 +10,7 @@ import {
   formatInstancePath,
   formatSchemaPath,
 } from "../results";
-import { findMatchingType, standardHttpResponseHeaders } from "./utils/content";
+import { findMatchingType } from "./utils/content";
 
 export function* compareResHeader(
   ajv: Ajv,
@@ -94,7 +93,7 @@ export function* compareResHeader(
     const value = responseHeaders.get(headerName);
     if (value && schema) {
       schema.components = components;
-      const schemaId = `response-header-${method}-${path}-${headerName}`;
+      const schemaId = `[root].paths.${path}.${method}.responses.${interaction.response.status}.headers.${headerName}`;
       let validate = ajv.getSchema(schemaId);
       if (!validate) {
         ajv.addSchema(schema, schemaId);
@@ -115,7 +114,7 @@ export function* compareResHeader(
               value: instancePath ? get(value, instancePath) : value,
             },
             specDetails: {
-              location: `[root].paths.${path}.${method}.responses.${interaction.response.status}.headers.${headerName}.schema.${schemaPath}`,
+              location: `${schemaId}.schema.${schemaPath}`,
               pathMethod: method,
               pathName: path,
               value: get(validate.schema, schemaPath),

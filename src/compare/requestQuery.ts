@@ -1,7 +1,6 @@
 import type { SchemaObject } from "ajv";
 import type Ajv from "ajv/dist/2019";
 import type Router from "find-my-way";
-import type { OpenAPIV3 } from "openapi-types";
 import type { Result } from "../results";
 import type { Interaction } from "../documents/pact";
 import { get } from "lodash-es";
@@ -22,14 +21,15 @@ export function* compareReqQuery(
 
   const searchParams = Object.assign({}, route.searchParams);
 
-  for (const parameter of (
-    operation.parameters as OpenAPIV3.ParameterObject[]
-  ).filter((p) => p.in === "query")) {
+  for (const [parameterIndex, parameter] of operation.parameters.entries()) {
+    if (parameter.in !== "query") {
+      continue;
+    }
     const schema: SchemaObject = parameter.schema;
     const value = searchParams[parameter.name];
     if (value && schema) {
       schema.components = components;
-      const schemaId = `request-query-${method}-${path}-${parameter.name}`;
+      const schemaId = `[root].paths.${path}.${method}.parameters[${parameterIndex}]`;
       let validate = ajv.getSchema(schemaId);
       if (!validate) {
         ajv.addSchema(schema, schemaId);
@@ -51,7 +51,7 @@ export function* compareReqQuery(
             },
             source: "spec-mock-validation",
             specDetails: {
-              location: `[root].paths.${path}.${method}.${parameter.name}.schema.${schemaPath}`,
+              location: `${schemaId}.schema.${schemaPath}`,
               pathMethod: method,
               pathName: path,
               value: get(validate.schema, schemaPath),

@@ -17,7 +17,7 @@ const ignoreParameters = (t: string): string => t.split(PARAMETER_SEPARATOR)[0];
 const removeQuality = (t: string): string => t.replace(/;q=[01].?\d*/, "");
 const type = (t: string): string => t.split(TYPE_SUBTYPE_SEPARATOR)[0];
 const subtype = (t: string): string | undefined => {
-  const [_, subtype] = t.split(TYPE_SUBTYPE_SEPARATOR);
+  const [_maintype, subtype] = t.split(TYPE_SUBTYPE_SEPARATOR);
   return subtype?.split(EXTENSION_SEPARATOR).pop();
 };
 

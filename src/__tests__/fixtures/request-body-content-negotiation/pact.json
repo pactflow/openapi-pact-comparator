@@ -1,7 +1,7 @@
 {
   "interactions": [
     {
-      "description": "FIXME: should error about unsupported accept type",
+      "description": "defaults to first matching content-type",
       "request": {
         "method": "POST",
         "path": "/animals",

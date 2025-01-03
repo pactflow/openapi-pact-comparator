@@ -10,7 +10,7 @@
     },
     "source": "spec-mock-validation",
     "specDetails": {
-      "location": "[root].paths./explode-true.get.id.schema.items.type",
+      "location": "[root].paths./explode-true.get.parameters[0].schema.items.type",
       "pathMethod": "get",
       "pathName": "/explode-true",
       "value": "integer"
@@ -28,7 +28,7 @@
     },
     "source": "spec-mock-validation",
     "specDetails": {
-      "location": "[root].paths./explode-true.get.id.schema.items.type",
+      "location": "[root].paths./explode-true.get.parameters[0].schema.items.type",
       "pathMethod": "get",
       "pathName": "/explode-true",
       "value": "integer"
@@ -46,7 +46,7 @@
     },
     "source": "spec-mock-validation",
     "specDetails": {
-      "location": "[root].paths./explode-false.get.id.schema.items.type",
+      "location": "[root].paths./explode-false.get.parameters[0].schema.items.type",
       "pathMethod": "get",
       "pathName": "/explode-false",
       "value": "integer"
@@ -64,7 +64,7 @@
     },
     "source": "spec-mock-validation",
     "specDetails": {
-      "location": "[root].paths./explode-false.get.id.schema.items.type",
+      "location": "[root].paths./explode-false.get.parameters[0].schema.items.type",
       "pathMethod": "get",
       "pathName": "/explode-false",
       "value": "integer"

@@ -1,7 +1,7 @@
 {
   "interactions": [
     {
-      "description": "FIXME: this should fail",
+      "description": "defaults to first content-type",
       "request": {
         "method": "GET",
         "path": "/animal",
@@ -12,7 +12,8 @@
       "response": {
         "status": 200,
         "body": {
-          "fixme": "should error about unsupported accept type"
+          "name": "Rover",
+          "genus": "Canis"
         }
       }
     },

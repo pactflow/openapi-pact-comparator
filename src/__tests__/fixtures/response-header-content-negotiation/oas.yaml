@@ -6,21 +6,24 @@ paths:
   /no-content:
     get:
       responses:
-        "200":
-          content: {}
+        "200": {}
   /with-content:
     get:
       responses:
         "200":
           content:
-            application/aaa: {}
-            application/bbb: {}
+            application/aaa:
+              schema: {}
+            application/bbb:
+              schema: {}
   /submit-content:
     post:
       requestBody:
         content:
-          application/aaa: {}
-          application/bbb: {}
+          application/aaa:
+            schema: {}
+          application/bbb:
+            schema: {}
         required: true
       responses:
         "201": {}

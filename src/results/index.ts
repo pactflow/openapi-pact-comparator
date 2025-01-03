@@ -7,10 +7,10 @@ type ErrorCode =
   | "request.body.incompatible"
   | "request.content-type.incompatible"
   | "request.header.incompatible"
-  | "request.path-or-method.unknown" // TODO: needs test
+  | "request.path-or-method.unknown" // TODO
   | "request.query.incompatible"
   | "response.body.incompatible"
-  | "response.body.unknown" // TODO
+  | "response.body.unknown"
   | "response.content-type.incompatible"
   | "response.header.incompatible"
   | "response.header.unknown"
@@ -19,7 +19,7 @@ type ErrorCode =
 type WarningCode =
   | "pact-broker.no-pacts-found" // TODO
   | "request.accept.unknown"
-  | "request.body.unknown" // TODO
+  | "request.body.unknown"
   | "request.content-type.missing"
   | "request.content-type.unknown"
   | "request.header.unknown"
@@ -36,7 +36,7 @@ export interface Result {
     interactionState: string | null;
     location: string;
     mockFile?: string;
-    value: any;
+    value: unknown;
   };
   source: "spec-mock-validation";
   specDetails?: {
@@ -44,7 +44,7 @@ export interface Result {
     pathMethod: string | null;
     pathName: string | null;
     specFile?: string;
-    value: any;
+    value: unknown;
   };
   type: "error" | "warning";
 }

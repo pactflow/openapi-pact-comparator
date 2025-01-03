@@ -1,9 +1,13 @@
 {
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
-    "lib": ["ES2021.String"],
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "lib": ["dom", "dom.iterable", "es2021"],
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "noEmit": true,
     "target": "esnext"
-  }
+  },
+  "include": ["src"],
+  "exclude": ["./node_modules/**", "dist"]
 }

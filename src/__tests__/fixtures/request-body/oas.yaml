@@ -22,7 +22,8 @@ paths:
         "201":
           description: Success
           content:
-            application/json: {}
+            application/json:
+              schema: {}
 
 components:
   schemas:

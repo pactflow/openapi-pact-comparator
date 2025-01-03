@@ -158,13 +158,15 @@ export function* compareReqHeader(
 
   // other headers
   // -------------
-  const isHeader = (p: OpenAPIV3.ParameterObject) => p.in === "header";
-  for (const parameter of operation.parameters.filter(isHeader)) {
+  for (const [parameterIndex, parameter] of operation.parameters.entries()) {
+    if (parameter.in !== "header") {
+      continue;
+    }
     const schema: SchemaObject = parameter.schema;
     const value = requestHeaders.get(parameter.name);
     if (value && schema) {
       schema.components = components;
-      const schemaId = `request-header-${method}-${path}-${parameter.name}`;
+      const schemaId = `[root].paths.${path}.${method}.parameters[${parameterIndex}]`;
       let validate = ajv.getSchema(schemaId);
       if (!validate) {
         ajv.addSchema(schema, schemaId);
@@ -185,7 +187,7 @@ export function* compareReqHeader(
               value: instancePath ? get(value, instancePath) : value,
             },
             specDetails: {
-              location: `[root].paths.${path}.${method}.${parameter.name}.schema.${schemaPath}`,
+              location: `${schemaId}.schema.${schemaPath}`,
               pathMethod: method,
               pathName: path,
               value: get(validate.schema, schemaPath),

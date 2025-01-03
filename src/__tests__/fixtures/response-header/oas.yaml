@@ -13,4 +13,5 @@ paths:
               schema:
                 type: number
           content:
-            application/json: {}
+            application/json:
+              schema: {}

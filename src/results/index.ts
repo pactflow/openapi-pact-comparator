@@ -17,7 +17,7 @@ type ErrorCode =
   | "response.status.unknown";
 
 type WarningCode =
-  | "pact-broker.no-pacts-found" // TODO
+  | "pact-broker.no-pacts-found"
   | "request.accept.unknown"
   | "request.body.unknown"
   | "request.content-type.missing"

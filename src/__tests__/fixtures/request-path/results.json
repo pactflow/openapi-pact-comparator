@@ -1,0 +1,66 @@
+[
+  {
+    "code": "request.path-or-method.unknown",
+    "message": "Path or method not defined in spec file: POST /exists",
+    "mockDetails": {
+      "interactionDescription": "invalid method",
+      "interactionState": "[none]",
+      "location": "[root].interactions[1].request.path",
+      "value": "/exists"
+    },
+    "specDetails": {
+      "location": "[root].paths",
+      "pathMethod": null,
+      "pathName": null,
+      "value": {
+        "/exists": {
+          "get": {
+            "responses": {
+              "200": {
+                "description": "description",
+                "content": {
+                  "application/json": {
+                    "schema": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.path-or-method.unknown",
+    "message": "Path or method not defined in spec file: GET /404",
+    "mockDetails": {
+      "interactionDescription": "invalid path",
+      "interactionState": "[none]",
+      "location": "[root].interactions[2].request.path",
+      "value": "/404"
+    },
+    "specDetails": {
+      "location": "[root].paths",
+      "pathMethod": null,
+      "pathName": null,
+      "value": {
+        "/exists": {
+          "get": {
+            "responses": {
+              "200": {
+                "description": "description",
+                "content": {
+                  "application/json": {
+                    "schema": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "type": "error"
+  }
+]

@@ -177,8 +177,8 @@ export function* compareReqHeader(
               }
               requestHeaders.delete(scheme.name);
               break;
-            case "query":
             case "cookie":
+            case "query":
             // ignore
           }
           break;
@@ -189,6 +189,7 @@ export function* compareReqHeader(
             // ignore
           }
           break;
+        case "mutualTLS":
         case "oauth2":
         case "openIdConnect":
         // ignore

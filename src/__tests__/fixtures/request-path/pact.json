@@ -1,0 +1,39 @@
+{
+  "consumer": { "name": "consumer" },
+  "provider": { "name": "provider" },
+  "interactions": [
+    {
+      "description": "valid path",
+      "providerState": "",
+      "request": {
+        "method": "GET",
+        "path": "/exists"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "invalid method",
+      "providerState": "",
+      "request": {
+        "method": "POST",
+        "path": "/exists"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "invalid path",
+      "providerState": "",
+      "request": {
+        "method": "GET",
+        "path": "/404"
+      },
+      "response": {
+        "status": 200
+      }
+    }
+  ]
+}

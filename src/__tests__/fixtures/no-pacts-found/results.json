@@ -1,0 +1,7 @@
+[
+  {
+    "code": "pact-broker.no-pacts-found",
+    "message": "No consumer pacts found in Pact Broker",
+    "type": "warning"
+  }
+]

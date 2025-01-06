@@ -98,8 +98,8 @@ export function* compareReqQuery(
               }
               delete searchParams[scheme.name];
               break;
-            case "header":
             case "cookie":
+            case "header":
             // ignore
           }
           break;
@@ -110,6 +110,7 @@ export function* compareReqQuery(
             // ignore
           }
           break;
+        case "mutualTLS":
         case "oauth2":
         case "openIdConnect":
         // ignore

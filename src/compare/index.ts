@@ -30,6 +30,15 @@ export async function* compare(
   debugSetup("end router");
 
   debugComparison("start");
+
+  if (pact.interactions.length === 0) {
+    yield {
+      code: "pact-broker.no-pacts-found",
+      message: "No consumer pacts found in Pact Broker",
+      type: "warning",
+    };
+  }
+
   for (const [index, interaction] of pact.interactions.entries()) {
     debugInteraction("start");
     const { method, path, query } = interaction.request;

@@ -1,7 +1,6 @@
 import type { SchemaObject } from "ajv";
 import type Ajv from "ajv/dist/2019";
 import type Router from "find-my-way";
-import type { OpenAPIV3 } from "openapi-types";
 import type { Interaction } from "../documents/pact";
 import type { Result } from "../results";
 import { get } from "lodash-es";
@@ -144,15 +143,56 @@ export function* compareReqHeader(
   for (const key of standardHttpRequestHeaders) {
     requestHeaders.delete(key);
   }
-  for (const key in securitySchemes) {
-    const scheme = securitySchemes[key];
-    if (
-      scheme.in === "header" &&
-      (operation.security || []).some(
-        (s: OpenAPIV3.SecuritySchemeObject) => !!s[scheme.name],
-      )
-    ) {
-      requestHeaders.delete(scheme.name);
+
+  // security headers
+  // ----------------
+  for (const scheme of operation.security || []) {
+    for (const schemeName of Object.keys(scheme)) {
+      const scheme = securitySchemes[schemeName];
+      switch (scheme.type) {
+        case "apiKey":
+          switch (scheme.in) {
+            case "header":
+              if (
+                interaction.response.status < 400 &&
+                !requestHeaders.has(scheme.name)
+              ) {
+                yield {
+                  code: "request.authorization.missing",
+                  message:
+                    "Request Authorization header is missing but is required by the spec file",
+                  mockDetails: {
+                    ...baseMockDetails(interaction),
+                    location: `[root].interactions[${index}].request.headers`,
+                    value: interaction.request.headers,
+                  },
+                  specDetails: {
+                    location: `[root].paths.${path}.${method}`,
+                    pathMethod: method,
+                    pathName: path,
+                    value: operation,
+                  },
+                  type: "error",
+                };
+              }
+              requestHeaders.delete(scheme.name);
+              break;
+            case "query":
+            case "cookie":
+            // ignore
+          }
+          break;
+        case "http":
+          switch (scheme.scheme) {
+            case "basic":
+            case "bearer":
+            // ignore
+          }
+          break;
+        case "oauth2":
+        case "openIdConnect":
+        // ignore
+      }
     }
   }
 

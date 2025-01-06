@@ -29,7 +29,6 @@ paths:
     get:
       summary: ApiKey authenticated endpoint
       description: Endpoint secured by ApiKey auth
-      operationId: getApiKeyAuth
       responses:
         "200":
           description: successful operation
@@ -43,7 +42,6 @@ paths:
     get:
       summary: ApiKeyCookie authenticated endpoint
       description: Endpoint secured by an ApiKey in a secure cookie
-      operationId: getApiKeyAuthCookie
       responses:
         "200":
           description: successful operation
@@ -53,11 +51,23 @@ paths:
           description: unauthorized
       security:
         - ApiKeyCookieAuth: [Admin]
+  /query:
+    get:
+      summary: ApiKeyQuery authenticated endpoint
+      description: Endpoint secured by an ApiKey in a query parameter
+      responses:
+        "200":
+          description: successful operation
+        "401":
+          description: unauthenticated
+        "403":
+          description: unauthorized
+      security:
+        - ApiKeyQueryAuth: [Admin]
   /mutualtls:
     get:
       summary: MutualTLS authenticated endpoint
       description: Endpoint secured by MutualTLS auth
-      operationId: getMutualTLSAuth
       responses:
         "200":
           description: successful operation
@@ -71,7 +81,6 @@ paths:
     get:
       summary: OIDC authenticated endpoint
       description: Endpoint secured by OIDC auth
-      operationId: getOIDCAuth
       responses:
         "200":
           description: successful operation
@@ -85,7 +94,6 @@ paths:
     get:
       summary: OAuth2 authenticated endpoint
       description: Endpoint secured by OAuth2 auth
-      operationId: getOAuth2Auth
       responses:
         "200":
           description: successful operation
@@ -99,7 +107,6 @@ paths:
     get:
       summary: Multiple authenticated endpoint
       description: Endpoint secured by Multiple auth mechanisms that must all be satisfied
-      operationId: getMultipleAuth
       responses:
         "200":
           description: successful operation
@@ -116,7 +123,6 @@ paths:
     get:
       summary: OAuth2 authenticated endpoint
       description: Endpoint secured by OAuth2 auth
-      operationId: getOAuth2Auth
       responses:
         "200":
           description: successful operation
@@ -137,14 +143,18 @@ components:
     BearerAuth:
       type: http
       scheme: bearer
-    ApiKeyCookieAuth:
-      type: apiKey
-      in: cookie
-      name: ASECURESESSIONID
     ApiKeyAuth:
       type: apiKey
       in: header
       name: X-API-Key
+    ApiKeyQueryAuth:
+      type: apiKey
+      in: query
+      name: X-API-Key
+    ApiKeyCookieAuth:
+      type: apiKey
+      in: cookie
+      name: ASECURESESSIONID
     MutualTLS:
       type: mutualTLS
     OpenID:

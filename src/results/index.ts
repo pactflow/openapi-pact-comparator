@@ -3,7 +3,7 @@ import type { Interaction } from "../documents/pact";
 
 type ErrorCode =
   | "request.accept.incompatible"
-  | "request.authorization.missing" // TODO
+  | "request.authorization.missing"
   | "request.body.incompatible"
   | "request.content-type.incompatible"
   | "request.header.incompatible"

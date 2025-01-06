@@ -17,7 +17,7 @@ export function* compareReqQuery(
   interaction: Interaction,
   index: number,
 ): Iterable<Partial<Result>> {
-  const { components, method, operation, path } = route.store;
+  const { components, method, operation, path, securitySchemes } = route.store;
 
   const searchParams = Object.assign({}, route.searchParams);
 
@@ -65,6 +65,56 @@ export function* compareReqQuery(
     }
 
     delete searchParams[parameter.name];
+  }
+
+  for (const scheme of operation.security || []) {
+    for (const schemeName of Object.keys(scheme)) {
+      const scheme = securitySchemes[schemeName];
+      switch (scheme.type) {
+        case "apiKey":
+          switch (scheme.in) {
+            case "query":
+              if (
+                interaction.response.status < 400 &&
+                !searchParams[scheme.name]
+              ) {
+                yield {
+                  code: "request.authorization.missing",
+                  message:
+                    "Request Authorization query is missing but is required by the spec file",
+                  mockDetails: {
+                    ...baseMockDetails(interaction),
+                    location: `[root].interactions[${index}].request.query`,
+                    value: interaction.request.query,
+                  },
+                  specDetails: {
+                    location: `[root].paths.${path}.${method}`,
+                    pathMethod: method,
+                    pathName: path,
+                    value: operation,
+                  },
+                  type: "error",
+                };
+              }
+              delete searchParams[scheme.name];
+              break;
+            case "header":
+            case "cookie":
+            // ignore
+          }
+          break;
+        case "http":
+          switch (scheme.scheme) {
+            case "basic":
+            case "bearer":
+            // ignore
+          }
+          break;
+        case "oauth2":
+        case "openIdConnect":
+        // ignore
+      }
+    }
   }
 
   for (const [key, value] of Object.entries(searchParams)) {

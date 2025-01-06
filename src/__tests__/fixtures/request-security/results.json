@@ -1,12 +1,11 @@
 [
   {
-    "code": "request.header.unknown",
-    "message": "Request header is not defined in the spec file: x-api-key",
+    "code": "request.authorization.missing",
+    "message": "Request Authorization header is missing but is required by the spec file",
     "mockDetails": {
-      "interactionDescription": "FIXME: should not error - a request to a apikey auth endpoint",
+      "interactionDescription": "a bad request to a apikey auth endpoint with no credentials",
       "interactionState": "[none]",
-      "location": "[root].interactions[6].request.headers.x-api-key",
-      "value": "dXNlcjpwYXNzd29yZAo="
+      "location": "[root].interactions[7].request.headers"
     },
     "specDetails": {
       "location": "[root].paths./apikey.get",
@@ -15,7 +14,6 @@
       "value": {
         "summary": "ApiKey authenticated endpoint",
         "description": "Endpoint secured by ApiKey auth",
-        "operationId": "getApiKeyAuth",
         "responses": {
           "200": {
             "description": "successful operation"
@@ -36,25 +34,23 @@
         ]
       }
     },
-    "type": "warning"
+    "type": "error"
   },
   {
-    "code": "request.header.unknown",
-    "message": "Request header is not defined in the spec file: x-api-key",
+    "code": "request.authorization.missing",
+    "message": "Request Authorization query is missing but is required by the spec file",
     "mockDetails": {
-      "interactionDescription": "FIXME: should not error - a request to a apikey auth endpoint with credentials lacking required scope",
+      "interactionDescription": "a bad request to a apikey auth endpoint with no credentials",
       "interactionState": "[none]",
-      "location": "[root].interactions[8].request.headers.x-api-key",
-      "value": "YmFkOnBhc3N3b3JkCg=="
+      "location": "[root].interactions[11].request.query"
     },
     "specDetails": {
-      "location": "[root].paths./apikey.get",
+      "location": "[root].paths./query.get",
       "pathMethod": "get",
-      "pathName": "/apikey",
+      "pathName": "/query",
       "value": {
-        "summary": "ApiKey authenticated endpoint",
-        "description": "Endpoint secured by ApiKey auth",
-        "operationId": "getApiKeyAuth",
+        "summary": "ApiKeyQuery authenticated endpoint",
+        "description": "Endpoint secured by an ApiKey in a query parameter",
         "responses": {
           "200": {
             "description": "successful operation"
@@ -68,13 +64,13 @@
         },
         "security": [
           {
-            "ApiKeyAuth": [
+            "ApiKeyQueryAuth": [
               "Admin"
             ]
           }
         ]
       }
     },
-    "type": "warning"
+    "type": "error"
   }
 ]

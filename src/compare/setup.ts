@@ -32,6 +32,7 @@ export function setupRouter(
     const path = oasPath.replaceAll(/{(.*?)\}/g, ":$1");
     for (const method in oas.paths[oasPath]) {
       const operation = oas.paths[oasPath][method];
+      operation.security ||= oas.security;
       router.on(method.toUpperCase() as HTTPMethod, path, () => {}, {
         components: oas.components,
         method,

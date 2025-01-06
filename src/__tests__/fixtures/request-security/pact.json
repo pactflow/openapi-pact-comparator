@@ -75,13 +75,23 @@
       }
     },
     {
-      "description": "FIXME: should not error - a request to a apikey auth endpoint",
+      "description": "a request to a apikey auth endpoint",
       "request": {
         "method": "GET",
         "path": "/apikey",
         "headers": {
           "X-API-Key": "dXNlcjpwYXNzd29yZAo="
         }
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "a bad request to a apikey auth endpoint with no credentials",
+      "request": {
+        "method": "GET",
+        "path": "/apikey"
       },
       "response": {
         "status": 200
@@ -98,7 +108,7 @@
       }
     },
     {
-      "description": "FIXME: should not error - a request to a apikey auth endpoint with credentials lacking required scope",
+      "description": "a request to a apikey auth endpoint with credentials lacking required scope",
       "request": {
         "method": "GET",
         "path": "/apikey",
@@ -110,6 +120,54 @@
         "status": 403
       }
     },
+
+    {
+      "description": "a request to a apikey auth endpoint",
+      "request": {
+        "method": "GET",
+        "path": "/query",
+        "query": {
+          "X-API-Key": "dXNlcjpwYXNzd29yZAo="
+        }
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "a bad request to a apikey auth endpoint with no credentials",
+      "request": {
+        "method": "GET",
+        "path": "/query"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "a request to a apikey auth endpoint with no credentials",
+      "request": {
+        "method": "GET",
+        "path": "/query"
+      },
+      "response": {
+        "status": 401
+      }
+    },
+    {
+      "description": "a request to a apikey auth endpoint with credentials lacking required scope",
+      "request": {
+        "method": "GET",
+        "path": "/query",
+        "query": {
+          "X-API-Key": "YmFkOnBhc3N3b3JkCg=="
+        }
+      },
+      "response": {
+        "status": 403
+      }
+    },
+
     {
       "description": "a request to a cookie-based apikey auth endpoint",
       "request": {

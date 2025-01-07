@@ -25,8 +25,8 @@ type WarningCode =
   | "request.header.unknown"
   | "request.query.unknown"
   | "response.content-type.unknown"
-  | "response.header.undefined" // TODO
-  | "response.status.default"; // TODO
+  | "response.header.undefined"
+  | "response.status.default"; // TODO: swagger2?
 
 export interface Result {
   code: ErrorCode | WarningCode;

@@ -45,6 +45,21 @@
           "Content-Type": "application/json"
         }
       }
+    },
+    {
+      "description": "succesful response with standard headers",
+      "providerState": "",
+      "request": {
+        "method": "GET",
+        "path": "/path"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "age": "60",
+          "Content-Type": "application/json"
+        }
+      }
     }
   ]
 }

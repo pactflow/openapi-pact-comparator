@@ -70,6 +70,7 @@ export function* compareReqHeader(
         type: "error",
       };
     }
+    requestHeaders.delete("accept");
   }
 
   // request content-type
@@ -116,6 +117,7 @@ export function* compareReqHeader(
         type: "error",
       };
     }
+    requestHeaders.delete("content-type");
   } else {
     if (availableRequestContentType.length) {
       yield {
@@ -136,12 +138,6 @@ export function* compareReqHeader(
         type: "warning",
       };
     }
-  }
-
-  // ignored headers
-  // ---------------
-  for (const key of standardHttpRequestHeaders) {
-    requestHeaders.delete(key);
   }
 
   // security headers
@@ -178,6 +174,8 @@ export function* compareReqHeader(
               requestHeaders.delete(scheme.name);
               break;
             case "cookie":
+              requestHeaders.delete("cookie");
+              break;
             case "query":
             // ignore
           }
@@ -188,6 +186,8 @@ export function* compareReqHeader(
             case "bearer":
             // ignore
           }
+
+          requestHeaders.delete("authorization");
           break;
         case "mutualTLS":
         case "oauth2":
@@ -195,6 +195,12 @@ export function* compareReqHeader(
         // ignore
       }
     }
+  }
+
+  // standard headers
+  // ----------------
+  for (const headerName of standardHttpRequestHeaders) {
+    requestHeaders.delete(headerName);
   }
 
   // other headers

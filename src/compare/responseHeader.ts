@@ -10,7 +10,7 @@ import {
   formatInstancePath,
   formatSchemaPath,
 } from "../results";
-import { findMatchingType } from "./utils/content";
+import { findMatchingType, standardHttpResponseHeaders } from "./utils/content";
 
 export function* compareResHeader(
   ajv: Ajv,
@@ -69,20 +69,32 @@ export function* compareResHeader(
         type: "error",
       };
     }
+    responseHeaders.delete("content-type");
   }
-
-  // ignored headers
-  // ---------------
-  responseHeaders.delete("content-type");
 
   // standard headers
   // ----------------
-  // FIXME: for some criteria:
-  //   yield {
-  //     code: 'response.header.undefined',
-  //     message: `Standard http response header is not defined in the spec file: ${key}`,
-  //     type: "warning",
-  //   }
+  for (const headerName of standardHttpResponseHeaders) {
+    if (responseHeaders.has(headerName)) {
+      yield {
+        code: "response.header.undefined",
+        message: `Standard http response header is not defined in the spec file: ${headerName}`,
+        mockDetails: {
+          ...baseMockDetails(interaction),
+          location: `[root].interactions[${index}].response.headers.${headerName}`,
+          value: interaction.request.headers,
+        },
+        specDetails: {
+          location: `[root].paths.${path}.${method}`,
+          pathMethod: method,
+          pathName: path,
+          value: operation,
+        },
+        type: "warning",
+      };
+    }
+    responseHeaders.delete(headerName);
+  }
 
   // other headers
   // -------------

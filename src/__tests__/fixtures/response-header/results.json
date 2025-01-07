@@ -46,5 +46,39 @@
       }
     },
     "type": "error"
+  },
+  {
+    "code": "response.header.undefined",
+    "message": "Standard http response header is not defined in the spec file: age",
+    "mockDetails": {
+      "interactionDescription": "succesful response with standard headers",
+      "interactionState": "[none]",
+      "location": "[root].interactions[3].response.headers.age"
+    },
+    "specDetails": {
+      "location": "[root].paths./path.get",
+      "pathMethod": "get",
+      "pathName": "/path",
+      "value": {
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {
+              "specified": {
+                "schema": {
+                  "type": "number"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "type": "warning"
   }
 ]

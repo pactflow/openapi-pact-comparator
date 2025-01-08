@@ -16,10 +16,46 @@
         "parameters": [
           {
             "in": "header",
-            "name": "x-custom",
+            "name": "x-required",
             "required": true,
             "schema": {
               "type": "number"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-optional",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-optional-array",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              },
+              "minItems": 1
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-optional-object",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "string": {
+                  "type": "string"
+                },
+                "number": {
+                  "type": "number"
+                }
+              }
             }
           }
         ],
@@ -41,7 +77,7 @@
     "mockDetails": {
       "interactionDescription": "bad header value",
       "interactionState": "[none]",
-      "location": "[root].interactions[1].request.headers.x-custom.",
+      "location": "[root].interactions[1].request.headers.x-required.",
       "value": "abc"
     },
     "specDetails": {
@@ -49,6 +85,57 @@
       "pathMethod": "get",
       "pathName": "/path",
       "value": "number"
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.header.incompatible",
+    "message": "Value is incompatible with the parameter defined in the spec file: must be number",
+    "mockDetails": {
+      "interactionDescription": "bad optional header value",
+      "interactionState": "[none]",
+      "location": "[root].interactions[2].request.headers.x-optional.",
+      "value": "abc"
+    },
+    "specDetails": {
+      "location": "[root].paths./path.get.parameters[1].schema.type",
+      "pathMethod": "get",
+      "pathName": "/path",
+      "value": "number"
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.header.incompatible",
+    "message": "Value is incompatible with the parameter defined in the spec file: must be number",
+    "mockDetails": {
+      "interactionDescription": "bad optional header value",
+      "interactionState": "[none]",
+      "location": "[root].interactions[2].request.headers.x-optional-object.number",
+      "value": "abc"
+    },
+    "specDetails": {
+      "location": "[root].paths./path.get.parameters[3].schema.properties.number.type",
+      "pathMethod": "get",
+      "pathName": "/path",
+      "value": "number"
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.header.incompatible",
+    "message": "Value is incompatible with the parameter defined in the spec file: must be integer",
+    "mockDetails": {
+      "interactionDescription": "bad array header value",
+      "interactionState": "[none]",
+      "location": "[root].interactions[3].request.headers.x-optional-array.2",
+      "value": "abc"
+    },
+    "specDetails": {
+      "location": "[root].paths./path.get.parameters[2].schema.items.type",
+      "pathMethod": "get",
+      "pathName": "/path",
+      "value": "integer"
     },
     "type": "error"
   }

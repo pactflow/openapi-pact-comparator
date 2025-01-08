@@ -7,10 +7,33 @@ paths:
     get:
       parameters:
         - in: header
-          name: x-custom
+          name: x-required
           required: true
           schema:
             type: number
+        - in: header
+          name: x-optional
+          required: false
+          schema:
+            type: number
+        - in: header
+          name: x-optional-array
+          required: false
+          schema:
+            type: array
+            items:
+              type: integer
+            minItems: 1
+        - in: header
+          name: x-optional-object
+          required: false
+          schema:
+            type: object
+            properties:
+              string:
+                type: string
+              number:
+                type: number
       responses:
         "200":
           description: Success

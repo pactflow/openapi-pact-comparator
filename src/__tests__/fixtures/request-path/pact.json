@@ -34,6 +34,72 @@
       "response": {
         "status": 200
       }
+    },
+    {
+      "description": "valid simple path with no explode",
+      "providerState": "",
+      "request": {
+        "method": "GET",
+        "path": "/simple/explode-false/foo"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "valid simple path with explode",
+      "providerState": "",
+      "request": {
+        "method": "GET",
+        "path": "/simple/explode-true/foo"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "valid label path with no explode",
+      "providerState": "",
+      "request": {
+        "method": "GET",
+        "path": "/label/explode-false/.foo"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "valid label path with explode",
+      "providerState": "",
+      "request": {
+        "method": "GET",
+        "path": "/label/explode-true/.foo"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "valid matrix path with no explode",
+      "providerState": "",
+      "request": {
+        "method": "GET",
+        "path": "/matrix/explode-false/;foo"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "valid matrix path with explode",
+      "providerState": "",
+      "request": {
+        "method": "GET",
+        "path": "/matrix/explode-true/;foo"
+      },
+      "response": {
+        "status": 200
+      }
     }
   ]
 }

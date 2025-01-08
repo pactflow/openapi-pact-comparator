@@ -16,7 +16,7 @@ import { findMatchingType } from "./utils/content";
 
 const parseBody = (body: unknown, contentType: string) => {
   if (contentType.includes("application/x-www-form-urlencoded")) {
-    return qs.parse(body as string);
+    return qs.parse(body as string, { allowDots: true, comma: true });
   }
 
   return body;

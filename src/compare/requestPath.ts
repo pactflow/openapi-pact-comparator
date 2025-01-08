@@ -3,6 +3,7 @@ import type Ajv from "ajv/dist/2019";
 import type Router from "find-my-way";
 import type { Interaction } from "../documents/pact";
 import type { Result } from "../results";
+import { parseValue } from "./utils/parse";
 import { get } from "lodash-es";
 import {
   baseMockDetails,
@@ -27,7 +28,7 @@ export function* compareReqPath(
     }
 
     const schema: SchemaObject = parameter.schema;
-    const value = route.params[parameter.name];
+    const value = parseValue(route.params[parameter.name]);
     if (value && schema) {
       schema.components = components;
       const schemaId = `[root].paths.${path}.${method}.parameters[${parameterIndex}]`;
@@ -38,7 +39,6 @@ export function* compareReqPath(
       }
       if (!validate(value)) {
         for (const error of validate.errors) {
-          // FIXME: find-my-way is handling path params
           const message = formatErrorMessage(error);
           const instancePath = formatInstancePath(error.instancePath);
           const schemaPath = formatSchemaPath(error.schemaPath);

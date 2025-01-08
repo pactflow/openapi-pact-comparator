@@ -43,20 +43,60 @@
       }
     },
     {
-      "description": "a request using simple style with exploded path parameters",
+      "description": "invalid request using simple style with exploded path parameters",
       "request": {
         "method": "GET",
-        "path": "/explode-true/1,2,3"
+        "path": "/simple/explode-true/1,2,abc"
       },
       "response": {
         "status": 200
       }
     },
     {
-      "description": "a request using simple style with non-exploded path parameters",
+      "description": "valid request using simple style with exploded path parameters",
       "request": {
         "method": "GET",
-        "path": "/explode-false/1,2,3"
+        "path": "/simple/explode-true/1,2,3"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "invalid request using simple style with non-exploded path parameters",
+      "request": {
+        "method": "GET",
+        "path": "/simple/explode-false/1,2,abc"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "valid request using simple style with non-exploded path parameters",
+      "request": {
+        "method": "GET",
+        "path": "/simple/explode-false/1,2,3"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "invalid request using exploded path parameters",
+      "request": {
+        "method": "GET",
+        "path": "/exploded-object/string=abc,number=abc"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "valid request using exploded path parameters",
+      "request": {
+        "method": "GET",
+        "path": "/exploded-object/string=abc,number=123"
       },
       "response": {
         "status": 200

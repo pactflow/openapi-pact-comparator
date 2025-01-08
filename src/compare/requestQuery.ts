@@ -4,6 +4,7 @@ import type Router from "find-my-way";
 import type { Result } from "../results";
 import type { Interaction } from "../documents/pact";
 import { get } from "lodash-es";
+import qs from "qs";
 import {
   baseMockDetails,
   formatErrorMessage,
@@ -19,7 +20,11 @@ export function* compareReqQuery(
 ): Iterable<Partial<Result>> {
   const { components, method, operation, path, securitySchemes } = route.store;
 
-  const searchParams = Object.assign({}, route.searchParams);
+  // TODO: parse different parameters differently?
+  const searchParams = qs.parse(route.searchParams, {
+    allowDots: true,
+    comma: true,
+  });
 
   for (const [parameterIndex, parameter] of (
     operation.parameters || []

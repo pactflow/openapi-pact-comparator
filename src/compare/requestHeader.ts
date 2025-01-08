@@ -11,6 +11,7 @@ import {
   formatSchemaPath,
 } from "../results";
 import { findMatchingType, standardHttpRequestHeaders } from "./utils/content";
+import { parseValue } from "./utils/parse";
 
 export function* compareReqHeader(
   ajv: Ajv,
@@ -212,7 +213,7 @@ export function* compareReqHeader(
       continue;
     }
     const schema: SchemaObject = parameter.schema;
-    const value = requestHeaders.get(parameter.name);
+    const value = parseValue(requestHeaders.get(parameter.name));
     if (value && schema) {
       schema.components = components;
       const schemaId = `[root].paths.${path}.${method}.parameters[${parameterIndex}]`;

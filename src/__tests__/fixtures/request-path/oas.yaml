@@ -12,3 +12,52 @@ paths:
           content:
             "application/json":
               schema: {}
+  /simple/explode-false/{id}:
+    get:
+      responses:
+        "200":
+          description: description
+          content:
+            "application/json":
+              schema: {}
+  /simple/explode-true/{id*}:
+    get:
+      responses:
+        "200":
+          description: description
+          content:
+            "application/json":
+              schema: {}
+  /label/explode-false/{.id}:
+    get:
+      responses:
+        "200":
+          description: description
+          content:
+            "application/json":
+              schema: {}
+  /label/explode-true/{.id*}:
+    get:
+      responses:
+        "200":
+          description: description
+          content:
+            "application/json":
+              schema: {}
+
+  /matrix/explode-false/{;id}:
+    get:
+      responses:
+        "200":
+          description: description
+          content:
+            "application/json":
+              schema: {}
+  /matrix/explode-true/{;id*}:
+    get:
+      responses:
+        "200":
+          description: description
+          content:
+            "application/json":
+              schema: {}

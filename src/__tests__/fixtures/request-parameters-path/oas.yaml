@@ -25,7 +25,7 @@ paths:
       responses:
         "200":
           description: description
-  /explode-true/{id}:
+  /simple/explode-true/{id}:
     get:
       parameters:
         - in: path
@@ -41,7 +41,7 @@ paths:
       responses:
         "200":
           description: description
-  /explode-false/{id}:
+  /simple/explode-false/{id}:
     get:
       parameters:
         - in: path
@@ -54,7 +54,24 @@ paths:
             minItems: 1
           style: simple
           explode: false
-          allowReserved: false
+      responses:
+        "200":
+          description: description
+  /exploded-object/{id}:
+    get:
+      parameters:
+        - in: path
+          name: id
+          required: false
+          schema:
+            type: object
+            properties:
+              string:
+                type: string
+              number:
+                type: number
+          style: simple
+          explode: true
       responses:
         "200":
           description: description

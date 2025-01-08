@@ -42,6 +42,7 @@ export async function* compare(
   for (const [index, interaction] of pact.interactions.entries()) {
     debugInteraction("start");
     const { method, path, query } = interaction.request;
+    // in pact, query is either a string or an object of only one level deep
     const stringQuery = typeof query === "string" ? query : qs.stringify(query);
     const route = router.find(
       method as HTTPMethod,

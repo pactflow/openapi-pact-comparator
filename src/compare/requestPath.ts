@@ -4,13 +4,7 @@ import type Router from "find-my-way";
 import type { Interaction } from "../documents/pact";
 import type { Result } from "../results";
 import { parseValue } from "./utils/parse";
-import { get } from "lodash-es";
-import {
-  baseMockDetails,
-  formatErrorMessage,
-  formatInstancePath,
-  formatSchemaPath,
-} from "../results";
+import { baseMockDetails } from "../results";
 
 export function* compareReqPath(
   ajv: Ajv,
@@ -38,11 +32,7 @@ export function* compareReqPath(
         validate = ajv.getSchema(schemaId);
       }
       if (!validate(value)) {
-        for (const error of validate.errors) {
-          const message = formatErrorMessage(error);
-          const instancePath = formatInstancePath(error.instancePath);
-          const schemaPath = formatSchemaPath(error.schemaPath);
-
+        for (const _error of validate.errors) {
           yield {
             code: "request.path-or-method.unknown",
             message: `Path or method not defined in spec file: ${method.toUpperCase()} ${interaction.request.path}`,

@@ -1,8 +1,8 @@
 import qs from "qs";
 
-type CookieStyle = "form";
-type HeaderStyle = "simple";
-type PathStyle = "simple" | "label" | "matrix";
+//type CookieStyle = "form";
+//type HeaderStyle = "simple";
+//type PathStyle = "simple" | "label" | "matrix";
 type QueryStyle = "form" | "spaceDelimited" | "pipeDelimited" | "deepObject";
 
 export const parseQuery =

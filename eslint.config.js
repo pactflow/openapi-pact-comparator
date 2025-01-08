@@ -20,6 +20,7 @@ export default [
           argsIgnorePattern: "^_",
           caughtErrorsIgnorePattern: "^_",
           destructuredArrayIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
         },
       ],
     },

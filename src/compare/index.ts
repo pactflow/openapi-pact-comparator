@@ -5,6 +5,8 @@ import type { Result } from "../results";
 import type { HTTPMethod } from "find-my-way";
 
 import debug from "debug";
+import SwaggerParser from "@apidevtools/swagger-parser";
+import { cloneDeep } from "lodash-es";
 import { setupAjv, setupRouter } from "./setup";
 import { compareReqPath } from "./requestPath";
 import { compareReqQuery } from "./requestQuery";
@@ -22,7 +24,9 @@ export async function* compare(
   oas: OpenAPIV3.Document,
   pact: Pact,
 ): AsyncIterable<Partial<Result>> {
-  // TODO: validate pact and oas
+  // TODO: validate pact
+  await SwaggerParser.validate(cloneDeep(oas));
+
   debugSetup("start");
   const ajv = setupAjv();
   debugSetup("end ajv");

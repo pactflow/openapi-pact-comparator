@@ -182,6 +182,29 @@ export function* compareReqHeader(
               // ignore
             }
             break;
+          case "basic":
+            const basicAuth = requestHeaders.get("Authorization") || "";
+            if (!basicAuth.startsWith("Basic ")) {
+              yield {
+                code: "request.authorization.missing",
+                message:
+                  "Request Authorization header is missing but is required by the spec file",
+                mockDetails: {
+                  ...baseMockDetails(interaction),
+                  location: `[root].interactions[${index}].request.headers`,
+                  value: interaction.request.headers,
+                },
+                specDetails: {
+                  location: `[root].paths.${path}.${method}`,
+                  pathMethod: method,
+                  pathName: path,
+                  value: operation,
+                },
+                type: "error",
+              };
+            }
+            requestHeaders.delete("authorization");
+            break;
           case "http":
             const auth = requestHeaders.get("Authorization") || "";
             let isValid = false;

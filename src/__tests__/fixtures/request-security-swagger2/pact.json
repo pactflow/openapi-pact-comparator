@@ -1,0 +1,146 @@
+{
+  "consumer": { "name": "consumer" },
+  "provider": { "name": "provider" },
+  "interactions": [
+    {
+      "description": "should pass on successful request to a basic auth endpoint",
+      "request": {
+        "method": "GET",
+        "path": "/basic",
+        "headers": {
+          "Authorization": "Basic dXNlcjpwYXNzd29yZAo="
+        }
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "should error on bad request to a basic auth endpoint",
+      "request": {
+        "method": "GET",
+        "path": "/basic",
+        "headers": {}
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "should pass on denied request to a basic auth endpoint without credentials",
+      "request": {
+        "method": "GET",
+        "path": "/basic"
+      },
+      "response": {
+        "status": 401
+      }
+    },
+    {
+      "description": "should pass on denied request to a basic auth endpoint",
+      "request": {
+        "method": "GET",
+        "path": "/basic",
+        "headers": {
+          "Authorization": "Basic YmFkOnBhc3N3b3JkCg=="
+        }
+      },
+      "response": {
+        "status": 403
+      }
+    },
+    {
+      "description": "should pass on successful request to a apikey auth endpoint (header)",
+      "request": {
+        "method": "GET",
+        "path": "/apikey",
+        "headers": {
+          "X-API-Key": "dXNlcjpwYXNzd29yZAo="
+        }
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "should error on bad request to an apikey auth endpoint (header)",
+      "request": {
+        "method": "GET",
+        "path": "/apikey"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "should pass on denied request to an apikey auth endpoint (header) without credentials",
+      "request": {
+        "method": "GET",
+        "path": "/apikey"
+      },
+      "response": {
+        "status": 401
+      }
+    },
+    {
+      "description": "should pass on denied request to an apikey auth (header) endpoint",
+      "request": {
+        "method": "GET",
+        "path": "/apikey",
+        "headers": {
+          "X-API-Key": "YmFkOnBhc3N3b3JkCg=="
+        }
+      },
+      "response": {
+        "status": 403
+      }
+    },
+
+    {
+      "description": "should pass on successful request apikey auth endpoint (query)",
+      "request": {
+        "method": "GET",
+        "path": "/query",
+        "query": {
+          "X-API-Key": "dXNlcjpwYXNzd29yZAo="
+        }
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "should error on bad request to apikey auth endpoint (query)",
+      "request": {
+        "method": "GET",
+        "path": "/query"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "should pass on denied request to apikey auth endpoint (query) without credentials",
+      "request": {
+        "method": "GET",
+        "path": "/query"
+      },
+      "response": {
+        "status": 401
+      }
+    },
+    {
+      "description": "should pass on denied request to apikey auth endpoint (query)",
+      "request": {
+        "method": "GET",
+        "path": "/query",
+        "query": {
+          "X-API-Key": "YmFkOnBhc3N3b3JkCg=="
+        }
+      },
+      "response": {
+        "status": 403
+      }
+    }
+  ]
+}

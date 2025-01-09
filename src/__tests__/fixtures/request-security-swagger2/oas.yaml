@@ -1,0 +1,81 @@
+swagger: "2.0"
+info:
+  title: security
+  version: 1.0.0
+paths:
+  /basic:
+    get:
+      responses:
+        "200":
+          description: successful operation
+        "401":
+          description: unauthenticated
+        "403":
+          description: unauthorized
+      security:
+        - BasicAuth: [Admin]
+  /apikey:
+    get:
+      summary: ApiKey authenticated endpoint
+      description: Endpoint secured by ApiKey auth
+      responses:
+        "200":
+          description: successful operation
+        "401":
+          description: unauthenticated
+        "403":
+          description: unauthorized
+      security:
+        - ApiKeyAuth: [Admin]
+  /query:
+    get:
+      summary: ApiKeyQuery authenticated endpoint
+      description: Endpoint secured by an ApiKey in a query parameter
+      responses:
+        "200":
+          description: successful operation
+        "401":
+          description: unauthenticated
+        "403":
+          description: unauthorized
+      security:
+        - ApiKeyQueryAuth: [Admin]
+  /multiple-and:
+    get:
+      summary: Multiple authenticated endpoint
+      description: Endpoint secured by Multiple auth mechanisms that must all be satisfied
+      responses:
+        "200":
+          description: successful operation
+        "401":
+          description: unauthenticated
+        "403":
+          description: unauthorized
+      security:
+        - BasicAuth: []
+          ApiKeyAuth: []
+  /multiple-or:
+    get:
+      summary: OAuth2 authenticated endpoint
+      description: Endpoint secured by OAuth2 auth
+      responses:
+        "200":
+          description: successful operation
+        "401":
+          description: unauthenticated
+        "403":
+          description: unauthorized
+      security:
+        - BasicAuth: []
+        - ApiKeyAuth: []
+securityDefinitions:
+  BasicAuth:
+    type: basic
+  ApiKeyAuth:
+    type: apiKey
+    in: header
+    name: X-API-Key
+  ApiKeyQueryAuth:
+    type: apiKey
+    in: query
+    name: X-API-Key

@@ -3,9 +3,81 @@
     "code": "request.authorization.missing",
     "message": "Request Authorization header is missing but is required by the spec file",
     "mockDetails": {
-      "interactionDescription": "a bad request to a apikey auth endpoint with no credentials",
+      "interactionDescription": "should error on bad request to a basic auth endpoint",
       "interactionState": "[none]",
-      "location": "[root].interactions[7].request.headers"
+      "location": "[root].interactions[1].request.headers",
+      "value": {}
+    },
+    "specDetails": {
+      "location": "[root].paths./basic.get",
+      "pathMethod": "get",
+      "pathName": "/basic",
+      "value": {
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          },
+          "401": {
+            "description": "unauthenticated"
+          },
+          "403": {
+            "description": "unauthorized"
+          }
+        },
+        "security": [
+          {
+            "BasicAuth": [
+              "Admin"
+            ]
+          }
+        ]
+      }
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.authorization.missing",
+    "message": "Request Authorization header is missing but is required by the spec file",
+    "mockDetails": {
+      "interactionDescription": "should error on bad request to a bearer auth endpoint",
+      "interactionState": "[none]",
+      "location": "[root].interactions[5].request.headers",
+      "value": {}
+    },
+    "specDetails": {
+      "location": "[root].paths./bearer.get",
+      "pathMethod": "get",
+      "pathName": "/bearer",
+      "value": {
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          },
+          "401": {
+            "description": "unauthenticated"
+          },
+          "403": {
+            "description": "unauthorized"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": [
+              "Admin"
+            ]
+          }
+        ]
+      }
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.authorization.missing",
+    "message": "Request Authorization header is missing but is required by the spec file",
+    "mockDetails": {
+      "interactionDescription": "should error on bad request to an apikey auth endpoint (header)",
+      "interactionState": "[none]",
+      "location": "[root].interactions[9].request.headers"
     },
     "specDetails": {
       "location": "[root].paths./apikey.get",
@@ -40,9 +112,9 @@
     "code": "request.authorization.missing",
     "message": "Request Authorization query is missing but is required by the spec file",
     "mockDetails": {
-      "interactionDescription": "a bad request to a apikey auth endpoint with no credentials",
+      "interactionDescription": "should error on bad request to apikey auth endpoint (query)",
       "interactionState": "[none]",
-      "location": "[root].interactions[11].request.query"
+      "location": "[root].interactions[13].request.query"
     },
     "specDetails": {
       "location": "[root].paths./query.get",

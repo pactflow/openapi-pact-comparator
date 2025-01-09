@@ -3,7 +3,7 @@
   "provider": { "name": "provider" },
   "interactions": [
     {
-      "description": "a request to a basic auth endpoint",
+      "description": "should pass on successful request to a basic auth endpoint",
       "request": {
         "method": "GET",
         "path": "/basic",
@@ -16,7 +16,18 @@
       }
     },
     {
-      "description": "a request to a basic auth endpoint with no credentials",
+      "description": "should error on bad request to a basic auth endpoint",
+      "request": {
+        "method": "GET",
+        "path": "/basic",
+        "headers": {}
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "should pass on denied request to a basic auth endpoint without credentials",
       "request": {
         "method": "GET",
         "path": "/basic"
@@ -26,7 +37,7 @@
       }
     },
     {
-      "description": "a request to a basic auth endpoint with credentials lacking required scope",
+      "description": "should pass on denied request to a basic auth endpoint",
       "request": {
         "method": "GET",
         "path": "/basic",
@@ -39,7 +50,7 @@
       }
     },
     {
-      "description": "a request to a bearer auth endpoint",
+      "description": "should pass on successful request to a bearer auth endpoint",
       "request": {
         "method": "GET",
         "path": "/bearer",
@@ -52,7 +63,18 @@
       }
     },
     {
-      "description": "a request to a bearer auth endpoint with no credentials",
+      "description": "should error on bad request to a bearer auth endpoint",
+      "request": {
+        "method": "GET",
+        "path": "/bearer",
+        "headers": {}
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "should pass on denied request to a bearer auth endpoint without credentials",
       "request": {
         "method": "GET",
         "path": "/bearer"
@@ -62,7 +84,7 @@
       }
     },
     {
-      "description": "a request to a bearer auth endpoint with credentials lacking required scope",
+      "description": "should pass on denied request to a bearer auth endpoint",
       "request": {
         "method": "GET",
         "path": "/bearer",
@@ -75,7 +97,7 @@
       }
     },
     {
-      "description": "a request to a apikey auth endpoint",
+      "description": "should pass on successful request to a apikey auth endpoint (header)",
       "request": {
         "method": "GET",
         "path": "/apikey",
@@ -88,7 +110,7 @@
       }
     },
     {
-      "description": "a bad request to a apikey auth endpoint with no credentials",
+      "description": "should error on bad request to an apikey auth endpoint (header)",
       "request": {
         "method": "GET",
         "path": "/apikey"
@@ -98,7 +120,7 @@
       }
     },
     {
-      "description": "a request to a apikey auth endpoint with no credentials",
+      "description": "should pass on denied request to an apikey auth endpoint (header) without credentials",
       "request": {
         "method": "GET",
         "path": "/apikey"
@@ -108,7 +130,7 @@
       }
     },
     {
-      "description": "a request to a apikey auth endpoint with credentials lacking required scope",
+      "description": "should pass on denied request to an apikey auth (header) endpoint",
       "request": {
         "method": "GET",
         "path": "/apikey",
@@ -122,7 +144,7 @@
     },
 
     {
-      "description": "a request to a apikey auth endpoint",
+      "description": "should pass on successful request apikey auth endpoint (query)",
       "request": {
         "method": "GET",
         "path": "/query",
@@ -135,7 +157,7 @@
       }
     },
     {
-      "description": "a bad request to a apikey auth endpoint with no credentials",
+      "description": "should error on bad request to apikey auth endpoint (query)",
       "request": {
         "method": "GET",
         "path": "/query"
@@ -145,7 +167,7 @@
       }
     },
     {
-      "description": "a request to a apikey auth endpoint with no credentials",
+      "description": "should pass on denied request to apikey auth endpoint (query) without credentials",
       "request": {
         "method": "GET",
         "path": "/query"
@@ -155,7 +177,7 @@
       }
     },
     {
-      "description": "a request to a apikey auth endpoint with credentials lacking required scope",
+      "description": "should pass on denied request to apikey auth endpoint (query)",
       "request": {
         "method": "GET",
         "path": "/query",
@@ -167,9 +189,8 @@
         "status": 403
       }
     },
-
     {
-      "description": "a request to a cookie-based apikey auth endpoint",
+      "description": "should pass on successful request to apikey endpoint (cookie)",
       "request": {
         "method": "GET",
         "path": "/cookie",
@@ -182,7 +203,18 @@
       }
     },
     {
-      "description": "a request to a cookie-based apikey auth endpoint with no credentials",
+      "description": "should error on bad request to apikey endpoint (cookie)",
+      "request": {
+        "method": "GET",
+        "path": "/cookie",
+        "headers": {}
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "should pass on denied request to apikey endpoint (cookie) without credentials",
       "request": {
         "method": "GET",
         "path": "/cookie"
@@ -192,103 +224,13 @@
       }
     },
     {
-      "description": "a request to a cookie-based apikey auth endpoint with credentials lacking required scope",
+      "description": "should pass on denied request to apikey endpoint (cookie)",
       "request": {
         "method": "GET",
         "path": "/cookie",
         "headers": {
           "Cookie": "ASECURESESSIONID: YmFkOnBhc3N3b3JkCg=="
         }
-      },
-      "response": {
-        "status": 403
-      }
-    },
-    {
-      "description": "a request to a mutualtls auth endpoint",
-      "request": {
-        "method": "GET",
-        "path": "/mutualtls"
-      },
-      "response": {
-        "status": 200
-      }
-    },
-    {
-      "description": "a request to a mutualtls auth endpoint with no credentials",
-      "request": {
-        "method": "GET",
-        "path": "/mutualtls"
-      },
-      "response": {
-        "status": 401
-      }
-    },
-    {
-      "description": "a request to a mutualtls auth endpoint with credentials lacking required scope",
-      "request": {
-        "method": "GET",
-        "path": "/mutualtls"
-      },
-      "response": {
-        "status": 403
-      }
-    },
-    {
-      "description": "a request to a oidc auth endpoint",
-      "request": {
-        "method": "GET",
-        "path": "/oidc"
-      },
-      "response": {
-        "status": 200
-      }
-    },
-    {
-      "description": "a request to a oidc auth endpoint with no credentials",
-      "request": {
-        "method": "GET",
-        "path": "/oidc"
-      },
-      "response": {
-        "status": 401
-      }
-    },
-    {
-      "description": "a request to a oidc auth endpoint with credentials lacking required scope",
-      "request": {
-        "method": "GET",
-        "path": "/oidc"
-      },
-      "response": {
-        "status": 403
-      }
-    },
-    {
-      "description": "a request to a oauth2 auth endpoint",
-      "request": {
-        "method": "GET",
-        "path": "/oauth2"
-      },
-      "response": {
-        "status": 200
-      }
-    },
-    {
-      "description": "a request to a oauth2 auth endpoint with no credentials",
-      "request": {
-        "method": "GET",
-        "path": "/oauth2"
-      },
-      "response": {
-        "status": 401
-      }
-    },
-    {
-      "description": "a request to a oauth2 auth endpoint with credentials lacking required scope",
-      "request": {
-        "method": "GET",
-        "path": "/oauth2"
       },
       "response": {
         "status": 403

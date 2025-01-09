@@ -145,57 +145,81 @@ export function* compareReqHeader(
 
   // security headers
   // ----------------
-  for (const scheme of operation.security || []) {
-    for (const schemeName of Object.keys(scheme)) {
-      const scheme = securitySchemes[schemeName];
-      switch (scheme.type) {
-        case "apiKey":
-          switch (scheme.in) {
-            case "header":
-              if (
-                interaction.response.status < 400 &&
-                !requestHeaders.has(scheme.name)
-              ) {
-                yield {
-                  code: "request.authorization.missing",
-                  message:
-                    "Request Authorization header is missing but is required by the spec file",
-                  mockDetails: {
-                    ...baseMockDetails(interaction),
-                    location: `[root].interactions[${index}].request.headers`,
-                    value: interaction.request.headers,
-                  },
-                  specDetails: {
-                    location: `[root].paths.${path}.${method}`,
-                    pathMethod: method,
-                    pathName: path,
-                    value: operation,
-                  },
-                  type: "error",
-                };
-              }
-              requestHeaders.delete(scheme.name);
-              break;
-            case "cookie":
-              requestHeaders.delete("cookie");
-              break;
-            case "query":
-            // ignore
-          }
-          break;
-        case "http":
-          switch (scheme.scheme) {
-            case "basic":
-            case "bearer":
-            // ignore
-          }
+  if (interaction.response.status < 400) {
+    for (const scheme of operation.security || []) {
+      for (const schemeName of Object.keys(scheme)) {
+        const scheme = securitySchemes[schemeName];
+        switch (scheme.type) {
+          case "apiKey":
+            switch (scheme.in) {
+              case "header":
+                if (!requestHeaders.has(scheme.name)) {
+                  yield {
+                    code: "request.authorization.missing",
+                    message:
+                      "Request Authorization header is missing but is required by the spec file",
+                    mockDetails: {
+                      ...baseMockDetails(interaction),
+                      location: `[root].interactions[${index}].request.headers`,
+                      value: interaction.request.headers,
+                    },
+                    specDetails: {
+                      location: `[root].paths.${path}.${method}`,
+                      pathMethod: method,
+                      pathName: path,
+                      value: operation,
+                    },
+                    type: "error",
+                  };
+                }
+                requestHeaders.delete(scheme.name);
+                break;
+              case "cookie":
+                // FIXME: handle cookies
+                requestHeaders.delete("cookie");
+                break;
+              case "query":
+              // ignore
+            }
+            break;
+          case "http":
+            const auth = requestHeaders.get("Authorization") || "";
+            let isValid = false;
+            switch (scheme.scheme) {
+              case "basic":
+                isValid = auth.startsWith("Basic ");
+                break;
+              case "bearer":
+                isValid = auth.startsWith("Bearer ");
+                break;
+            }
 
-          requestHeaders.delete("authorization");
-          break;
-        case "mutualTLS":
-        case "oauth2":
-        case "openIdConnect":
-        // ignore
+            if (!isValid) {
+              yield {
+                code: "request.authorization.missing",
+                message:
+                  "Request Authorization header is missing but is required by the spec file",
+                mockDetails: {
+                  ...baseMockDetails(interaction),
+                  location: `[root].interactions[${index}].request.headers`,
+                  value: interaction.request.headers,
+                },
+                specDetails: {
+                  location: `[root].paths.${path}.${method}`,
+                  pathMethod: method,
+                  pathName: path,
+                  value: operation,
+                },
+                type: "error",
+              };
+            }
+            requestHeaders.delete("authorization");
+            break;
+          case "mutualTLS":
+          case "oauth2":
+          case "openIdConnect":
+          // ignore
+        }
       }
     }
   }

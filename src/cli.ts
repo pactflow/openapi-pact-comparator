@@ -1,4 +1,4 @@
-import fs from "node:fs";
+import fs from 'node:fs/promises'
 import yaml from "js-yaml";
 import { compare } from "./compare";
 import type { Result } from "./results";
@@ -14,12 +14,14 @@ const parse = (spec: string) => {
 async function run() {
   const oasFile = process.argv[2];
   const pactFile = process.argv[3];
-  const oas = parse(fs.readFileSync(oasFile, "utf-8"));
-  const pact = parse(fs.readFileSync(pactFile, "utf-8"));
+  const [oas, pact] = await Promise.all([
+    fs.readFile(oasFile, { encoding: "utf-8" }),
+    fs.readFile(pactFile, { encoding: "utf-8" }),
+  ])
   const errors: Result[] = [];
   const warnings: Result[] = [];
 
-  for await (const result of compare(oas, pact)) {
+  for await (const result of compare(parse(oas), parse(pact))) {
     const target = result.type === "error" ? errors : warnings;
     // explicitly rebuild result to get correct sort order
     target.push({

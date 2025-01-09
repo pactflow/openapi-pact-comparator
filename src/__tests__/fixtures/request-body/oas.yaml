@@ -24,6 +24,11 @@ paths:
           content:
             "application/json":
               schema: {}
+        "400":
+          description: description
+          content:
+            "application/json":
+              schema: {}
 
 components:
   schemas:

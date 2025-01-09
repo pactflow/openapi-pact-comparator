@@ -22,6 +22,13 @@ const parseBody = (body: unknown, contentType: string) => {
   return body;
 };
 
+const canValidate = (contentType: string): boolean => {
+  return !!findMatchingType(contentType, [
+    "application/json",
+    "application/x-www-form-urlencoded",
+  ]);
+};
+
 const DEFAULT_CONTENT_TYPE = "application/json";
 
 export function* compareReqBody(
@@ -41,11 +48,8 @@ export function* compareReqBody(
     availableRequestContentTypes,
   );
 
-  if (body) {
-    if (
-      !contentType ||
-      !operation.requestBody?.content?.[contentType]?.schema
-    ) {
+  if (body || body === "") {
+    if (!operation.requestBody?.content?.[contentType]?.schema) {
       yield {
         code: "request.body.unknown",
         message: "No matching schema found for request body",
@@ -62,12 +66,12 @@ export function* compareReqBody(
         },
         type: "error",
       };
-    } else {
+    } else if (interaction.response.status < 400) {
       const schema: SchemaObject =
         operation.requestBody.content[contentType]?.schema;
       const value = parseBody(body, contentType);
 
-      if (schema && value) {
+      if (schema && canValidate(contentType)) {
         schema.components = components;
         schema.definitions = definitions;
         const schemaId = `[root].paths.${path}.${method}.requestBody.content.${contentType}`;

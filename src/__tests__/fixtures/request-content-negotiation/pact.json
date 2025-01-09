@@ -3,7 +3,7 @@
   "provider": { "name": "provider" },
   "interactions": [
     {
-      "description": "defaults to first matching content-type",
+      "description": "should pass to match first compatible content-type in spec",
       "request": {
         "method": "POST",
         "path": "/animals",
@@ -20,7 +20,7 @@
       }
     },
     {
-      "description": "success: POST v1",
+      "description": "should pass to match v1 in spec",
       "request": {
         "method": "POST",
         "path": "/animals",
@@ -37,7 +37,7 @@
       }
     },
     {
-      "description": "success: POST v2",
+      "description": "should pass to match v2 in spec",
       "request": {
         "method": "POST",
         "path": "/animals",
@@ -47,6 +47,36 @@
         "body": {
           "name": "Rover",
           "species": "C. familiaris"
+        }
+      },
+      "response": {
+        "status": 201
+      }
+    },
+    {
+      "description": "should error when unable to match content-type",
+      "request": {
+        "method": "POST",
+        "path": "/animals",
+        "headers": {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        "body": "name=Rover&genus=Canis"
+      },
+      "response": {
+        "status": 201,
+        "body": {}
+      }
+    },
+    {
+      "description": "should error on missing content-type",
+      "request": {
+        "method": "POST",
+        "path": "/animals",
+        "headers": {},
+        "body": {
+          "name": "Rover",
+          "genus": "Canis"
         }
       },
       "response": {

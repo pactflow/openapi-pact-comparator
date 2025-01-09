@@ -1,11 +1,32 @@
 [
   {
     "code": "response.body.incompatible",
+    "message": "Response body is incompatible with the response body schema in the spec file: value of tag \"petType\" must be in oneOf",
+    "mockDetails": {
+      "interactionDescription": "should error on unknown pet",
+      "interactionState": "[none]",
+      "location": "[root].interactions[4].response.body.",
+      "value": {
+        "petType": "Spider"
+      }
+    },
+    "specDetails": {
+      "location": "[root].paths./pet.get.responses.200.content.application/json.schema.discriminator",
+      "pathMethod": "get",
+      "pathName": "/pet",
+      "value": {
+        "propertyName": "petType"
+      }
+    },
+    "type": "error"
+  },
+  {
+    "code": "response.body.incompatible",
     "message": "Response body is incompatible with the response body schema in the spec file: must be object",
     "mockDetails": {
-      "interactionDescription": "error: detail is null",
+      "interactionDescription": "should error with invalid response",
       "interactionState": "[none]",
-      "location": "[root].interactions[0].response.body.detail",
+      "location": "[root].interactions[5].response.body.detail",
       "value": null
     },
     "specDetails": {

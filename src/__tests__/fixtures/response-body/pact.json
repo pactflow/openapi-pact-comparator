@@ -3,24 +3,7 @@
   "provider": { "name": "provider" },
   "interactions": [
     {
-      "description": "error: detail is null",
-      "request": {
-        "method": "GET",
-        "path": "/animal"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/json"
-        },
-        "body": {
-          "name": "name",
-          "detail": null
-        }
-      }
-    },
-    {
-      "description": "success",
+      "description": "should pass with valid response",
       "request": {
         "method": "GET",
         "path": "/animal"
@@ -50,6 +33,94 @@
             ],
             "qix": null
           }
+        }
+      }
+    },
+    {
+      "description": "should pass with binary content",
+      "request": {
+        "headers": {
+          "Accept": "image/png"
+        },
+        "method": "GET",
+        "path": "/binary"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "image/png"
+        },
+        "body": "some base64 encoded body (this is the format pact uses, which various across spec versions)"
+      }
+    },
+    {
+      "description": "should pass on pet type dog",
+      "request": {
+        "method": "GET",
+        "path": "/pet"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "petType": "Dog",
+          "name": "Doggy",
+          "bark": true,
+          "breed": "Dingo"
+        }
+      }
+    },
+    {
+      "description": "should pass on pet type cat",
+      "request": {
+        "method": "GET",
+        "path": "/pet"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "petType": "Cat",
+          "name": "Kitty",
+          "hunts": true,
+          "age": 6
+        }
+      }
+    },
+    {
+      "description": "should error on unknown pet",
+      "request": {
+        "method": "GET",
+        "path": "/pet"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "petType": "Spider"
+        }
+      }
+    },
+    {
+      "description": "should error with invalid response",
+      "request": {
+        "method": "GET",
+        "path": "/animal"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "name": "name",
+          "detail": null
         }
       }
     }

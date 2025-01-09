@@ -7,11 +7,36 @@ paths:
     get:
       responses:
         "200":
-          description: description
+          description: OK
           content:
             "application/json":
               schema:
                 $ref: "#/components/schemas/Animal"
+  /binary:
+    get:
+      responses:
+        "200":
+          description: OK
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+  /pet:
+    get:
+      responses:
+        "200":
+          description: description
+          content:
+            "application/json":
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Cat"
+                  - $ref: "#/components/schemas/Dog"
+                discriminator:
+                  propertyName: petType
+                required:
+                  - petType
 components:
   schemas:
     Animal:
@@ -40,3 +65,35 @@ components:
       type: object
       additionalProperties:
         $ref: "#/components/schemas/AnyJSON"
+    Pet:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+    Dog:
+      properties:
+        petType:
+          const: Dog
+      allOf:
+        - $ref: "#/components/schemas/Pet"
+        - type: object
+          properties:
+            bark:
+              type: boolean
+            breed:
+              type: string
+              enum: [Dingo, Husky, Retriever, Shepherd]
+    Cat:
+      properties:
+        petType:
+          const: Cat
+      allOf:
+        - $ref: "#/components/schemas/Pet"
+        - type: object
+          properties:
+            hunts:
+              type: boolean
+            age:
+              type: integer

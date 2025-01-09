@@ -1,0 +1,51 @@
+{
+  "consumer": { "name": "consumer" },
+  "provider": { "name": "provider" },
+  "interactions": [
+    {
+      "description": "should pass on successful response content negotiation",
+      "providerState": "",
+      "request": {
+        "method": "GET",
+        "path": "/with-content",
+        "headers": {
+          "accept": "application/aaa"
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/aaa"
+        }
+      }
+    },
+    {
+      "description": "should error on unknown request accept",
+      "providerState": "",
+      "request": {
+        "method": "GET",
+        "path": "/no-content",
+        "headers": {
+          "accept": "application/xxx"
+        }
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "should error on incompatible request accept",
+      "providerState": "",
+      "request": {
+        "method": "GET",
+        "path": "/with-content",
+        "headers": {
+          "accept": "application/xxx"
+        }
+      },
+      "response": {
+        "status": 200
+      }
+    }
+  ]
+}

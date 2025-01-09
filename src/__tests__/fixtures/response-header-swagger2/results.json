@@ -12,21 +12,18 @@
       "pathMethod": "get",
       "pathName": "/path",
       "value": {
+        "produces": [
+          "application/json"
+        ],
         "responses": {
           "200": {
             "description": "OK",
             "headers": {
               "specified": {
-                "schema": {
-                  "type": "number"
-                }
+                "type": "number"
               }
             },
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
+            "schema": {}
           }
         }
       }
@@ -65,9 +62,7 @@
       "pathName": "/path",
       "value": {
         "specified": {
-          "schema": {
-            "type": "number"
-          }
+          "type": "number"
         }
       }
     },

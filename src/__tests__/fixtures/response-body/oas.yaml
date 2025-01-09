@@ -26,7 +26,7 @@ paths:
     get:
       responses:
         "200":
-          description: description
+          description: OK
           content:
             "application/json":
               schema:

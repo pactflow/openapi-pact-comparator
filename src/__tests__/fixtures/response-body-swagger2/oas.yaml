@@ -1,0 +1,35 @@
+swagger: "2.0"
+info:
+  title: OAS
+  version: 1.0.0
+paths:
+  /animal:
+    get:
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/definitions/Animal"
+  /binary:
+    get:
+      produces:
+        - image/png
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+            format: binary
+definitions:
+  Animal:
+    type: object
+    required:
+      - name
+      - age
+    properties:
+      name:
+        type: string
+      age:
+        type: number

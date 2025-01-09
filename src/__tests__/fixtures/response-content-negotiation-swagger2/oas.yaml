@@ -1,4 +1,4 @@
-openapi: 3.0.0
+swagger: "2.0"
 info:
   title: OAS
   version: 1.0.0
@@ -8,12 +8,11 @@ paths:
       responses:
         "200":
           description: OK
-          content: {}
   /with-content:
     get:
+      produces:
+        - application/aaa
+        - application/bbb
       responses:
         "200":
           description: OK
-          content:
-            application/aaa: {}
-            application/bbb: {}

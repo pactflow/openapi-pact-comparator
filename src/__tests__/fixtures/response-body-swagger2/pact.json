@@ -1,0 +1,57 @@
+{
+  "consumer": { "name": "consumer" },
+  "provider": { "name": "provider" },
+  "interactions": [
+    {
+      "description": "should pass with valid response",
+      "request": {
+        "method": "GET",
+        "path": "/animal"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "name": "name",
+          "age": "10"
+        }
+      }
+    },
+    {
+      "description": "should pass with binary content",
+      "request": {
+        "headers": {
+          "Accept": "image/png"
+        },
+        "method": "GET",
+        "path": "/binary"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "image/png"
+        },
+        "body": "some base64 encoded body (this is the format pact uses, which various across spec versions)"
+      }
+    },
+    {
+      "description": "should error with invalid response",
+      "request": {
+        "method": "GET",
+        "path": "/animal"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "name": "name",
+          "detail": null
+        }
+      }
+    }
+  ]
+}

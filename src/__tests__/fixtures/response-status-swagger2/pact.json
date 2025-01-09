@@ -1,0 +1,39 @@
+{
+  "consumer": { "name": "consumer" },
+  "provider": { "name": "provider" },
+  "interactions": [
+    {
+      "description": "should pass on succesful request",
+      "providerState": "when animal exists",
+      "request": {
+        "method": "GET",
+        "path": "/api/animal"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "should pass on errored request",
+      "providerState": "there is no dog with an id of 1",
+      "request": {
+        "method": "GET",
+        "path": "/api/animal"
+      },
+      "response": {
+        "status": 404
+      }
+    },
+    {
+      "description": "should error on unspecified status codes",
+      "providerState": "when redirect exists",
+      "request": {
+        "method": "GET",
+        "path": "/api/animal"
+      },
+      "response": {
+        "status": 302
+      }
+    }
+  ]
+}

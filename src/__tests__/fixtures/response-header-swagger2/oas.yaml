@@ -1,17 +1,16 @@
-openapi: 3.0.0
+swagger: "2.0"
 info:
   title: OAS
   version: 1.0.0
 paths:
   /path:
     get:
+      produces:
+        - application/json
       responses:
         "200":
           description: OK
           headers:
             specified:
-              schema:
-                type: number
-          content:
-            application/json:
-              schema: {}
+              type: number
+          schema: {}

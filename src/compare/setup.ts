@@ -27,9 +27,10 @@ export function setupRouter(
     ignoreTrailingSlash: true,
     querystringParser: (s: string): string => s, // don't parse query in router
   });
+  const { basePath = "" } = oas;
   for (const oasPath in oas.paths) {
     // NB: all path parameters are required in OAS
-    const path = oasPath.replaceAll(/{([.;]?)([^*]+)\*?}/g, "$1:$2");
+    const path = basePath + oasPath.replaceAll(/{([.;]?)([^*]+)\*?}/g, "$1:$2");
     for (const method in oas.paths[oasPath]) {
       const operation = oas.paths[oasPath][method];
       operation.security ||= oas.security;

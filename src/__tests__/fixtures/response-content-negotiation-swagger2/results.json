@@ -15,8 +15,7 @@
       "value": {
         "responses": {
           "200": {
-            "description": "OK",
-            "content": {}
+            "description": "OK"
           }
         }
       }

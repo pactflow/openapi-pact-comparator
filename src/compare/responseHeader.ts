@@ -103,7 +103,8 @@ export function* compareResHeader(
   const headers =
     operation.responses[interaction.response.status]?.headers || {};
   for (const headerName in headers) {
-    const schema: SchemaObject = headers[headerName].schema;
+    const schema: SchemaObject =
+      headers[headerName].schema || headers[headerName];
     const value = responseHeaders.get(headerName);
     if (value && schema) {
       schema.components = components;
@@ -152,10 +153,10 @@ export function* compareResHeader(
         value: headerValue,
       },
       specDetails: {
-        location: `[root].paths.${path}.${method}.responses.${interaction.response.status}`,
+        location: `[root].paths.${path}.${method}.responses.${interaction.response.status}.headers`,
         pathMethod: method,
         pathName: path,
-        value: operation.responses[interaction.response.status],
+        value: operation.responses[interaction.response.status].headers,
       },
       type: "error",
     };

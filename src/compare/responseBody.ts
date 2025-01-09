@@ -44,18 +44,19 @@ export function* compareResBody(
       },
       type: "error",
     };
-  } else if (response.content) {
+  } else if (response.content || response.schema) {
     const availableResponseContentTypes =
       operation.produces || Object.keys(response.content || {});
     const contentType = findMatchingType(
       requestHeaders.get("accept") || DEFAULT_CONTENT_TYPE,
       availableResponseContentTypes,
     );
-    const schema: SchemaObject = response.content[contentType]?.schema;
+    const schema: SchemaObject =
+      response.schema || response.content[contentType]?.schema;
     const value = body;
 
     if (body) {
-      if (!response.content[contentType]?.schema) {
+      if (!schema) {
         yield {
           code: "response.body.unknown",
           message: "No matching schema found for response body",
@@ -72,9 +73,7 @@ export function* compareResBody(
           },
           type: "error",
         };
-      }
-
-      if (schema && value) {
+      } else if (value) {
         schema.components = components;
         schema.definitions = definitions;
         const schemaId = `[root].paths.${path}.${method}.responses.${status}.content.${contentType}`;

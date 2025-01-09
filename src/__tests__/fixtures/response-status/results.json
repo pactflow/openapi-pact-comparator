@@ -3,9 +3,9 @@
     "code": "response.status.unknown",
     "message": "Response status code not defined in spec file: 302",
     "mockDetails": {
-      "interactionDescription": "error: unspecified status code",
+      "interactionDescription": "should error on unspecified status codes",
       "interactionState": "when redirect exists",
-      "location": "[root].interactions[0].response.status",
+      "location": "[root].interactions[2].response.status",
       "value": 302
     },
     "specDetails": {

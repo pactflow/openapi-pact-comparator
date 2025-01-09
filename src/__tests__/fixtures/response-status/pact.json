@@ -3,18 +3,7 @@
   "provider": { "name": "provider" },
   "interactions": [
     {
-      "description": "error: unspecified status code",
-      "providerState": "when redirect exists",
-      "request": {
-        "method": "GET",
-        "path": "/animal"
-      },
-      "response": {
-        "status": 302
-      }
-    },
-    {
-      "description": "success: 200",
+      "description": "should pass on succesful request",
       "providerState": "when animal exists",
       "request": {
         "method": "GET",
@@ -25,7 +14,7 @@
       }
     },
     {
-      "description": "a request to get a Dog",
+      "description": "should pass on errored request",
       "providerState": "there is no dog with an id of 1",
       "request": {
         "method": "GET",
@@ -33,6 +22,17 @@
       },
       "response": {
         "status": 404
+      }
+    },
+    {
+      "description": "should error on unspecified status codes",
+      "providerState": "when redirect exists",
+      "request": {
+        "method": "GET",
+        "path": "/animal"
+      },
+      "response": {
+        "status": 302
       }
     }
   ]

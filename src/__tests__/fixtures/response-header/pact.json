@@ -3,7 +3,36 @@
   "provider": { "name": "provider" },
   "interactions": [
     {
-      "description": "incompatible response header",
+      "description": "should pass with successful headers",
+      "providerState": "",
+      "request": {
+        "method": "GET",
+        "path": "/path"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    },
+    {
+      "description": "should warn about missing standard response headers",
+      "providerState": "",
+      "request": {
+        "method": "GET",
+        "path": "/path"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "age": "60",
+          "Content-Type": "application/json"
+        }
+      }
+    },
+    {
+      "description": "should error on incompatible response headers",
       "providerState": "",
       "request": {
         "method": "GET",
@@ -18,7 +47,7 @@
       }
     },
     {
-      "description": "unknown response header",
+      "description": "should error on unspecified response headers",
       "providerState": "",
       "request": {
         "method": "GET",
@@ -29,35 +58,6 @@
         "headers": {
           "Content-Type": "application/json",
           "unspecified": "foo"
-        }
-      }
-    },
-    {
-      "description": "succesful response",
-      "providerState": "",
-      "request": {
-        "method": "GET",
-        "path": "/path"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/json"
-        }
-      }
-    },
-    {
-      "description": "succesful response with standard headers",
-      "providerState": "",
-      "request": {
-        "method": "GET",
-        "path": "/path"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "age": "60",
-          "Content-Type": "application/json"
         }
       }
     }

@@ -3,17 +3,7 @@
   "provider": { "name": "provider" },
   "interactions": [
     {
-      "description": "invalid path, should be integer",
-      "request": {
-        "method": "GET",
-        "path": "/integer/abc"
-      },
-      "response": {
-        "status": 200
-      }
-    },
-    {
-      "description": "success: integer path parameter",
+      "description": "should pass when path matches integer spec",
       "request": {
         "method": "GET",
         "path": "/integer/1"
@@ -23,17 +13,7 @@
       }
     },
     {
-      "description": "invalid path, should be boolean",
-      "request": {
-        "method": "GET",
-        "path": "/boolean/abc"
-      },
-      "response": {
-        "status": 200
-      }
-    },
-    {
-      "description": "success: boolean path parameter",
+      "description": "should pass when path matches boolean spec",
       "request": {
         "method": "GET",
         "path": "/boolean/true"
@@ -43,17 +23,7 @@
       }
     },
     {
-      "description": "invalid request using simple style with exploded path parameters",
-      "request": {
-        "method": "GET",
-        "path": "/simple/explode-true/1,2,abc"
-      },
-      "response": {
-        "status": 200
-      }
-    },
-    {
-      "description": "valid request using simple style with exploded path parameters",
+      "description": "should pass when path mathres exploded spec",
       "request": {
         "method": "GET",
         "path": "/simple/explode-true/1,2,3"
@@ -63,17 +33,7 @@
       }
     },
     {
-      "description": "invalid request using simple style with non-exploded path parameters",
-      "request": {
-        "method": "GET",
-        "path": "/simple/explode-false/1,2,abc"
-      },
-      "response": {
-        "status": 200
-      }
-    },
-    {
-      "description": "valid request using simple style with non-exploded path parameters",
+      "description": "should pass when path matches non-exploded spec",
       "request": {
         "method": "GET",
         "path": "/simple/explode-false/1,2,3"
@@ -83,7 +43,57 @@
       }
     },
     {
-      "description": "invalid request using exploded path parameters",
+      "description": "should pass when path matches object spec",
+      "request": {
+        "method": "GET",
+        "path": "/exploded-object/string=abc,number=123"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "should error when path does not match integer spec",
+      "request": {
+        "method": "GET",
+        "path": "/integer/abc"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "should error when path does not match boolean spec",
+      "request": {
+        "method": "GET",
+        "path": "/boolean/abc"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "should error when path does not match exploded integer array spec",
+      "request": {
+        "method": "GET",
+        "path": "/simple/explode-true/1,2,abc"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "should error when path does not match non-exploded integer array spec",
+      "request": {
+        "method": "GET",
+        "path": "/simple/explode-false/1,2,abc"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "should error when path does not match object spec",
       "request": {
         "method": "GET",
         "path": "/exploded-object/string=abc,number=abc"
@@ -93,10 +103,30 @@
       }
     },
     {
-      "description": "valid request using exploded path parameters",
+      "description": "should error when path does not match object spec",
       "request": {
         "method": "GET",
-        "path": "/exploded-object/string=abc,number=123"
+        "path": "/exploded-object/string=abc,number=abc"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "should error when path does not exist in spec",
+      "request": {
+        "method": "GET",
+        "path": "/does-not-exist"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "should error when path does not exist in spec",
+      "request": {
+        "method": "POST",
+        "path": "/integer/1"
       },
       "response": {
         "status": 200

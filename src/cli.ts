@@ -12,10 +12,10 @@ const parse = (spec: string) => {
 };
 
 async function run() {
-  const pactFile = process.argv[2];
-  const oasFile = process.argv[3];
-  const pact = parse(fs.readFileSync(pactFile, "utf-8"));
+  const oasFile = process.argv[2];
+  const pactFile = process.argv[3];
   const oas = parse(fs.readFileSync(oasFile, "utf-8"));
+  const pact = parse(fs.readFileSync(pactFile, "utf-8"));
   const errors: Result[] = [];
   const warnings: Result[] = [];
 

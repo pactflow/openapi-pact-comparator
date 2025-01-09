@@ -19,14 +19,16 @@ export function* compareReqHeader(
   interaction: Interaction,
   index: number,
 ): Iterable<Partial<Result>> {
-  const { components, method, operation, path, securitySchemes } = route.store;
+  const { components, definitions, method, operation, path, securitySchemes } =
+    route.store;
 
-  const availableRequestContentType = Object.keys(
-    operation.requestBody?.content || {},
-  );
-  const availableResponseContentType = Object.keys(
-    operation.responses[interaction.response.status]?.content || {},
-  );
+  const availableRequestContentType =
+    operation.consumes || Object.keys(operation.requestBody?.content || {});
+  const availableResponseContentType =
+    operation.produces ||
+    Object.keys(
+      operation.responses[interaction.response.status]?.content || {},
+    );
 
   // request accept
   // --------------
@@ -212,60 +214,85 @@ export function* compareReqHeader(
     if (parameter.in !== "header") {
       continue;
     }
-    const schema: SchemaObject = parameter.schema;
+    const schema: SchemaObject = parameter.schema || parameter;
     const value = parseValue(requestHeaders.get(parameter.name));
-    if (value && schema) {
-      schema.components = components;
-      const schemaId = `[root].paths.${path}.${method}.parameters[${parameterIndex}]`;
-      let validate = ajv.getSchema(schemaId);
-      if (!validate) {
-        ajv.addSchema(schema, schemaId);
-        validate = ajv.getSchema(schemaId);
-      }
-      if (!validate(value)) {
-        for (const error of validate.errors) {
-          const message = formatErrorMessage(error);
-          const instancePath = formatInstancePath(error.instancePath);
-          const schemaPath = formatSchemaPath(error.schemaPath);
+    if (interaction.response.status < 400) {
+      if (value) {
+        if (schema) {
+          schema.components = components;
+          schema.definitions = definitions;
+          const schemaId = `[root].paths.${path}.${method}.parameters[${parameterIndex}]`;
+          let validate = ajv.getSchema(schemaId);
+          if (!validate) {
+            ajv.addSchema(schema, schemaId);
+            validate = ajv.getSchema(schemaId);
+          }
+          if (!validate(value)) {
+            for (const error of validate.errors) {
+              const message = formatErrorMessage(error);
+              const instancePath = formatInstancePath(error.instancePath);
+              const schemaPath = formatSchemaPath(error.schemaPath);
 
-          yield {
-            code: "request.header.incompatible",
-            message: `Value is incompatible with the parameter defined in the spec file: ${message}`,
-            mockDetails: {
-              ...baseMockDetails(interaction),
-              location: `[root].interactions[${index}].request.headers.${parameter.name}.${instancePath}`,
-              value: instancePath ? get(value, instancePath) : value,
-            },
-            specDetails: {
-              location: `${schemaId}.schema.${schemaPath}`,
-              pathMethod: method,
-              pathName: path,
-              value: get(validate.schema, schemaPath),
-            },
-            type: "error",
-          };
+              yield {
+                code: "request.header.incompatible",
+                message: `Value is incompatible with the parameter defined in the spec file: ${message}`,
+                mockDetails: {
+                  ...baseMockDetails(interaction),
+                  location: `[root].interactions[${index}].request.headers.${parameter.name}.${instancePath}`,
+                  value: instancePath ? get(value, instancePath) : value,
+                },
+                specDetails: {
+                  location: `${schemaId}.schema.${schemaPath}`,
+                  pathMethod: method,
+                  pathName: path,
+                  value: get(validate.schema, schemaPath),
+                },
+                type: "error",
+              };
+            }
+          }
         }
+      } else if (parameter.required) {
+        const message = `must have required property '${parameter.name}'`;
+        yield {
+          code: "request.header.incompatible",
+          message: `Value is incompatible with the parameter defined in the spec file: ${message}`,
+          mockDetails: {
+            ...baseMockDetails(interaction),
+            location: `[root].interactions[${index}].request.headers.${parameter.name}`,
+            value,
+          },
+          specDetails: {
+            location: `[root].paths.${path}.${method}.parameters[${parameterIndex}]`,
+            pathMethod: method,
+            pathName: path,
+            value: parameter,
+          },
+          type: "error",
+        };
       }
-      requestHeaders.delete(parameter.name);
     }
+    requestHeaders.delete(parameter.name);
   }
 
-  for (const [headerName, headerValue] of requestHeaders.entries()) {
-    yield {
-      code: "request.header.unknown",
-      message: `Request header is not defined in the spec file: ${headerName}`,
-      mockDetails: {
-        ...baseMockDetails(interaction),
-        location: `[root].interactions[${index}].request.headers.${headerName}`,
-        value: headerValue,
-      },
-      specDetails: {
-        location: `[root].paths.${path}.${method}`,
-        pathMethod: method,
-        pathName: path,
-        value: operation,
-      },
-      type: "warning",
-    };
+  if (interaction.response.status < 400) {
+    for (const [headerName, headerValue] of requestHeaders.entries()) {
+      yield {
+        code: "request.header.unknown",
+        message: `Request header is not defined in the spec file: ${headerName}`,
+        mockDetails: {
+          ...baseMockDetails(interaction),
+          location: `[root].interactions[${index}].request.headers.${headerName}`,
+          value: headerValue,
+        },
+        specDetails: {
+          location: `[root].paths.${path}.${method}`,
+          pathMethod: method,
+          pathName: path,
+          value: operation,
+        },
+        type: "warning",
+      };
+    }
   }
 }

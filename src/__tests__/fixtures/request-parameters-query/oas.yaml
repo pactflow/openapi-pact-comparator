@@ -15,7 +15,7 @@ paths:
           explode: true
       responses:
         "200":
-          description: description
+          description: OK
   /explode-true:
     get:
       parameters:
@@ -31,7 +31,9 @@ paths:
           explode: true
       responses:
         "200":
-          description: description
+          description: OK
+        "400":
+          description: Bad Request
   /explode-false:
     get:
       parameters:
@@ -48,7 +50,7 @@ paths:
           allowReserved: false
       responses:
         "200":
-          description: description
+          description: OK
   /unknown-params:
     get:
       parameters:
@@ -59,7 +61,7 @@ paths:
             type: string
       responses:
         "200":
-          description: description
+          description: OK
 
 components:
   schemas:

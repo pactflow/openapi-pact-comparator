@@ -3,7 +3,7 @@
   "provider": { "name": "provider" },
   "interactions": [
     {
-      "description": "query in object form",
+      "description": "should pass for query in object form",
       "request": {
         "method": "GET",
         "path": "/object",
@@ -21,7 +21,7 @@
       }
     },
     {
-      "description": "query in string form",
+      "description": "should pass for query in string form",
       "request": {
         "method": "GET",
         "path": "/object",
@@ -32,7 +32,21 @@
       }
     },
     {
-      "description": "a request using form style with exploded query parameters",
+      "description": "should pass for 4xx responses",
+      "request": {
+        "method": "GET",
+        "path": "/explode-true",
+        "query": {
+          "id": ["1", "2", "abc"],
+          "param": "unknown"
+        }
+      },
+      "response": {
+        "status": 400
+      }
+    },
+    {
+      "description": "should error when exploded query parameter in object form does not match spec",
       "request": {
         "method": "GET",
         "path": "/explode-true",
@@ -45,7 +59,7 @@
       }
     },
     {
-      "description": "a request using form style with exploded query parameters",
+      "description": "should error when exploded query parameter in string form does not match spec",
       "request": {
         "method": "GET",
         "path": "/explode-true",
@@ -56,7 +70,7 @@
       }
     },
     {
-      "description": "a request using form style with non-exploded query parameters",
+      "description": "should error when non-exploded query parameter in object form does not match spec",
       "request": {
         "method": "GET",
         "path": "/explode-false",
@@ -69,7 +83,7 @@
       }
     },
     {
-      "description": "a request using form style with non-exploded query parameters",
+      "description": "should error when non-exploded query parameter in string form does not match spec",
       "request": {
         "method": "GET",
         "path": "/explode-false",
@@ -80,7 +94,7 @@
       }
     },
     {
-      "description": "unknown query parameters",
+      "description": "should warn about unknown query parameters",
       "request": {
         "method": "GET",
         "path": "/unknown-params",

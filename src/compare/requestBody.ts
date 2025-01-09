@@ -30,13 +30,12 @@ export function* compareReqBody(
   interaction: Interaction,
   index: number,
 ): Iterable<Partial<Result>> {
-  const { components, method, operation, path } = route.store;
+  const { components, definitions, method, operation, path } = route.store;
   const { body } = interaction.request;
   const requestHeaders = new Headers(interaction.request.headers);
 
-  const availableRequestContentTypes = Object.keys(
-    operation.requestBody?.content || {},
-  );
+  const availableRequestContentTypes =
+    operation.consumes || Object.keys(operation.requestBody?.content || {});
   const contentType = findMatchingType(
     requestHeaders.get("content-type") || DEFAULT_CONTENT_TYPE,
     availableRequestContentTypes,
@@ -70,6 +69,7 @@ export function* compareReqBody(
 
       if (schema && value) {
         schema.components = components;
+        schema.definitions = definitions;
         const schemaId = `[root].paths.${path}.${method}.requestBody.content.${contentType}`;
         let validate = ajv.getSchema(schemaId);
         if (!validate) {

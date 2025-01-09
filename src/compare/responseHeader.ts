@@ -18,11 +18,13 @@ export function* compareResHeader(
   interaction: Interaction,
   index: number,
 ): Iterable<Partial<Result>> {
-  const { components, method, operation, path } = route.store;
+  const { components, definitions, method, operation, path } = route.store;
 
-  const availableResponseContentType = Object.keys(
-    operation.responses[interaction.response.status]?.content || {},
-  );
+  const availableResponseContentType =
+    operation.produces ||
+    Object.keys(
+      operation.responses[interaction.response.status]?.content || {},
+    );
 
   // response content-type
   // ---------------------
@@ -105,6 +107,7 @@ export function* compareResHeader(
     const value = responseHeaders.get(headerName);
     if (value && schema) {
       schema.components = components;
+      schema.definitions = definitions;
       const schemaId = `[root].paths.${path}.${method}.responses.${interaction.response.status}.headers.${headerName}`;
       let validate = ajv.getSchema(schemaId);
       if (!validate) {

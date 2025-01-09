@@ -22,7 +22,7 @@ export function* compareResBody(
   interaction: Interaction,
   index: number,
 ): Iterable<Partial<Result>> {
-  const { components, method, operation, path } = route.store;
+  const { components, definitions, method, operation, path } = route.store;
   const { body, status } = interaction.response;
   const requestHeaders = new Headers(interaction.request.headers);
 
@@ -45,7 +45,8 @@ export function* compareResBody(
       type: "error",
     };
   } else if (response.content) {
-    const availableResponseContentTypes = Object.keys(response.content || {});
+    const availableResponseContentTypes =
+      operation.produces || Object.keys(response.content || {});
     const contentType = findMatchingType(
       requestHeaders.get("accept") || DEFAULT_CONTENT_TYPE,
       availableResponseContentTypes,
@@ -75,6 +76,7 @@ export function* compareResBody(
 
       if (schema && value) {
         schema.components = components;
+        schema.definitions = definitions;
         const schemaId = `[root].paths.${path}.${method}.responses.${status}.content.${contentType}`;
         let validate = ajv.getSchema(schemaId);
         if (!validate) {

@@ -12,7 +12,7 @@ export function* compareReqPath(
   interaction: Interaction,
   index: number,
 ): Iterable<Partial<Result>> {
-  const { components, method, operation, path } = route.store;
+  const { components, definitions, method, operation, path } = route.store;
 
   for (const [parameterIndex, parameter] of (
     operation.parameters || []
@@ -25,6 +25,7 @@ export function* compareReqPath(
     const value = parseValue(route.params[parameter.name]);
     if (value && schema) {
       schema.components = components;
+      schema.definitions = definitions;
       const schemaId = `[root].paths.${path}.${method}.parameters[${parameterIndex}]`;
       let validate = ajv.getSchema(schemaId);
       if (!validate) {

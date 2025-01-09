@@ -25,7 +25,7 @@ paths:
       responses:
         "200":
           description: description
-  /simple/explode-true/{id}:
+  /simple/explode-true/{id*}:
     get:
       parameters:
         - in: path
@@ -53,6 +53,70 @@ paths:
               type: integer
             minItems: 1
           style: simple
+          explode: false
+      responses:
+        "200":
+          description: description
+  /label/explode-true/{.id*}:
+    get:
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: array
+            items:
+              type: integer
+            minItems: 1
+          style: label
+          explode: true
+      responses:
+        "200":
+          description: description
+  /label/explode-false/{.id}:
+    get:
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: array
+            items:
+              type: integer
+            minItems: 1
+          style: label
+          explode: false
+      responses:
+        "200":
+          description: description
+  /matrix/explode-true/{;id*}:
+    get:
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: array
+            items:
+              type: integer
+            minItems: 1
+          style: matrix
+          explode: true
+      responses:
+        "200":
+          description: description
+  /matrix/explode-false/{;id}:
+    get:
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: array
+            items:
+              type: integer
+            minItems: 1
+          style: matrix
           explode: false
       responses:
         "200":

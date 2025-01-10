@@ -65,7 +65,7 @@ const flattenHeaders = (
       Array.isArray(value) ? value.join(",") : value,
     ]),
   );
-}
+};
 
 const interactionV1 = (i: Interaction): Interaction => ({
   ...i,

@@ -4,14 +4,14 @@ export interface Interaction {
   providerState?: string;
   request: {
     body?: unknown;
-    headers?: Record<string, string | string[]>;
+    headers?: Record<string, string>;
     method: string;
     path: string;
     query?: string;
   };
   response: {
     body?: unknown;
-    headers?: Record<string, string | string[]>;
+    headers?: Record<string, string>;
     status: number;
   };
 }

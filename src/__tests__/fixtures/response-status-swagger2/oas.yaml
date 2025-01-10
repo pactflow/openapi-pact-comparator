@@ -10,6 +10,13 @@ paths:
         - application/json
       responses:
         "200":
-          description: description
+          description: OK
         "404":
-          description: description
+          description: Not Found
+  /plant:
+    get:
+      produces:
+        - application/json
+      responses:
+        default:
+          description: default

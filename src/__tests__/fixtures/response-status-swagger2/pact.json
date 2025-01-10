@@ -4,7 +4,6 @@
   "interactions": [
     {
       "description": "should pass on succesful request",
-      "providerState": "when animal exists",
       "request": {
         "method": "GET",
         "path": "/api/animal"
@@ -15,7 +14,6 @@
     },
     {
       "description": "should pass on errored request",
-      "providerState": "there is no dog with an id of 1",
       "request": {
         "method": "GET",
         "path": "/api/animal"
@@ -26,13 +24,22 @@
     },
     {
       "description": "should error on unspecified status codes",
-      "providerState": "when redirect exists",
       "request": {
         "method": "GET",
         "path": "/api/animal"
       },
       "response": {
         "status": 302
+      }
+    },
+    {
+      "description": "should warn when falling back to default response",
+      "request": {
+        "method": "GET",
+        "path": "/api/plant"
+      },
+      "response": {
+        "status": 200
       }
     }
   ]

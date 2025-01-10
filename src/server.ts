@@ -40,8 +40,8 @@ const server = http.createServer((request, response) => {
         })
         .filter((f) => f.data);
 
-        const oas = files.find(f => f.name === "oas");
-        const pact = files.find(f => f.name === "pact");
+      const oas = files.find((f) => f.name === "oas");
+      const pact = files.find((f) => f.name === "pact");
 
       for await (const result of compare(parse(oas.data), parse(pact.data))) {
         response.write(JSON.stringify(result));

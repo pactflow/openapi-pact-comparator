@@ -261,7 +261,7 @@ export function* compareReqHeader(
     if (parameter.in !== "header") {
       continue;
     }
-    const schema: SchemaObject = parameter.schema || parameter;
+    const schema: SchemaObject = parameter.schema || { type: parameter.type };
     const value = parseValue(requestHeaders.get(parameter.name));
     if (interaction.response.status < 400) {
       if (value) {

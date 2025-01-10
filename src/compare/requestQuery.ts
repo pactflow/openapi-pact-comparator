@@ -33,7 +33,7 @@ export function* compareReqQuery(
     if (parameter.in !== "query") {
       continue;
     }
-    const schema: SchemaObject = parameter.schema;
+    const schema: SchemaObject = parameter.schema || { type: parameter.type };
     const value = searchParams[parameter.name];
     if (interaction.response.status < 400) {
       if (value && schema) {

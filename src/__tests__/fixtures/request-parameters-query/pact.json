@@ -103,6 +103,17 @@
       "response": {
         "status": 200
       }
+    },
+    {
+      "description": "should error when optional query parameter is incompatible",
+      "request": {
+        "method": "GET",
+        "path": "/unknown-params",
+        "query": "age=abc"
+      },
+      "response": {
+        "status": 200
+      }
     }
   ]
 }

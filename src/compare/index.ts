@@ -8,6 +8,7 @@ import debug from "debug";
 import SwaggerParser from "@apidevtools/swagger-parser";
 import { cloneDeep } from "lodash-es";
 import { setupAjv, setupRouter } from "./setup";
+import { parse } from "../documents/pact";
 import { compareReqPath } from "./requestPath";
 import { compareReqQuery } from "./requestQuery";
 import { compareReqBody } from "./requestBody";
@@ -26,6 +27,7 @@ export async function* compare(
 ): AsyncIterable<Partial<Result>> {
   // TODO: validate pact
   await SwaggerParser.validate(cloneDeep(oas));
+  const parsedPact = parse(pact);
 
   debugSetup("start");
   const ajv = setupAjv();
@@ -35,7 +37,7 @@ export async function* compare(
 
   debugComparison("start");
 
-  if (pact.interactions.length === 0) {
+  if (parsedPact.interactions.length === 0) {
     yield {
       code: "pact-broker.no-pacts-found",
       message: "No consumer pacts found in Pact Broker",
@@ -43,7 +45,7 @@ export async function* compare(
     };
   }
 
-  for (const [index, interaction] of pact.interactions.entries()) {
+  for (const [index, interaction] of parsedPact.interactions.entries()) {
     debugInteraction("start");
     const { method, path, query } = interaction.request;
     // in pact, query is either a string or an object of only one level deep

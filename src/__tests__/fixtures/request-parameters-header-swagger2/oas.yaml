@@ -1,0 +1,23 @@
+swagger: "2.0"
+info:
+  title: OAS
+  version: 1.0.0
+paths:
+  /path:
+    get:
+      produces:
+        - application/json
+      parameters:
+        - in: header
+          name: x-required-number
+          required: true
+          type: number
+        - in: header
+          name: x-optional-number
+          required: false
+          type: number
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad request

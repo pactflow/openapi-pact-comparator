@@ -1,0 +1,25 @@
+swagger: "2.0"
+info:
+  title: path parameters
+  version: 1.0.0
+paths:
+  /integer/{id}:
+    get:
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: integer
+      responses:
+        "200":
+          description: description
+  /boolean/{id}:
+    get:
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: boolean
+      responses:
+        "200":
+          description: description

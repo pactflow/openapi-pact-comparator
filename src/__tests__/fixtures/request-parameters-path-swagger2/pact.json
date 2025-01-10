@@ -1,0 +1,66 @@
+{
+  "consumer": { "name": "consumer" },
+  "provider": { "name": "provider" },
+  "interactions": [
+    {
+      "description": "should pass when path matches integer spec",
+      "request": {
+        "method": "GET",
+        "path": "/integer/1"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "should pass when path matches boolean spec",
+      "request": {
+        "method": "GET",
+        "path": "/boolean/true"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "should error when path does not match integer spec",
+      "request": {
+        "method": "GET",
+        "path": "/integer/abc"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "should error when path does not match boolean spec",
+      "request": {
+        "method": "GET",
+        "path": "/boolean/abc"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "should error when path does not exist in spec",
+      "request": {
+        "method": "GET",
+        "path": "/does-not-exist"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "should error when path does not exist in spec",
+      "request": {
+        "method": "POST",
+        "path": "/integer/1"
+      },
+      "response": {
+        "status": 200
+      }
+    }
+  ]
+}

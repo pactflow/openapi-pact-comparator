@@ -1,0 +1,39 @@
+{
+  "consumer": { "name": "consumer" },
+  "provider": { "name": "provider" },
+  "interactions": [
+    {
+      "description": "should pass with valid query parameter",
+      "request": {
+        "method": "GET",
+        "path": "/animal",
+        "query": "name=mark"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "should warn about unknown query parameters",
+      "request": {
+        "method": "GET",
+        "path": "/animal",
+        "query": "unknown_key=unknown_value"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "should error when optional query parameter is incompatible",
+      "request": {
+        "method": "GET",
+        "path": "/animal",
+        "query": "age=abc"
+      },
+      "response": {
+        "status": 200
+      }
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+swagger: "2.0"
+info:
+  title: query parameters
+  version: 1.0.0
+paths:
+  /animal:
+    get:
+      parameters:
+        - in: query
+          name: name
+          required: true
+          type: string
+        - in: query
+          name: age
+          required: false
+          type: number
+      responses:
+        "200":
+          description: OK

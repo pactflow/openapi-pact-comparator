@@ -1,0 +1,101 @@
+[
+  {
+    "code": "request.header.unknown",
+    "message": "Request header is not defined in the spec file: x-surprise",
+    "mockDetails": {
+      "interactionDescription": "should warn when header is not defined in spec",
+      "interactionState": "[none]",
+      "location": "[root].interactions[3].request.headers.x-surprise",
+      "value": "unexpected header"
+    },
+    "specDetails": {
+      "location": "[root].paths./path.get",
+      "pathMethod": "get",
+      "pathName": "/path",
+      "value": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-required-number",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "in": "header",
+            "name": "x-optional-number",
+            "required": false,
+            "type": "number"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        }
+      }
+    },
+    "type": "warning"
+  },
+  {
+    "code": "request.header.incompatible",
+    "message": "Value is incompatible with the parameter defined in the spec file: must have required property 'x-required-number'",
+    "mockDetails": {
+      "interactionDescription": "should error when required header is missing",
+      "interactionState": "[none]",
+      "location": "[root].interactions[4].request.headers.x-required-number",
+      "value": null
+    },
+    "specDetails": {
+      "location": "[root].paths./path.get.parameters[0]",
+      "pathMethod": "get",
+      "pathName": "/path",
+      "value": {
+        "in": "header",
+        "name": "x-required-number",
+        "required": true,
+        "type": "number"
+      }
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.header.incompatible",
+    "message": "Value is incompatible with the parameter defined in the spec file: must be number",
+    "mockDetails": {
+      "interactionDescription": "should error when required header does not match the spec",
+      "interactionState": "[none]",
+      "location": "[root].interactions[5].request.headers.x-required-number.",
+      "value": "abc"
+    },
+    "specDetails": {
+      "location": "[root].paths./path.get.parameters[0].schema.type",
+      "pathMethod": "get",
+      "pathName": "/path",
+      "value": "number"
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.header.incompatible",
+    "message": "Value is incompatible with the parameter defined in the spec file: must be number",
+    "mockDetails": {
+      "interactionDescription": "should error when optional header does not match the spec",
+      "interactionState": "[none]",
+      "location": "[root].interactions[6].request.headers.x-optional-number.",
+      "value": "abc"
+    },
+    "specDetails": {
+      "location": "[root].paths./path.get.parameters[1].schema.type",
+      "pathMethod": "get",
+      "pathName": "/path",
+      "value": "number"
+    },
+    "type": "error"
+  }
+]

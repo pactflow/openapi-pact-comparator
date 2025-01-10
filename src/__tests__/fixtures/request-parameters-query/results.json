@@ -93,6 +93,61 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "in": "query",
+            "name": "age",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "components": {
+                "schemas": {
+                  "Person": {
+                    "type": "object",
+                    "required": [
+                      "id",
+                      "name"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "id": {
+                        "type": "number"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "address": {
+                        "$ref": "#/components/schemas/Address"
+                      }
+                    }
+                  },
+                  "Address": {
+                    "type": "object",
+                    "required": [
+                      "street",
+                      "city",
+                      "state",
+                      "postcode"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "street": {
+                        "type": "string"
+                      },
+                      "city": {
+                        "type": "string"
+                      },
+                      "state": {
+                        "type": "string"
+                      },
+                      "postcode": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         ],
         "responses": {
@@ -103,5 +158,23 @@
       }
     },
     "type": "warning"
+  },
+  {
+    "code": "request.query.incompatible",
+    "message": "Value is incompatible with the parameter defined in the spec file: must be number",
+    "mockDetails": {
+      "interactionDescription": "should error when optional query parameter is incompatible",
+      "interactionState": "[none]",
+      "location": "[root].interactions[8].request.query.age.",
+      "value": "abc"
+    },
+    "source": "spec-mock-validation",
+    "specDetails": {
+      "location": "[root].paths./unknown-params.get.parameters[1].schema.type",
+      "pathMethod": "get",
+      "pathName": "/unknown-params",
+      "value": "number"
+    },
+    "type": "error"
   }
 ]

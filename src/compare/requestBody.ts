@@ -1,5 +1,6 @@
 import type { SchemaObject } from "ajv";
 import type Ajv from "ajv/dist/2019";
+import type { OpenAPIV3 } from "openapi-types";
 import type Router from "find-my-way";
 import type { Interaction } from "../documents/pact";
 import type { Result } from "../results";
@@ -47,9 +48,14 @@ export function* compareReqBody(
     requestHeaders.get("content-type") || DEFAULT_CONTENT_TYPE,
     availableRequestContentTypes,
   );
+  const schema: SchemaObject | undefined =
+    operation.requestBody?.content?.[contentType]?.schema ||
+    (operation.parameters || []).find(
+      (p: OpenAPIV3.ParameterObject) => p.in === "body",
+    )?.schema;
 
   if (body || body === "") {
-    if (!operation.requestBody?.content?.[contentType]?.schema) {
+    if (!schema) {
       yield {
         code: "request.body.unknown",
         message: "No matching schema found for request body",
@@ -67,8 +73,6 @@ export function* compareReqBody(
         type: "error",
       };
     } else if (interaction.response.status < 400) {
-      const schema: SchemaObject =
-        operation.requestBody.content[contentType]?.schema;
       const value = parseBody(body, contentType);
 
       if (schema && canValidate(contentType)) {

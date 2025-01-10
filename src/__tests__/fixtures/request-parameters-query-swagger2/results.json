@@ -1,0 +1,57 @@
+[
+  {
+    "code": "request.query.unknown",
+    "message": "Query parameter is not defined in the spec file: unknown_key",
+    "mockDetails": {
+      "interactionDescription": "should warn about unknown query parameters",
+      "interactionState": "[none]",
+      "location": "[root].interactions[1].request.query.unknown_key",
+      "value": "unknown_value"
+    },
+    "specDetails": {
+      "location": "[root].paths./animal.get",
+      "pathMethod": "get",
+      "pathName": "/animal",
+      "value": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "name",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "age",
+            "required": false,
+            "type": "number"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "type": "warning"
+  },
+  {
+    "code": "request.query.incompatible",
+    "message": "Value is incompatible with the parameter defined in the spec file: must be number",
+    "mockDetails": {
+      "interactionDescription": "should error when optional query parameter is incompatible",
+      "interactionState": "[none]",
+      "location": "[root].interactions[2].request.query.age.",
+      "value": "abc"
+    },
+    "source": "spec-mock-validation",
+    "specDetails": {
+      "location": "[root].paths./animal.get.parameters[1].schema.type",
+      "pathMethod": "get",
+      "pathName": "/animal",
+      "value": "number"
+    },
+    "type": "error"
+  }
+]

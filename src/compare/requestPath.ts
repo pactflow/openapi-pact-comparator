@@ -21,7 +21,7 @@ export function* compareReqPath(
       continue;
     }
 
-    const schema: SchemaObject = parameter.schema;
+    const schema: SchemaObject = parameter.schema || { type: parameter.type };
     const value = parseValue(route.params[parameter.name]);
     if (value && schema) {
       schema.components = components;

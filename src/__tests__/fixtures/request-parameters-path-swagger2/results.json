@@ -1,0 +1,168 @@
+[
+  {
+    "code": "request.path-or-method.unknown",
+    "message": "Path or method not defined in spec file: GET /integer/abc",
+    "mockDetails": {
+      "interactionDescription": "should error when path does not match integer spec",
+      "interactionState": "[none]",
+      "location": "[root].interactions[2].request.path",
+      "value": "/integer/abc"
+    },
+    "specDetails": {
+      "location": "[root].paths",
+      "pathMethod": null,
+      "pathName": null,
+      "value": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "description"
+          }
+        }
+      }
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.path-or-method.unknown",
+    "message": "Path or method not defined in spec file: GET /boolean/abc",
+    "mockDetails": {
+      "interactionDescription": "should error when path does not match boolean spec",
+      "interactionState": "[none]",
+      "location": "[root].interactions[3].request.path",
+      "value": "/boolean/abc"
+    },
+    "specDetails": {
+      "location": "[root].paths",
+      "pathMethod": null,
+      "pathName": null,
+      "value": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "boolean"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "description"
+          }
+        }
+      }
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.path-or-method.unknown",
+    "message": "Path or method not defined in spec file: GET /does-not-exist",
+    "mockDetails": {
+      "interactionDescription": "should error when path does not exist in spec",
+      "interactionState": "[none]",
+      "location": "[root].interactions[4].request.path",
+      "value": "/does-not-exist"
+    },
+    "specDetails": {
+      "location": "[root].paths",
+      "pathMethod": null,
+      "pathName": null,
+      "value": {
+        "/integer/{id}": {
+          "get": {
+            "parameters": [
+              {
+                "in": "path",
+                "name": "id",
+                "required": true,
+                "type": "integer"
+              }
+            ],
+            "responses": {
+              "200": {
+                "description": "description"
+              }
+            }
+          }
+        },
+        "/boolean/{id}": {
+          "get": {
+            "parameters": [
+              {
+                "in": "path",
+                "name": "id",
+                "required": true,
+                "type": "boolean"
+              }
+            ],
+            "responses": {
+              "200": {
+                "description": "description"
+              }
+            }
+          }
+        }
+      }
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.path-or-method.unknown",
+    "message": "Path or method not defined in spec file: POST /integer/1",
+    "mockDetails": {
+      "interactionDescription": "should error when path does not exist in spec",
+      "interactionState": "[none]",
+      "location": "[root].interactions[5].request.path",
+      "value": "/integer/1"
+    },
+    "specDetails": {
+      "location": "[root].paths",
+      "pathMethod": null,
+      "pathName": null,
+      "value": {
+        "/integer/{id}": {
+          "get": {
+            "parameters": [
+              {
+                "in": "path",
+                "name": "id",
+                "required": true,
+                "type": "integer"
+              }
+            ],
+            "responses": {
+              "200": {
+                "description": "description"
+              }
+            }
+          }
+        },
+        "/boolean/{id}": {
+          "get": {
+            "parameters": [
+              {
+                "in": "path",
+                "name": "id",
+                "required": true,
+                "type": "boolean"
+              }
+            ],
+            "responses": {
+              "200": {
+                "description": "description"
+              }
+            }
+          }
+        }
+      }
+    },
+    "type": "error"
+  }
+]

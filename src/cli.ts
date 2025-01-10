@@ -1,4 +1,4 @@
-import fs from 'node:fs/promises'
+import fs from "node:fs/promises";
 import yaml from "js-yaml";
 import { compare } from "./compare";
 import type { Result } from "./results";
@@ -17,7 +17,7 @@ async function run() {
   const [oas, pact] = await Promise.all([
     fs.readFile(oasFile, { encoding: "utf-8" }),
     fs.readFile(pactFile, { encoding: "utf-8" }),
-  ])
+  ]);
   const errors: Result[] = [];
   const warnings: Result[] = [];
 

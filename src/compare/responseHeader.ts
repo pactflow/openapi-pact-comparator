@@ -10,6 +10,7 @@ import {
   formatInstancePath,
   formatSchemaPath,
 } from "../results";
+import { optimiseSchema } from "../transform";
 import { findMatchingType, standardHttpResponseHeaders } from "./utils/content";
 
 export function* compareResHeader(
@@ -28,7 +29,9 @@ export function* compareResHeader(
 
   // response content-type
   // ---------------------
-  const responseHeaders = new Headers(interaction.response.headers);
+  const responseHeaders = new Headers(
+    interaction.response.headers as Record<string, string>,
+  );
   const responseContentType =
     responseHeaders.get("content-type")?.split(";")[0] || "";
   if (responseContentType) {
@@ -107,12 +110,13 @@ export function* compareResHeader(
       headers[headerName].schema || headers[headerName];
     const value = responseHeaders.get(headerName);
     if (value && schema) {
-      schema.components = components;
-      schema.definitions = definitions;
       const schemaId = `[root].paths.${path}.${method}.responses.${interaction.response.status}.headers.${headerName}`;
       let validate = ajv.getSchema(schemaId);
       if (!validate) {
-        ajv.addSchema(schema, schemaId);
+        ajv.addSchema(
+          optimiseSchema(schema, components, definitions),
+          schemaId,
+        );
         validate = ajv.getSchema(schemaId);
       }
       if (!validate(value)) {

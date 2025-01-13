@@ -4,14 +4,14 @@ export interface Interaction {
   providerState?: string;
   request: {
     body?: unknown;
-    headers?: Record<string, string>;
+    headers?: Record<string, string | string[]>;
     method: string;
     path: string;
-    query?: string;
+    query?: string | Record<string, string | string[]>;
   };
   response: {
     body?: unknown;
-    headers?: Record<string, string>;
+    headers?: Record<string, string | string[]>;
     status: number;
   };
 }
@@ -54,10 +54,10 @@ const parseAsPactV4Body = (body: any) => {
   }
 };
 
-const flattenHeaders = (
-  headers?: Record<string, string | string[]>,
-): Record<string, string> | undefined => {
-  if (!headers) return headers;
+const flattenValues = (
+  headers?: string | Record<string, string | string[]>,
+): Record<string, string> => {
+  if (!headers || typeof headers === "string") return headers as undefined;
 
   return Object.fromEntries(
     Object.entries(headers || {}).map(([key, value]) => [
@@ -71,24 +71,39 @@ const interactionV1 = (i: Interaction): Interaction => ({
   ...i,
   request: {
     ...i.request,
-    headers: flattenHeaders(i.request.headers),
+    headers: flattenValues(i.request.headers),
   },
   response: {
     ...i.response,
-    headers: flattenHeaders(i.response.headers),
+    headers: flattenValues(i.response.headers),
   },
 });
+
+const interactionV3 = (i: Interaction): Interaction => ({
+  ...i,
+  request: {
+    ...i.request,
+    headers: flattenValues(i.request.headers),
+    query: flattenValues(i.request.query),
+  },
+  response: {
+    ...i.response,
+    headers: flattenValues(i.response.headers),
+  },
+});
+
 const interactionV4 = (i: Interaction): Interaction => ({
   ...i,
   request: {
     ...i.request,
     body: parseAsPactV4Body(i.request.body),
-    headers: flattenHeaders(i.request.headers),
+    headers: flattenValues(i.request.headers),
+    query: flattenValues(i.request.query),
   },
   response: {
     ...i.response,
     body: parseAsPactV4Body(i.response.body),
-    headers: flattenHeaders(i.response.headers),
+    headers: flattenValues(i.response.headers),
   },
 });
 
@@ -100,7 +115,8 @@ export const parse = (pact: Pact): Pact => {
       metadata?.["pact-specification"]?.version ||
       "0",
   );
-  const interactionParser = version >= 4 ? interactionV4 : interactionV1;
+  const interactionParser =
+    version >= 4 ? interactionV4 : version >= 3 ? interactionV3 : interactionV1;
 
   return {
     metadata,

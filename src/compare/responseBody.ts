@@ -1,7 +1,7 @@
 import type { SchemaObject } from "ajv";
 import type Ajv from "ajv/dist/2019";
 import type Router from "find-my-way";
-import type { OpenAPIV3 } from "openapi-types";
+import type { OpenAPIV2, OpenAPIV3 } from "openapi-types";
 import type { Interaction } from "../documents/pact";
 import type { Result } from "../results";
 import { get } from "lodash-es";
@@ -11,7 +11,7 @@ import {
   formatInstancePath,
   formatSchemaPath,
 } from "../results";
-import { transformResponseSchema } from "../transform";
+import { transformResponseSchema, optimiseSchema } from "../transform";
 import { findMatchingType } from "./utils/content";
 
 const DEFAULT_CONTENT_TYPE = "application/json";
@@ -24,7 +24,9 @@ export function* compareResBody(
 ): Iterable<Partial<Result>> {
   const { components, definitions, method, operation, path } = route.store;
   const { body, status } = interaction.response;
-  const requestHeaders = new Headers(interaction.request.headers);
+  const requestHeaders = new Headers(
+    interaction.request.headers as Record<string, string>,
+  );
 
   const statusResponse = operation.responses?.[
     status
@@ -70,7 +72,7 @@ export function* compareResBody(
       };
     }
 
-    if (response.schema || response.content) {
+    if ((response as OpenAPIV2.ResponseObject).schema || response.content) {
       const availableResponseContentTypes =
         operation.produces || Object.keys(response.content || {});
       const contentType = findMatchingType(
@@ -78,7 +80,8 @@ export function* compareResBody(
         availableResponseContentTypes,
       );
       const schema: SchemaObject =
-        response.schema || response.content[contentType]?.schema;
+        (response as OpenAPIV2.ResponseObject).schema ||
+        response.content[contentType]?.schema;
       const value = body;
 
       if (body) {
@@ -100,12 +103,15 @@ export function* compareResBody(
             type: "error",
           };
         } else if (value) {
-          schema.components = components;
-          schema.definitions = definitions;
           const schemaId = `[root].paths.${path}.${method}.responses.${status}.content.${contentType}`;
           let validate = ajv.getSchema(schemaId);
           if (!validate) {
-            ajv.addSchema(transformResponseSchema(schema), schemaId);
+            ajv.addSchema(
+              transformResponseSchema(
+                optimiseSchema(schema, components, definitions),
+              ),
+              schemaId,
+            );
             validate = ajv.getSchema(schemaId);
           }
           if (!validate(value)) {

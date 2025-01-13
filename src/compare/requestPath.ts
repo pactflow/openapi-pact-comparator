@@ -3,8 +3,10 @@ import type Ajv from "ajv/dist/2019";
 import type Router from "find-my-way";
 import type { Interaction } from "../documents/pact";
 import type { Result } from "../results";
-import { parseValue } from "./utils/parse";
 import { baseMockDetails } from "../results";
+import { optimiseSchema } from "../transform";
+import { cleanPathParameter } from "./utils/parameters";
+import { parseValue } from "./utils/parse";
 
 export function* compareReqPath(
   ajv: Ajv,
@@ -22,14 +24,15 @@ export function* compareReqPath(
     }
 
     const schema: SchemaObject = parameter.schema || { type: parameter.type };
-    const value = parseValue(route.params[parameter.name]);
+    const value = parseValue(route.params[cleanPathParameter(parameter.name)]);
     if (value && schema) {
-      schema.components = components;
-      schema.definitions = definitions;
       const schemaId = `[root].paths.${path}.${method}.parameters[${parameterIndex}]`;
       let validate = ajv.getSchema(schemaId);
       if (!validate) {
-        ajv.addSchema(schema, schemaId);
+        ajv.addSchema(
+          optimiseSchema(schema, components, definitions),
+          schemaId,
+        );
         validate = ajv.getSchema(schemaId);
       }
       if (!validate(value)) {

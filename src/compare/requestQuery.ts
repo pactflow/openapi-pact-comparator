@@ -11,6 +11,7 @@ import {
   formatInstancePath,
   formatSchemaPath,
 } from "../results";
+import { optimiseSchema } from "../transform";
 
 export function* compareReqQuery(
   ajv: Ajv,
@@ -37,12 +38,13 @@ export function* compareReqQuery(
     const value = searchParams[parameter.name];
     if (interaction.response.status < 400) {
       if (value && schema) {
-        schema.components = components;
-        schema.definitions = definitions;
         const schemaId = `[root].paths.${path}.${method}.parameters[${parameterIndex}]`;
         let validate = ajv.getSchema(schemaId);
         if (!validate) {
-          ajv.addSchema(schema, schemaId);
+          ajv.addSchema(
+            optimiseSchema(schema, components, definitions),
+            schemaId,
+          );
           validate = ajv.getSchema(schemaId);
         }
         if (!validate(value)) {

@@ -1,7 +1,8 @@
-import type { OpenAPIV3 } from "openapi-types";
+import type { OpenAPIV2, OpenAPIV3 } from "openapi-types";
 import Ajv from "ajv/dist/2019";
 import addFormats from "ajv-formats";
 import Router, { HTTPMethod } from "find-my-way";
+import { cleanPathParameter } from "./utils/parameters";
 
 export function setupAjv(): Ajv {
   const ajv = new Ajv({
@@ -19,9 +20,19 @@ export function setupAjv(): Ajv {
 
   return ajv;
 }
+const SUPPORTED_METHODS = [
+  "GET",
+  "POST",
+  "PUT",
+  "PATCH",
+  "DELETE",
+  "HEAD",
+  "OPTIONS",
+  "TRACE",
+];
 
 export function setupRouter(
-  oas: OpenAPIV3.Document,
+  oas: OpenAPIV2.Document | OpenAPIV3.Document,
 ): Router.Instance<Router.HTTPVersion.V1> {
   const router = Router({
     ignoreTrailingSlash: true,
@@ -30,19 +41,27 @@ export function setupRouter(
   for (const oasPath in oas.paths) {
     // NB: all path parameters are required in OAS
     const path =
-      (oas.basePath || "") +
-      oasPath.replaceAll(/{([.;]?)([^*]+)\*?}/g, "$1:$2");
+      ((oas as OpenAPIV2.Document).basePath || "") +
+      oasPath
+        .replaceAll(/{.*?}/g, cleanPathParameter)
+        .replaceAll(/{([.;]?)([^*]+?)\*?}/g, "$1:$2");
     for (const method in oas.paths[oasPath]) {
+      if (!SUPPORTED_METHODS.includes(method.toUpperCase())) {
+        continue;
+      }
+
       const operation = oas.paths[oasPath][method];
       operation.security ||= oas.security;
       router.on(method.toUpperCase() as HTTPMethod, path, () => {}, {
-        components: oas.components,
-        definitions: oas.definitions,
+        components: (oas as OpenAPIV3.Document).components,
+        definitions: (oas as OpenAPIV2.Document).definitions,
         method,
         operation,
         path: oasPath,
         securitySchemes:
-          oas.securityDefinitions || oas.components?.securitySchemes || {},
+          (oas as OpenAPIV2.Document).securityDefinitions ||
+          (oas as OpenAPIV3.Document).components?.securitySchemes ||
+          {},
       });
     }
   }

@@ -1,12 +1,8 @@
 import { SchemaObject } from "ajv";
-import { cloneDeep, each } from "lodash-es";
+import { each } from "lodash-es";
 import { traverse } from "./utils";
 
-export const transformRequestSchema = (
-  originalSchema: SchemaObject,
-): SchemaObject => {
-  const schema = cloneDeep(originalSchema);
-
+export const transformRequestSchema = (schema: SchemaObject): SchemaObject => {
   // OpenAPI defines allOf to mean the union of all sub-schemas. JSON-Schema
   // defines allOf to mean that *every* sub-schema needs to be satisfied. In
   // draft 2019-09, JSON-Schema added "unevaluatedProperties" to support this

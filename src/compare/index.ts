@@ -68,7 +68,7 @@ export async function* compare(
           location: "[root].paths",
           pathMethod: null,
           pathName: null,
-          value: oas.paths, // FIXME: this can be big! do we really want to replicate nearly all of the oas?
+          value: undefined,
         },
         type: "error",
       };

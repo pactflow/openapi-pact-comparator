@@ -12,7 +12,7 @@ import {
   formatInstancePath,
   formatSchemaPath,
 } from "../results";
-import { transformRequestSchema } from "../transform";
+import { transformRequestSchema, optimiseSchema } from "../transform";
 import { findMatchingType } from "./utils/content";
 
 const parseBody = (body: unknown, contentType: string) => {
@@ -40,7 +40,9 @@ export function* compareReqBody(
 ): Iterable<Partial<Result>> {
   const { components, definitions, method, operation, path } = route.store;
   const { body } = interaction.request;
-  const requestHeaders = new Headers(interaction.request.headers);
+  const requestHeaders = new Headers(
+    interaction.request.headers as Record<string, string>,
+  );
 
   const availableRequestContentTypes =
     operation.consumes || Object.keys(operation.requestBody?.content || {});
@@ -76,12 +78,15 @@ export function* compareReqBody(
       const value = parseBody(body, contentType);
 
       if (schema && canValidate(contentType)) {
-        schema.components = components;
-        schema.definitions = definitions;
         const schemaId = `[root].paths.${path}.${method}.requestBody.content.${contentType}`;
         let validate = ajv.getSchema(schemaId);
         if (!validate) {
-          ajv.addSchema(transformRequestSchema(schema), schemaId);
+          ajv.addSchema(
+            transformRequestSchema(
+              optimiseSchema(schema, components, definitions),
+            ),
+            schemaId,
+          );
           validate = ajv.getSchema(schemaId);
         }
         if (!validate(value)) {

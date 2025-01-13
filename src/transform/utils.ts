@@ -4,6 +4,7 @@ import { each } from "lodash-es";
 export const traverse = (
   schema: SchemaObject,
   visitor: (schema: SchemaObject) => void,
+  includeReferences = true,
 ) => {
   if (typeof schema === "boolean" || schema === undefined) {
     return;
@@ -11,7 +12,11 @@ export const traverse = (
 
   const traverseSubSchema = (item: SchemaObject) => traverse(item, visitor);
 
-  each(schema.definitions, traverseSubSchema);
+  if (includeReferences) {
+    each(schema.components?.schemas, traverseSubSchema);
+    each(schema.definitions, traverseSubSchema);
+  }
+
   each(schema.allOf, traverseSubSchema);
   each(schema.oneOf, traverseSubSchema);
   each(schema.anyOf, traverseSubSchema);

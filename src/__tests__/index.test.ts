@@ -2,7 +2,7 @@ import fs from "fs";
 import yaml from "js-yaml";
 import path from "path";
 import { expect, it } from "vitest";
-import { compare } from "../../src/compare";
+import { Comparator } from "../../src/compare";
 
 const parse = (spec: string) => {
   try {
@@ -24,8 +24,11 @@ for (const entry of fs.readdirSync(FIXTURES)) {
     const pact = parse(await fs.promises.readFile(pactFile, "utf-8"));
     const oas = parse(await fs.promises.readFile(oasFile, "utf-8"));
 
+    const comparator = new Comparator(oas);
+    await comparator.validate();
+
     const results = [];
-    for await (const result of compare(oas, pact)) {
+    for await (const result of comparator.compare( pact)) {
       results.push(result);
     }
 

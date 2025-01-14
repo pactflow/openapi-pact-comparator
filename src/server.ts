@@ -1,6 +1,6 @@
 import http from "node:http";
 import yaml from "js-yaml";
-import { compare } from "./compare";
+import { Comparator } from "./compare";
 
 const PORT = process.env.PORT || 3000;
 
@@ -43,7 +43,11 @@ const server = http.createServer((request, response) => {
       const oas = files.find((f) => f.name === "oas");
       const pact = files.find((f) => f.name === "pact");
 
-      for await (const result of compare(parse(oas.data), parse(pact.data))) {
+      const comparator = new Comparator(parse(oas.data));
+      await comparator.validate();
+
+      // FIXME: how to handle multiple pact files?
+      for await (const result of comparator.compare(parse(pact.data))) {
         response.write(JSON.stringify(result));
       }
       response.end();

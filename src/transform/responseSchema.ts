@@ -1,5 +1,5 @@
 import { SchemaObject } from "ajv";
-import { each } from "lodash-es";
+import { each, get } from "lodash-es";
 import { traverse } from "./utils";
 
 export const transformResponseSchema = (schema: SchemaObject): SchemaObject => {
@@ -36,11 +36,19 @@ export const transformResponseSchema = (schema: SchemaObject): SchemaObject => {
   traverse(schema, (s) => {
     if (s.allOf) {
       each(s.allOf, (ss) => {
-        delete ss.additionalProperties;
-        if (ss.allOf) {
+        let subschema = ss;
+        if (subschema.$ref) {
+          // get the referenced schema
+          subschema = get(
+            schema,
+            subschema.$ref.replace(/\//g, ".").substring(2),
+          );
+        }
+        delete subschema.additionalProperties;
+        if (subschema.allOf) {
           // traversal is depth-first; if nested allOf, remove
           // unevaluatedProperties from previously set deeper schema
-          delete ss.unevaluatedProperties;
+          delete subschema.unevaluatedProperties;
         }
       });
       s.unevaluatedProperties = false;

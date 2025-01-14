@@ -35,84 +35,12 @@
       "value": {
         "application/json;version=1.0.0": {
           "schema": {
-            "$ref": "#/components/schemas/AnimalV1",
-            "components": {
-              "schemas": {
-                "AnimalV1": {
-                  "type": "object",
-                  "required": [
-                    "name",
-                    "genus"
-                  ],
-                  "additionalProperties": false,
-                  "properties": {
-                    "name": {
-                      "type": "string"
-                    },
-                    "genus": {
-                      "type": "string"
-                    }
-                  }
-                },
-                "AnimalV2": {
-                  "type": "object",
-                  "required": [
-                    "name",
-                    "species"
-                  ],
-                  "additionalProperties": false,
-                  "properties": {
-                    "name": {
-                      "type": "string"
-                    },
-                    "species": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
+            "$ref": "#/components/schemas/AnimalV1"
           }
         },
         "application/json;version=2.0.0": {
           "schema": {
-            "$ref": "#/components/schemas/AnimalV2",
-            "components": {
-              "schemas": {
-                "AnimalV1": {
-                  "type": "object",
-                  "required": [
-                    "name",
-                    "genus"
-                  ],
-                  "additionalProperties": false,
-                  "properties": {
-                    "name": {
-                      "type": "string"
-                    },
-                    "genus": {
-                      "type": "string"
-                    }
-                  }
-                },
-                "AnimalV2": {
-                  "type": "object",
-                  "required": [
-                    "name",
-                    "species"
-                  ],
-                  "additionalProperties": false,
-                  "properties": {
-                    "name": {
-                      "type": "string"
-                    },
-                    "species": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
+            "$ref": "#/components/schemas/AnimalV2"
           }
         }
       }
@@ -137,84 +65,12 @@
           "content": {
             "application/json;version=1.0.0": {
               "schema": {
-                "$ref": "#/components/schemas/AnimalV1",
-                "components": {
-                  "schemas": {
-                    "AnimalV1": {
-                      "type": "object",
-                      "required": [
-                        "name",
-                        "genus"
-                      ],
-                      "additionalProperties": false,
-                      "properties": {
-                        "name": {
-                          "type": "string"
-                        },
-                        "genus": {
-                          "type": "string"
-                        }
-                      }
-                    },
-                    "AnimalV2": {
-                      "type": "object",
-                      "required": [
-                        "name",
-                        "species"
-                      ],
-                      "additionalProperties": false,
-                      "properties": {
-                        "name": {
-                          "type": "string"
-                        },
-                        "species": {
-                          "type": "string"
-                        }
-                      }
-                    }
-                  }
-                }
+                "$ref": "#/components/schemas/AnimalV1"
               }
             },
             "application/json;version=2.0.0": {
               "schema": {
-                "$ref": "#/components/schemas/AnimalV2",
-                "components": {
-                  "schemas": {
-                    "AnimalV1": {
-                      "type": "object",
-                      "required": [
-                        "name",
-                        "genus"
-                      ],
-                      "additionalProperties": false,
-                      "properties": {
-                        "name": {
-                          "type": "string"
-                        },
-                        "genus": {
-                          "type": "string"
-                        }
-                      }
-                    },
-                    "AnimalV2": {
-                      "type": "object",
-                      "required": [
-                        "name",
-                        "species"
-                      ],
-                      "additionalProperties": false,
-                      "properties": {
-                        "name": {
-                          "type": "string"
-                        },
-                        "species": {
-                          "type": "string"
-                        }
-                      }
-                    }
-                  }
-                }
+                "$ref": "#/components/schemas/AnimalV2"
               }
             }
           },

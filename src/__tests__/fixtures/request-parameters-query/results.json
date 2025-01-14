@@ -99,54 +99,7 @@
             "name": "age",
             "required": false,
             "schema": {
-              "type": "number",
-              "components": {
-                "schemas": {
-                  "Person": {
-                    "type": "object",
-                    "required": [
-                      "id",
-                      "name"
-                    ],
-                    "additionalProperties": false,
-                    "properties": {
-                      "id": {
-                        "type": "number"
-                      },
-                      "name": {
-                        "type": "string"
-                      },
-                      "address": {
-                        "$ref": "#/components/schemas/Address"
-                      }
-                    }
-                  },
-                  "Address": {
-                    "type": "object",
-                    "required": [
-                      "street",
-                      "city",
-                      "state",
-                      "postcode"
-                    ],
-                    "additionalProperties": false,
-                    "properties": {
-                      "street": {
-                        "type": "string"
-                      },
-                      "city": {
-                        "type": "string"
-                      },
-                      "state": {
-                        "type": "string"
-                      },
-                      "postcode": {
-                        "type": "integer"
-                      }
-                    }
-                  }
-                }
-              }
+              "type": "number"
             }
           }
         ],

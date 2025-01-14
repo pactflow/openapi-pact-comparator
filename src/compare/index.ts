@@ -49,7 +49,7 @@ export class Comparator {
       const stringQuery =
         typeof query === "string" ? query : qs.stringify(query);
       const route = this.#router.find(
-        method as HTTPMethod,
+        method.toUpperCase() as HTTPMethod,
         [path, stringQuery].filter(Boolean).join("?"),
       );
 

@@ -32,23 +32,26 @@ export interface Pact {
 const supportedInteractions = (i: Interaction) =>
   !i.type || i.type === "Synchronous/HTTP";
 
-const parseAsPactV4Body = (body: any) => {
+const parseAsPactV4Body = (body: unknown) => {
   if (!body) {
     return undefined;
   }
 
-  const { encoded, content = "" } = body;
+  const { encoded, content = "" } = body as {
+    encoded: string;
+    content?: string;
+  };
 
   try {
     if (!encoded) {
       return content;
     }
 
-    if ((encoded as string).toUpperCase() === "JSON") {
+    if (encoded.toUpperCase() === "JSON") {
       return JSON.parse(content); // throws if fails to parse
     }
 
-    return Buffer.from(content, encoded).toString(); // throws if unrecognised encoding
+    return Buffer.from(content, encoded as BufferEncoding).toString(); // throws if unrecognised encoding
   } catch {
     return content;
   }

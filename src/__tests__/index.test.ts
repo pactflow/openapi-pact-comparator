@@ -28,7 +28,7 @@ for (const entry of fs.readdirSync(FIXTURES)) {
     await comparator.validate();
 
     const results = [];
-    for await (const result of comparator.compare( pact)) {
+    for await (const result of comparator.compare(pact)) {
       results.push(result);
     }
 

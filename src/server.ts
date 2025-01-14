@@ -29,7 +29,7 @@ const server = http.createServer((request, response) => {
         .map((part) => {
           const [name, filename] = part
             .match(/"(.*?)"/g)
-            .map((name) => name.replace(/\"/g, ""));
+            .map((name) => name.replaceAll(/"/g, ""));
           const data = part
             .split("\r\n\r\n")
             .slice(1)

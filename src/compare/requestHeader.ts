@@ -192,8 +192,8 @@ export function* compareReqHeader(
               // ignore
             }
             break;
-          case "basic":
-            const basicAuth = requestHeaders.get("Authorization") || "";
+          case "basic": {
+            const basicAuth = requestHeaders.get("authorization") || "";
             if (!basicAuth.startsWith("Basic ")) {
               yield {
                 code: "request.authorization.missing",
@@ -215,8 +215,9 @@ export function* compareReqHeader(
             }
             requestHeaders.delete("authorization");
             break;
-          case "http":
-            const auth = requestHeaders.get("Authorization") || "";
+          }
+          case "http": {
+            const auth = requestHeaders.get("authorization") || "";
             let isValid = false;
             switch (scheme.scheme) {
               case "basic":
@@ -248,6 +249,7 @@ export function* compareReqHeader(
             }
             requestHeaders.delete("authorization");
             break;
+          }
           case "mutualTLS":
           case "oauth2":
           case "openIdConnect":

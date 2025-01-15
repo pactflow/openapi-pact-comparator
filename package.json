@@ -1,7 +1,10 @@
 {
-  "name": "oas-pact-comparator",
+  "name": "openapi-pact-comparator",
   "version": "1.0.0",
   "description": "",
+  "exports": {
+    ".": "./src/compare/index.ts"
+  },
   "main": "index.js",
   "scripts": {
     "build": "rollup -c",

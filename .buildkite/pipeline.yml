@@ -48,7 +48,7 @@ steps:
     label: Test
     key: test
     command:
-      - npm run test
+      - npm run test -- --run
 
   - <<: *common
     label: Build

@@ -13,7 +13,7 @@ const parse = (spec: string) => {
 };
 
 const server = http.createServer((request, response) => {
-  const buffer = [];
+  const buffer: Uint8Array<ArrayBufferLike>[] = [];
 
   response.setHeader("Content-Type", "application/x-ndjson; charset=UTF-8");
   response.setHeader("Transfer-Encoding", "chunked");
@@ -28,7 +28,7 @@ const server = http.createServer((request, response) => {
         .filter((part) => !!~part.indexOf("form-data;"))
         .map((part) => {
           const [name, filename] = part
-            .match(/"(.*?)"/g)
+            .match(/"(.*?)"/g)!
             .map((name) => name.replaceAll(/"/g, ""));
           const data = part
             .split("\r\n\r\n")
@@ -40,14 +40,15 @@ const server = http.createServer((request, response) => {
         })
         .filter((f) => f.data);
 
+      // FIXME: handle bad input
       const oas = files.find((f) => f.name === "oas");
       const pact = files.find((f) => f.name === "pact");
 
-      const comparator = new Comparator(parse(oas.data));
+      const comparator = new Comparator(parse(oas!.data));
       await comparator.validate();
 
       // FIXME: how to handle multiple pact files?
-      for await (const result of comparator.compare(parse(pact.data))) {
+      for await (const result of comparator.compare(parse(pact!.data))) {
         response.write(JSON.stringify(result));
       }
       response.end();

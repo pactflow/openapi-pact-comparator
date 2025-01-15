@@ -58,12 +58,12 @@ const parseAsPactV4Body = (body: unknown) => {
 };
 
 const flattenValues = (
-  headers?: string | Record<string, string | string[]>,
-): Record<string, string> => {
-  if (!headers || typeof headers === "string") return headers as undefined;
+  values?: string | Record<string, string | string[]>,
+): Record<string, string> | string | undefined => {
+  if (!values || typeof values === "string") return values;
 
   return Object.fromEntries(
-    Object.entries(headers || {}).map(([key, value]) => [
+    Object.entries(values || {}).map(([key, value]) => [
       key,
       Array.isArray(value) ? value.join(",") : value,
     ]),
@@ -74,11 +74,11 @@ const interactionV1 = (i: Interaction): Interaction => ({
   ...i,
   request: {
     ...i.request,
-    headers: flattenValues(i.request.headers),
+    headers: flattenValues(i.request.headers) as Record<string, string>,
   },
   response: {
     ...i.response,
-    headers: flattenValues(i.response.headers),
+    headers: flattenValues(i.response.headers) as Record<string, string>,
   },
 });
 
@@ -86,12 +86,12 @@ const interactionV3 = (i: Interaction): Interaction => ({
   ...i,
   request: {
     ...i.request,
-    headers: flattenValues(i.request.headers),
+    headers: flattenValues(i.request.headers) as Record<string, string>,
     query: flattenValues(i.request.query),
   },
   response: {
     ...i.response,
-    headers: flattenValues(i.response.headers),
+    headers: flattenValues(i.response.headers) as Record<string, string>,
   },
 });
 
@@ -100,13 +100,13 @@ const interactionV4 = (i: Interaction): Interaction => ({
   request: {
     ...i.request,
     body: parseAsPactV4Body(i.request.body),
-    headers: flattenValues(i.request.headers),
+    headers: flattenValues(i.request.headers) as Record<string, string>,
     query: flattenValues(i.request.query),
   },
   response: {
     ...i.response,
     body: parseAsPactV4Body(i.response.body),
-    headers: flattenValues(i.response.headers),
+    headers: flattenValues(i.response.headers) as Record<string, string>,
   },
 });
 

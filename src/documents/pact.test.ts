@@ -26,11 +26,11 @@ describe("#parser", () => {
     } as Pact;
 
     const { request, response } = parse(json).interactions[0];
-    expect(request.headers["Content-Type"]).toEqual("text/json");
-    expect(request.headers["Accept"]).toEqual(
+    expect(request.headers!["Content-Type"]).toEqual("text/json");
+    expect(request.headers!["Accept"]).toEqual(
       "text/plain,application/json,text/json",
     );
-    expect(response.headers["Content-Type"]).toEqual("application/json");
+    expect(response.headers!["Content-Type"]).toEqual("application/json");
   });
 
   it("filters out non-HTTP interactions", () => {

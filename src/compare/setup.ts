@@ -49,8 +49,9 @@ export function setupRouter(
       if (!SUPPORTED_METHODS.includes(method.toUpperCase())) {
         continue;
       }
-
-      const operation = oas.paths[oasPath][method];
+      const operation = (oas.paths[oasPath] as OpenAPIV3.PathItemObject<{}>)[
+        method as OpenAPIV3.HttpMethods
+      ] as OpenAPIV3.OperationObject;
       operation.security ||= oas.security;
       router.on(method.toUpperCase() as HTTPMethod, path, () => {}, {
         components: (oas as OpenAPIV3.Document).components,

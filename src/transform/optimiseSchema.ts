@@ -10,7 +10,7 @@ export const optimiseSchema = (
 ): SchemaObject => {
   let schema = originalSchema;
 
-  const usedReferences = [];
+  const usedReferences: string[] = [];
   const collectReferences = (s: SchemaObject) => {
     if (s.$ref && !usedReferences.includes(s.$ref)) {
       usedReferences.push(s.$ref);

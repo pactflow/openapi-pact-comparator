@@ -32,8 +32,8 @@ export interface Result {
   code: ErrorCode | WarningCode;
   message: string;
   mockDetails?: {
-    interactionDescription: string | null;
-    interactionState: string | null;
+    interactionDescription?: string | null;
+    interactionState?: string | null;
     location: string;
     mockFile?: string;
     value: unknown;
@@ -41,8 +41,8 @@ export interface Result {
   source: "spec-mock-validation";
   specDetails?: {
     location: string;
-    pathMethod: string | null;
-    pathName: string | null;
+    pathMethod?: string | null;
+    pathName?: string | null;
     specFile?: string;
     value: unknown;
   };

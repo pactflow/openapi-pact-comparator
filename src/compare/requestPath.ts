@@ -35,8 +35,8 @@ export function* compareReqPath(
         );
         validate = ajv.getSchema(schemaId);
       }
-      if (!validate(value)) {
-        for (const _error of validate.errors) {
+      if (!validate!(value)) {
+        for (const _error of validate!.errors!) {
           yield {
             code: "request.path-or-method.unknown",
             message: `Path or method not defined in spec file: ${method.toUpperCase()} ${interaction.request.path}`,

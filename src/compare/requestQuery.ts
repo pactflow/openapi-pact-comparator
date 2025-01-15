@@ -47,8 +47,8 @@ export function* compareReqQuery(
           );
           validate = ajv.getSchema(schemaId);
         }
-        if (!validate(value)) {
-          for (const error of validate.errors) {
+        if (!validate!(value)) {
+          for (const error of validate!.errors!) {
             const message = formatErrorMessage(error);
             const instancePath = formatInstancePath(error.instancePath);
             const schemaPath = formatSchemaPath(error.schemaPath);
@@ -66,7 +66,7 @@ export function* compareReqQuery(
                 location: `${schemaId}.schema.${schemaPath}`,
                 pathMethod: method,
                 pathName: path,
-                value: get(validate.schema, schemaPath),
+                value: get(validate!.schema, schemaPath),
               },
               type: "error",
             };

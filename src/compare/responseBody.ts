@@ -75,13 +75,14 @@ export function* compareResBody(
     if ((response as OpenAPIV2.ResponseObject).schema || response.content) {
       const availableResponseContentTypes =
         operation.produces || Object.keys(response.content || {});
-      const contentType = findMatchingType(
-        requestHeaders.get("accept") || DEFAULT_CONTENT_TYPE,
-        availableResponseContentTypes,
-      );
-      const schema: SchemaObject =
+      const contentType =
+        findMatchingType(
+          requestHeaders.get("accept") || DEFAULT_CONTENT_TYPE,
+          availableResponseContentTypes,
+        ) || DEFAULT_CONTENT_TYPE;
+      const schema: SchemaObject | undefined =
         (response as OpenAPIV2.ResponseObject).schema ||
-        response.content[contentType]?.schema;
+        response.content?.[contentType]?.schema;
       const value = body;
 
       if (body) {
@@ -114,8 +115,8 @@ export function* compareResBody(
             );
             validate = ajv.getSchema(schemaId);
           }
-          if (!validate(value)) {
-            for (const error of validate.errors) {
+          if (!validate!(value)) {
+            for (const error of validate!.errors!) {
               const message = formatErrorMessage(error);
               const instancePath = formatInstancePath(error.instancePath);
               const schemaPath = formatSchemaPath(error.schemaPath);
@@ -132,7 +133,7 @@ export function* compareResBody(
                   location: `${schemaId}.schema.${schemaPath}`,
                   pathMethod: method,
                   pathName: path,
-                  value: get(validate.schema, schemaPath),
+                  value: get(validate!.schema, schemaPath),
                 },
                 type: "error",
               };

@@ -6,8 +6,9 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "noEmit": true,
+    "strict": true,
     "target": "esnext"
   },
-  "include": ["src"],
-  "exclude": ["./node_modules/**", "dist"]
+  "include": ["src/**/*.ts"],
+  "exclude": ["./node_modules/**", "dist/**"]
 }

@@ -1,3 +1,4 @@
+import type { OpenAPIV3 } from "openapi-types";
 import type { SchemaObject } from "ajv";
 import type Ajv from "ajv/dist/2019";
 import type Router from "find-my-way";
@@ -264,7 +265,7 @@ export function* compareReqHeader(
   for (const headerName of standardHttpRequestHeaders) {
     if (
       !(operation.parameters || []).find(
-        (p) =>
+        (p: OpenAPIV3.ParameterObject) =>
           p.in === "header" &&
           p.name.toLowerCase() === headerName.toLowerCase(),
       )
@@ -295,8 +296,8 @@ export function* compareReqHeader(
             );
             validate = ajv.getSchema(schemaId);
           }
-          if (!validate(value)) {
-            for (const error of validate.errors) {
+          if (!validate!(value)) {
+            for (const error of validate!.errors!) {
               const message = formatErrorMessage(error);
               const instancePath = formatInstancePath(error.instancePath);
               const schemaPath = formatSchemaPath(error.schemaPath);
@@ -313,7 +314,7 @@ export function* compareReqHeader(
                   location: `${schemaId}.schema.${schemaPath}`,
                   pathMethod: method,
                   pathName: path,
-                  value: get(validate.schema, schemaPath),
+                  value: get(validate!.schema, schemaPath),
                 },
                 type: "error",
               };

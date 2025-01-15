@@ -46,10 +46,11 @@ export function* compareReqBody(
 
   const availableRequestContentTypes =
     operation.consumes || Object.keys(operation.requestBody?.content || {});
-  const contentType = findMatchingType(
-    requestHeaders.get("content-type") || DEFAULT_CONTENT_TYPE,
-    availableRequestContentTypes,
-  );
+  const contentType =
+    findMatchingType(
+      requestHeaders.get("content-type") || DEFAULT_CONTENT_TYPE,
+      availableRequestContentTypes,
+    ) || DEFAULT_CONTENT_TYPE;
   const schema: SchemaObject | undefined =
     operation.requestBody?.content?.[contentType]?.schema ||
     (operation.parameters || []).find(
@@ -89,8 +90,8 @@ export function* compareReqBody(
           );
           validate = ajv.getSchema(schemaId);
         }
-        if (!validate(value)) {
-          for (const error of validate.errors) {
+        if (!validate!(value)) {
+          for (const error of validate!.errors!) {
             const message = formatErrorMessage(error);
             const instancePath = formatInstancePath(error.instancePath);
             const schemaPath = formatSchemaPath(error.schemaPath);
@@ -107,7 +108,7 @@ export function* compareReqBody(
                 location: `${schemaId}.schema.${schemaPath}`,
                 pathMethod: method,
                 pathName: path,
-                value: get(validate.schema, schemaPath),
+                value: get(validate!.schema, schemaPath),
               },
               type: "error",
             };

@@ -15,7 +15,7 @@
     "prettier:fix": "prettier --cache --list-different --write .",
     "start": "node dist/cli.mjs",
     "test": "vitest",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit --project tsconfig.json"
   },
   "keywords": [],
   "author": "",

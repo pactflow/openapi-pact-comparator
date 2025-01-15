@@ -1,0 +1,60 @@
+definitions:
+  node-version: &node-version
+    docker#v5.11.0:
+      image: node:22.11.0
+  cache-node_modules: &cache-node_modules
+    nienbo/cache#v2.4.15:
+      id: npm
+      backend: s3
+      key: v1-{{ id }}-{{ checksum "package-lock.json" }}
+      restore-keys:
+        - v1-{{ id }}
+      compress: true
+      s3:
+        bucket: pactflow-buildkite-cache-dev
+      paths:
+        - node_modules
+  common: &common
+    plugins:
+      - *cache-node_modules
+      - *node-version
+    agents:
+      queue: pactflow-e2e
+
+steps:
+  - <<: *common
+    label: Install
+    command:
+      - npm ci --silent
+
+  - wait
+
+  - <<: *common
+    label: Lint
+    command:
+      - npm run lint
+
+  - <<: *common
+    label: Prettier
+    command:
+      - npm run prettier
+
+  - <<: *common
+    label: Typecheck
+    command:
+      - npm run typecheck
+
+  - <<: *common
+    label: Test
+    key: test
+    command:
+      - npm run test
+
+  - <<: *common
+    label: Build
+    key: build
+    command:
+      - npm run build
+      - tar czf dist.tar.gz dist
+    artifact_paths:
+      - dist.tar.gz

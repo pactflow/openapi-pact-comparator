@@ -32,7 +32,7 @@ export class Comparator {
     return SwaggerParser.validate(cloneDeep(this.#oas));
   }
 
-  async *compare(pact: Pact): AsyncIterable<Partial<Result>> {
+  async *compare(pact: Pact): AsyncGenerator<Partial<Result>> {
     const parsedPact = parse(pact);
 
     if (parsedPact.interactions.length === 0) {

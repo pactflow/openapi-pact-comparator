@@ -32,7 +32,7 @@ compilation in AJV.
 Instead of perforing the comparison per pair of OAS + Pact, we can reuse the
 compiled OAS schemas across multiple Pacts.
 
-**A fast HTTP router is used to match provider routes**.  Instead of iterating
+**A fast HTTP router is used to match provider routes**. Instead of iterating
 through an array of routes, we use [Radix
 Tree](https://en.wikipedia.org/wiki/Radix_tree) search using
 [find-my-way](https://github.com/delvedor/find-my-way) This allows large

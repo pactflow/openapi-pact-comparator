@@ -3,6 +3,8 @@ import fs from "node:fs";
 import yaml from "js-yaml";
 import { Comparator } from "./compare";
 
+const NEW_LINE = "\r\n";
+
 const readAndParse = async (filename: string) => {
   const file = await fsPromises.readFile(filename, { encoding: "utf-8" });
   try {
@@ -25,6 +27,7 @@ async function run() {
     });
     for await (const result of comparator.compare(pact)) {
       writer.write(JSON.stringify(result));
+      writer.write(NEW_LINE);
     }
     writer.end("");
   }

@@ -9,9 +9,9 @@
       "value": "unknown_value"
     },
     "specDetails": {
-      "location": "[root].paths./animal.get",
+      "location": "[root].paths./string.get",
       "pathMethod": "get",
-      "pathName": "/animal",
+      "pathName": "/string",
       "value": {
         "parameters": [
           {
@@ -47,10 +47,27 @@
     },
     "source": "spec-mock-validation",
     "specDetails": {
-      "location": "[root].paths./animal.get.parameters[1].schema.type",
+      "location": "[root].paths./string.get.parameters[1].schema.type",
       "pathMethod": "get",
-      "pathName": "/animal",
+      "pathName": "/string",
       "value": "number"
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.query.incompatible",
+    "message": "Value is incompatible with the parameter defined in the spec file: must be string",
+    "mockDetails": {
+      "interactionDescription": "should error when missing required query parameter",
+      "interactionState": "[none]",
+      "location": "[root].interactions[3].request.query.name."
+    },
+    "source": "spec-mock-validation",
+    "specDetails": {
+      "location": "[root].paths./string.get.parameters[0].schema.type",
+      "pathMethod": "get",
+      "pathName": "/string",
+      "value": "string"
     },
     "type": "error"
   }

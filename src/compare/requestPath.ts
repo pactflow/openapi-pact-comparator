@@ -4,9 +4,10 @@ import type Router from "find-my-way";
 import type { Interaction } from "../documents/pact";
 import type { Result } from "../results";
 import { baseMockDetails } from "../results";
-import { optimiseSchema } from "../transform";
+import { minimumSchema } from "../transform";
 import { cleanPathParameter } from "./utils/parameters";
 import { parseValue } from "./utils/parse";
+import { dereferenceOas } from "./utils/schema";
 
 export function* compareReqPath(
   ajv: Ajv,
@@ -14,7 +15,7 @@ export function* compareReqPath(
   interaction: Interaction,
   index: number,
 ): Iterable<Partial<Result>> {
-  const { components, definitions, method, operation, path } = route.store;
+  const { method, oas, operation, path } = route.store;
 
   for (const [parameterIndex, parameter] of (
     operation.parameters || []
@@ -23,16 +24,14 @@ export function* compareReqPath(
       continue;
     }
 
-    const schema: SchemaObject = parameter.schema || { type: parameter.type };
-    const value = parseValue(route.params[cleanPathParameter(parameter.name)]);
+    const dereferencedParameter = dereferenceOas(parameter, oas)
+    const schema: SchemaObject = dereferencedParameter.schema || { type: dereferencedParameter.type };
+    const value = parseValue(route.params[cleanPathParameter(dereferencedParameter.name)]);
     if (value && schema) {
       const schemaId = `[root].paths.${path}.${method}.parameters[${parameterIndex}]`;
       let validate = ajv.getSchema(schemaId);
       if (!validate) {
-        ajv.addSchema(
-          optimiseSchema(schema, components, definitions),
-          schemaId,
-        );
+        ajv.addSchema(minimumSchema(schema, oas), schemaId);
         validate = ajv.getSchema(schemaId);
       }
       if (!validate!(value)) {

@@ -6,7 +6,7 @@
       "description": "should pass with valid query parameter",
       "request": {
         "method": "GET",
-        "path": "/animal",
+        "path": "/string",
         "query": "name=mark"
       },
       "response": {
@@ -17,8 +17,8 @@
       "description": "should warn about unknown query parameters",
       "request": {
         "method": "GET",
-        "path": "/animal",
-        "query": "unknown_key=unknown_value"
+        "path": "/string",
+        "query": "name=mark&unknown_key=unknown_value"
       },
       "response": {
         "status": 200
@@ -28,8 +28,18 @@
       "description": "should error when optional query parameter is incompatible",
       "request": {
         "method": "GET",
-        "path": "/animal",
-        "query": "age=abc"
+        "path": "/string",
+        "query": "name=mark&age=abc"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "should error when missing required query parameter",
+      "request": {
+        "method": "GET",
+        "path": "/string"
       },
       "response": {
         "status": 200

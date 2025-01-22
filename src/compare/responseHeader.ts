@@ -10,8 +10,9 @@ import {
   formatInstancePath,
   formatSchemaPath,
 } from "../results";
-import { optimiseSchema } from "../transform";
+import { minimumSchema } from "../transform";
 import { findMatchingType, standardHttpResponseHeaders } from "./utils/content";
+import { dereferenceOas } from "./utils/schema";
 
 export function* compareResHeader(
   ajv: Ajv,
@@ -19,12 +20,15 @@ export function* compareResHeader(
   interaction: Interaction,
   index: number,
 ): Iterable<Partial<Result>> {
-  const { components, definitions, method, operation, path } = route.store;
+  const { method, oas, operation, path } = route.store;
 
   const availableResponseContentType =
     operation.produces ||
     Object.keys(
-      operation.responses[interaction.response.status]?.content || {},
+      dereferenceOas(
+        operation.responses[interaction.response.status] || {},
+        oas,
+      )?.content || {},
     );
 
   // response content-type
@@ -104,7 +108,8 @@ export function* compareResHeader(
   // other headers
   // -------------
   const headers =
-    operation.responses[interaction.response.status]?.headers || {};
+    dereferenceOas(operation.responses[interaction.response.status] || {}, oas)
+      ?.headers || {};
   for (const headerName in headers) {
     const schema: SchemaObject =
       headers[headerName].schema || headers[headerName];
@@ -113,10 +118,7 @@ export function* compareResHeader(
       const schemaId = `[root].paths.${path}.${method}.responses.${interaction.response.status}.headers.${headerName}`;
       let validate = ajv.getSchema(schemaId);
       if (!validate) {
-        ajv.addSchema(
-          optimiseSchema(schema, components, definitions),
-          schemaId,
-        );
+        ajv.addSchema(minimumSchema(schema, oas), schemaId);
         validate = ajv.getSchema(schemaId);
       }
       if (!validate!(value)) {
@@ -160,7 +162,10 @@ export function* compareResHeader(
         location: `[root].paths.${path}.${method}.responses.${interaction.response.status}.headers`,
         pathMethod: method,
         pathName: path,
-        value: operation.responses[interaction.response.status].headers,
+        value: dereferenceOas(
+          operation.responses[interaction.response.status] || {},
+          oas,
+        ).headers,
       },
       type: "error",
     };

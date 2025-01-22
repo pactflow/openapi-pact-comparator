@@ -46,6 +46,17 @@
       }
     },
     {
+      "description": "should pass when missing optional query parameter",
+      "request": {
+        "method": "GET",
+        "path": "/string",
+        "query": "name=mark"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
       "description": "should error when exploded query parameter in object form does not match spec",
       "request": {
         "method": "GET",
@@ -97,8 +108,8 @@
       "description": "should warn about unknown query parameters",
       "request": {
         "method": "GET",
-        "path": "/unknown-params",
-        "query": "param=unknown"
+        "path": "/string",
+        "query": "name=mark&unknown_key=unknown_value"
       },
       "response": {
         "status": 200
@@ -108,8 +119,18 @@
       "description": "should error when optional query parameter is incompatible",
       "request": {
         "method": "GET",
-        "path": "/unknown-params",
-        "query": "age=abc"
+        "path": "/string",
+        "query": "name=mark&age=abc"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "should error when missing required query parameter",
+      "request": {
+        "method": "GET",
+        "path": "/string"
       },
       "response": {
         "status": 200

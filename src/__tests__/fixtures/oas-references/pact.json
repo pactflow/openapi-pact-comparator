@@ -1,0 +1,87 @@
+{
+  "consumer": { "name": "consumer" },
+  "provider": { "name": "provider" },
+  "interactions": [
+    {
+      "description": "should pass when json body matches spec",
+      "providerState": "",
+      "request": {
+        "method": "POST",
+        "path": "/login",
+        "query": "account=foo",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "username": "bob"
+        }
+      },
+      "response": {
+        "status": 201,
+        "body": {
+          "id": "123"
+        }
+      }
+    },
+    {
+      "description": "should fail with missing parameters",
+      "providerState": "",
+      "request": {
+        "method": "POST",
+        "path": "/login",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "username": "bob"
+        }
+      },
+      "response": {
+        "status": 201,
+        "body": {
+          "id": "123"
+        }
+      }
+    },
+    {
+      "description": "should fail with bad request body",
+      "providerState": "",
+      "request": {
+        "method": "POST",
+        "path": "/login",
+        "query": "account=foo",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {}
+      },
+      "response": {
+        "status": 201,
+        "body": {
+          "id": "123"
+        }
+      }
+    },
+    {
+      "description": "should fail with bad response body",
+      "providerState": "",
+      "request": {
+        "method": "POST",
+        "path": "/login",
+        "query": "account=foo",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "username": "bob"
+        }
+      },
+      "response": {
+        "status": 201,
+        "body": {
+          "username": "bob"
+        }
+      }
+    }
+  ]
+}

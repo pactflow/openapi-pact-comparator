@@ -1,0 +1,47 @@
+openapi: 3.0.0
+info:
+  title: OAS
+  version: 1.0.0
+
+paths:
+  /login:
+    post:
+      parameters:
+        - $ref: "#/components/parameters/RequestParam"
+      requestBody:
+        $ref: "#/components/requestBodies/RequestBody"
+      responses:
+        "201":
+          $ref: "#/components/responses/ResponseBody"
+
+components:
+  parameters:
+    RequestParam:
+      in: query
+      name: account
+      required: true
+      schema:
+        type: string
+  requestBodies:
+    RequestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              username:
+                type: string
+            required:
+              - username
+  responses:
+    ResponseBody:
+      description: Response body
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: string
+            required:
+              - id

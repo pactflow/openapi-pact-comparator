@@ -11,7 +11,8 @@ import {
   formatInstancePath,
   formatSchemaPath,
 } from "../results";
-import { optimiseSchema } from "../transform";
+import { minimumSchema } from "../transform";
+import { dereferenceOas } from "./utils/schema";
 
 export function* compareReqQuery(
   ajv: Ajv,
@@ -19,8 +20,7 @@ export function* compareReqQuery(
   interaction: Interaction,
   index: number,
 ): Iterable<Partial<Result>> {
-  const { components, definitions, method, operation, path, securitySchemes } =
-    route.store;
+  const { method, oas, operation, path, securitySchemes } = route.store;
 
   // TODO: parse different parameters differently?
   const searchParams = qs.parse(route.searchParams, {
@@ -31,20 +31,18 @@ export function* compareReqQuery(
   for (const [parameterIndex, parameter] of (
     operation.parameters || []
   ).entries()) {
-    if (parameter.in !== "query") {
+    const dereferencedParameter = dereferenceOas(parameter, oas);
+    if (dereferencedParameter.in !== "query") {
       continue;
     }
-    const schema: SchemaObject = parameter.schema || { type: parameter.type };
-    const value = searchParams[parameter.name];
+    const schema: SchemaObject = dereferencedParameter.schema || { type: dereferencedParameter.type };
+    const value = searchParams[dereferencedParameter.name];
     if (interaction.response.status < 400) {
-      if (value && schema) {
+      if (schema && (value || dereferencedParameter.required)) {
         const schemaId = `[root].paths.${path}.${method}.parameters[${parameterIndex}]`;
         let validate = ajv.getSchema(schemaId);
         if (!validate) {
-          ajv.addSchema(
-            optimiseSchema(schema, components, definitions),
-            schemaId,
-          );
+          ajv.addSchema(minimumSchema(schema, oas), schemaId);
           validate = ajv.getSchema(schemaId);
         }
         if (!validate!(value)) {
@@ -58,7 +56,7 @@ export function* compareReqQuery(
               message: `Value is incompatible with the parameter defined in the spec file: ${message}`,
               mockDetails: {
                 ...baseMockDetails(interaction),
-                location: `[root].interactions[${index}].request.query.${parameter.name}.${instancePath}`,
+                location: `[root].interactions[${index}].request.query.${dereferencedParameter.name}.${instancePath}`,
                 value: instancePath ? get(value, instancePath) : value,
               },
               source: "spec-mock-validation",
@@ -73,8 +71,7 @@ export function* compareReqQuery(
           }
         }
       }
-
-      delete searchParams[parameter.name];
+      delete searchParams[dereferencedParameter.name];
     }
   }
 

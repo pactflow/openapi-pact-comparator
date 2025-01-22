@@ -11,8 +11,9 @@ import {
   formatInstancePath,
   formatSchemaPath,
 } from "../results";
-import { transformResponseSchema, optimiseSchema } from "../transform";
+import { minimumSchema, transformResponseSchema } from "../transform";
 import { findMatchingType } from "./utils/content";
+import { dereferenceOas } from "./utils/schema";
 
 const DEFAULT_CONTENT_TYPE = "application/json";
 
@@ -22,7 +23,7 @@ export function* compareResBody(
   interaction: Interaction,
   index: number,
 ): Iterable<Partial<Result>> {
-  const { components, definitions, method, operation, path } = route.store;
+  const { method, oas, operation, path } = route.store;
   const { body, status } = interaction.response;
   const requestHeaders = new Headers(
     interaction.request.headers as Record<string, string>,
@@ -72,7 +73,7 @@ export function* compareResBody(
       };
     }
 
-    if ((response as OpenAPIV2.ResponseObject).schema || response.content) {
+    if (response) {
       const availableResponseContentTypes =
         operation.produces || Object.keys(response.content || {});
       const contentType =
@@ -80,9 +81,10 @@ export function* compareResBody(
           requestHeaders.get("accept") || DEFAULT_CONTENT_TYPE,
           availableResponseContentTypes,
         ) || DEFAULT_CONTENT_TYPE;
+      const dereferencedResponse = dereferenceOas(response, oas);
       const schema: SchemaObject | undefined =
-        (response as OpenAPIV2.ResponseObject).schema ||
-        response.content?.[contentType]?.schema;
+        (dereferencedResponse as OpenAPIV2.ResponseObject).schema ||
+        dereferencedResponse.content?.[contentType]?.schema;
       const value = body;
 
       if (body) {
@@ -108,9 +110,7 @@ export function* compareResBody(
           let validate = ajv.getSchema(schemaId);
           if (!validate) {
             ajv.addSchema(
-              transformResponseSchema(
-                optimiseSchema(schema, components, definitions),
-              ),
+              transformResponseSchema(minimumSchema(schema, oas)),
               schemaId,
             );
             validate = ajv.getSchema(schemaId);

@@ -64,8 +64,7 @@
         "body": "name=Rover&genus=Canis"
       },
       "response": {
-        "status": 201,
-        "body": {}
+        "status": 201
       }
     },
     {

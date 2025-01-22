@@ -51,7 +51,7 @@ paths:
       responses:
         "200":
           description: OK
-  /unknown-params:
+  /string:
     get:
       parameters:
         - in: query
@@ -61,7 +61,6 @@ paths:
             type: string
         - in: query
           name: age
-          required: false
           schema:
             type: number
       responses:

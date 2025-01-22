@@ -1,6 +1,6 @@
 import type { SchemaObject } from "ajv";
 import type Ajv from "ajv/dist/2019";
-import type { OpenAPIV3 } from "openapi-types";
+import type { OpenAPIV2 } from "openapi-types";
 import type Router from "find-my-way";
 import type { Interaction } from "../documents/pact";
 import type { Result } from "../results";
@@ -12,8 +12,9 @@ import {
   formatInstancePath,
   formatSchemaPath,
 } from "../results";
-import { transformRequestSchema, optimiseSchema } from "../transform";
+import { minimumSchema, transformRequestSchema } from "../transform";
 import { findMatchingType } from "./utils/content";
+import { dereferenceOas } from "./utils/schema";
 
 const parseBody = (body: unknown, contentType: string) => {
   if (contentType.includes("application/x-www-form-urlencoded")) {
@@ -38,23 +39,31 @@ export function* compareReqBody(
   interaction: Interaction,
   index: number,
 ): Iterable<Partial<Result>> {
-  const { components, definitions, method, operation, path } = route.store;
+  const { method, oas, operation, path } = route.store;
   const { body } = interaction.request;
   const requestHeaders = new Headers(
     interaction.request.headers as Record<string, string>,
   );
 
   const availableRequestContentTypes =
-    operation.consumes || Object.keys(operation.requestBody?.content || {});
+    operation.consumes ||
+    Object.keys(
+      dereferenceOas(operation.requestBody || {}, oas)?.content || {},
+    );
   const contentType =
     findMatchingType(
       requestHeaders.get("content-type") || DEFAULT_CONTENT_TYPE,
       availableRequestContentTypes,
     ) || DEFAULT_CONTENT_TYPE;
+
   const schema: SchemaObject | undefined =
-    operation.requestBody?.content?.[contentType]?.schema ||
-    (operation.parameters || []).find(
-      (p: OpenAPIV3.ParameterObject) => p.in === "body",
+    dereferenceOas(operation.requestBody || {}, oas)?.content?.[contentType]
+      ?.schema ||
+    dereferenceOas(
+      (operation.parameters || []).find(
+        (p: OpenAPIV2.ParameterObject) => p.in === "body",
+      ) || {},
+      oas,
     )?.schema;
 
   if (body || body === "") {
@@ -83,9 +92,7 @@ export function* compareReqBody(
         let validate = ajv.getSchema(schemaId);
         if (!validate) {
           ajv.addSchema(
-            transformRequestSchema(
-              optimiseSchema(schema, components, definitions),
-            ),
+            transformRequestSchema(minimumSchema(schema, oas)),
             schemaId,
           );
           validate = ajv.getSchema(schemaId);

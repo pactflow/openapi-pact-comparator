@@ -11,9 +11,10 @@ import {
   formatInstancePath,
   formatSchemaPath,
 } from "../results";
-import { optimiseSchema } from "../transform";
+import { minimumSchema } from "../transform";
 import { findMatchingType, standardHttpRequestHeaders } from "./utils/content";
 import { parseValue } from "./utils/parse";
+import { dereferenceOas } from "./utils/schema";
 
 export function* compareReqHeader(
   ajv: Ajv,
@@ -21,15 +22,20 @@ export function* compareReqHeader(
   interaction: Interaction,
   index: number,
 ): Iterable<Partial<Result>> {
-  const { components, definitions, method, operation, path, securitySchemes } =
-    route.store;
+  const { method, oas, operation, path, securitySchemes } = route.store;
 
   const availableRequestContentType =
-    operation.consumes || Object.keys(operation.requestBody?.content || {});
+    operation.consumes ||
+    Object.keys(
+      dereferenceOas(operation.requestBody || {}, oas)?.content || {},
+    );
   const availableResponseContentType =
     operation.produces ||
     Object.keys(
-      operation.responses[interaction.response.status]?.content || {},
+      dereferenceOas(
+        operation.responses[interaction.response.status] || {},
+        oas,
+      )?.content || {},
     );
 
   // request accept
@@ -282,18 +288,16 @@ export function* compareReqHeader(
     if (parameter.in !== "header") {
       continue;
     }
-    const schema: SchemaObject = parameter.schema || { type: parameter.type };
-    const value = parseValue(requestHeaders.get(parameter.name));
+    const dereferencedParameter = dereferenceOas(parameter, oas);
+    const schema: SchemaObject = dereferencedParameter.schema || { type: dereferencedParameter.type };
+    const value = parseValue(requestHeaders.get(dereferencedParameter.name));
     if (interaction.response.status < 400) {
       if (value) {
         if (schema) {
           const schemaId = `[root].paths.${path}.${method}.parameters[${parameterIndex}]`;
           let validate = ajv.getSchema(schemaId);
           if (!validate) {
-            ajv.addSchema(
-              optimiseSchema(schema, components, definitions),
-              schemaId,
-            );
+            ajv.addSchema(minimumSchema(schema, oas), schemaId);
             validate = ajv.getSchema(schemaId);
           }
           if (!validate!(value)) {
@@ -307,7 +311,7 @@ export function* compareReqHeader(
                 message: `Value is incompatible with the parameter defined in the spec file: ${message}`,
                 mockDetails: {
                   ...baseMockDetails(interaction),
-                  location: `[root].interactions[${index}].request.headers.${parameter.name}.${instancePath}`,
+                  location: `[root].interactions[${index}].request.headers.${dereferencedParameter.name}.${instancePath}`,
                   value: instancePath ? get(value, instancePath) : value,
                 },
                 specDetails: {
@@ -321,27 +325,27 @@ export function* compareReqHeader(
             }
           }
         }
-      } else if (parameter.required) {
-        const message = `must have required property '${parameter.name}'`;
+      } else if (dereferencedParameter.required) {
+        const message = `must have required property '${dereferencedParameter.name}'`;
         yield {
           code: "request.header.incompatible",
           message: `Value is incompatible with the parameter defined in the spec file: ${message}`,
           mockDetails: {
             ...baseMockDetails(interaction),
-            location: `[root].interactions[${index}].request.headers.${parameter.name}`,
+            location: `[root].interactions[${index}].request.headers.${dereferencedParameter.name}`,
             value,
           },
           specDetails: {
             location: `[root].paths.${path}.${method}.parameters[${parameterIndex}]`,
             pathMethod: method,
             pathName: path,
-            value: parameter,
+            value: dereferencedParameter,
           },
           type: "error",
         };
       }
     }
-    requestHeaders.delete(parameter.name);
+    requestHeaders.delete(dereferencedParameter.name);
   }
 
   if (interaction.response.status < 400) {

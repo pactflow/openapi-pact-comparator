@@ -1,0 +1,51 @@
+[
+  {
+    "code": "request.accept.unknown",
+    "message": "Request Accept header is defined but the spec does not specify any mime-types to produce",
+    "mockDetails": {
+      "interactionDescription": "should error on unknown request accept",
+      "interactionState": "[none]",
+      "location": "[root].interactions[1].request.headers.accept",
+      "mockFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/response-content-negotiation-swagger2/pact.json",
+      "value": "application/xxx"
+    },
+    "source": "spec-mock-validation",
+    "specDetails": {
+      "location": "[root].paths./no-content.get",
+      "pathMethod": "get",
+      "pathName": "/no-content",
+      "specFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/response-content-negotiation-swagger2/oas.yaml",
+      "value": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "type": "warning"
+  },
+  {
+    "code": "request.accept.incompatible",
+    "message": "Request Accept header is incompatible with the mime-types the spec defines to produce",
+    "mockDetails": {
+      "interactionDescription": "should error on incompatible request accept",
+      "interactionState": "[none]",
+      "location": "[root].interactions[2].request.headers.accept",
+      "mockFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/response-content-negotiation-swagger2/pact.json",
+      "value": "application/xxx"
+    },
+    "source": "spec-mock-validation",
+    "specDetails": {
+      "location": "[root].paths./with-content.get.produces",
+      "pathMethod": "get",
+      "pathName": "/with-content",
+      "specFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/response-content-negotiation-swagger2/oas.yaml",
+      "value": [
+        "application/aaa",
+        "application/bbb"
+      ]
+    },
+    "type": "error"
+  }
+]

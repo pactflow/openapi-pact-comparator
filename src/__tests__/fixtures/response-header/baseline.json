@@ -1,0 +1,94 @@
+[
+  {
+    "code": "response.header.undefined",
+    "message": "Standard http response header is not defined in the spec file: age",
+    "mockDetails": {
+      "interactionDescription": "should warn about missing standard response headers",
+      "interactionState": "[none]",
+      "location": "[root].interactions[1].response.headers.age",
+      "mockFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/response-header/pact.json",
+      "value": "60"
+    },
+    "source": "spec-mock-validation",
+    "specDetails": {
+      "location": "[root].paths./path.get.responses.200",
+      "pathMethod": "get",
+      "pathName": "/path",
+      "specFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/response-header/oas.yaml",
+      "value": {
+        "description": "OK",
+        "headers": {
+          "specified": {
+            "schema": {
+              "type": "number"
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {}
+          }
+        }
+      }
+    },
+    "type": "warning"
+  },
+  {
+    "code": "response.header.incompatible",
+    "message": "Value is incompatible with the parameter defined in the spec file: must be number",
+    "mockDetails": {
+      "interactionDescription": "should error on incompatible response headers",
+      "interactionState": "[none]",
+      "location": "[root].interactions[2].response.headers.specified",
+      "mockFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/response-header/pact.json",
+      "value": "abc"
+    },
+    "source": "spec-mock-validation",
+    "specDetails": {
+      "location": "[root].paths./path.get.responses.200.headers.specified",
+      "pathMethod": "get",
+      "pathName": "/path",
+      "specFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/response-header/oas.yaml",
+      "value": {
+        "schema": {
+          "type": "number"
+        }
+      }
+    },
+    "type": "error"
+  },
+  {
+    "code": "response.header.unknown",
+    "message": "Response header is not defined in the spec file: unspecified",
+    "mockDetails": {
+      "interactionDescription": "should error on unspecified response headers",
+      "interactionState": "[none]",
+      "location": "[root].interactions[3].response.headers.unspecified",
+      "mockFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/response-header/pact.json",
+      "value": "foo"
+    },
+    "source": "spec-mock-validation",
+    "specDetails": {
+      "location": "[root].paths./path.get.responses.200",
+      "pathMethod": "get",
+      "pathName": "/path",
+      "specFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/response-header/oas.yaml",
+      "value": {
+        "description": "OK",
+        "headers": {
+          "specified": {
+            "schema": {
+              "type": "number"
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {}
+          }
+        }
+      }
+    },
+    "type": "error"
+  }
+]

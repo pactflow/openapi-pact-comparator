@@ -289,7 +289,9 @@ export function* compareReqHeader(
       continue;
     }
     const dereferencedParameter = dereferenceOas(parameter, oas);
-    const schema: SchemaObject = dereferencedParameter.schema || { type: dereferencedParameter.type };
+    const schema: SchemaObject = dereferencedParameter.schema || {
+      type: dereferencedParameter.type,
+    };
     const value = parseValue(requestHeaders.get(dereferencedParameter.name));
     if (interaction.response.status < 400) {
       if (value) {

@@ -1,0 +1,129 @@
+[
+  {
+    "code": "request.body.unknown",
+    "message": "No matching schema found for request body",
+    "mockDetails": {
+      "interactionDescription": "should error when unable to match content-type",
+      "interactionState": "[none]",
+      "location": "[root].interactions[3].request.body",
+      "mockFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/request-content-negotiation/pact.json",
+      "value": "name=Rover&genus=Canis"
+    },
+    "source": "spec-mock-validation",
+    "specDetails": {
+      "location": "[root].paths./animals.post",
+      "pathMethod": "post",
+      "pathName": "/animals",
+      "specFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/request-content-negotiation/oas.yaml",
+      "value": {
+        "requestBody": {
+          "content": {
+            "application/json;version=1.0.0": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "genus"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "genus": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "application/json;version=2.0.0": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "species"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "species": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "description"
+          }
+        }
+      }
+    },
+    "type": "warning"
+  },
+  {
+    "code": "request.content-type.incompatible",
+    "message": "Request Content-Type header is incompatible with the mime-types the spec accepts to consume",
+    "mockDetails": {
+      "interactionDescription": "should error when unable to match content-type",
+      "interactionState": "[none]",
+      "location": "[root].interactions[3].request.headers.Content-Type",
+      "mockFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/request-content-negotiation/pact.json",
+      "value": "application/x-www-form-urlencoded"
+    },
+    "source": "spec-mock-validation",
+    "specDetails": {
+      "location": "[root].paths./animals.post.requestBody.content",
+      "pathMethod": "post",
+      "pathName": "/animals",
+      "specFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/request-content-negotiation/oas.yaml",
+      "value": [
+        "application/json;version=1.0.0",
+        "application/json;version=2.0.0"
+      ]
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.content-type.missing",
+    "message": "Request content type header is not defined but spec specifies mime-types to consume",
+    "mockDetails": {
+      "interactionDescription": "should error on missing content-type",
+      "interactionState": "[none]",
+      "location": "[root].interactions[4]",
+      "mockFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/request-content-negotiation/pact.json",
+      "value": {
+        "description": "should error on missing content-type",
+        "request": {
+          "method": "POST",
+          "path": "/animals",
+          "headers": {},
+          "body": {
+            "name": "Rover",
+            "genus": "Canis"
+          }
+        },
+        "response": {
+          "status": 201
+        }
+      }
+    },
+    "source": "spec-mock-validation",
+    "specDetails": {
+      "location": "[root].paths./animals.post.requestBody.content",
+      "pathMethod": "post",
+      "pathName": "/animals",
+      "specFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/request-content-negotiation/oas.yaml",
+      "value": [
+        "application/json;version=1.0.0",
+        "application/json;version=2.0.0"
+      ]
+    },
+    "type": "warning"
+  }
+]

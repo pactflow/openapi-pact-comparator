@@ -1,0 +1,53 @@
+[
+  {
+    "code": "response.status.unknown",
+    "message": "Response status code not defined in spec file: 302",
+    "mockDetails": {
+      "interactionDescription": "should error on unspecified status codes",
+      "interactionState": "[none]",
+      "location": "[root].interactions[2].response.status",
+      "mockFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/response-status-swagger2/pact.json",
+      "value": 302
+    },
+    "source": "spec-mock-validation",
+    "specDetails": {
+      "location": "[root].paths./animal.get.responses",
+      "pathMethod": "get",
+      "pathName": "/animal",
+      "specFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/response-status-swagger2/oas.yaml",
+      "value": {
+        "200": {
+          "description": "OK"
+        },
+        "404": {
+          "description": "Not Found"
+        }
+      }
+    },
+    "type": "error"
+  },
+  {
+    "code": "response.status.default",
+    "message": "Response status code matched default response in spec file: 200",
+    "mockDetails": {
+      "interactionDescription": "should warn when falling back to default response",
+      "interactionState": "[none]",
+      "location": "[root].interactions[3].response.status",
+      "mockFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/response-status-swagger2/pact.json",
+      "value": 200
+    },
+    "source": "spec-mock-validation",
+    "specDetails": {
+      "location": "[root].paths./plant.get.responses",
+      "pathMethod": "get",
+      "pathName": "/plant",
+      "specFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/response-status-swagger2/oas.yaml",
+      "value": {
+        "default": {
+          "description": "default"
+        }
+      }
+    },
+    "type": "warning"
+  }
+]

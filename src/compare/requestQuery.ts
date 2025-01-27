@@ -35,7 +35,9 @@ export function* compareReqQuery(
     if (dereferencedParameter.in !== "query") {
       continue;
     }
-    const schema: SchemaObject = dereferencedParameter.schema || { type: dereferencedParameter.type };
+    const schema: SchemaObject = dereferencedParameter.schema || {
+      type: dereferencedParameter.type,
+    };
     const value = searchParams[dereferencedParameter.name];
     if (interaction.response.status < 400) {
       if (schema && (value || dereferencedParameter.required)) {

@@ -1,0 +1,92 @@
+[
+  {
+    "code": "request.query.incompatible",
+    "message": "Value is incompatible with the parameter defined in the spec file: must have required property 'value'",
+    "mockDetails": {
+      "interactionDescription": "should fail with missing parameters",
+      "interactionState": "[none]",
+      "location": "[root].interactions[1]",
+      "mockFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/oas-references/pact.json",
+      "value": {
+        "description": "should fail with missing parameters",
+        "providerState": "",
+        "request": {
+          "method": "POST",
+          "path": "/login",
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "username": "bob"
+          }
+        },
+        "response": {
+          "status": 201,
+          "body": {
+            "id": "123"
+          }
+        }
+      }
+    },
+    "source": "spec-mock-validation",
+    "specDetails": {
+      "location": "[root].paths./login.post.parameters[0]",
+      "pathMethod": "post",
+      "pathName": "/login",
+      "specFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/oas-references/oas.yaml",
+      "value": {
+        "in": "query",
+        "name": "account",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      }
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.body.incompatible",
+    "message": "Request body is incompatible with the request body schema in the spec file: must have required property 'username'",
+    "mockDetails": {
+      "interactionDescription": "should fail with bad request body",
+      "interactionState": "[none]",
+      "location": "[root].interactions[2].request.body",
+      "mockFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/oas-references/pact.json",
+      "value": {}
+    },
+    "source": "spec-mock-validation",
+    "specDetails": {
+      "location": "[root].paths./login.post.requestBody.content.application/json.schema.required",
+      "pathMethod": "post",
+      "pathName": "/login",
+      "specFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/oas-references/oas.yaml",
+      "value": [
+        "username"
+      ]
+    },
+    "type": "error"
+  },
+  {
+    "code": "response.body.incompatible",
+    "message": "Response body is incompatible with the response body schema in the spec file: must NOT have additional properties - username",
+    "mockDetails": {
+      "interactionDescription": "should fail with bad response body",
+      "interactionState": "[none]",
+      "location": "[root].interactions[3].response.body",
+      "mockFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/oas-references/pact.json",
+      "value": {
+        "username": "bob"
+      }
+    },
+    "source": "spec-mock-validation",
+    "specDetails": {
+      "location": "[root].paths./login.post.responses.201.content.application/json.schema.additionalProperties",
+      "pathMethod": "post",
+      "pathName": "/login",
+      "specFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/oas-references/oas.yaml",
+      "value": false
+    },
+    "type": "error"
+  }
+]

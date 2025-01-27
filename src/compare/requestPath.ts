@@ -24,9 +24,13 @@ export function* compareReqPath(
       continue;
     }
 
-    const dereferencedParameter = dereferenceOas(parameter, oas)
-    const schema: SchemaObject = dereferencedParameter.schema || { type: dereferencedParameter.type };
-    const value = parseValue(route.params[cleanPathParameter(dereferencedParameter.name)]);
+    const dereferencedParameter = dereferenceOas(parameter, oas);
+    const schema: SchemaObject = dereferencedParameter.schema || {
+      type: dereferencedParameter.type,
+    };
+    const value = parseValue(
+      route.params[cleanPathParameter(dereferencedParameter.name)],
+    );
     if (value && schema) {
       const schemaId = `[root].paths.${path}.${method}.parameters[${parameterIndex}]`;
       let validate = ajv.getSchema(schemaId);

@@ -1,0 +1,39 @@
+[
+  {
+    "code": "response.status.unknown",
+    "message": "Response status code not defined in spec file: 302",
+    "mockDetails": {
+      "interactionDescription": "should error on unspecified status codes",
+      "interactionState": "when redirect exists",
+      "location": "[root].interactions[2].response.status",
+      "mockFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/response-status/pact.json",
+      "value": 302
+    },
+    "source": "spec-mock-validation",
+    "specDetails": {
+      "location": "[root].paths./animal.get.responses",
+      "pathMethod": "get",
+      "pathName": "/animal",
+      "specFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/response-status/oas.yaml",
+      "value": {
+        "200": {
+          "description": "description",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        },
+        "404": {
+          "description": "description",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        }
+      }
+    },
+    "type": "error"
+  }
+]

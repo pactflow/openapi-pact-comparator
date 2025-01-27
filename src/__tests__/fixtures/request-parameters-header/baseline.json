@@ -1,0 +1,178 @@
+[
+  {
+    "code": "request.header.unknown",
+    "message": "Request header is not defined in the spec file: x-surprise",
+    "mockDetails": {
+      "interactionDescription": "should warn when header is not defined in spec",
+      "interactionState": "[none]",
+      "location": "[root].interactions[3].request.headers.x-surprise",
+      "mockFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/request-parameters-header/pact.json",
+      "value": "unexpected header"
+    },
+    "source": "spec-mock-validation",
+    "specDetails": {
+      "location": "[root].paths./path.get",
+      "pathMethod": "get",
+      "pathName": "/path",
+      "specFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/request-parameters-header/oas.yaml",
+      "value": {
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-required-number",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-optional-number",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-optional-array",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              },
+              "minItems": 1
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-optional-object",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "string": {
+                  "type": "string"
+                },
+                "number": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "type": "warning"
+  },
+  {
+    "code": "request.header.incompatible",
+    "message": "Value is incompatible with the parameter defined in the spec file: must have required property 'value'",
+    "mockDetails": {
+      "interactionDescription": "should error when required header is missing",
+      "interactionState": "[none]",
+      "location": "[root].interactions[4]",
+      "mockFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/request-parameters-header/pact.json",
+      "value": {
+        "description": "should error when required header is missing",
+        "providerState": "",
+        "request": {
+          "method": "GET",
+          "path": "/path",
+          "headers": {}
+        },
+        "response": {
+          "status": 200,
+          "headers": {
+            "Content-Type": "application/json"
+          }
+        }
+      }
+    },
+    "source": "spec-mock-validation",
+    "specDetails": {
+      "location": "[root].paths./path.get.parameters[0]",
+      "pathMethod": "get",
+      "pathName": "/path",
+      "specFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/request-parameters-header/oas.yaml",
+      "value": {
+        "in": "header",
+        "name": "x-required-number",
+        "required": true,
+        "schema": {
+          "type": "number"
+        }
+      }
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.header.incompatible",
+    "message": "Value is incompatible with the parameter defined in the spec file: must be number",
+    "mockDetails": {
+      "interactionDescription": "should error when required header does not match the spec",
+      "interactionState": "[none]",
+      "location": "[root].interactions[5].request.headers.x-required-number",
+      "mockFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/request-parameters-header/pact.json",
+      "value": "abc"
+    },
+    "source": "spec-mock-validation",
+    "specDetails": {
+      "location": "[root].paths./path.get.parameters[0]",
+      "pathMethod": "get",
+      "pathName": "/path",
+      "specFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/request-parameters-header/oas.yaml",
+      "value": {
+        "in": "header",
+        "name": "x-required-number",
+        "required": true,
+        "schema": {
+          "type": "number"
+        }
+      }
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.header.incompatible",
+    "message": "Value is incompatible with the parameter defined in the spec file: must be number",
+    "mockDetails": {
+      "interactionDescription": "should error when optional header does not match the spec",
+      "interactionState": "[none]",
+      "location": "[root].interactions[6].request.headers.x-optional-number",
+      "mockFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/request-parameters-header/pact.json",
+      "value": "abc"
+    },
+    "source": "spec-mock-validation",
+    "specDetails": {
+      "location": "[root].paths./path.get.parameters[1]",
+      "pathMethod": "get",
+      "pathName": "/path",
+      "specFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/request-parameters-header/oas.yaml",
+      "value": {
+        "in": "header",
+        "name": "x-optional-number",
+        "required": false,
+        "schema": {
+          "type": "number"
+        }
+      }
+    },
+    "type": "error"
+  }
+]

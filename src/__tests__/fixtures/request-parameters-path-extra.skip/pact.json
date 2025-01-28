@@ -23,6 +23,26 @@
       }
     },
     {
+      "description": "should pass when path mathres exploded spec",
+      "request": {
+        "method": "GET",
+        "path": "/simple/explode-true/1,2,3"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "should pass when path matches non-exploded spec",
+      "request": {
+        "method": "GET",
+        "path": "/simple/explode-false/1,2,3"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
       "description": "should pass when path matches object spec",
       "request": {
         "method": "GET",
@@ -53,10 +73,20 @@
       }
     },
     {
-      "description": "should error when path does not match object spec",
+      "description": "should error when path does not match exploded integer array spec",
       "request": {
         "method": "GET",
-        "path": "/exploded-object/string=abc,number=abc"
+        "path": "/simple/explode-true/1,2,abc"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "should error when path does not match non-exploded integer array spec",
+      "request": {
+        "method": "GET",
+        "path": "/simple/explode-false/1,2,abc"
       },
       "response": {
         "status": 200
@@ -73,7 +103,17 @@
       }
     },
     {
-      "description": "should error when path and method does not exist in spec",
+      "description": "should error when path does not match object spec",
+      "request": {
+        "method": "GET",
+        "path": "/exploded-object/string=abc,number=abc"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "should error when path does not exist in spec",
       "request": {
         "method": "GET",
         "path": "/does-not-exist"

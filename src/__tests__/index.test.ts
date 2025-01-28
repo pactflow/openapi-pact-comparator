@@ -21,13 +21,13 @@ const parse = (spec: string) => {
 const FIXTURES = path.join(__dirname, "fixtures");
 
 for (const entry of fs.readdirSync(FIXTURES)) {
-  const runTest = async () => {
-    const dir = path.join(FIXTURES, entry);
-    const pactFile = path.join(dir, "pact.json");
-    const oasFile = path.join(dir, "oas.yaml");
-    const resultFile = path.join(dir, "results.json");
-    const baselineFile = path.join(dir, "baseline.json");
+  const dir = path.join(FIXTURES, entry);
+  const pactFile = path.join(dir, "pact.json");
+  const oasFile = path.join(dir, "oas.yaml");
+  const resultFile = path.join(dir, "results.json");
+  const baselineFile = path.join(dir, "baseline.json");
 
+  const runTest = async () => {
     const pact = parse(await fs.promises.readFile(pactFile, "utf-8"));
     const oas = parse(await fs.promises.readFile(oasFile, "utf-8"));
 
@@ -42,37 +42,32 @@ for (const entry of fs.readdirSync(FIXTURES)) {
     await expect(JSON.stringify(results, null, 2)).toMatchFileSnapshot(
       resultFile,
     );
+  };
 
-    try {
-      const baseline = await swaggerMockValidator.validate({
-        mockPathOrUrl: pactFile,
-        specPathOrUrl: oasFile,
-      });
-      const orderedBaseline = [...baseline.errors, ...baseline.warnings]
-        .sort((a, b) =>
-          a.mockDetails.location.localeCompare(b.mockDetails.location),
-        )
-        .map((r) =>
-          omit(r, ["source", "mockDetails.mockFile", "specDetails.specFile"]),
-        );
-      await expect(
-        JSON.stringify(orderedBaseline, null, 2),
-      ).toMatchFileSnapshot(baselineFile);
-    } catch (error) {
-      /* TODO: investigate crash in SWM */
-      if ((error as Error).name === "TypeError") {
-        return;
-      }
-
-      throw error;
-    }
+  const runBaseline = async () => {
+    const baseline = await swaggerMockValidator.validate({
+      mockPathOrUrl: pactFile,
+      specPathOrUrl: oasFile,
+    });
+    const orderedBaseline = [...baseline.errors, ...baseline.warnings]
+      .sort((a, b) =>
+        a.mockDetails.location.localeCompare(b.mockDetails.location),
+      )
+      .map((r) =>
+        omit(r, ["source", "mockDetails.mockFile", "specDetails.specFile"]),
+      );
+    await expect(JSON.stringify(orderedBaseline, null, 2)).toMatchFileSnapshot(
+      baselineFile,
+    );
   };
 
   if (entry.endsWith("skip")) {
     it.skip(entry.replace(/\.skip$/, ""));
   } else if (entry.endsWith("only")) {
     it.only(entry.replace(/\.only/, ""), runTest);
+    it.only(`${entry.replace(/\.only/, "")} baseline`, runBaseline, 300_000);
   } else {
     it(entry, runTest);
+    it(`${entry} baseline`, runBaseline, 300_000);
   }
 }

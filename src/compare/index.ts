@@ -1,5 +1,4 @@
 import type { OpenAPIV3 } from "openapi-types";
-import qs from "qs";
 import Ajv from "ajv/dist/2019";
 import Router, { HTTPMethod } from "find-my-way";
 import SwaggerParser from "@apidevtools/swagger-parser";
@@ -27,17 +26,18 @@ export class Comparator {
     const ajvOptions = {
       allErrors: true,
       discriminator: true,
-      logger: false,
       strictSchema: false,
     };
 
     this.#ajvCoerce = setupAjv({
       ...ajvOptions,
       coerceTypes: true,
+      logger: false,
     });
     this.#ajvNocoerce = setupAjv({
       ...ajvOptions,
       coerceTypes: false,
+      logger: false,
     });
     this.#oas = oas;
     this.#router = setupRouter(oas);
@@ -64,10 +64,11 @@ export class Comparator {
       const stringQuery =
         typeof query === "string"
           ? query
-          : Object.keys(query || {}).reduce((acc, name) => {
-              const values = query[name];
-              return `${acc}&${name}=${query[name].join(",")}`;
-            }, "");
+          : Object.keys(query || {}).reduce(
+              (acc, name) =>
+                `${acc}&${name}=${(query![name] as string[]).join(",")}`,
+              "",
+            );
       const route = this.#router.find(
         method.toUpperCase() as HTTPMethod,
         [path, stringQuery].filter(Boolean).join("?"),

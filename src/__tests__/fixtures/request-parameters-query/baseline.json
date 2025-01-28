@@ -1,0 +1,1127 @@
+[
+  {
+    "code": "request.query.incompatible",
+    "message": "Value is incompatible with the parameter defined in the spec file: must have required property 'value'",
+    "mockDetails": {
+      "interactionDescription": "should pass for query in object form",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0]",
+      "value": {
+        "description": "should pass for query in object form",
+        "request": {
+          "method": "GET",
+          "path": "/object",
+          "query": {
+            "person[id]": [
+              "1"
+            ],
+            "person[name]": [
+              "fred"
+            ],
+            "person[address][street]": [
+              "123 Fake St"
+            ],
+            "person[address][city]": [
+              "Melbourne"
+            ],
+            "person[address][state]": [
+              "VIC"
+            ],
+            "person[address][postcode]": [
+              "3000"
+            ]
+          }
+        },
+        "response": {
+          "status": 200
+        }
+      }
+    },
+    "specDetails": {
+      "location": "[root].paths./object.get.parameters[0]",
+      "pathMethod": "get",
+      "pathName": "/object",
+      "value": {
+        "in": "query",
+        "name": "person",
+        "required": true,
+        "schema": {
+          "type": "object",
+          "required": [
+            "id",
+            "name"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "number"
+            },
+            "name": {
+              "type": "string"
+            },
+            "address": {
+              "type": "object",
+              "required": [
+                "street",
+                "city",
+                "state",
+                "postcode"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "street": {
+                  "type": "string"
+                },
+                "city": {
+                  "type": "string"
+                },
+                "state": {
+                  "type": "string"
+                },
+                "postcode": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        },
+        "style": "deepObject",
+        "explode": true
+      }
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.query.unknown",
+    "message": "Query parameter is not defined in the spec file: person[address][city]",
+    "mockDetails": {
+      "interactionDescription": "should pass for query in object form",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].request.query.person[address][city]",
+      "value": "Melbourne"
+    },
+    "specDetails": {
+      "location": "[root].paths./object.get",
+      "pathMethod": "get",
+      "pathName": "/object",
+      "value": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "person",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "id",
+                "name"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "number"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "address": {
+                  "type": "object",
+                  "required": [
+                    "street",
+                    "city",
+                    "state",
+                    "postcode"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "street": {
+                      "type": "string"
+                    },
+                    "city": {
+                      "type": "string"
+                    },
+                    "state": {
+                      "type": "string"
+                    },
+                    "postcode": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            },
+            "style": "deepObject",
+            "explode": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "type": "warning"
+  },
+  {
+    "code": "request.query.unknown",
+    "message": "Query parameter is not defined in the spec file: person[address][postcode]",
+    "mockDetails": {
+      "interactionDescription": "should pass for query in object form",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].request.query.person[address][postcode]",
+      "value": "3000"
+    },
+    "specDetails": {
+      "location": "[root].paths./object.get",
+      "pathMethod": "get",
+      "pathName": "/object",
+      "value": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "person",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "id",
+                "name"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "number"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "address": {
+                  "type": "object",
+                  "required": [
+                    "street",
+                    "city",
+                    "state",
+                    "postcode"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "street": {
+                      "type": "string"
+                    },
+                    "city": {
+                      "type": "string"
+                    },
+                    "state": {
+                      "type": "string"
+                    },
+                    "postcode": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            },
+            "style": "deepObject",
+            "explode": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "type": "warning"
+  },
+  {
+    "code": "request.query.unknown",
+    "message": "Query parameter is not defined in the spec file: person[address][state]",
+    "mockDetails": {
+      "interactionDescription": "should pass for query in object form",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].request.query.person[address][state]",
+      "value": "VIC"
+    },
+    "specDetails": {
+      "location": "[root].paths./object.get",
+      "pathMethod": "get",
+      "pathName": "/object",
+      "value": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "person",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "id",
+                "name"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "number"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "address": {
+                  "type": "object",
+                  "required": [
+                    "street",
+                    "city",
+                    "state",
+                    "postcode"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "street": {
+                      "type": "string"
+                    },
+                    "city": {
+                      "type": "string"
+                    },
+                    "state": {
+                      "type": "string"
+                    },
+                    "postcode": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            },
+            "style": "deepObject",
+            "explode": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "type": "warning"
+  },
+  {
+    "code": "request.query.unknown",
+    "message": "Query parameter is not defined in the spec file: person[address][street]",
+    "mockDetails": {
+      "interactionDescription": "should pass for query in object form",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].request.query.person[address][street]",
+      "value": "123 Fake St"
+    },
+    "specDetails": {
+      "location": "[root].paths./object.get",
+      "pathMethod": "get",
+      "pathName": "/object",
+      "value": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "person",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "id",
+                "name"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "number"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "address": {
+                  "type": "object",
+                  "required": [
+                    "street",
+                    "city",
+                    "state",
+                    "postcode"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "street": {
+                      "type": "string"
+                    },
+                    "city": {
+                      "type": "string"
+                    },
+                    "state": {
+                      "type": "string"
+                    },
+                    "postcode": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            },
+            "style": "deepObject",
+            "explode": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "type": "warning"
+  },
+  {
+    "code": "request.query.unknown",
+    "message": "Query parameter is not defined in the spec file: person[id]",
+    "mockDetails": {
+      "interactionDescription": "should pass for query in object form",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].request.query.person[id]",
+      "value": "1"
+    },
+    "specDetails": {
+      "location": "[root].paths./object.get",
+      "pathMethod": "get",
+      "pathName": "/object",
+      "value": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "person",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "id",
+                "name"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "number"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "address": {
+                  "type": "object",
+                  "required": [
+                    "street",
+                    "city",
+                    "state",
+                    "postcode"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "street": {
+                      "type": "string"
+                    },
+                    "city": {
+                      "type": "string"
+                    },
+                    "state": {
+                      "type": "string"
+                    },
+                    "postcode": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            },
+            "style": "deepObject",
+            "explode": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "type": "warning"
+  },
+  {
+    "code": "request.query.unknown",
+    "message": "Query parameter is not defined in the spec file: person[name]",
+    "mockDetails": {
+      "interactionDescription": "should pass for query in object form",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].request.query.person[name]",
+      "value": "fred"
+    },
+    "specDetails": {
+      "location": "[root].paths./object.get",
+      "pathMethod": "get",
+      "pathName": "/object",
+      "value": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "person",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "id",
+                "name"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "number"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "address": {
+                  "type": "object",
+                  "required": [
+                    "street",
+                    "city",
+                    "state",
+                    "postcode"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "street": {
+                      "type": "string"
+                    },
+                    "city": {
+                      "type": "string"
+                    },
+                    "state": {
+                      "type": "string"
+                    },
+                    "postcode": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            },
+            "style": "deepObject",
+            "explode": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "type": "warning"
+  },
+  {
+    "code": "request.query.incompatible",
+    "message": "Value is incompatible with the parameter defined in the spec file: must have required property 'value'",
+    "mockDetails": {
+      "interactionDescription": "should pass for query in string form",
+      "interactionState": "[none]",
+      "location": "[root].interactions[1]",
+      "value": {
+        "description": "should pass for query in string form",
+        "request": {
+          "method": "GET",
+          "path": "/object",
+          "query": "person[id]=1&person[name]=fred&person[address][street]some%20street&person[address][city]=Melbourne&person[address][state]=VIC&person[address][postcode]=3000"
+        },
+        "response": {
+          "status": 200
+        }
+      }
+    },
+    "specDetails": {
+      "location": "[root].paths./object.get.parameters[0]",
+      "pathMethod": "get",
+      "pathName": "/object",
+      "value": {
+        "in": "query",
+        "name": "person",
+        "required": true,
+        "schema": {
+          "type": "object",
+          "required": [
+            "id",
+            "name"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "number"
+            },
+            "name": {
+              "type": "string"
+            },
+            "address": {
+              "type": "object",
+              "required": [
+                "street",
+                "city",
+                "state",
+                "postcode"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "street": {
+                  "type": "string"
+                },
+                "city": {
+                  "type": "string"
+                },
+                "state": {
+                  "type": "string"
+                },
+                "postcode": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        },
+        "style": "deepObject",
+        "explode": true
+      }
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.query.unknown",
+    "message": "Query parameter is not defined in the spec file: person[address][city]",
+    "mockDetails": {
+      "interactionDescription": "should pass for query in string form",
+      "interactionState": "[none]",
+      "location": "[root].interactions[1].request.query.person[address][city]",
+      "value": "Melbourne"
+    },
+    "specDetails": {
+      "location": "[root].paths./object.get",
+      "pathMethod": "get",
+      "pathName": "/object",
+      "value": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "person",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "id",
+                "name"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "number"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "address": {
+                  "type": "object",
+                  "required": [
+                    "street",
+                    "city",
+                    "state",
+                    "postcode"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "street": {
+                      "type": "string"
+                    },
+                    "city": {
+                      "type": "string"
+                    },
+                    "state": {
+                      "type": "string"
+                    },
+                    "postcode": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            },
+            "style": "deepObject",
+            "explode": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "type": "warning"
+  },
+  {
+    "code": "request.query.unknown",
+    "message": "Query parameter is not defined in the spec file: person[address][postcode]",
+    "mockDetails": {
+      "interactionDescription": "should pass for query in string form",
+      "interactionState": "[none]",
+      "location": "[root].interactions[1].request.query.person[address][postcode]",
+      "value": "3000"
+    },
+    "specDetails": {
+      "location": "[root].paths./object.get",
+      "pathMethod": "get",
+      "pathName": "/object",
+      "value": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "person",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "id",
+                "name"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "number"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "address": {
+                  "type": "object",
+                  "required": [
+                    "street",
+                    "city",
+                    "state",
+                    "postcode"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "street": {
+                      "type": "string"
+                    },
+                    "city": {
+                      "type": "string"
+                    },
+                    "state": {
+                      "type": "string"
+                    },
+                    "postcode": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            },
+            "style": "deepObject",
+            "explode": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "type": "warning"
+  },
+  {
+    "code": "request.query.unknown",
+    "message": "Query parameter is not defined in the spec file: person[address][state]",
+    "mockDetails": {
+      "interactionDescription": "should pass for query in string form",
+      "interactionState": "[none]",
+      "location": "[root].interactions[1].request.query.person[address][state]",
+      "value": "VIC"
+    },
+    "specDetails": {
+      "location": "[root].paths./object.get",
+      "pathMethod": "get",
+      "pathName": "/object",
+      "value": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "person",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "id",
+                "name"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "number"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "address": {
+                  "type": "object",
+                  "required": [
+                    "street",
+                    "city",
+                    "state",
+                    "postcode"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "street": {
+                      "type": "string"
+                    },
+                    "city": {
+                      "type": "string"
+                    },
+                    "state": {
+                      "type": "string"
+                    },
+                    "postcode": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            },
+            "style": "deepObject",
+            "explode": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "type": "warning"
+  },
+  {
+    "code": "request.query.unknown",
+    "message": "Query parameter is not defined in the spec file: person[address][street]some street",
+    "mockDetails": {
+      "interactionDescription": "should pass for query in string form",
+      "interactionState": "[none]",
+      "location": "[root].interactions[1].request.query.person[address][street]some street",
+      "value": ""
+    },
+    "specDetails": {
+      "location": "[root].paths./object.get",
+      "pathMethod": "get",
+      "pathName": "/object",
+      "value": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "person",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "id",
+                "name"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "number"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "address": {
+                  "type": "object",
+                  "required": [
+                    "street",
+                    "city",
+                    "state",
+                    "postcode"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "street": {
+                      "type": "string"
+                    },
+                    "city": {
+                      "type": "string"
+                    },
+                    "state": {
+                      "type": "string"
+                    },
+                    "postcode": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            },
+            "style": "deepObject",
+            "explode": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "type": "warning"
+  },
+  {
+    "code": "request.query.unknown",
+    "message": "Query parameter is not defined in the spec file: person[id]",
+    "mockDetails": {
+      "interactionDescription": "should pass for query in string form",
+      "interactionState": "[none]",
+      "location": "[root].interactions[1].request.query.person[id]",
+      "value": "1"
+    },
+    "specDetails": {
+      "location": "[root].paths./object.get",
+      "pathMethod": "get",
+      "pathName": "/object",
+      "value": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "person",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "id",
+                "name"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "number"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "address": {
+                  "type": "object",
+                  "required": [
+                    "street",
+                    "city",
+                    "state",
+                    "postcode"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "street": {
+                      "type": "string"
+                    },
+                    "city": {
+                      "type": "string"
+                    },
+                    "state": {
+                      "type": "string"
+                    },
+                    "postcode": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            },
+            "style": "deepObject",
+            "explode": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "type": "warning"
+  },
+  {
+    "code": "request.query.unknown",
+    "message": "Query parameter is not defined in the spec file: person[name]",
+    "mockDetails": {
+      "interactionDescription": "should pass for query in string form",
+      "interactionState": "[none]",
+      "location": "[root].interactions[1].request.query.person[name]",
+      "value": "fred"
+    },
+    "specDetails": {
+      "location": "[root].paths./object.get",
+      "pathMethod": "get",
+      "pathName": "/object",
+      "value": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "person",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "id",
+                "name"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "number"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "address": {
+                  "type": "object",
+                  "required": [
+                    "street",
+                    "city",
+                    "state",
+                    "postcode"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "street": {
+                      "type": "string"
+                    },
+                    "city": {
+                      "type": "string"
+                    },
+                    "state": {
+                      "type": "string"
+                    },
+                    "postcode": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            },
+            "style": "deepObject",
+            "explode": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "type": "warning"
+  },
+  {
+    "code": "request.query.incompatible",
+    "message": "Value is incompatible with the parameter defined in the spec file: must have required property 'value'",
+    "mockDetails": {
+      "interactionDescription": "should error when missing required query parameter",
+      "interactionState": "[none]",
+      "location": "[root].interactions[10]",
+      "value": {
+        "description": "should error when missing required query parameter",
+        "request": {
+          "method": "GET",
+          "path": "/string"
+        },
+        "response": {
+          "status": 200
+        }
+      }
+    },
+    "specDetails": {
+      "location": "[root].paths./string.get.parameters[0]",
+      "pathMethod": "get",
+      "pathName": "/string",
+      "value": {
+        "in": "query",
+        "name": "name",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      }
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.query.unknown",
+    "message": "Query parameter is not defined in the spec file: unknown_key",
+    "mockDetails": {
+      "interactionDescription": "should warn about unknown query parameters",
+      "interactionState": "[none]",
+      "location": "[root].interactions[8].request.query.unknown_key",
+      "value": "unknown_value"
+    },
+    "specDetails": {
+      "location": "[root].paths./string.get",
+      "pathMethod": "get",
+      "pathName": "/string",
+      "value": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "age",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "type": "warning"
+  },
+  {
+    "code": "request.query.incompatible",
+    "message": "Value is incompatible with the parameter defined in the spec file: must be number",
+    "mockDetails": {
+      "interactionDescription": "should error when optional query parameter is incompatible",
+      "interactionState": "[none]",
+      "location": "[root].interactions[9].request.query.age",
+      "value": "abc"
+    },
+    "specDetails": {
+      "location": "[root].paths./string.get.parameters[1]",
+      "pathMethod": "get",
+      "pathName": "/string",
+      "value": {
+        "in": "query",
+        "name": "age",
+        "schema": {
+          "type": "number"
+        }
+      }
+    },
+    "type": "error"
+  }
+]

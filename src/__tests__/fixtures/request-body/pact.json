@@ -38,14 +38,17 @@
       }
     },
     {
-      "description": "should pass on unsupported bodies",
+      "description": "should pass on multipart bodies",
       "request": {
         "method": "POST",
         "path": "/login",
         "headers": {
           "Content-Type": "multipart/form-data"
         },
-        "body": {}
+        "body": {
+          "email": "a@a.com",
+          "password": "password"
+        }
       },
       "response": {
         "status": 201,

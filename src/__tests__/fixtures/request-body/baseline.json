@@ -1,48 +1,6 @@
 [
   {
     "code": "request.body.incompatible",
-    "message": "Request body is incompatible with the request body schema in the spec file: must have required property 'email'",
-    "mockDetails": {
-      "interactionDescription": "should pass on unsupported bodies",
-      "interactionState": "[none]",
-      "location": "[root].interactions[2].request.body",
-      "value": {}
-    },
-    "source": "spec-mock-validation",
-    "specDetails": {
-      "location": "[root].paths./login.post.requestBody.content.multipart/form-data.schema.required",
-      "pathMethod": "post",
-      "pathName": "/login",
-      "value": [
-        "email",
-        "password"
-      ]
-    },
-    "type": "error"
-  },
-  {
-    "code": "request.body.incompatible",
-    "message": "Request body is incompatible with the request body schema in the spec file: must have required property 'password'",
-    "mockDetails": {
-      "interactionDescription": "should pass on unsupported bodies",
-      "interactionState": "[none]",
-      "location": "[root].interactions[2].request.body",
-      "value": {}
-    },
-    "source": "spec-mock-validation",
-    "specDetails": {
-      "location": "[root].paths./login.post.requestBody.content.multipart/form-data.schema.required",
-      "pathMethod": "post",
-      "pathName": "/login",
-      "value": [
-        "email",
-        "password"
-      ]
-    },
-    "type": "error"
-  },
-  {
-    "code": "request.body.incompatible",
     "message": "Request body is incompatible with the request body schema in the spec file: must be object",
     "mockDetails": {
       "interactionDescription": "should error on empty body",

@@ -17,7 +17,10 @@ import { findMatchingType } from "./utils/content";
 import { dereferenceOas } from "./utils/schema";
 
 const parseBody = (body: unknown, contentType: string) => {
-  if (contentType.includes("application/x-www-form-urlencoded")) {
+  if (
+    contentType.includes("application/x-www-form-urlencoded") &&
+    typeof body === "string"
+  ) {
     return qs.parse(body as string, { allowDots: true, comma: true });
   }
 
@@ -28,6 +31,7 @@ const canValidate = (contentType: string): boolean => {
   return !!findMatchingType(contentType, [
     "application/json",
     "application/x-www-form-urlencoded",
+    "multipart/form-data",
   ]);
 };
 

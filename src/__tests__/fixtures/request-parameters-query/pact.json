@@ -8,12 +8,12 @@
         "method": "GET",
         "path": "/object",
         "query": {
-          "person[id]": "1",
-          "person[name]": "fred",
-          "person[address][street]": "123 Fake St",
-          "person[address][city]": "Melbourne",
-          "person[address][state]": "VIC",
-          "person[address][postcode]": "3000"
+          "person[id]": ["1"],
+          "person[name]": ["fred"],
+          "person[address][street]": ["123 Fake St"],
+          "person[address][city]": ["Melbourne"],
+          "person[address][state]": ["VIC"],
+          "person[address][postcode]": ["3000"]
         }
       },
       "response": {
@@ -38,7 +38,7 @@
         "path": "/explode-true",
         "query": {
           "id": ["1", "2", "abc"],
-          "param": "unknown"
+          "param": ["unknown"]
         }
       },
       "response": {

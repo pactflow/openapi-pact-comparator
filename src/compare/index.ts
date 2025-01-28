@@ -62,7 +62,12 @@ export class Comparator {
       const { method, path, query } = interaction.request;
       // in pact, query is either a string or an object of only one level deep
       const stringQuery =
-        typeof query === "string" ? query : qs.stringify(query);
+        typeof query === "string"
+          ? query
+          : Object.keys(query || {}).reduce((acc, name) => {
+              const values = query[name];
+              return `${acc}&${name}=${query[name].join(",")}`;
+            }, "");
       const route = this.#router.find(
         method.toUpperCase() as HTTPMethod,
         [path, stringQuery].filter(Boolean).join("?"),

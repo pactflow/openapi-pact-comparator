@@ -149,7 +149,7 @@
         "method": "GET",
         "path": "/query",
         "query": {
-          "X-API-Key": "dXNlcjpwYXNzd29yZAo="
+          "X-API-Key": ["dXNlcjpwYXNzd29yZAo="]
         }
       },
       "response": {
@@ -182,7 +182,7 @@
         "method": "GET",
         "path": "/query",
         "query": {
-          "X-API-Key": "YmFkOnBhc3N3b3JkCg=="
+          "X-API-Key": ["YmFkOnBhc3N3b3JkCg=="]
         }
       },
       "response": {

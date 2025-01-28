@@ -117,7 +117,7 @@ paths:
       security:
         - OAuth2: [Admin]
           OpenID: [Admin]
-          ApiKey: [Admin]
+          ApiKeyAuth: [Admin]
           BearerAuth: [Admin]
   /multiple-or:
     get:
@@ -133,7 +133,7 @@ paths:
       security:
         - OAuth2: [Admin]
         - OpenID: [Admin]
-        - ApiKey: [Admin]
+        - ApiKeyAuth: [Admin]
         - BearerAuth: [Admin]
 components:
   securitySchemes:

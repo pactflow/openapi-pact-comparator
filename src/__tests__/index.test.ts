@@ -1,5 +1,6 @@
 import fs from "fs";
 import yaml from "js-yaml";
+import { omit } from "lodash-es";
 import path from "path";
 import { expect, it } from "vitest";
 import { SwaggerMockValidatorFactory } from "@pactflow/swagger-mock-validator";
@@ -45,14 +46,21 @@ for (const entry of fs.readdirSync(FIXTURES)) {
         mockPathOrUrl: pactFile,
         specPathOrUrl: oasFile,
       });
-      const orderedBaseline = [...baseline.errors, ...baseline.warnings].sort(
-        (a, b) => a.mockDetails.location.localeCompare(b.mockDetails.location),
-      );
+      const orderedBaseline = [...baseline.errors, ...baseline.warnings]
+        .sort((a, b) =>
+          a.mockDetails.location.localeCompare(b.mockDetails.location),
+        )
+        .map((r) => omit(r, ["mockDetails.mockFile", "specDetails.specFile"]));
       await expect(
         JSON.stringify(orderedBaseline, null, 2),
       ).toMatchFileSnapshot(baselineFile);
-    } catch {
+    } catch (error) {
       /* TODO: investigate crash in SWM */
+      if (error.name === "TypeError") {
+        return;
+      }
+
+      throw error;
     }
   };
 

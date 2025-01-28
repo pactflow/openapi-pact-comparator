@@ -6,7 +6,6 @@
       "interactionDescription": "should error when unable to match content-type",
       "interactionState": "[none]",
       "location": "[root].interactions[3].request.body",
-      "mockFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/request-content-negotiation/pact.json",
       "value": "name=Rover&genus=Canis"
     },
     "source": "spec-mock-validation",
@@ -14,7 +13,6 @@
       "location": "[root].paths./animals.post",
       "pathMethod": "post",
       "pathName": "/animals",
-      "specFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/request-content-negotiation/oas.yaml",
       "value": {
         "requestBody": {
           "content": {
@@ -73,7 +71,6 @@
       "interactionDescription": "should error when unable to match content-type",
       "interactionState": "[none]",
       "location": "[root].interactions[3].request.headers.Content-Type",
-      "mockFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/request-content-negotiation/pact.json",
       "value": "application/x-www-form-urlencoded"
     },
     "source": "spec-mock-validation",
@@ -81,7 +78,6 @@
       "location": "[root].paths./animals.post.requestBody.content",
       "pathMethod": "post",
       "pathName": "/animals",
-      "specFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/request-content-negotiation/oas.yaml",
       "value": [
         "application/json;version=1.0.0",
         "application/json;version=2.0.0"
@@ -96,7 +92,6 @@
       "interactionDescription": "should error on missing content-type",
       "interactionState": "[none]",
       "location": "[root].interactions[4]",
-      "mockFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/request-content-negotiation/pact.json",
       "value": {
         "description": "should error on missing content-type",
         "request": {
@@ -118,7 +113,6 @@
       "location": "[root].paths./animals.post.requestBody.content",
       "pathMethod": "post",
       "pathName": "/animals",
-      "specFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/request-content-negotiation/oas.yaml",
       "value": [
         "application/json;version=1.0.0",
         "application/json;version=2.0.0"

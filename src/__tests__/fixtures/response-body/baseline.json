@@ -6,7 +6,6 @@
       "interactionDescription": "should error on unknown pet",
       "interactionState": "[none]",
       "location": "[root].interactions[4].response.body",
-      "mockFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/response-body/pact.json",
       "value": {
         "petType": "Spider"
       }
@@ -16,7 +15,6 @@
       "location": "[root].paths./pet.get.responses.200.content.application/json.schema.discriminator",
       "pathMethod": "get",
       "pathName": "/pet",
-      "specFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/response-body/oas.yaml",
       "value": {
         "propertyName": "petType"
       }
@@ -30,15 +28,13 @@
       "interactionDescription": "should error with invalid response",
       "interactionState": "[none]",
       "location": "[root].interactions[5].response.body.detail",
-      "mockFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/response-body/pact.json",
       "value": null
     },
     "source": "spec-mock-validation",
     "specDetails": {
       "location": "[root].paths./animal.get.responses.200.content.application/json.schema.type",
       "pathMethod": "get",
-      "pathName": "/animal",
-      "specFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/response-body/oas.yaml"
+      "pathName": "/animal"
     },
     "type": "error"
   }

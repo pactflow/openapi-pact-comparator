@@ -6,7 +6,6 @@
       "interactionDescription": "should pass on unsupported bodies",
       "interactionState": "[none]",
       "location": "[root].interactions[2].request.body",
-      "mockFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/request-body/pact.json",
       "value": {}
     },
     "source": "spec-mock-validation",
@@ -14,7 +13,6 @@
       "location": "[root].paths./login.post.requestBody.content.multipart/form-data.schema.required",
       "pathMethod": "post",
       "pathName": "/login",
-      "specFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/request-body/oas.yaml",
       "value": [
         "email",
         "password"
@@ -29,7 +27,6 @@
       "interactionDescription": "should pass on unsupported bodies",
       "interactionState": "[none]",
       "location": "[root].interactions[2].request.body",
-      "mockFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/request-body/pact.json",
       "value": {}
     },
     "source": "spec-mock-validation",
@@ -37,7 +34,6 @@
       "location": "[root].paths./login.post.requestBody.content.multipart/form-data.schema.required",
       "pathMethod": "post",
       "pathName": "/login",
-      "specFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/request-body/oas.yaml",
       "value": [
         "email",
         "password"
@@ -52,7 +48,6 @@
       "interactionDescription": "should error on empty body",
       "interactionState": "[none]",
       "location": "[root].interactions[4].request.body",
-      "mockFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/request-body/pact.json",
       "value": ""
     },
     "source": "spec-mock-validation",
@@ -60,7 +55,6 @@
       "location": "[root].paths./login.post.requestBody.content.application/json.schema.type",
       "pathMethod": "post",
       "pathName": "/login",
-      "specFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/request-body/oas.yaml",
       "value": "object"
     },
     "type": "error"
@@ -72,7 +66,6 @@
       "interactionDescription": "should error on schema mismatch for json body",
       "interactionState": "[none]",
       "location": "[root].interactions[5].request.body",
-      "mockFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/request-body/pact.json",
       "value": {
         "email": "a@a.com"
       }
@@ -82,7 +75,6 @@
       "location": "[root].paths./login.post.requestBody.content.application/json.schema.required",
       "pathMethod": "post",
       "pathName": "/login",
-      "specFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/request-body/oas.yaml",
       "value": [
         "email",
         "password"
@@ -97,7 +89,6 @@
       "interactionDescription": "should error on schema mismatch for form body",
       "interactionState": "[none]",
       "location": "[root].interactions[6].request.body",
-      "mockFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/request-body/pact.json",
       "value": "email=a@a.com"
     },
     "source": "spec-mock-validation",
@@ -105,7 +96,6 @@
       "location": "[root].paths./login.post.requestBody.content.application/x-www-form-urlencoded.schema.required",
       "pathMethod": "post",
       "pathName": "/login",
-      "specFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/request-body/oas.yaml",
       "value": [
         "email",
         "password"

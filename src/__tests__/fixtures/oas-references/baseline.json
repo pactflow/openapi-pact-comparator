@@ -6,7 +6,6 @@
       "interactionDescription": "should fail with missing parameters",
       "interactionState": "[none]",
       "location": "[root].interactions[1]",
-      "mockFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/oas-references/pact.json",
       "value": {
         "description": "should fail with missing parameters",
         "providerState": "",
@@ -33,7 +32,6 @@
       "location": "[root].paths./login.post.parameters[0]",
       "pathMethod": "post",
       "pathName": "/login",
-      "specFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/oas-references/oas.yaml",
       "value": {
         "in": "query",
         "name": "account",
@@ -52,7 +50,6 @@
       "interactionDescription": "should fail with bad request body",
       "interactionState": "[none]",
       "location": "[root].interactions[2].request.body",
-      "mockFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/oas-references/pact.json",
       "value": {}
     },
     "source": "spec-mock-validation",
@@ -60,7 +57,6 @@
       "location": "[root].paths./login.post.requestBody.content.application/json.schema.required",
       "pathMethod": "post",
       "pathName": "/login",
-      "specFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/oas-references/oas.yaml",
       "value": [
         "username"
       ]
@@ -74,7 +70,6 @@
       "interactionDescription": "should fail with bad response body",
       "interactionState": "[none]",
       "location": "[root].interactions[3].response.body",
-      "mockFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/oas-references/pact.json",
       "value": {
         "username": "bob"
       }
@@ -84,7 +79,6 @@
       "location": "[root].paths./login.post.responses.201.content.application/json.schema.additionalProperties",
       "pathMethod": "post",
       "pathName": "/login",
-      "specFile": "/Users/voon.wong/src/pactflow/openapi-pact-comparator/src/__tests__/fixtures/oas-references/oas.yaml",
       "value": false
     },
     "type": "error"

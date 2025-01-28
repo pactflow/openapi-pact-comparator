@@ -68,7 +68,7 @@ export class Comparator {
               (acc, name) =>
                 Array.isArray(query![name])
                   ? `${acc}&${name}=${(query![name] || []).join(",")}`
-                  : `${acc}&${name}=${(query![name] || "")}`,
+                  : `${acc}&${name}=${query![name] || ""}`,
               "",
             );
       const route = this.#router.find(

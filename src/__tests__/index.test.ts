@@ -1,3 +1,4 @@
+// @ts-nocheck
 import fs from "fs";
 import yaml from "js-yaml";
 import { omit } from "lodash-es";
@@ -58,7 +59,7 @@ for (const entry of fs.readdirSync(FIXTURES)) {
       ).toMatchFileSnapshot(baselineFile);
     } catch (error) {
       /* TODO: investigate crash in SWM */
-      if (error.name === "TypeError") {
+      if ((error as Error).name === "TypeError") {
         return;
       }
 

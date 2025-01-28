@@ -18,12 +18,27 @@ import { compareResHeader } from "./responseHeader";
 import { baseMockDetails } from "../results";
 
 export class Comparator {
-  #ajv: Ajv;
+  #ajvCoerce: Ajv;
+  #ajvNocoerce: Ajv;
   #oas: OpenAPIV3.Document;
   #router: Router.Instance<Router.HTTPVersion.V1>;
 
   constructor(oas: OpenAPIV3.Document) {
-    this.#ajv = setupAjv();
+    const ajvOptions = {
+      allErrors: true,
+      discriminator: true,
+      logger: false,
+      strictSchema: false,
+    };
+
+    this.#ajvCoerce = setupAjv({
+      ...ajvOptions,
+      coerceTypes: true,
+    });
+    this.#ajvNocoerce = setupAjv({
+      ...ajvOptions,
+      coerceTypes: false,
+    });
     this.#oas = oas;
     this.#router = setupRouter(oas);
   }
@@ -73,12 +88,12 @@ export class Comparator {
         continue;
       }
 
-      yield* compareReqPath(this.#ajv, route, interaction, index);
-      yield* compareReqHeader(this.#ajv, route, interaction, index);
-      yield* compareReqQuery(this.#ajv, route, interaction, index);
-      yield* compareReqBody(this.#ajv, route, interaction, index);
-      yield* compareResHeader(this.#ajv, route, interaction, index);
-      yield* compareResBody(this.#ajv, route, interaction, index);
+      yield* compareReqPath(this.#ajvCoerce, route, interaction, index);
+      yield* compareReqHeader(this.#ajvCoerce, route, interaction, index);
+      yield* compareReqQuery(this.#ajvCoerce, route, interaction, index);
+      yield* compareReqBody(this.#ajvNocoerce, route, interaction, index);
+      yield* compareResHeader(this.#ajvCoerce, route, interaction, index);
+      yield* compareResBody(this.#ajvNocoerce, route, interaction, index);
     }
   }
 }

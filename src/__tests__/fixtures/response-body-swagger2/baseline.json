@@ -3,9 +3,9 @@
     "code": "response.body.incompatible",
     "message": "Response body is incompatible with the response body schema in the spec file: must be number",
     "mockDetails": {
-      "interactionDescription": "should pass with valid response",
+      "interactionDescription": "should error with invalid response",
       "interactionState": "[none]",
-      "location": "[root].interactions[0].response.body.age",
+      "location": "[root].interactions[2].response.body.age",
       "value": "10"
     },
     "specDetails": {
@@ -22,7 +22,7 @@
     "mockDetails": {
       "interactionDescription": "should error with invalid response",
       "interactionState": "[none]",
-      "location": "[root].interactions[2].response.body",
+      "location": "[root].interactions[3].response.body",
       "value": {
         "name": "name",
         "detail": null

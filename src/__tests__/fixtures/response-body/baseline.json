@@ -10,7 +10,6 @@
         "petType": "Spider"
       }
     },
-    "source": "spec-mock-validation",
     "specDetails": {
       "location": "[root].paths./pet.get.responses.200.content.application/json.schema.discriminator",
       "pathMethod": "get",
@@ -30,7 +29,6 @@
       "location": "[root].interactions[5].response.body.detail",
       "value": null
     },
-    "source": "spec-mock-validation",
     "specDetails": {
       "location": "[root].paths./animal.get.responses.200.content.application/json.schema.type",
       "pathMethod": "get",

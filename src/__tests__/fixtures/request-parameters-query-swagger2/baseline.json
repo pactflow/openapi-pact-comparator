@@ -8,7 +8,6 @@
       "location": "[root].interactions[1].request.query.unknown_key",
       "value": "unknown_value"
     },
-    "source": "spec-mock-validation",
     "specDetails": {
       "location": "[root].paths./string.get",
       "pathMethod": "get",
@@ -46,7 +45,6 @@
       "location": "[root].interactions[2].request.query.age",
       "value": "abc"
     },
-    "source": "spec-mock-validation",
     "specDetails": {
       "location": "[root].paths./string.get.parameters[1]",
       "pathMethod": "get",
@@ -78,7 +76,6 @@
         }
       }
     },
-    "source": "spec-mock-validation",
     "specDetails": {
       "location": "[root].paths./string.get.parameters[0]",
       "pathMethod": "get",

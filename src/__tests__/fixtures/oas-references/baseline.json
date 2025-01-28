@@ -27,7 +27,6 @@
         }
       }
     },
-    "source": "spec-mock-validation",
     "specDetails": {
       "location": "[root].paths./login.post.parameters[0]",
       "pathMethod": "post",
@@ -52,7 +51,6 @@
       "location": "[root].interactions[2].request.body",
       "value": {}
     },
-    "source": "spec-mock-validation",
     "specDetails": {
       "location": "[root].paths./login.post.requestBody.content.application/json.schema.required",
       "pathMethod": "post",
@@ -74,7 +72,6 @@
         "username": "bob"
       }
     },
-    "source": "spec-mock-validation",
     "specDetails": {
       "location": "[root].paths./login.post.responses.201.content.application/json.schema.additionalProperties",
       "pathMethod": "post",

@@ -8,7 +8,6 @@
       "location": "[root].interactions[2].request.path",
       "value": "/integer/abc"
     },
-    "source": "spec-mock-validation",
     "specDetails": {
       "location": "[root].paths",
       "pathMethod": null,
@@ -61,7 +60,6 @@
       "location": "[root].interactions[3].request.path",
       "value": "/boolean/abc"
     },
-    "source": "spec-mock-validation",
     "specDetails": {
       "location": "[root].paths",
       "pathMethod": null,
@@ -114,7 +112,6 @@
       "location": "[root].interactions[4].request.path",
       "value": "/does-not-exist"
     },
-    "source": "spec-mock-validation",
     "specDetails": {
       "location": "[root].paths",
       "pathMethod": null,
@@ -167,7 +164,6 @@
       "location": "[root].interactions[5].request.path",
       "value": "/integer/1"
     },
-    "source": "spec-mock-validation",
     "specDetails": {
       "location": "[root].paths",
       "pathMethod": null,

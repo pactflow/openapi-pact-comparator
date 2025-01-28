@@ -8,7 +8,6 @@
       "location": "[root].interactions[2].response.status",
       "value": 302
     },
-    "source": "spec-mock-validation",
     "specDetails": {
       "location": "[root].paths./animal.get.responses",
       "pathMethod": "get",

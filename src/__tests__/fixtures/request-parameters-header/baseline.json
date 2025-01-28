@@ -8,7 +8,6 @@
       "location": "[root].interactions[3].request.headers.x-surprise",
       "value": "unexpected header"
     },
-    "source": "spec-mock-validation",
     "specDetails": {
       "location": "[root].paths./path.get",
       "pathMethod": "get",
@@ -101,7 +100,6 @@
         }
       }
     },
-    "source": "spec-mock-validation",
     "specDetails": {
       "location": "[root].paths./path.get.parameters[0]",
       "pathMethod": "get",
@@ -126,7 +124,6 @@
       "location": "[root].interactions[5].request.headers.x-required-number",
       "value": "abc"
     },
-    "source": "spec-mock-validation",
     "specDetails": {
       "location": "[root].paths./path.get.parameters[0]",
       "pathMethod": "get",
@@ -151,7 +148,6 @@
       "location": "[root].interactions[6].request.headers.x-optional-number",
       "value": "abc"
     },
-    "source": "spec-mock-validation",
     "specDetails": {
       "location": "[root].paths./path.get.parameters[1]",
       "pathMethod": "get",

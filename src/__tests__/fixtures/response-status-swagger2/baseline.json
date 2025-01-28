@@ -8,7 +8,6 @@
       "location": "[root].interactions[2].response.status",
       "value": 302
     },
-    "source": "spec-mock-validation",
     "specDetails": {
       "location": "[root].paths./animal.get.responses",
       "pathMethod": "get",
@@ -33,7 +32,6 @@
       "location": "[root].interactions[3].response.status",
       "value": 200
     },
-    "source": "spec-mock-validation",
     "specDetails": {
       "location": "[root].paths./plant.get.responses",
       "pathMethod": "get",

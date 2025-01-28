@@ -50,7 +50,9 @@ for (const entry of fs.readdirSync(FIXTURES)) {
         .sort((a, b) =>
           a.mockDetails.location.localeCompare(b.mockDetails.location),
         )
-        .map((r) => omit(r, ["mockDetails.mockFile", "specDetails.specFile"]));
+        .map((r) =>
+          omit(r, ["source", "mockDetails.mockFile", "specDetails.specFile"]),
+        );
       await expect(
         JSON.stringify(orderedBaseline, null, 2),
       ).toMatchFileSnapshot(baselineFile);

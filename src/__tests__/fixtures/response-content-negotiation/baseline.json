@@ -8,7 +8,6 @@
       "location": "[root].interactions[1].request.headers.accept",
       "value": "application/xxx"
     },
-    "source": "spec-mock-validation",
     "specDetails": {
       "location": "[root].paths./no-content.get",
       "pathMethod": "get",
@@ -33,7 +32,6 @@
       "location": "[root].interactions[2].request.headers.accept",
       "value": "application/xxx"
     },
-    "source": "spec-mock-validation",
     "specDetails": {
       "location": "[root].paths./with-content.get",
       "pathMethod": "get",

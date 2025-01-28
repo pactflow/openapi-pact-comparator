@@ -8,7 +8,6 @@
       "location": "[root].interactions[4].request.body",
       "value": ""
     },
-    "source": "spec-mock-validation",
     "specDetails": {
       "location": "[root].paths./login.post.requestBody.content.application/json.schema.type",
       "pathMethod": "post",
@@ -28,7 +27,6 @@
         "email": "a@a.com"
       }
     },
-    "source": "spec-mock-validation",
     "specDetails": {
       "location": "[root].paths./login.post.requestBody.content.application/json.schema.required",
       "pathMethod": "post",
@@ -49,7 +47,6 @@
       "location": "[root].interactions[6].request.body",
       "value": "email=a@a.com"
     },
-    "source": "spec-mock-validation",
     "specDetails": {
       "location": "[root].paths./login.post.requestBody.content.application/x-www-form-urlencoded.schema.required",
       "pathMethod": "post",

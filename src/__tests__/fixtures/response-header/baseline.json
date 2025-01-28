@@ -8,7 +8,6 @@
       "location": "[root].interactions[1].response.headers.age",
       "value": "60"
     },
-    "source": "spec-mock-validation",
     "specDetails": {
       "location": "[root].paths./path.get.responses.200",
       "pathMethod": "get",
@@ -40,7 +39,6 @@
       "location": "[root].interactions[2].response.headers.specified",
       "value": "abc"
     },
-    "source": "spec-mock-validation",
     "specDetails": {
       "location": "[root].paths./path.get.responses.200.headers.specified",
       "pathMethod": "get",
@@ -62,7 +60,6 @@
       "location": "[root].interactions[3].response.headers.unspecified",
       "value": "foo"
     },
-    "source": "spec-mock-validation",
     "specDetails": {
       "location": "[root].paths./path.get.responses.200",
       "pathMethod": "get",

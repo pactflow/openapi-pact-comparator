@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "exports": {
-    ".": "./src/compare/index.ts"
+    ".": "./dist/compare/index.js"
   },
   "main": "dist/compare/index.js",
   "files": [

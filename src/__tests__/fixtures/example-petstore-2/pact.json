@@ -1,0 +1,140 @@
+{
+  "consumer": {
+    "name": "petstore-consumer"
+  },
+  "provider": {
+    "name": "petstore-api"
+  },
+  "interactions": [
+    {
+      "description": "a request to create a pet (failing as the spec does not explicitly define this scenario)",
+      "request": {
+        "method": "POST",
+        "path": "/pet/",
+        "headers": {
+          "api_key": "1234",
+          "Accept": "application/json",
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "id": 0,
+          "category": {
+            "id": 0,
+            "name": "string"
+          },
+          "name": "doggie",
+          "photoUrls": ["string"],
+          "tags": [
+            {
+              "id": 0,
+              "name": "string"
+            }
+          ],
+          "status": "available"
+        }
+      },
+      "response": {
+        "status": 201
+      }
+    },
+    {
+      "description": "a request to create a pet with invalid body",
+      "request": {
+        "method": "POST",
+        "path": "/pet/",
+        "headers": {
+          "api_key": "1234",
+          "Accept": "application/json",
+          "Content-Type": "application/json"
+        }
+      },
+      "response": {
+        "status": 405,
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    },
+    {
+      "description": "a request to get a pet",
+      "providerState": "a pet with ID 10 exists",
+      "request": {
+        "method": "GET",
+        "path": "/pet/10",
+        "headers": {
+          "api_key": "1234",
+          "Accept": "application/json"
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "id": 0,
+          "category": {
+            "id": 0,
+            "name": "string"
+          },
+          "name": "doggie",
+          "photoUrls": ["string"],
+          "tags": [
+            {
+              "id": 0,
+              "name": "string"
+            }
+          ],
+          "status": "available"
+        }
+      }
+    },
+    {
+      "description": "a request to get a pet that does not exist",
+      "providerState": "a pet with ID 10 does not exist",
+      "request": {
+        "method": "GET",
+        "path": "/pet/10",
+        "headers": {
+          "api_key": "1234",
+          "Accept": "application/json"
+        }
+      },
+      "response": {
+        "status": 404
+      }
+    },
+    {
+      "description": "a request to place a pet order",
+      "providerState": "a pet with ID 10 exists",
+      "request": {
+        "method": "POST",
+        "path": "/store/order",
+        "headers": {
+          "api_key": "1234",
+          "Accept": "application/json",
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "id": 0,
+          "petId": 0,
+          "quantity": 0,
+          "shipDate": "2023-06-14T01:28:17.416Z",
+          "status": "placed",
+          "complete": false
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "pactSpecification": {
+      "version": "2.0.0"
+    }
+  }
+}

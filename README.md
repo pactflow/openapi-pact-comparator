@@ -21,7 +21,8 @@ instead of being cached.
 ## How is this better?
 
 **Schemas are compiled once, and reused where possible**. In practical terms,
-this gives us an improvement exceeding 10x in real-world comparisons.
+this gives us an improvement exceeding 20x in real-world comparisons. In some
+cases, this was 50x faster!
 
 **Referenced schemas are NOT inlined**. They are kept as references to keep the
 size of complex schemas down. We need to do this anyway to support circular

@@ -1,0 +1,971 @@
+[
+  {
+    "code": "request.accept.unknown",
+    "message": "Request Accept header is defined but the spec does not specify any mime-types to produce",
+    "mockDetails": {
+      "interactionDescription": "a request to create a pet (failing as the spec does not explicitly define this scenario)",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].request.headers.Accept",
+      "value": "application/json"
+    },
+    "specDetails": {
+      "location": "[root].paths./pet.post",
+      "pathMethod": "post",
+      "pathName": "/pet",
+      "value": {
+        "tags": [
+          "pet"
+        ],
+        "summary": "Add a new pet to the store",
+        "operationId": "addPet",
+        "responses": {
+          "405": {
+            "description": "Invalid input"
+          }
+        },
+        "security": [
+          {
+            "petstore_auth": [
+              "write:pets",
+              "read:pets"
+            ]
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "photoUrls"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "format": "int64"
+                  },
+                  "category": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "name": {
+                        "type": "string"
+                      }
+                    },
+                    "xml": {
+                      "name": "Category"
+                    }
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "doggie"
+                  },
+                  "photoUrls": {
+                    "type": "array",
+                    "xml": {
+                      "name": "photoUrl",
+                      "wrapped": true
+                    },
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "tags": {
+                    "type": "array",
+                    "xml": {
+                      "name": "tag",
+                      "wrapped": true
+                    },
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "format": "int64"
+                        },
+                        "name": {
+                          "type": "string"
+                        }
+                      },
+                      "xml": {
+                        "name": "Tag"
+                      }
+                    }
+                  },
+                  "status": {
+                    "type": "string",
+                    "description": "pet status in the store",
+                    "enum": [
+                      "available",
+                      "pending",
+                      "sold"
+                    ]
+                  }
+                },
+                "xml": {
+                  "name": "Pet"
+                }
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "photoUrls"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "format": "int64"
+                  },
+                  "category": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "name": {
+                        "type": "string"
+                      }
+                    },
+                    "xml": {
+                      "name": "Category"
+                    }
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "doggie"
+                  },
+                  "photoUrls": {
+                    "type": "array",
+                    "xml": {
+                      "name": "photoUrl",
+                      "wrapped": true
+                    },
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "tags": {
+                    "type": "array",
+                    "xml": {
+                      "name": "tag",
+                      "wrapped": true
+                    },
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "format": "int64"
+                        },
+                        "name": {
+                          "type": "string"
+                        }
+                      },
+                      "xml": {
+                        "name": "Tag"
+                      }
+                    }
+                  },
+                  "status": {
+                    "type": "string",
+                    "description": "pet status in the store",
+                    "enum": [
+                      "available",
+                      "pending",
+                      "sold"
+                    ]
+                  }
+                },
+                "xml": {
+                  "name": "Pet"
+                }
+              }
+            }
+          },
+          "description": "Pet object that needs to be added to the store",
+          "required": true
+        }
+      }
+    },
+    "type": "warning"
+  },
+  {
+    "code": "request.header.unknown",
+    "message": "Request header is not defined in the spec file: api_key",
+    "mockDetails": {
+      "interactionDescription": "a request to create a pet (failing as the spec does not explicitly define this scenario)",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].request.headers.api_key",
+      "value": "1234"
+    },
+    "specDetails": {
+      "location": "[root].paths./pet.post",
+      "pathMethod": "post",
+      "pathName": "/pet",
+      "value": {
+        "tags": [
+          "pet"
+        ],
+        "summary": "Add a new pet to the store",
+        "operationId": "addPet",
+        "responses": {
+          "405": {
+            "description": "Invalid input"
+          }
+        },
+        "security": [
+          {
+            "petstore_auth": [
+              "write:pets",
+              "read:pets"
+            ]
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "photoUrls"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "format": "int64"
+                  },
+                  "category": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "name": {
+                        "type": "string"
+                      }
+                    },
+                    "xml": {
+                      "name": "Category"
+                    }
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "doggie"
+                  },
+                  "photoUrls": {
+                    "type": "array",
+                    "xml": {
+                      "name": "photoUrl",
+                      "wrapped": true
+                    },
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "tags": {
+                    "type": "array",
+                    "xml": {
+                      "name": "tag",
+                      "wrapped": true
+                    },
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "format": "int64"
+                        },
+                        "name": {
+                          "type": "string"
+                        }
+                      },
+                      "xml": {
+                        "name": "Tag"
+                      }
+                    }
+                  },
+                  "status": {
+                    "type": "string",
+                    "description": "pet status in the store",
+                    "enum": [
+                      "available",
+                      "pending",
+                      "sold"
+                    ]
+                  }
+                },
+                "xml": {
+                  "name": "Pet"
+                }
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "photoUrls"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "format": "int64"
+                  },
+                  "category": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "name": {
+                        "type": "string"
+                      }
+                    },
+                    "xml": {
+                      "name": "Category"
+                    }
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "doggie"
+                  },
+                  "photoUrls": {
+                    "type": "array",
+                    "xml": {
+                      "name": "photoUrl",
+                      "wrapped": true
+                    },
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "tags": {
+                    "type": "array",
+                    "xml": {
+                      "name": "tag",
+                      "wrapped": true
+                    },
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "format": "int64"
+                        },
+                        "name": {
+                          "type": "string"
+                        }
+                      },
+                      "xml": {
+                        "name": "Tag"
+                      }
+                    }
+                  },
+                  "status": {
+                    "type": "string",
+                    "description": "pet status in the store",
+                    "enum": [
+                      "available",
+                      "pending",
+                      "sold"
+                    ]
+                  }
+                },
+                "xml": {
+                  "name": "Pet"
+                }
+              }
+            }
+          },
+          "description": "Pet object that needs to be added to the store",
+          "required": true
+        }
+      }
+    },
+    "type": "warning"
+  },
+  {
+    "code": "response.status.unknown",
+    "message": "Response status code not defined in spec file: 201",
+    "mockDetails": {
+      "interactionDescription": "a request to create a pet (failing as the spec does not explicitly define this scenario)",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].response.status",
+      "value": 201
+    },
+    "specDetails": {
+      "location": "[root].paths./pet.post.responses",
+      "pathMethod": "post",
+      "pathName": "/pet",
+      "value": {
+        "405": {
+          "description": "Invalid input"
+        }
+      }
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.accept.unknown",
+    "message": "Request Accept header is defined but the spec does not specify any mime-types to produce",
+    "mockDetails": {
+      "interactionDescription": "a request to create a pet with invalid body",
+      "interactionState": "[none]",
+      "location": "[root].interactions[1].request.headers.Accept",
+      "value": "application/json"
+    },
+    "specDetails": {
+      "location": "[root].paths./pet.post",
+      "pathMethod": "post",
+      "pathName": "/pet",
+      "value": {
+        "tags": [
+          "pet"
+        ],
+        "summary": "Add a new pet to the store",
+        "operationId": "addPet",
+        "responses": {
+          "405": {
+            "description": "Invalid input"
+          }
+        },
+        "security": [
+          {
+            "petstore_auth": [
+              "write:pets",
+              "read:pets"
+            ]
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "photoUrls"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "format": "int64"
+                  },
+                  "category": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "name": {
+                        "type": "string"
+                      }
+                    },
+                    "xml": {
+                      "name": "Category"
+                    }
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "doggie"
+                  },
+                  "photoUrls": {
+                    "type": "array",
+                    "xml": {
+                      "name": "photoUrl",
+                      "wrapped": true
+                    },
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "tags": {
+                    "type": "array",
+                    "xml": {
+                      "name": "tag",
+                      "wrapped": true
+                    },
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "format": "int64"
+                        },
+                        "name": {
+                          "type": "string"
+                        }
+                      },
+                      "xml": {
+                        "name": "Tag"
+                      }
+                    }
+                  },
+                  "status": {
+                    "type": "string",
+                    "description": "pet status in the store",
+                    "enum": [
+                      "available",
+                      "pending",
+                      "sold"
+                    ]
+                  }
+                },
+                "xml": {
+                  "name": "Pet"
+                }
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "photoUrls"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "format": "int64"
+                  },
+                  "category": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "name": {
+                        "type": "string"
+                      }
+                    },
+                    "xml": {
+                      "name": "Category"
+                    }
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "doggie"
+                  },
+                  "photoUrls": {
+                    "type": "array",
+                    "xml": {
+                      "name": "photoUrl",
+                      "wrapped": true
+                    },
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "tags": {
+                    "type": "array",
+                    "xml": {
+                      "name": "tag",
+                      "wrapped": true
+                    },
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "format": "int64"
+                        },
+                        "name": {
+                          "type": "string"
+                        }
+                      },
+                      "xml": {
+                        "name": "Tag"
+                      }
+                    }
+                  },
+                  "status": {
+                    "type": "string",
+                    "description": "pet status in the store",
+                    "enum": [
+                      "available",
+                      "pending",
+                      "sold"
+                    ]
+                  }
+                },
+                "xml": {
+                  "name": "Pet"
+                }
+              }
+            }
+          },
+          "description": "Pet object that needs to be added to the store",
+          "required": true
+        }
+      }
+    },
+    "type": "warning"
+  },
+  {
+    "code": "response.content-type.unknown",
+    "message": "Response Content-Type header is defined but the spec does not specify any mime-types to produce",
+    "mockDetails": {
+      "interactionDescription": "a request to create a pet with invalid body",
+      "interactionState": "[none]",
+      "location": "[root].interactions[1].response.headers.Content-Type",
+      "value": "application/json"
+    },
+    "specDetails": {
+      "location": "[root].paths./pet.post",
+      "pathMethod": "post",
+      "pathName": "/pet",
+      "value": {
+        "tags": [
+          "pet"
+        ],
+        "summary": "Add a new pet to the store",
+        "operationId": "addPet",
+        "responses": {
+          "405": {
+            "description": "Invalid input"
+          }
+        },
+        "security": [
+          {
+            "petstore_auth": [
+              "write:pets",
+              "read:pets"
+            ]
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "photoUrls"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "format": "int64"
+                  },
+                  "category": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "name": {
+                        "type": "string"
+                      }
+                    },
+                    "xml": {
+                      "name": "Category"
+                    }
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "doggie"
+                  },
+                  "photoUrls": {
+                    "type": "array",
+                    "xml": {
+                      "name": "photoUrl",
+                      "wrapped": true
+                    },
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "tags": {
+                    "type": "array",
+                    "xml": {
+                      "name": "tag",
+                      "wrapped": true
+                    },
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "format": "int64"
+                        },
+                        "name": {
+                          "type": "string"
+                        }
+                      },
+                      "xml": {
+                        "name": "Tag"
+                      }
+                    }
+                  },
+                  "status": {
+                    "type": "string",
+                    "description": "pet status in the store",
+                    "enum": [
+                      "available",
+                      "pending",
+                      "sold"
+                    ]
+                  }
+                },
+                "xml": {
+                  "name": "Pet"
+                }
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "photoUrls"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "format": "int64"
+                  },
+                  "category": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "name": {
+                        "type": "string"
+                      }
+                    },
+                    "xml": {
+                      "name": "Category"
+                    }
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "doggie"
+                  },
+                  "photoUrls": {
+                    "type": "array",
+                    "xml": {
+                      "name": "photoUrl",
+                      "wrapped": true
+                    },
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "tags": {
+                    "type": "array",
+                    "xml": {
+                      "name": "tag",
+                      "wrapped": true
+                    },
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "format": "int64"
+                        },
+                        "name": {
+                          "type": "string"
+                        }
+                      },
+                      "xml": {
+                        "name": "Tag"
+                      }
+                    }
+                  },
+                  "status": {
+                    "type": "string",
+                    "description": "pet status in the store",
+                    "enum": [
+                      "available",
+                      "pending",
+                      "sold"
+                    ]
+                  }
+                },
+                "xml": {
+                  "name": "Pet"
+                }
+              }
+            }
+          },
+          "description": "Pet object that needs to be added to the store",
+          "required": true
+        }
+      }
+    },
+    "type": "warning"
+  },
+  {
+    "code": "request.header.unknown",
+    "message": "Request header is not defined in the spec file: api_key",
+    "mockDetails": {
+      "interactionDescription": "a request to place a pet order",
+      "interactionState": "a pet with ID 10 exists",
+      "location": "[root].interactions[4].request.headers.api_key",
+      "value": "1234"
+    },
+    "specDetails": {
+      "location": "[root].paths./store/order.post",
+      "pathMethod": "post",
+      "pathName": "/store/order",
+      "value": {
+        "tags": [
+          "store"
+        ],
+        "summary": "Place an order for a pet",
+        "operationId": "placeOrder",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "format": "int64"
+                    },
+                    "petId": {
+                      "type": "integer",
+                      "format": "int64"
+                    },
+                    "quantity": {
+                      "type": "integer",
+                      "format": "int32"
+                    },
+                    "shipDate": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "Order Status",
+                      "enum": [
+                        "placed",
+                        "approved",
+                        "delivered"
+                      ]
+                    },
+                    "complete": {
+                      "type": "boolean",
+                      "default": false
+                    }
+                  },
+                  "xml": {
+                    "name": "Order"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "format": "int64"
+                    },
+                    "petId": {
+                      "type": "integer",
+                      "format": "int64"
+                    },
+                    "quantity": {
+                      "type": "integer",
+                      "format": "int32"
+                    },
+                    "shipDate": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "Order Status",
+                      "enum": [
+                        "placed",
+                        "approved",
+                        "delivered"
+                      ]
+                    },
+                    "complete": {
+                      "type": "boolean",
+                      "default": false
+                    }
+                  },
+                  "xml": {
+                    "name": "Order"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid Order"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "format": "int64"
+                  },
+                  "petId": {
+                    "type": "integer",
+                    "format": "int64"
+                  },
+                  "quantity": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "shipDate": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "status": {
+                    "type": "string",
+                    "description": "Order Status",
+                    "enum": [
+                      "placed",
+                      "approved",
+                      "delivered"
+                    ]
+                  },
+                  "complete": {
+                    "type": "boolean",
+                    "default": false
+                  }
+                },
+                "xml": {
+                  "name": "Order"
+                }
+              }
+            }
+          },
+          "description": "order placed for purchasing the pet",
+          "required": true
+        }
+      }
+    },
+    "type": "warning"
+  }
+]

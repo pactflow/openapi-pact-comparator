@@ -49,12 +49,3 @@ steps:
     key: test
     command:
       - npm run test -- --run
-
-  - <<: *common
-    label: Build
-    key: build
-    command:
-      - npm run build
-      - tar czf dist.tar.gz dist
-    artifact_paths:
-      - dist.tar.gz

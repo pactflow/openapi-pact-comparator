@@ -14,6 +14,7 @@
     "dev": "tsx src/cli.ts",
     "lint": "eslint --max-warnings=0",
     "postinstall": "patch-package",
+    "prepare": "npm run build",
     "prettier": "prettier --check .",
     "prettier:fix": "prettier --cache --list-different --write .",
     "start": "node dist/cli.mjs",

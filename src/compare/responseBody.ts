@@ -22,7 +22,7 @@ export function* compareResBody(
   route: Router.FindResult<Router.HTTPVersion.V1>,
   interaction: Interaction,
   index: number,
-): Iterable<Partial<Result>> {
+): Iterable<Result> {
   const { method, oas, operation, path } = route.store;
   const { body, status } = interaction.response;
   const requestHeaders = new Headers(

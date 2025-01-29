@@ -8,7 +8,6 @@
       "location": "[root].interactions[4].request.query.id.2",
       "value": "abc"
     },
-    "source": "spec-mock-validation",
     "specDetails": {
       "location": "[root].paths./explode-true.get.parameters[0].schema.items.type",
       "pathMethod": "get",
@@ -26,7 +25,6 @@
       "location": "[root].interactions[5].request.query.id.2",
       "value": "abc"
     },
-    "source": "spec-mock-validation",
     "specDetails": {
       "location": "[root].paths./explode-true.get.parameters[0].schema.items.type",
       "pathMethod": "get",
@@ -44,7 +42,6 @@
       "location": "[root].interactions[6].request.query.id.2",
       "value": "abc"
     },
-    "source": "spec-mock-validation",
     "specDetails": {
       "location": "[root].paths./explode-false.get.parameters[0].schema.items.type",
       "pathMethod": "get",
@@ -62,7 +59,6 @@
       "location": "[root].interactions[7].request.query.id.2",
       "value": "abc"
     },
-    "source": "spec-mock-validation",
     "specDetails": {
       "location": "[root].paths./explode-false.get.parameters[0].schema.items.type",
       "pathMethod": "get",
@@ -120,7 +116,6 @@
       "location": "[root].interactions[9].request.query.age.",
       "value": "abc"
     },
-    "source": "spec-mock-validation",
     "specDetails": {
       "location": "[root].paths./string.get.parameters[1].schema.type",
       "pathMethod": "get",
@@ -137,7 +132,6 @@
       "interactionState": "[none]",
       "location": "[root].interactions[10].request.query.name."
     },
-    "source": "spec-mock-validation",
     "specDetails": {
       "location": "[root].paths./string.get.parameters[0].schema.type",
       "pathMethod": "get",

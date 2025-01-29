@@ -35,15 +35,12 @@ export interface Result {
     interactionDescription?: string | null;
     interactionState?: string | null;
     location: string;
-    mockFile?: string;
     value: unknown;
   };
-  source: "spec-mock-validation";
   specDetails?: {
     location: string;
     pathMethod?: string | null;
     pathName?: string | null;
-    specFile?: string;
     value: unknown;
   };
   type: "error" | "warning";

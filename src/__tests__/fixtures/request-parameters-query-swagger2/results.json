@@ -45,7 +45,6 @@
       "location": "[root].interactions[2].request.query.age.",
       "value": "abc"
     },
-    "source": "spec-mock-validation",
     "specDetails": {
       "location": "[root].paths./string.get.parameters[1].schema.type",
       "pathMethod": "get",
@@ -62,7 +61,6 @@
       "interactionState": "[none]",
       "location": "[root].interactions[3].request.query.name."
     },
-    "source": "spec-mock-validation",
     "specDetails": {
       "location": "[root].paths./string.get.parameters[0].schema.type",
       "pathMethod": "get",

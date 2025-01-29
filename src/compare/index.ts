@@ -22,7 +22,7 @@ export class Comparator {
   #oas: OpenAPIV2.Document | OpenAPIV3.Document;
   #router: Router.Instance<Router.HTTPVersion.V1>;
 
-  constructor(oas: OpenAPIV3.Document) {
+  constructor(oas: OpenAPIV2.Document | OpenAPIV3.Document) {
     const ajvOptions = {
       allErrors: true,
       discriminator: true,
@@ -69,7 +69,7 @@ export class Comparator {
     );
   }
 
-  async *compare(pact: Pact): AsyncGenerator<Partial<Result>> {
+  async *compare(pact: Pact): AsyncGenerator<Result> {
     const parsedPact = parse(pact);
 
     if (parsedPact.interactions.length === 0) {

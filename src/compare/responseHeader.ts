@@ -19,7 +19,7 @@ export function* compareResHeader(
   route: Router.FindResult<Router.HTTPVersion.V1>,
   interaction: Interaction,
   index: number,
-): Iterable<Partial<Result>> {
+): Iterable<Result> {
   const { method, oas, operation, path } = route.store;
 
   const availableResponseContentType =

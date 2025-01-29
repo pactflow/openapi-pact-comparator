@@ -42,7 +42,7 @@ export function* compareReqBody(
   route: Router.FindResult<Router.HTTPVersion.V1>,
   interaction: Interaction,
   index: number,
-): Iterable<Partial<Result>> {
+): Iterable<Result> {
   const { method, oas, operation, path } = route.store;
   const { body } = interaction.request;
   const requestHeaders = new Headers(

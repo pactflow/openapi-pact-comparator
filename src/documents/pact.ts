@@ -1,33 +1,64 @@
-export interface Interaction {
-  type?: string;
-  description?: string;
-  providerState?: string;
-  request: {
-    body?: unknown;
-    headers?: Record<string, string | string[]>;
-    method: string;
-    path: string;
-    query?: string | Record<string, string | string[]>;
-  };
-  response: {
-    body?: unknown;
-    headers?: Record<string, string | string[]>;
-    status: number;
-  };
-}
+import { Static, Type } from "@sinclair/typebox";
+import Ajv, { ErrorObject } from "ajv";
 
-export interface Pact {
-  metadata?: {
-    pactSpecification?: {
-      version: string;
-    };
-    pactSpecificationVersion?: string;
-    "pact-specification"?: {
-      version: string;
-    };
-  };
-  interactions: Interaction[];
-}
+// a full schema can be found at https://github.com/pactflow/pact-schemas
+// but we don't use that here, because we try to be permissive with input
+export const Interaction = Type.Object({
+  type: Type.Optional(Type.String()),
+  description: Type.Optional(Type.String()),
+  providerState: Type.Optional(Type.String()),
+  request: Type.Object({
+    body: Type.Optional(Type.Unknown()),
+    headers: Type.Optional(
+      Type.Union([
+        Type.Record(Type.String(), Type.String()),
+        Type.Record(Type.String(), Type.Array(Type.String())),
+      ]),
+    ),
+    method: Type.String(),
+    path: Type.String(),
+    query: Type.Optional(
+      Type.Union([
+        Type.String(),
+        Type.Record(Type.String(), Type.String()),
+        Type.Record(Type.String(), Type.Array(Type.String())),
+      ]),
+    ),
+  }),
+  response: Type.Object({
+    body: Type.Optional(Type.Unknown()),
+    headers: Type.Optional(
+      Type.Union([
+        Type.Record(Type.String(), Type.String()),
+        Type.Record(Type.String(), Type.Array(Type.String())),
+      ]),
+    ),
+    status: Type.Number(),
+  }),
+});
+
+export type Interaction = Static<typeof Interaction>;
+
+export const Pact = Type.Object({
+  metadata: Type.Optional(
+    Type.Object({
+      pactSpecification: Type.Optional(
+        Type.Object({
+          version: Type.String(),
+        }),
+      ),
+      pactSpecificationVersion: Type.Optional(Type.String()),
+      "pact-specification": Type.Optional(
+        Type.Object({
+          version: Type.String(),
+        }),
+      ),
+    }),
+  ),
+  interactions: Type.Array(Interaction),
+});
+
+export type Pact = Static<typeof Pact>;
 
 const supportedInteractions = (i: Interaction) =>
   !i.type || i.type === "Synchronous/HTTP";
@@ -110,7 +141,15 @@ const interactionV4 = (i: Interaction): Interaction => ({
   },
 });
 
+const ajv = new Ajv();
+const validate = ajv.compile(Pact);
+
 export const parse = (pact: Pact): Pact => {
+  const isValid = validate(pact);
+  if (!isValid) {
+    throw new ParserError(validate.errors!);
+  }
+
   const { metadata, interactions } = pact;
   const version = parseInt(
     metadata?.pactSpecification?.version ||
@@ -128,3 +167,12 @@ export const parse = (pact: Pact): Pact => {
       .map(interactionParser),
   };
 };
+
+export class ParserError extends Error {
+  errors: ErrorObject[];
+
+  constructor(errors: ErrorObject[]) {
+    super("Malformed Pact file");
+    this.errors = errors;
+  }
+}

@@ -34,26 +34,33 @@ describe("#parser", () => {
   });
 
   it("filters out non-HTTP interactions", () => {
+    const request = {
+      method: "GET",
+      path: "/path",
+    };
+    const response = {
+      status: 200,
+    };
     const json = {
       interactions: [
-        { description: "no-type", request: {}, response: {} },
+        { description: "no-type", request, response },
         {
           type: "Synchronous/HTTP",
           description: "http",
-          request: {},
-          response: {},
+          request,
+          response,
         },
         {
           type: "Asynchronous/Messages",
           description: "async-message",
-          request: {},
-          response: {},
+          request,
+          response,
         },
         {
           type: "Synchronous/Messages",
           description: "sync-message",
-          request: {},
-          response: {},
+          request,
+          response,
         },
       ],
     };

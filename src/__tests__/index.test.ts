@@ -32,8 +32,6 @@ for (const entry of fs.readdirSync(FIXTURES)) {
     const oas = parse(await fs.promises.readFile(oasFile, "utf-8"));
 
     const comparator = new Comparator(oas);
-    await comparator.validate();
-
     const results = [];
     for await (const result of comparator.compare(pact)) {
       results.push(result);

@@ -1,13 +1,12 @@
 import type { OpenAPIV2, OpenAPIV3 } from "openapi-types";
 import Ajv from "ajv/dist/2019";
 import Router, { HTTPMethod } from "find-my-way";
-import SwaggerParser from "@apidevtools/swagger-parser";
-import { cloneDeep } from "lodash-es";
 
 import type { Pact } from "../documents/pact";
 import type { Result } from "../results";
 import { setupAjv, setupRouter } from "./setup";
-import { parse } from "../documents/pact";
+import { parse as parseOas } from "../documents/oas";
+import { parse as parsePact } from "../documents/pact";
 import { compareReqPath } from "./requestPath";
 import { compareReqQuery } from "./requestQuery";
 import { compareReqBody } from "./requestBody";
@@ -19,10 +18,11 @@ import { baseMockDetails } from "../results";
 export class Comparator {
   #ajvCoerce: Ajv;
   #ajvNocoerce: Ajv;
-  #oas: OpenAPIV2.Document | OpenAPIV3.Document;
   #router: Router.Instance<Router.HTTPVersion.V1>;
 
   constructor(oas: OpenAPIV2.Document | OpenAPIV3.Document) {
+    parseOas(oas);
+
     const ajvOptions = {
       allErrors: true,
       discriminator: true,
@@ -39,38 +39,11 @@ export class Comparator {
       coerceTypes: false,
       logger: false,
     });
-    this.#oas = oas;
     this.#router = setupRouter(oas);
   }
 
-  async validate() {
-    if (this.isOpenApi3 || this.isSwagger2) {
-      return SwaggerParser.validate(cloneDeep(this.#oas));
-    }
-
-    const e = new Error("Malformed input");
-    e.name = "ParseError";
-    throw e;
-  }
-
-  get isOpenApi3(): boolean {
-    return (
-      Object.prototype.hasOwnProperty.call(this.#oas, "openapi") &&
-      typeof (this.#oas as OpenAPIV3.Document).openapi === "string" &&
-      (this.#oas as OpenAPIV3.Document).openapi.indexOf("3.") === 0
-    );
-  }
-
-  get isSwagger2() {
-    return (
-      Object.prototype.hasOwnProperty.call(this.#oas, "swagger") &&
-      typeof (this.#oas as OpenAPIV2.Document).swagger === "string" &&
-      (this.#oas as OpenAPIV2.Document).swagger === "2.0"
-    );
-  }
-
   async *compare(pact: Pact): AsyncGenerator<Result> {
-    const parsedPact = parse(pact);
+    const parsedPact = parsePact(pact);
 
     if (parsedPact.interactions.length === 0) {
       yield {

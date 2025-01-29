@@ -44,7 +44,7 @@
         "method": "GET",
         "path": "/path",
         "headers": {
-          "x-required-number": 123,
+          "x-required-number": "123",
           "Accept": "application/json",
           "Accept-Charset": "utf-8",
           "Accept-Datetime": "Thu, 31 May 2007 20:35:00 GMT",
@@ -93,7 +93,7 @@
         "method": "GET",
         "path": "/path",
         "headers": {
-          "x-required-number": 123,
+          "x-required-number": "123",
           "x-surprise": "unexpected header"
         }
       },

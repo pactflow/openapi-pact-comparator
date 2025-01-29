@@ -1,14 +1,16 @@
 {
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
+    "declaration": true,
     "esModuleInterop": true,
     "lib": ["dom", "dom.iterable", "es2021"],
     "module": "esnext",
     "moduleResolution": "bundler",
-    "noEmit": true,
+    "outDir": "dist",
+    "sourceMap": true,
     "strict": true,
     "target": "esnext"
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["./node_modules/**", "dist/**"]
+  "exclude": ["src/**/*.test.ts"]
 }

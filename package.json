@@ -5,9 +5,10 @@
   "exports": {
     ".": "./src/compare/index.ts"
   },
-  "main": "index.js",
+  "main": "dist/compare/index.js",
+  "files": ["dist"],
   "scripts": {
-    "build": "rollup -c",
+    "build": "tsc --project tsconfig.json",
     "dev": "tsx src/cli.ts",
     "lint": "eslint --max-warnings=0",
     "postinstall": "patch-package",

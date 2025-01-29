@@ -1,4 +1,4 @@
-import type { OpenAPIV3 } from "openapi-types";
+import type { OpenAPIV2, OpenAPIV3 } from "openapi-types";
 import Ajv from "ajv/dist/2019";
 import Router, { HTTPMethod } from "find-my-way";
 import SwaggerParser from "@apidevtools/swagger-parser";
@@ -19,7 +19,7 @@ import { baseMockDetails } from "../results";
 export class Comparator {
   #ajvCoerce: Ajv;
   #ajvNocoerce: Ajv;
-  #oas: OpenAPIV3.Document;
+  #oas: OpenAPIV2.Document | OpenAPIV3.Document;
   #router: Router.Instance<Router.HTTPVersion.V1>;
 
   constructor(oas: OpenAPIV3.Document) {
@@ -44,7 +44,29 @@ export class Comparator {
   }
 
   async validate() {
-    return SwaggerParser.validate(cloneDeep(this.#oas));
+    if (this.isOpenApi3 || this.isSwagger2) {
+      return SwaggerParser.validate(cloneDeep(this.#oas));
+    }
+
+    const e = new Error("Malformed input");
+    e.name = "ParseError";
+    throw e;
+  }
+
+  get isOpenApi3(): boolean {
+    return (
+      Object.prototype.hasOwnProperty.call(this.#oas, "openapi") &&
+      typeof (this.#oas as OpenAPIV3.Document).openapi === "string" &&
+      (this.#oas as OpenAPIV3.Document).openapi.indexOf("3.") === 0
+    );
+  }
+
+  get isSwagger2() {
+    return (
+      Object.prototype.hasOwnProperty.call(this.#oas, "swagger") &&
+      typeof (this.#oas as OpenAPIV2.Document).swagger === "string" &&
+      (this.#oas as OpenAPIV2.Document).swagger === "2.0"
+    );
   }
 
   async *compare(pact: Pact): AsyncGenerator<Partial<Result>> {

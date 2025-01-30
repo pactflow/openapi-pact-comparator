@@ -7,7 +7,6 @@
     "module": "esnext",
     "moduleResolution": "node",
     "outDir": "dist",
-    "sourceMap": true,
     "strict": true,
     "target": "esnext"
   },

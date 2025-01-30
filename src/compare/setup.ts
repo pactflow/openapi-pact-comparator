@@ -2,7 +2,7 @@ import type { OpenAPIV2, OpenAPIV3 } from "openapi-types";
 import Ajv, { Options } from "ajv/dist/2019.js";
 import addFormats from "ajv-formats";
 import Router, { HTTPMethod } from "find-my-way";
-import { cleanPathParameter } from "./utils/parameters.js";
+import { cleanPathParameter } from "./utils/parameters";
 
 export function setupAjv(options: Options): Ajv {
   const ajv = new Ajv(options);

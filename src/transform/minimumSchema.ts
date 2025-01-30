@@ -1,7 +1,7 @@
 import type { OpenAPIV3 } from "openapi-types";
 import { SchemaObject } from "ajv";
 import { cloneDeep, get, set } from "lodash-es";
-import { traverse } from "./utils.js";
+import { traverse } from "./utils";
 
 export const minimumSchema = (
   originalSchema: SchemaObject,

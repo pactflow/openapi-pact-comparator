@@ -1,6 +1,6 @@
 import { SchemaObject } from "ajv";
 import { each } from "lodash-es";
-import { traverse } from "./utils.js";
+import { traverse } from "./utils";
 
 export const transformRequestSchema = (schema: SchemaObject): SchemaObject => {
   // OpenAPI defines allOf to mean the union of all sub-schemas. JSON-Schema

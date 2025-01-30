@@ -4,21 +4,18 @@ import type Ajv from "ajv/dist/2019";
 import type Router from "find-my-way";
 import { get } from "lodash-es";
 
-import type { Interaction } from "../documents/pact.js";
-import type { Result } from "../results/index.js";
+import type { Interaction } from "../documents/pact";
+import type { Result } from "../results/index";
 import {
   baseMockDetails,
   formatErrorMessage,
   formatInstancePath,
   formatSchemaPath,
-} from "../results/index.js";
-import { minimumSchema } from "../transform/index.js";
-import {
-  findMatchingType,
-  standardHttpRequestHeaders,
-} from "./utils/content.js";
-import { parseValue } from "./utils/parse.js";
-import { dereferenceOas } from "./utils/schema.js";
+} from "../results/index";
+import { minimumSchema } from "../transform/index";
+import { findMatchingType, standardHttpRequestHeaders } from "./utils/content";
+import { parseValue } from "./utils/parse";
+import { dereferenceOas } from "./utils/schema";
 
 export function* compareReqHeader(
   ajv: Ajv,

@@ -1,3 +1,3 @@
-export { transformRequestSchema } from "./requestSchema.js";
-export { transformResponseSchema } from "./responseSchema.js";
-export { minimumSchema } from "./minimumSchema.js";
+export { transformRequestSchema } from "./requestSchema";
+export { transformResponseSchema } from "./responseSchema";
+export { minimumSchema } from "./minimumSchema";

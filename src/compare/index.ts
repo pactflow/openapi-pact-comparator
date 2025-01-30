@@ -2,18 +2,18 @@ import type { OpenAPIV2, OpenAPIV3 } from "openapi-types";
 import Ajv from "ajv/dist/2019";
 import Router, { HTTPMethod } from "find-my-way";
 
-import type { Pact } from "../documents/pact.js";
-import type { Result } from "../results/index.js";
-import { setupAjv, setupRouter } from "./setup.js";
-import { parse as parseOas } from "../documents/oas.js";
-import { parse as parsePact } from "../documents/pact.js";
-import { compareReqPath } from "./requestPath.js";
-import { compareReqQuery } from "./requestQuery.js";
-import { compareReqBody } from "./requestBody.js";
-import { compareReqHeader } from "./requestHeader.js";
-import { compareResBody } from "./responseBody.js";
-import { compareResHeader } from "./responseHeader.js";
-import { baseMockDetails } from "../results/index.js";
+import type { Pact } from "../documents/pact";
+import type { Result } from "../results/index";
+import { setupAjv, setupRouter } from "./setup";
+import { parse as parseOas } from "../documents/oas";
+import { parse as parsePact } from "../documents/pact";
+import { compareReqPath } from "./requestPath";
+import { compareReqQuery } from "./requestQuery";
+import { compareReqBody } from "./requestBody";
+import { compareReqHeader } from "./requestHeader";
+import { compareResBody } from "./responseBody";
+import { compareResHeader } from "./responseHeader";
+import { baseMockDetails } from "../results/index";
 
 export class Comparator {
   #ajvCoerce: Ajv;

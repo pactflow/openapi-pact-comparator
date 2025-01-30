@@ -5,17 +5,17 @@ import type Router from "find-my-way";
 import { get } from "lodash-es";
 import qs from "qs";
 
-import type { Interaction } from "../documents/pact.js";
-import type { Result } from "../results/index.js";
+import type { Interaction } from "../documents/pact";
+import type { Result } from "../results/index";
 import {
   baseMockDetails,
   formatErrorMessage,
   formatInstancePath,
   formatSchemaPath,
-} from "../results/index.js";
-import { minimumSchema, transformRequestSchema } from "../transform/index.js";
-import { findMatchingType } from "./utils/content.js";
-import { dereferenceOas } from "./utils/schema.js";
+} from "../results/index";
+import { minimumSchema, transformRequestSchema } from "../transform/index";
+import { findMatchingType } from "./utils/content";
+import { dereferenceOas } from "./utils/schema";
 
 const parseBody = (body: unknown, contentType: string) => {
   if (

@@ -4,17 +4,17 @@ import type Router from "find-my-way";
 import type { OpenAPIV2, OpenAPIV3 } from "openapi-types";
 import { get } from "lodash-es";
 
-import type { Interaction } from "../documents/pact.js";
-import type { Result } from "../results/index.js";
+import type { Interaction } from "../documents/pact";
+import type { Result } from "../results/index";
 import {
   baseMockDetails,
   formatErrorMessage,
   formatInstancePath,
   formatSchemaPath,
-} from "../results/index.js";
-import { minimumSchema, transformResponseSchema } from "../transform/index.js";
-import { findMatchingType } from "./utils/content.js";
-import { dereferenceOas } from "./utils/schema.js";
+} from "../results/index";
+import { minimumSchema, transformResponseSchema } from "../transform/index";
+import { findMatchingType } from "./utils/content";
+import { dereferenceOas } from "./utils/schema";
 
 const DEFAULT_CONTENT_TYPE = "application/json";
 

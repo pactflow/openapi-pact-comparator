@@ -4,7 +4,6 @@
   "description": "",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
-  "types": "dist/compare/index.d.ts",
   "files": [
     "dist"
   ],
@@ -15,7 +14,7 @@
     }
   },
   "scripts": {
-    "build": "tsc --emitDeclarationOnly && tsx build.ts",
+    "build": "tsx build.ts",
     "lint": "eslint --max-warnings=0",
     "postinstall": "patch-package",
     "prepare": "npm run build",

@@ -91,7 +91,7 @@ const parseAsPactV4Body = (body: unknown) => {
 const flattenValues = (
   values?: string | Record<string, string | string[]>,
 ): Record<string, string> | string | undefined => {
-  if (!values || typeof values === "string") return values;
+  if (!values || typeof values === "string") return values as string;
 
   return Object.fromEntries(
     Object.entries(values || {}).map(([key, value]) => [

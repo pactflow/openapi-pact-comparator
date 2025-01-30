@@ -1,13 +1,14 @@
 import type { SchemaObject } from "ajv";
 import type Ajv from "ajv/dist/2019";
 import type Router from "find-my-way";
-import type { Interaction } from "../documents/pact";
-import type { Result } from "../results";
-import { baseMockDetails } from "../results";
-import { minimumSchema } from "../transform";
-import { cleanPathParameter } from "./utils/parameters";
-import { parseValue } from "./utils/parse";
-import { dereferenceOas } from "./utils/schema";
+
+import type { Interaction } from "../documents/pact.js";
+import type { Result } from "../results/index.js";
+import { baseMockDetails } from "../results/index.js";
+import { minimumSchema } from "../transform/index.js";
+import { cleanPathParameter } from "./utils/parameters.js";
+import { parseValue } from "./utils/parse.js";
+import { dereferenceOas } from "./utils/schema.js";
 
 export function* compareReqPath(
   ajv: Ajv,

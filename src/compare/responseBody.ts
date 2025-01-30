@@ -2,18 +2,19 @@ import type { SchemaObject } from "ajv";
 import type Ajv from "ajv/dist/2019";
 import type Router from "find-my-way";
 import type { OpenAPIV2, OpenAPIV3 } from "openapi-types";
-import type { Interaction } from "../documents/pact";
-import type { Result } from "../results";
 import { get } from "lodash-es";
+
+import type { Interaction } from "../documents/pact.js";
+import type { Result } from "../results/index.js";
 import {
   baseMockDetails,
   formatErrorMessage,
   formatInstancePath,
   formatSchemaPath,
-} from "../results";
-import { minimumSchema, transformResponseSchema } from "../transform";
-import { findMatchingType } from "./utils/content";
-import { dereferenceOas } from "./utils/schema";
+} from "../results/index.js";
+import { minimumSchema, transformResponseSchema } from "../transform/index.js";
+import { findMatchingType } from "./utils/content.js";
+import { dereferenceOas } from "./utils/schema.js";
 
 const DEFAULT_CONTENT_TYPE = "application/json";
 

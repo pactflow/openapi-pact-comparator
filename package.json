@@ -10,11 +10,10 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc --project tsconfig.json",
     "dev": "tsx src/cli.ts",
     "lint": "eslint --max-warnings=0",
     "postinstall": "patch-package",
-    "prepare": "npm run build",
+    "prepare": "tsc --project tsconfig.json",
     "prettier": "prettier --check .",
     "prettier:fix": "prettier --cache --list-different --write .",
     "start": "node dist/cli.mjs",
@@ -22,7 +21,7 @@
     "typecheck": "tsc --noEmit --project tsconfig.json"
   },
   "keywords": [],
-  "author": "",
+  "author": "Voon Siong Wong",
   "license": "ISC",
   "type": "module",
   "dependencies": {

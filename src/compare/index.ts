@@ -18,10 +18,11 @@ import { baseMockDetails } from "../results/index";
 export class Comparator {
   #ajvCoerce: Ajv;
   #ajvNocoerce: Ajv;
-  #router: Router.Instance<Router.HTTPVersion.V1>;
+  #oas: OpenAPIV2.Document | OpenAPIV3.Document;
+  #router?: Router.Instance<Router.HTTPVersion.V1>;
 
   constructor(oas: OpenAPIV2.Document | OpenAPIV3.Document) {
-    parseOas(oas);
+    this.#oas = oas;
 
     const ajvOptions = {
       allErrors: true,
@@ -39,10 +40,14 @@ export class Comparator {
       coerceTypes: false,
       logger: false,
     });
-    this.#router = setupRouter(oas);
   }
 
   async *compare(pact: Pact): AsyncGenerator<Result> {
+    if (!this.#router) {
+      await parseOas(this.#oas);
+      this.#router = setupRouter(this.#oas);
+    }
+
     const parsedPact = parsePact(pact);
 
     if (parsedPact.interactions.length === 0) {

@@ -12,7 +12,9 @@ const isOpenApi3 = (oas: OpenAPIV3.Document): boolean =>
   typeof oas.openapi === "string" &&
   oas.openapi.indexOf("3.") === 0;
 
-export const parse = (oas: OpenAPIV2.Document | OpenAPIV3.Document): void => {
+export const parse = async (
+  oas: OpenAPIV2.Document | OpenAPIV3.Document,
+): Promise<void> => {
   if (
     !isSwagger2(oas as OpenAPIV2.Document) &&
     !isOpenApi3(oas as OpenAPIV3.Document)
@@ -20,7 +22,7 @@ export const parse = (oas: OpenAPIV2.Document | OpenAPIV3.Document): void => {
     throw new ParserError();
   }
 
-  SwaggerParser.validate(cloneDeep(oas));
+  await SwaggerParser.validate(cloneDeep(oas));
 };
 
 export class ParserError extends Error {

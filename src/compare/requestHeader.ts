@@ -16,6 +16,7 @@ import { minimumSchema } from "../transform/index";
 import { findMatchingType, standardHttpRequestHeaders } from "./utils/content";
 import { parseValue } from "./utils/parse";
 import { dereferenceOas, splitPath } from "../utils/schema";
+import { getValidateFunction } from "../utils/validation";
 
 export function* compareReqHeader(
   ajv: Ajv,
@@ -173,7 +174,7 @@ export function* compareReqHeader(
                     mockDetails: {
                       ...baseMockDetails(interaction),
                       location: `[root].interactions[${index}].request.headers`,
-                      value: interaction.request.headers,
+                      value: get(interaction, "request.headers"),
                     },
                     specDetails: {
                       location: `[root].paths.${path}.${method}`,
@@ -204,7 +205,7 @@ export function* compareReqHeader(
                 mockDetails: {
                   ...baseMockDetails(interaction),
                   location: `[root].interactions[${index}].request.headers`,
-                  value: interaction.request.headers,
+                  value: get(interaction, "request.headers"),
                 },
                 specDetails: {
                   location: `[root].paths.${path}.${method}`,
@@ -238,7 +239,7 @@ export function* compareReqHeader(
                 mockDetails: {
                   ...baseMockDetails(interaction),
                   location: `[root].interactions[${index}].request.headers`,
-                  value: interaction.request.headers,
+                  value: get(interaction, "request.headers"),
                 },
                 specDetails: {
                   location: `[root].paths.${path}.${method}`,
@@ -292,13 +293,11 @@ export function* compareReqHeader(
       if (value) {
         if (schema) {
           const schemaId = `[root].paths.${path}.${method}.parameters[${parameterIndex}]`;
-          let validate = ajv.getSchema(schemaId);
-          if (!validate) {
-            ajv.addSchema(minimumSchema(schema, oas), schemaId);
-            validate = ajv.getSchema(schemaId);
-          }
-          if (!validate!(value)) {
-            for (const error of validate!.errors!) {
+          const validate = getValidateFunction(ajv, schemaId, () =>
+            minimumSchema(schema, oas),
+          );
+          if (!validate(value)) {
+            for (const error of validate.errors!) {
               yield {
                 code: "request.header.incompatible",
                 message: `Value is incompatible with the parameter defined in the spec file: ${formatMessage(error)}`,

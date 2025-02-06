@@ -25,7 +25,7 @@
     "mockDetails": {
       "interactionDescription": "should error when unable to match content-type",
       "interactionState": "[none]",
-      "location": "[root].interactions[3].response.body",
+      "location": "[root].interactions[3].request.body",
       "value": "name=Rover&genus=Canis"
     },
     "specDetails": {

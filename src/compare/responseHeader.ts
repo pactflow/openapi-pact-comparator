@@ -14,6 +14,7 @@ import {
 import { minimumSchema } from "../transform/index";
 import { findMatchingType, standardHttpResponseHeaders } from "./utils/content";
 import { dereferenceOas, splitPath } from "../utils/schema";
+import { getValidateFunction } from "../utils/validation";
 
 export function* compareResHeader(
   ajv: Ajv,
@@ -92,7 +93,7 @@ export function* compareResHeader(
         mockDetails: {
           ...baseMockDetails(interaction),
           location: `[root].interactions[${index}].response.headers.${headerName}`,
-          value: interaction.request.headers,
+          value: get(interaction, "request.headers"),
         },
         specDetails: {
           location: `[root].paths.${path}.${method}`,
@@ -117,13 +118,11 @@ export function* compareResHeader(
     const value = responseHeaders.get(headerName);
     if (value && schema) {
       const schemaId = `[root].paths.${path}.${method}.responses.${interaction.response.status}.headers.${headerName}`;
-      let validate = ajv.getSchema(schemaId);
-      if (!validate) {
-        ajv.addSchema(minimumSchema(schema, oas), schemaId);
-        validate = ajv.getSchema(schemaId);
-      }
-      if (!validate!(value)) {
-        for (const error of validate!.errors!) {
+      const validate = getValidateFunction(ajv, schemaId, () =>
+        minimumSchema(schema, oas),
+      );
+      if (!validate(value)) {
+        for (const error of validate.errors!) {
           yield {
             code: "response.header.incompatible",
             message: `Value is incompatible with the parameter defined in the spec file: ${formatMessage(error)}`,

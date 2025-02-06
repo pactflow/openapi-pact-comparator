@@ -15,6 +15,7 @@ import {
 import { minimumSchema, transformResponseSchema } from "../transform/index";
 import { findMatchingType } from "./utils/content";
 import { dereferenceOas, splitPath } from "../utils/schema";
+import { getValidateFunction } from "../utils/validation";
 
 const DEFAULT_CONTENT_TYPE = "application/json";
 
@@ -108,16 +109,11 @@ export function* compareResBody(
           };
         } else if (value) {
           const schemaId = `[root].paths.${path}.${method}.responses.${status}.content.${contentType}`;
-          let validate = ajv.getSchema(schemaId);
-          if (!validate) {
-            ajv.addSchema(
-              transformResponseSchema(minimumSchema(schema, oas)),
-              schemaId,
-            );
-            validate = ajv.getSchema(schemaId);
-          }
-          if (!validate!(value)) {
-            for (const error of validate!.errors!) {
+          const validate = getValidateFunction(ajv, schemaId, () =>
+            transformResponseSchema(minimumSchema(schema, oas)),
+          );
+          if (!validate(value)) {
+            for (const error of validate.errors!) {
               yield {
                 code: "response.body.incompatible",
                 message: `Response body is incompatible with the response body schema in the spec file: ${formatMessage(error)}`,

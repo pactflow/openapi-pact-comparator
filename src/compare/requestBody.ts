@@ -16,6 +16,7 @@ import {
 import { minimumSchema, transformRequestSchema } from "../transform/index";
 import { findMatchingType } from "./utils/content";
 import { dereferenceOas, splitPath } from "../utils/schema";
+import { getValidateFunction } from "../utils/validation";
 
 const parseBody = (body: unknown, contentType: string) => {
   if (
@@ -49,7 +50,6 @@ export function* compareReqBody(
   const requestHeaders = new Headers(
     interaction.request.headers as Record<string, string>,
   );
-
   const availableRequestContentTypes =
     operation.consumes ||
     Object.keys(
@@ -60,7 +60,6 @@ export function* compareReqBody(
       requestHeaders.get("content-type") || DEFAULT_CONTENT_TYPE,
       availableRequestContentTypes,
     ) || DEFAULT_CONTENT_TYPE;
-
   const schema: SchemaObject | undefined =
     dereferenceOas(operation.requestBody || {}, oas)?.content?.[contentType]
       ?.schema ||
@@ -78,14 +77,14 @@ export function* compareReqBody(
         message: "No matching schema found for request body",
         mockDetails: {
           ...baseMockDetails(interaction),
-          location: `[root].interactions[${index}].response.body`,
-          value: body,
+          location: `[root].interactions[${index}].request.body`,
+          value: get(interaction, "request.body"),
         },
         specDetails: {
           location: `[root].paths.${path}.${method}.requestBody.content`,
           pathMethod: method,
           pathName: path,
-          value: operation.requestBody?.content,
+          value: get(operation, "requestBody.content"),
         },
         type: "error",
       };
@@ -94,16 +93,11 @@ export function* compareReqBody(
 
       if (schema && canValidate(contentType)) {
         const schemaId = `[root].paths.${path}.${method}.requestBody.content.${contentType}`;
-        let validate = ajv.getSchema(schemaId);
-        if (!validate) {
-          ajv.addSchema(
-            transformRequestSchema(minimumSchema(schema, oas)),
-            schemaId,
-          );
-          validate = ajv.getSchema(schemaId);
-        }
-        if (!validate!(value)) {
-          for (const error of validate!.errors!) {
+        const validate = getValidateFunction(ajv, schemaId, () =>
+          transformRequestSchema(minimumSchema(schema, oas)),
+        );
+        if (!validate(value)) {
+          for (const error of validate.errors!) {
             yield {
               code: "request.body.incompatible",
               message: `Request body is incompatible with the request body schema in the spec file: ${formatMessage(error)}`,

@@ -14,6 +14,7 @@ import {
 } from "../results/index";
 import { minimumSchema } from "../transform/index";
 import { dereferenceOas, splitPath } from "../utils/schema";
+import { getValidateFunction } from "../utils/validation";
 
 export function* compareReqQuery(
   ajv: Ajv,
@@ -43,13 +44,11 @@ export function* compareReqQuery(
     if (interaction.response.status < 400) {
       if (schema && (value || dereferencedParameter.required)) {
         const schemaId = `[root].paths.${path}.${method}.parameters[${parameterIndex}]`;
-        let validate = ajv.getSchema(schemaId);
-        if (!validate) {
-          ajv.addSchema(minimumSchema(schema, oas), schemaId);
-          validate = ajv.getSchema(schemaId);
-        }
-        if (!validate!(value)) {
-          for (const error of validate!.errors!) {
+        const validate = getValidateFunction(ajv, schemaId, () =>
+          minimumSchema(schema, oas),
+        );
+        if (!validate(value)) {
+          for (const error of validate.errors!) {
             yield {
               code: "request.query.incompatible",
               message: `Value is incompatible with the parameter defined in the spec file: ${formatMessage(error)}`,
@@ -91,7 +90,7 @@ export function* compareReqQuery(
                     mockDetails: {
                       ...baseMockDetails(interaction),
                       location: `[root].interactions[${index}].request.query`,
-                      value: interaction.request.query,
+                      value: get(interaction, "request.query"),
                     },
                     specDetails: {
                       location: `[root].paths.${path}.${method}`,

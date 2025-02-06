@@ -1,6 +1,7 @@
 import type { SchemaObject } from "ajv";
 import type Ajv from "ajv/dist/2019";
 import type Router from "find-my-way";
+import { get } from "lodash-es";
 
 import type { Interaction } from "../documents/pact";
 import type { Result } from "../results/index";
@@ -9,6 +10,7 @@ import { minimumSchema } from "../transform/index";
 import { cleanPathParameter } from "./utils/parameters";
 import { parseValue } from "./utils/parse";
 import { dereferenceOas } from "../utils/schema";
+import { getValidateFunction } from "../utils/validation";
 
 export function* compareReqPath(
   ajv: Ajv,
@@ -34,20 +36,18 @@ export function* compareReqPath(
     );
     if (value && schema) {
       const schemaId = `[root].paths.${path}.${method}.parameters[${parameterIndex}]`;
-      let validate = ajv.getSchema(schemaId);
-      if (!validate) {
-        ajv.addSchema(minimumSchema(schema, oas), schemaId);
-        validate = ajv.getSchema(schemaId);
-      }
-      if (!validate!(value)) {
-        for (const _error of validate!.errors!) {
+      const validate = getValidateFunction(ajv, schemaId, () =>
+        minimumSchema(schema, oas),
+      );
+      if (!validate(value)) {
+        for (const _error of validate.errors!) {
           yield {
             code: "request.path-or-method.unknown",
             message: `Path or method not defined in spec file: ${method.toUpperCase()} ${interaction.request.path}`,
             mockDetails: {
               ...baseMockDetails(interaction),
               location: `[root].interactions[${index}].request.path`,
-              value: interaction.request.path,
+              value: get(interaction, "request.path"),
             },
             specDetails: {
               location: `[root].paths`,

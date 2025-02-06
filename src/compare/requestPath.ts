@@ -8,7 +8,7 @@ import { baseMockDetails } from "../results/index";
 import { minimumSchema } from "../transform/index";
 import { cleanPathParameter } from "./utils/parameters";
 import { parseValue } from "./utils/parse";
-import { dereferenceOas } from "./utils/schema";
+import { dereferenceOas } from "../utils/schema";
 
 export function* compareReqPath(
   ajv: Ajv,

@@ -9,13 +9,13 @@ import type { Interaction } from "../documents/pact";
 import type { Result } from "../results/index";
 import {
   baseMockDetails,
-  formatErrorMessage,
+  formatMessage,
   formatInstancePath,
   formatSchemaPath,
 } from "../results/index";
 import { minimumSchema, transformRequestSchema } from "../transform/index";
 import { findMatchingType } from "./utils/content";
-import { dereferenceOas } from "./utils/schema";
+import { dereferenceOas, splitPath } from "../utils/schema";
 
 const parseBody = (body: unknown, contentType: string) => {
   if (
@@ -104,23 +104,21 @@ export function* compareReqBody(
         }
         if (!validate!(value)) {
           for (const error of validate!.errors!) {
-            const message = formatErrorMessage(error);
-            const instancePath = formatInstancePath(error.instancePath);
-            const schemaPath = formatSchemaPath(error.schemaPath);
-
             yield {
               code: "request.body.incompatible",
-              message: `Request body is incompatible with the request body schema in the spec file: ${message}`,
+              message: `Request body is incompatible with the request body schema in the spec file: ${formatMessage(error)}`,
               mockDetails: {
                 ...baseMockDetails(interaction),
-                location: `[root].interactions[${index}].request.body.${instancePath}`,
-                value: instancePath ? get(value, instancePath) : value,
+                location: `[root].interactions[${index}].request.body.${formatInstancePath(error)}`,
+                value: error.instancePath
+                  ? get(value, splitPath(error.instancePath))
+                  : value,
               },
               specDetails: {
-                location: `${schemaId}.schema.${schemaPath}`,
+                location: `${schemaId}.schema.${formatSchemaPath(error)}`,
                 pathMethod: method,
                 pathName: path,
-                value: get(validate!.schema, schemaPath),
+                value: get(validate!.schema, splitPath(error.schemaPath)),
               },
               type: "error",
             };

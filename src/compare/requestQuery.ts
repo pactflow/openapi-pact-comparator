@@ -8,12 +8,12 @@ import type { Result } from "../results/index";
 import type { Interaction } from "../documents/pact";
 import {
   baseMockDetails,
-  formatErrorMessage,
+  formatMessage,
   formatInstancePath,
   formatSchemaPath,
 } from "../results/index";
 import { minimumSchema } from "../transform/index";
-import { dereferenceOas } from "./utils/schema";
+import { dereferenceOas, splitPath } from "../utils/schema";
 
 export function* compareReqQuery(
   ajv: Ajv,
@@ -50,23 +50,21 @@ export function* compareReqQuery(
         }
         if (!validate!(value)) {
           for (const error of validate!.errors!) {
-            const message = formatErrorMessage(error);
-            const instancePath = formatInstancePath(error.instancePath);
-            const schemaPath = formatSchemaPath(error.schemaPath);
-
             yield {
               code: "request.query.incompatible",
-              message: `Value is incompatible with the parameter defined in the spec file: ${message}`,
+              message: `Value is incompatible with the parameter defined in the spec file: ${formatMessage(error)}`,
               mockDetails: {
                 ...baseMockDetails(interaction),
-                location: `[root].interactions[${index}].request.query.${dereferencedParameter.name}.${instancePath}`,
-                value: instancePath ? get(value, instancePath) : value,
+                location: `[root].interactions[${index}].request.query.${dereferencedParameter.name}.${formatInstancePath(error)}`,
+                value: error.instancePath
+                  ? get(value, splitPath(error.instancePath))
+                  : value,
               },
               specDetails: {
-                location: `${schemaId}.schema.${schemaPath}`,
+                location: `${schemaId}.schema.${formatSchemaPath(error)}`,
                 pathMethod: method,
                 pathName: path,
-                value: get(validate!.schema, schemaPath),
+                value: get(validate!.schema, splitPath(error.schemaPath)),
               },
               type: "error",
             };

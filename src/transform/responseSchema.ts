@@ -1,6 +1,6 @@
 import { SchemaObject } from "ajv";
 import { each, get } from "lodash-es";
-import { traverse } from "./utils";
+import { splitPath, traverse } from "../utils/schema";
 
 export const transformResponseSchema = (schema: SchemaObject): SchemaObject => {
   // a provider must provide a superset of what the consumer asks for
@@ -38,11 +38,7 @@ export const transformResponseSchema = (schema: SchemaObject): SchemaObject => {
       each(s.allOf, (ss) => {
         let subschema = ss;
         if (subschema.$ref) {
-          // get the referenced schema
-          subschema = get(
-            schema,
-            subschema.$ref.replace(/\//g, ".").substring(2),
-          );
+          subschema = get(schema, splitPath(subschema.$ref));
         }
         delete subschema.additionalProperties;
         if (subschema.allOf) {

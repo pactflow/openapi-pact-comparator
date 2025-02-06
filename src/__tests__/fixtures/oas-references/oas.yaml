@@ -7,23 +7,23 @@ paths:
   /login:
     post:
       parameters:
-        - $ref: "#/components/parameters/RequestParam"
+        - $ref: "#/components/parameters/Request.Param"
       requestBody:
-        $ref: "#/components/requestBodies/RequestBody"
+        $ref: "#/components/requestBodies/Request.Body"
       responses:
         "201":
-          $ref: "#/components/responses/ResponseBody"
+          $ref: "#/components/responses/Response.Body"
 
 components:
   parameters:
-    RequestParam:
+    Request.Param:
       in: query
       name: account
       required: true
       schema:
         type: string
   requestBodies:
-    RequestBody:
+    Request.Body:
       content:
         application/json:
           schema:
@@ -34,7 +34,7 @@ components:
             required:
               - username
   responses:
-    ResponseBody:
+    Response.Body:
       description: Response body
       content:
         application/json:

@@ -8,14 +8,14 @@ import type { Interaction } from "../documents/pact";
 import type { Result } from "../results/index";
 import {
   baseMockDetails,
-  formatErrorMessage,
+  formatMessage,
   formatInstancePath,
   formatSchemaPath,
 } from "../results/index";
 import { minimumSchema } from "../transform/index";
 import { findMatchingType, standardHttpRequestHeaders } from "./utils/content";
 import { parseValue } from "./utils/parse";
-import { dereferenceOas } from "./utils/schema";
+import { dereferenceOas, splitPath } from "../utils/schema";
 
 export function* compareReqHeader(
   ajv: Ajv,
@@ -299,23 +299,21 @@ export function* compareReqHeader(
           }
           if (!validate!(value)) {
             for (const error of validate!.errors!) {
-              const message = formatErrorMessage(error);
-              const instancePath = formatInstancePath(error.instancePath);
-              const schemaPath = formatSchemaPath(error.schemaPath);
-
               yield {
                 code: "request.header.incompatible",
-                message: `Value is incompatible with the parameter defined in the spec file: ${message}`,
+                message: `Value is incompatible with the parameter defined in the spec file: ${formatMessage(error)}`,
                 mockDetails: {
                   ...baseMockDetails(interaction),
-                  location: `[root].interactions[${index}].request.headers.${dereferencedParameter.name}.${instancePath}`,
-                  value: instancePath ? get(value, instancePath) : value,
+                  location: `[root].interactions[${index}].request.headers.${dereferencedParameter.name}.${formatInstancePath(error)}`,
+                  value: error.instancePath
+                    ? get(value, splitPath(error.instancePath))
+                    : value,
                 },
                 specDetails: {
-                  location: `${schemaId}.schema.${schemaPath}`,
+                  location: `${schemaId}.schema.${formatSchemaPath(error)}`,
                   pathMethod: method,
                   pathName: path,
-                  value: get(validate!.schema, schemaPath),
+                  value: get(validate!.schema, splitPath(error.schemaPath)),
                 },
                 type: "error",
               };
@@ -323,10 +321,9 @@ export function* compareReqHeader(
           }
         }
       } else if (dereferencedParameter.required) {
-        const message = `must have required property '${dereferencedParameter.name}'`;
         yield {
           code: "request.header.incompatible",
-          message: `Value is incompatible with the parameter defined in the spec file: ${message}`,
+          message: `Value is incompatible with the parameter defined in the spec file: must have required property '${dereferencedParameter.name}'`,
           mockDetails: {
             ...baseMockDetails(interaction),
             location: `[root].interactions[${index}].request.headers.${dereferencedParameter.name}`,

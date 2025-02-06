@@ -1,7 +1,7 @@
 import type { OpenAPIV3 } from "openapi-types";
 import { SchemaObject } from "ajv";
 import { cloneDeep, get, set } from "lodash-es";
-import { traverse } from "./utils";
+import { splitPath, traverse } from "../utils/schema";
 
 export const minimumSchema = (
   originalSchema: SchemaObject,
@@ -27,7 +27,7 @@ export const minimumSchema = (
   schema = cloneDeep(originalSchema);
   while (refToAdd.length) {
     const ref = refToAdd.shift() as string;
-    const path = ref.replace(/\//g, ".").substring(2);
+    const path = splitPath(ref);
     refAdded.push(ref);
 
     const subschema = cloneDeep(get(oas, path));

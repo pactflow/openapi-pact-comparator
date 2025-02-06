@@ -46,16 +46,16 @@ export interface Result {
   type: "error" | "warning";
 }
 
-export const formatInstancePath = (path: string) =>
-  path.replace(/\//g, ".").substring(1);
-
-export const formatErrorMessage = (error: ErrorObject) =>
+export const formatMessage = (error: ErrorObject) =>
   error.keyword === "additionalProperties"
     ? `${error.message} - ${error.params.additionalProperty}`
     : error.message;
 
-export const formatSchemaPath = (path: string) =>
-  path.replace(/\//g, ".").substring(2);
+export const formatInstancePath = (error: ErrorObject) =>
+  error.instancePath.replace(/\//g, ".").substring(1);
+
+export const formatSchemaPath = (error: ErrorObject) =>
+  error.schemaPath.replace(/\//g, ".").substring(2);
 
 export const baseMockDetails = (interaction: Interaction) => ({
   interactionDescription: interaction.description,

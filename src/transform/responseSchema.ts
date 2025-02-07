@@ -1,6 +1,9 @@
 import { SchemaObject } from "ajv";
 import { each, get } from "lodash-es";
-import { splitPath, traverse } from "../utils/schema";
+import {
+  splitPath,
+  traverseWithDereferencing as traverse,
+} from "../utils/schema";
 
 export const transformResponseSchema = (schema: SchemaObject): SchemaObject => {
   // a provider must provide a superset of what the consumer asks for

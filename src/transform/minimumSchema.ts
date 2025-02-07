@@ -25,12 +25,16 @@ export const minimumSchema = (
 
   // recursively collect references
   schema = cloneDeep(originalSchema);
+  delete schema.description;
+  delete schema.example;
   while (refToAdd.length) {
     const ref = refToAdd.shift() as string;
     const path = splitPath(ref);
     refAdded.push(ref);
 
     const subschema = cloneDeep(get(oas, path));
+    delete subschema.description;
+    delete subschema.example;
     traverse(subschema, collectReferences);
     set(schema, path, subschema);
   }

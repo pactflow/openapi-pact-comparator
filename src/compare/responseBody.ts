@@ -13,9 +13,9 @@ import {
   formatSchemaPath,
 } from "../results/index";
 import { minimumSchema, transformResponseSchema } from "../transform/index";
-import { findMatchingType } from "./utils/content";
 import { dereferenceOas, splitPath } from "../utils/schema";
 import { getValidateFunction } from "../utils/validation";
+import { findMatchingType } from "./utils/content";
 
 const DEFAULT_CONTENT_TYPE = "application/json";
 
@@ -55,7 +55,22 @@ export function* compareResBody(
       },
       type: "error",
     };
-  } else {
+  }
+
+  if (response) {
+    const availableResponseContentTypes =
+      operation.produces || Object.keys(response.content || {});
+    const contentType =
+      findMatchingType(
+        requestHeaders.get("accept") || DEFAULT_CONTENT_TYPE,
+        availableResponseContentTypes,
+      ) || DEFAULT_CONTENT_TYPE;
+    const dereferencedResponse = dereferenceOas(response, oas);
+    const schema: SchemaObject | undefined =
+      (dereferencedResponse as OpenAPIV2.ResponseObject)?.schema ||
+      dereferencedResponse.content?.[contentType]?.schema;
+    const value = body;
+
     if (!statusResponse) {
       yield {
         code: "response.status.default",
@@ -75,65 +90,50 @@ export function* compareResBody(
       };
     }
 
-    if (response) {
-      const availableResponseContentTypes =
-        operation.produces || Object.keys(response.content || {});
-      const contentType =
-        findMatchingType(
-          requestHeaders.get("accept") || DEFAULT_CONTENT_TYPE,
-          availableResponseContentTypes,
-        ) || DEFAULT_CONTENT_TYPE;
-      const dereferencedResponse = dereferenceOas(response, oas);
-      const schema: SchemaObject | undefined =
-        (dereferencedResponse as OpenAPIV2.ResponseObject).schema ||
-        dereferencedResponse.content?.[contentType]?.schema;
-      const value = body;
+    if (value && !schema) {
+      yield {
+        code: "response.body.unknown",
+        message: "No matching schema found for response body",
+        mockDetails: {
+          ...baseMockDetails(interaction),
+          location: `[root].interactions[${index}].response.body`,
+          value: value,
+        },
+        specDetails: {
+          location: `[root].paths.${path}.${method}.responses.${status}.content`,
+          pathMethod: method,
+          pathName: path,
+          value: response.content,
+        },
+        type: "error",
+      };
+    }
 
-      if (body) {
-        if (!schema) {
+    if (value && schema) {
+      const schemaId = `[root].paths.${path}.${method}.responses.${status}.content.${contentType}`;
+      const validate = getValidateFunction(ajv, schemaId, () =>
+        transformResponseSchema(minimumSchema(schema, oas)),
+      );
+      if (!validate(value)) {
+        for (const error of validate.errors!) {
           yield {
-            code: "response.body.unknown",
-            message: "No matching schema found for response body",
+            code: "response.body.incompatible",
+            message: `Response body is incompatible with the response body schema in the spec file: ${formatMessage(error)}`,
             mockDetails: {
               ...baseMockDetails(interaction),
-              location: `[root].interactions[${index}].response.body`,
-              value: value,
+              location: `[root].interactions[${index}].response.body.${formatInstancePath(error)}`,
+              value: error.instancePath
+                ? get(value, splitPath(error.instancePath))
+                : value,
             },
             specDetails: {
-              location: `[root].paths.${path}.${method}.responses.${status}.content`,
+              location: `${schemaId}.schema.${formatSchemaPath(error)}`,
               pathMethod: method,
               pathName: path,
-              value: response.content,
+              value: get(validate!.schema, splitPath(error.schemaPath)),
             },
             type: "error",
           };
-        } else if (value) {
-          const schemaId = `[root].paths.${path}.${method}.responses.${status}.content.${contentType}`;
-          const validate = getValidateFunction(ajv, schemaId, () =>
-            transformResponseSchema(minimumSchema(schema, oas)),
-          );
-          if (!validate(value)) {
-            for (const error of validate.errors!) {
-              yield {
-                code: "response.body.incompatible",
-                message: `Response body is incompatible with the response body schema in the spec file: ${formatMessage(error)}`,
-                mockDetails: {
-                  ...baseMockDetails(interaction),
-                  location: `[root].interactions[${index}].response.body.${formatInstancePath(error)}`,
-                  value: error.instancePath
-                    ? get(value, splitPath(error.instancePath))
-                    : value,
-                },
-                specDetails: {
-                  location: `${schemaId}.schema.${formatSchemaPath(error)}`,
-                  pathMethod: method,
-                  pathName: path,
-                  value: get(validate!.schema, splitPath(error.schemaPath)),
-                },
-                type: "error",
-              };
-            }
-          }
         }
       }
     }

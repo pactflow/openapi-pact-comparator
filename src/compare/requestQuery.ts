@@ -13,6 +13,7 @@ import {
   formatSchemaPath,
 } from "../results/index";
 import { minimumSchema } from "../transform/index";
+import { isValidRequest } from "../utils/interaction";
 import { dereferenceOas, splitPath } from "../utils/schema";
 import { getValidateFunction } from "../utils/validation";
 
@@ -41,40 +42,42 @@ export function* compareReqQuery(
       type: dereferencedParameter.type,
     };
     const value = searchParams[dereferencedParameter.name];
-    if (interaction.response.status < 400) {
-      if (schema && (value || dereferencedParameter.required)) {
-        const schemaId = `[root].paths.${path}.${method}.parameters[${parameterIndex}]`;
-        const validate = getValidateFunction(ajv, schemaId, () =>
-          minimumSchema(schema, oas),
-        );
-        if (!validate(value)) {
-          for (const error of validate.errors!) {
-            yield {
-              code: "request.query.incompatible",
-              message: `Value is incompatible with the parameter defined in the spec file: ${formatMessage(error)}`,
-              mockDetails: {
-                ...baseMockDetails(interaction),
-                location: `[root].interactions[${index}].request.query.${dereferencedParameter.name}.${formatInstancePath(error)}`,
-                value: error.instancePath
-                  ? get(value, splitPath(error.instancePath))
-                  : value,
-              },
-              specDetails: {
-                location: `${schemaId}.schema.${formatSchemaPath(error)}`,
-                pathMethod: method,
-                pathName: path,
-                value: get(validate!.schema, splitPath(error.schemaPath)),
-              },
-              type: "error",
-            };
-          }
+    if (
+      schema &&
+      (value || dereferencedParameter.required) &&
+      isValidRequest(interaction)
+    ) {
+      const schemaId = `[root].paths.${path}.${method}.parameters[${parameterIndex}]`;
+      const validate = getValidateFunction(ajv, schemaId, () =>
+        minimumSchema(schema, oas),
+      );
+      if (!validate(value)) {
+        for (const error of validate.errors!) {
+          yield {
+            code: "request.query.incompatible",
+            message: `Value is incompatible with the parameter defined in the spec file: ${formatMessage(error)}`,
+            mockDetails: {
+              ...baseMockDetails(interaction),
+              location: `[root].interactions[${index}].request.query.${dereferencedParameter.name}.${formatInstancePath(error)}`,
+              value: error.instancePath
+                ? get(value, splitPath(error.instancePath))
+                : value,
+            },
+            specDetails: {
+              location: `${schemaId}.schema.${formatSchemaPath(error)}`,
+              pathMethod: method,
+              pathName: path,
+              value: get(validate!.schema, splitPath(error.schemaPath)),
+            },
+            type: "error",
+          };
         }
       }
-      delete searchParams[dereferencedParameter.name];
     }
+    delete searchParams[dereferencedParameter.name];
   }
 
-  if (interaction.response.status < 400) {
+  if (isValidRequest(interaction)) {
     for (const scheme of operation.security || []) {
       for (const schemeName of Object.keys(scheme)) {
         const scheme = securitySchemes[schemeName];
@@ -124,7 +127,7 @@ export function* compareReqQuery(
     }
   }
 
-  if (interaction.response.status < 400) {
+  if (isValidRequest(interaction)) {
     for (const [key, value] of Object.entries(searchParams)) {
       yield {
         code: "request.query.unknown",

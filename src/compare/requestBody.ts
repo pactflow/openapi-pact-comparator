@@ -14,9 +14,10 @@ import {
   formatSchemaPath,
 } from "../results/index";
 import { minimumSchema, transformRequestSchema } from "../transform/index";
-import { findMatchingType } from "./utils/content";
+import { isValidRequest } from "../utils/interaction";
 import { dereferenceOas, splitPath } from "../utils/schema";
 import { getValidateFunction } from "../utils/validation";
+import { findMatchingType } from "./utils/content";
 
 const parseBody = (body: unknown, contentType: string) => {
   if (
@@ -70,55 +71,63 @@ export function* compareReqBody(
       oas,
     )?.schema;
 
-  if (body || body === "") {
-    if (!schema) {
-      yield {
-        code: "request.body.unknown",
-        message: "No matching schema found for request body",
-        mockDetails: {
-          ...baseMockDetails(interaction),
-          location: `[root].interactions[${index}].request.body`,
-          value: get(interaction, "request.body"),
-        },
-        specDetails: {
-          location: `[root].paths.${path}.${method}.requestBody.content`,
-          pathMethod: method,
-          pathName: path,
-          value: get(operation, "requestBody.content"),
-        },
-        type: "error",
-      };
-    } else if (interaction.response.status < 400) {
-      const value = parseBody(body, contentType);
+  const hasBody = !!(body || body === "");
 
-      if (schema && canValidate(contentType)) {
-        const schemaId = `[root].paths.${path}.${method}.requestBody.content.${contentType}`;
-        const validate = getValidateFunction(ajv, schemaId, () =>
-          transformRequestSchema(minimumSchema(schema, oas)),
-        );
-        if (!validate(value)) {
-          for (const error of validate.errors!) {
-            yield {
-              code: "request.body.incompatible",
-              message: `Request body is incompatible with the request body schema in the spec file: ${formatMessage(error)}`,
-              mockDetails: {
-                ...baseMockDetails(interaction),
-                location: `[root].interactions[${index}].request.body.${formatInstancePath(error)}`,
-                value: error.instancePath
-                  ? get(value, splitPath(error.instancePath))
-                  : value,
-              },
-              specDetails: {
-                location: `${schemaId}.schema.${formatSchemaPath(error)}`,
-                pathMethod: method,
-                pathName: path,
-                value: get(validate!.schema, splitPath(error.schemaPath)),
-              },
-              type: "error",
-            };
-          }
-        }
+  if (
+    hasBody &&
+    schema &&
+    canValidate(contentType) &&
+    isValidRequest(interaction)
+  ) {
+    const value = parseBody(body, contentType);
+    const schemaId = `[root].paths.${path}.${method}.requestBody.content.${contentType}`;
+    const validate = getValidateFunction(ajv, schemaId, () =>
+      transformRequestSchema(minimumSchema(schema, oas)),
+    );
+    if (!validate(value)) {
+      for (const error of validate.errors!) {
+        yield {
+          code: "request.body.incompatible",
+          message: `Request body is incompatible with the request body schema in the spec file: ${formatMessage(error)}`,
+          mockDetails: {
+            ...baseMockDetails(interaction),
+            location: `[root].interactions[${index}].request.body.${formatInstancePath(error)}`,
+            value: error.instancePath
+              ? get(value, splitPath(error.instancePath))
+              : value,
+          },
+          specDetails: {
+            location: `${schemaId}.schema.${formatSchemaPath(error)}`,
+            pathMethod: method,
+            pathName: path,
+            value: get(validate!.schema, splitPath(error.schemaPath)),
+          },
+          type: "error",
+        };
       }
     }
+  }
+
+  if (hasBody && !schema && isValidRequest(interaction)) {
+    yield {
+      code: "request.body.unknown",
+      message: "No matching schema found for request body",
+      mockDetails: {
+        ...baseMockDetails(interaction),
+        location: `[root].interactions[${index}].request.body`,
+        value: get(interaction, "request.body"),
+      },
+      specDetails: {
+        location: `[root].paths.${path}.${method}.requestBody.content`,
+        pathMethod: method,
+        pathName: path,
+        value: get(operation, "requestBody.content"),
+      },
+      type: "error",
+    };
+  }
+
+  if (!hasBody && schema) {
+    // TODO: what error code?
   }
 }

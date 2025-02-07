@@ -7,10 +7,10 @@ import type { Interaction } from "../documents/pact";
 import type { Result } from "../results/index";
 import { baseMockDetails } from "../results/index";
 import { minimumSchema } from "../transform/index";
-import { cleanPathParameter } from "./utils/parameters";
-import { parseValue } from "./utils/parse";
 import { dereferenceOas } from "../utils/schema";
 import { getValidateFunction } from "../utils/validation";
+import { cleanPathParameter } from "./utils/parameters";
+import { parseValue } from "./utils/parse";
 
 export function* compareReqPath(
   ajv: Ajv,

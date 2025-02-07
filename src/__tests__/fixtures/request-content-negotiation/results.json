@@ -54,7 +54,7 @@
       "interactionDescription": "should error on missing content-type",
       "interactionState": "[none]",
       "location": "[root].interactions[4].request.headers.content-type",
-      "value": ""
+      "value": null
     },
     "specDetails": {
       "location": "[root].paths./animals.post",

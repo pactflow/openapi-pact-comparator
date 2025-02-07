@@ -13,10 +13,11 @@ import {
   formatSchemaPath,
 } from "../results/index";
 import { minimumSchema } from "../transform/index";
-import { findMatchingType, standardHttpRequestHeaders } from "./utils/content";
-import { parseValue } from "./utils/parse";
+import { isValidRequest } from "../utils/interaction";
 import { dereferenceOas, splitPath } from "../utils/schema";
 import { getValidateFunction } from "../utils/validation";
+import { findMatchingType, standardHttpRequestHeaders } from "./utils/content";
+import { parseValue } from "./utils/parse";
 
 export function* compareReqHeader(
   ajv: Ajv,
@@ -39,126 +40,139 @@ export function* compareReqHeader(
         oas,
       )?.content || {},
     );
-
-  // request accept
-  // --------------
   const requestHeaders = new Headers(
     interaction.request.headers as Record<string, string>,
   );
+
+  // request accept
+  // --------------
   const requestAccept: string =
     requestHeaders.get("accept")?.split(";")[0] || "";
 
-  if (requestAccept) {
-    if (availableResponseContentType.length === 0) {
-      yield {
-        code: "request.accept.unknown",
-        message:
-          "Request Accept header is defined but the spec does not specify any mime-types to produce",
-        mockDetails: {
-          ...baseMockDetails(interaction),
-          location: `[root].interactions[${index}].request.headers.accept`,
-          value: requestAccept,
-        },
-        specDetails: {
-          location: `[root].paths.${path}.${method}`,
-          pathMethod: method,
-          pathName: path,
-          value: operation,
-        },
-        type: "warning",
-      };
-    } else if (!findMatchingType(requestAccept, availableResponseContentType)) {
-      yield {
-        code: "request.accept.incompatible",
-        message:
-          "Request Accept header is incompatible with the mime-types the spec defines to produce",
-        mockDetails: {
-          ...baseMockDetails(interaction),
-          location: `[root].interactions[${index}].request.headers.accept`,
-          value: requestAccept,
-        },
-        specDetails: {
-          location: `[root].paths.${path}.${method}`,
-          pathMethod: method,
-          pathName: path,
-          value: availableResponseContentType,
-        },
-        type: "error",
-      };
-    }
-    requestHeaders.delete("accept");
+  if (
+    requestAccept &&
+    !availableResponseContentType.length &&
+    isValidRequest(interaction)
+  ) {
+    yield {
+      code: "request.accept.unknown",
+      message:
+        "Request Accept header is defined but the spec does not specify any mime-types to produce",
+      mockDetails: {
+        ...baseMockDetails(interaction),
+        location: `[root].interactions[${index}].request.headers.accept`,
+        value: requestHeaders.get("accept"),
+      },
+      specDetails: {
+        location: `[root].paths.${path}.${method}`,
+        pathMethod: method,
+        pathName: path,
+        value: operation,
+      },
+      type: "warning",
+    };
+  }
+
+  if (
+    requestAccept &&
+    availableResponseContentType.length &&
+    !findMatchingType(requestAccept, availableResponseContentType)
+  ) {
+    yield {
+      code: "request.accept.incompatible",
+      message:
+        "Request Accept header is incompatible with the mime-types the spec defines to produce",
+      mockDetails: {
+        ...baseMockDetails(interaction),
+        location: `[root].interactions[${index}].request.headers.accept`,
+        value: requestHeaders.get("accept"),
+      },
+      specDetails: {
+        location: `[root].paths.${path}.${method}`,
+        pathMethod: method,
+        pathName: path,
+        value: availableResponseContentType,
+      },
+      type: "error",
+    };
   }
 
   // request content-type
   // --------------------
   const requestContentType: string =
     requestHeaders.get("content-type")?.split(";")[0] || "";
-  if (requestContentType) {
-    if (availableRequestContentType.length === 0) {
-      yield {
-        code: "request.content-type.unknown",
-        message:
-          "Request content-type header is defined but the spec does not specify any mime-types to consume",
-        mockDetails: {
-          ...baseMockDetails(interaction),
-          location: `[root].interactions[${index}].request.headers.content-type`,
-          value: requestContentType,
-        },
-        specDetails: {
-          location: `[root].paths.${path}.${method}`,
-          pathMethod: method,
-          pathName: path,
-          value: operation,
-        },
-        type: "warning",
-      };
-    } else if (
-      !findMatchingType(requestContentType, availableRequestContentType)
-    ) {
-      yield {
-        code: "request.content-type.incompatible",
-        message:
-          "Request Content-Type header is incompatible with the mime-types the spec accepts to consume",
-        mockDetails: {
-          ...baseMockDetails(interaction),
-          location: `[root].interactions[${index}].request.headers.content-type`,
-          value: requestContentType,
-        },
-        specDetails: {
-          location: `[root].paths.${path}.${method}.requestBody.content`,
-          pathMethod: method,
-          pathName: path,
-          value: availableRequestContentType,
-        },
-        type: "error",
-      };
-    }
-    requestHeaders.delete("content-type");
-  } else {
-    if (availableRequestContentType.length) {
-      yield {
-        code: "request.content-type.missing",
-        message:
-          "Request content type header is not defined but spec specifies mime-types to consume",
-        mockDetails: {
-          ...baseMockDetails(interaction),
-          location: `[root].interactions[${index}].request.headers.content-type`,
-          value: requestContentType,
-        },
-        specDetails: {
-          location: `[root].paths.${path}.${method}`,
-          pathMethod: method,
-          pathName: path,
-          value: operation,
-        },
-        type: "warning",
-      };
-    }
+
+  if (
+    requestContentType &&
+    !availableRequestContentType.length &&
+    isValidRequest(interaction)
+  ) {
+    yield {
+      code: "request.content-type.unknown",
+      message:
+        "Request content-type header is defined but the spec does not specify any mime-types to consume",
+      mockDetails: {
+        ...baseMockDetails(interaction),
+        location: `[root].interactions[${index}].request.headers.content-type`,
+        value: requestHeaders.get("content-type"),
+      },
+      specDetails: {
+        location: `[root].paths.${path}.${method}`,
+        pathMethod: method,
+        pathName: path,
+        value: operation,
+      },
+      type: "warning",
+    };
+  }
+
+  if (
+    requestContentType &&
+    availableRequestContentType.length &&
+    !findMatchingType(requestContentType, availableRequestContentType)
+  ) {
+    yield {
+      code: "request.content-type.incompatible",
+      message:
+        "Request Content-Type header is incompatible with the mime-types the spec accepts to consume",
+      mockDetails: {
+        ...baseMockDetails(interaction),
+        location: `[root].interactions[${index}].request.headers.content-type`,
+        value: requestHeaders.get("content-type"),
+      },
+      specDetails: {
+        location: `[root].paths.${path}.${method}.requestBody.content`,
+        pathMethod: method,
+        pathName: path,
+        value: availableRequestContentType,
+      },
+      type: "error",
+    };
+  }
+
+  if (!requestContentType && availableRequestContentType.length) {
+    yield {
+      code: "request.content-type.missing",
+      message:
+        "Request content type header is not defined but spec specifies mime-types to consume",
+      mockDetails: {
+        ...baseMockDetails(interaction),
+        location: `[root].interactions[${index}].request.headers.content-type`,
+        value: requestHeaders.get("content-type"),
+      },
+      specDetails: {
+        location: `[root].paths.${path}.${method}`,
+        pathMethod: method,
+        pathName: path,
+        value: operation,
+      },
+      type: "warning",
+    };
   }
 
   // security headers
   // ----------------
-  if (interaction.response.status < 400) {
+  if (isValidRequest(interaction)) {
     for (const scheme of operation.security || []) {
       for (const schemeName of Object.keys(scheme)) {
         const scheme = securitySchemes[schemeName];
@@ -189,7 +203,6 @@ export function* compareReqHeader(
                 break;
               case "cookie":
                 // FIXME: handle cookies
-                requestHeaders.delete("cookie");
                 break;
               case "query":
               // ignore
@@ -216,7 +229,6 @@ export function* compareReqHeader(
                 type: "error",
               };
             }
-            requestHeaders.delete("authorization");
             break;
           }
           case "http": {
@@ -250,7 +262,6 @@ export function* compareReqHeader(
                 type: "error",
               };
             }
-            requestHeaders.delete("authorization");
             break;
           }
           case "mutualTLS":
@@ -289,59 +300,62 @@ export function* compareReqHeader(
       type: dereferencedParameter.type,
     };
     const value = parseValue(requestHeaders.get(dereferencedParameter.name));
-    if (interaction.response.status < 400) {
-      if (value) {
-        if (schema) {
-          const schemaId = `[root].paths.${path}.${method}.parameters[${parameterIndex}]`;
-          const validate = getValidateFunction(ajv, schemaId, () =>
-            minimumSchema(schema, oas),
-          );
-          if (!validate(value)) {
-            for (const error of validate.errors!) {
-              yield {
-                code: "request.header.incompatible",
-                message: `Value is incompatible with the parameter defined in the spec file: ${formatMessage(error)}`,
-                mockDetails: {
-                  ...baseMockDetails(interaction),
-                  location: `[root].interactions[${index}].request.headers.${dereferencedParameter.name}.${formatInstancePath(error)}`,
-                  value: error.instancePath
-                    ? get(value, splitPath(error.instancePath))
-                    : value,
-                },
-                specDetails: {
-                  location: `${schemaId}.schema.${formatSchemaPath(error)}`,
-                  pathMethod: method,
-                  pathName: path,
-                  value: get(validate!.schema, splitPath(error.schemaPath)),
-                },
-                type: "error",
-              };
-            }
-          }
+
+    if (value && schema && isValidRequest(interaction)) {
+      const schemaId = `[root].paths.${path}.${method}.parameters[${parameterIndex}]`;
+      const validate = getValidateFunction(ajv, schemaId, () =>
+        minimumSchema(schema, oas),
+      );
+      if (!validate(value)) {
+        for (const error of validate.errors!) {
+          yield {
+            code: "request.header.incompatible",
+            message: `Value is incompatible with the parameter defined in the spec file: ${formatMessage(error)}`,
+            mockDetails: {
+              ...baseMockDetails(interaction),
+              location: `[root].interactions[${index}].request.headers.${dereferencedParameter.name}.${formatInstancePath(error)}`,
+              value: error.instancePath
+                ? get(value, splitPath(error.instancePath))
+                : value,
+            },
+            specDetails: {
+              location: `${schemaId}.schema.${formatSchemaPath(error)}`,
+              pathMethod: method,
+              pathName: path,
+              value: get(validate!.schema, splitPath(error.schemaPath)),
+            },
+            type: "error",
+          };
         }
-      } else if (dereferencedParameter.required) {
-        yield {
-          code: "request.header.incompatible",
-          message: `Value is incompatible with the parameter defined in the spec file: must have required property '${dereferencedParameter.name}'`,
-          mockDetails: {
-            ...baseMockDetails(interaction),
-            location: `[root].interactions[${index}].request.headers.${dereferencedParameter.name}`,
-            value,
-          },
-          specDetails: {
-            location: `[root].paths.${path}.${method}.parameters[${parameterIndex}]`,
-            pathMethod: method,
-            pathName: path,
-            value: dereferencedParameter,
-          },
-          type: "error",
-        };
       }
+    }
+
+    if (
+      !value &&
+      dereferencedParameter.required &&
+      isValidRequest(interaction)
+    ) {
+      yield {
+        code: "request.header.incompatible",
+        message: `Value is incompatible with the parameter defined in the spec file: must have required property '${dereferencedParameter.name}'`,
+        mockDetails: {
+          ...baseMockDetails(interaction),
+          location: `[root].interactions[${index}].request.headers.${dereferencedParameter.name}`,
+          value,
+        },
+        specDetails: {
+          location: `[root].paths.${path}.${method}.parameters[${parameterIndex}]`,
+          pathMethod: method,
+          pathName: path,
+          value: dereferencedParameter,
+        },
+        type: "error",
+      };
     }
     requestHeaders.delete(dereferencedParameter.name);
   }
 
-  if (interaction.response.status < 400) {
+  if (isValidRequest(interaction)) {
     for (const [headerName, headerValue] of requestHeaders.entries()) {
       yield {
         code: "request.header.unknown",

@@ -99,45 +99,6 @@
     "type": "error"
   },
   {
-    "code": "request.accept.unknown",
-    "message": "Request Accept header is defined but the spec does not specify any mime-types to produce",
-    "mockDetails": {
-      "interactionDescription": "a request to create a pet with invalid body",
-      "interactionState": "[none]",
-      "location": "[root].interactions[1].request.headers.accept",
-      "value": "application/json"
-    },
-    "specDetails": {
-      "location": "[root].paths./pet.post",
-      "pathMethod": "post",
-      "pathName": "/pet",
-      "value": {
-        "tags": [
-          "pet"
-        ],
-        "summary": "Add a new pet to the store",
-        "operationId": "addPet",
-        "responses": {
-          "405": {
-            "description": "Invalid input"
-          }
-        },
-        "security": [
-          {
-            "petstore_auth": [
-              "write:pets",
-              "read:pets"
-            ]
-          }
-        ],
-        "requestBody": {
-          "$ref": "#/components/requestBodies/Pet"
-        }
-      }
-    },
-    "type": "warning"
-  },
-  {
     "code": "response.content-type.unknown",
     "message": "Response Content-Type header is defined but the spec does not specify any mime-types to produce",
     "mockDetails": {
@@ -172,70 +133,6 @@
         "requestBody": {
           "$ref": "#/components/requestBodies/Pet"
         }
-      }
-    },
-    "type": "warning"
-  },
-  {
-    "code": "request.accept.unknown",
-    "message": "Request Accept header is defined but the spec does not specify any mime-types to produce",
-    "mockDetails": {
-      "interactionDescription": "a request to get a pet that does not exist",
-      "interactionState": "a pet with ID 10 does not exist",
-      "location": "[root].interactions[3].request.headers.accept",
-      "value": "application/json"
-    },
-    "specDetails": {
-      "location": "[root].paths./pet/{petId}.get",
-      "pathMethod": "get",
-      "pathName": "/pet/{petId}",
-      "value": {
-        "tags": [
-          "pet"
-        ],
-        "summary": "Find pet by ID",
-        "description": "Returns a single pet",
-        "operationId": "getPetById",
-        "parameters": [
-          {
-            "name": "petId",
-            "in": "path",
-            "description": "ID of pet to return",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Pet"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/Pet"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid ID supplied"
-          },
-          "404": {
-            "description": "Pet not found"
-          }
-        },
-        "security": [
-          {
-            "api_key": []
-          }
-        ]
       }
     },
     "type": "warning"

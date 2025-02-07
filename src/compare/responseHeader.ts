@@ -12,9 +12,9 @@ import {
   formatSchemaPath,
 } from "../results/index";
 import { minimumSchema } from "../transform/index";
-import { findMatchingType, standardHttpResponseHeaders } from "./utils/content";
 import { dereferenceOas, splitPath } from "../utils/schema";
 import { getValidateFunction } from "../utils/validation";
+import { findMatchingType, standardHttpResponseHeaders } from "./utils/content";
 
 export function* compareResHeader(
   ajv: Ajv,
@@ -32,56 +32,59 @@ export function* compareResHeader(
         oas,
       )?.content || {},
     );
-
-  // response content-type
-  // ---------------------
   const responseHeaders = new Headers(
     interaction.response.headers as Record<string, string>,
   );
+
+  // response content-type
+  // ---------------------
   const responseContentType =
     responseHeaders.get("content-type")?.split(";")[0] || "";
-  if (responseContentType) {
-    if (availableResponseContentType.length === 0) {
-      yield {
-        code: "response.content-type.unknown",
-        message:
-          "Response Content-Type header is defined but the spec does not specify any mime-types to produce",
-        mockDetails: {
-          ...baseMockDetails(interaction),
-          location: `[root].interactions[${index}].response.headers.content-type`,
-          value: responseContentType,
-        },
-        specDetails: {
-          location: `[root].paths.${path}.${method}`,
-          pathMethod: method,
-          pathName: path,
-          value: operation,
-        },
-        type: "warning",
-      };
-    } else if (
-      !findMatchingType(responseContentType, availableResponseContentType)
-    ) {
-      yield {
-        code: "response.content-type.incompatible",
-        message:
-          "Response Content-Type header is incompatible with the mime-types the spec defines to produce",
-        mockDetails: {
-          ...baseMockDetails(interaction),
-          location: `[root].interactions[${index}].response.headers.content-type`,
-          value: responseContentType,
-        },
-        specDetails: {
-          location: `[root].paths.${path}.${method}.responses.${interaction.response.status}.content`,
-          pathMethod: method,
-          pathName: path,
-          value: availableResponseContentType,
-        },
-        type: "error",
-      };
-    }
-    responseHeaders.delete("content-type");
+
+  if (responseContentType && !availableResponseContentType.length) {
+    yield {
+      code: "response.content-type.unknown",
+      message:
+        "Response Content-Type header is defined but the spec does not specify any mime-types to produce",
+      mockDetails: {
+        ...baseMockDetails(interaction),
+        location: `[root].interactions[${index}].response.headers.content-type`,
+        value: responseHeaders.get("content-type"),
+      },
+      specDetails: {
+        location: `[root].paths.${path}.${method}`,
+        pathMethod: method,
+        pathName: path,
+        value: operation,
+      },
+      type: "warning",
+    };
   }
+
+  if (
+    responseContentType &&
+    availableResponseContentType.length &&
+    !findMatchingType(responseContentType, availableResponseContentType)
+  ) {
+    yield {
+      code: "response.content-type.incompatible",
+      message:
+        "Response Content-Type header is incompatible with the mime-types the spec defines to produce",
+      mockDetails: {
+        ...baseMockDetails(interaction),
+        location: `[root].interactions[${index}].response.headers.content-type`,
+        value: responseHeaders.get("content-type"),
+      },
+      specDetails: {
+        location: `[root].paths.${path}.${method}.responses.${interaction.response.status}.content`,
+        pathMethod: method,
+        pathName: path,
+        value: availableResponseContentType,
+      },
+      type: "error",
+    };
+  }
+  responseHeaders.delete("content-type");
 
   // standard headers
   // ----------------

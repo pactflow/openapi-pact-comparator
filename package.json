@@ -14,7 +14,7 @@
     }
   },
   "scripts": {
-    "build": "tsx build.ts",
+    "build": "tsx build.ts && tsc --emitDeclarationOnly",
     "lint": "eslint --max-warnings=0",
     "postinstall": "patch-package",
     "prepare": "npm run build",

@@ -99,6 +99,45 @@
     "type": "error"
   },
   {
+    "code": "request.accept.unknown",
+    "message": "Request Accept header is defined but the spec does not specify any mime-types to produce",
+    "mockDetails": {
+      "interactionDescription": "a request to create a pet with invalid body",
+      "interactionState": "[none]",
+      "location": "[root].interactions[1].request.headers.accept",
+      "value": "application/json"
+    },
+    "specDetails": {
+      "location": "[root].paths./pet.post",
+      "pathMethod": "post",
+      "pathName": "/pet",
+      "value": {
+        "tags": [
+          "pet"
+        ],
+        "summary": "Add a new pet to the store",
+        "operationId": "addPet",
+        "responses": {
+          "405": {
+            "description": "Invalid input"
+          }
+        },
+        "security": [
+          {
+            "petstore_auth": [
+              "write:pets",
+              "read:pets"
+            ]
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/Pet"
+        }
+      }
+    },
+    "type": "warning"
+  },
+  {
     "code": "response.content-type.unknown",
     "message": "Response Content-Type header is defined but the spec does not specify any mime-types to produce",
     "mockDetails": {

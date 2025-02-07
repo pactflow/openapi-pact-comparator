@@ -32,6 +32,17 @@ export function* compareReqHeader(
     Object.keys(
       dereferenceOas(operation.requestBody || {}, oas)?.content || {},
     );
+  const allAvailableResponseContentTypes =
+    operation.produces ||
+    Object.entries(operation.responses).reduce(
+      (acc: string[], [_status, response]) => {
+        return [
+          ...acc,
+          ...Object.keys(dereferenceOas(response || {}, oas)?.content || {}),
+        ];
+      },
+      [],
+    );
   const availableResponseContentType =
     operation.produces ||
     Object.keys(
@@ -49,11 +60,7 @@ export function* compareReqHeader(
   const requestAccept: string =
     requestHeaders.get("accept")?.split(";")[0] || "";
 
-  if (
-    requestAccept &&
-    !availableResponseContentType.length &&
-    isValidRequest(interaction)
-  ) {
+  if (requestAccept && !allAvailableResponseContentTypes.length) {
     yield {
       code: "request.accept.unknown",
       message:

@@ -43,16 +43,24 @@ export const traverse = (
 const _traverseWithDereferencing = (
   schema: SchemaObject,
   oas: OpenAPIV3.Document,
+  visited: string[],
   visitor: (schema: SchemaObject) => void,
 ) => {
   if (typeof schema === "boolean" || schema === undefined) {
     return;
   }
 
+  if (visited.includes(schema.$ref)) {
+    return;
+  }
+
+  if (schema.$ref) {
+    visited.push(schema.$ref);
+  }
   const dereferencedSchema = dereferenceOas(schema, oas);
 
   const traverseSubSchema = (item: SchemaObject) =>
-    _traverseWithDereferencing(item, oas, visitor);
+    _traverseWithDereferencing(item, oas, visited, visitor);
 
   each(dereferencedSchema.allOf, traverseSubSchema);
   each(dereferencedSchema.oneOf, traverseSubSchema);
@@ -69,5 +77,5 @@ export const traverseWithDereferencing = (
   schema: SchemaObject,
   visitor: (schema: SchemaObject) => void,
 ) => {
-  _traverseWithDereferencing(schema, schema as OpenAPIV3.Document, visitor);
+  _traverseWithDereferencing(schema, schema as OpenAPIV3.Document, [], visitor);
 };

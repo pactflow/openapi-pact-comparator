@@ -60,6 +60,20 @@
           "unspecified": "foo"
         }
       }
+    },
+    {
+      "description": "should error on unknown response content type",
+      "providerState": "",
+      "request": {
+        "method": "GET",
+        "path": "/different-response-types"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "text/html"
+        }
+      }
     }
   ]
 }

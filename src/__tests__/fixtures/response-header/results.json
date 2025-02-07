@@ -72,5 +72,24 @@
       }
     },
     "type": "error"
+  },
+  {
+    "code": "response.content-type.incompatible",
+    "message": "Response Content-Type header is incompatible with the mime-types the spec defines to produce",
+    "mockDetails": {
+      "interactionDescription": "should error on unknown response content type",
+      "interactionState": "[none]",
+      "location": "[root].interactions[4].response.headers.content-type",
+      "value": "text/html"
+    },
+    "specDetails": {
+      "location": "[root].paths./different-response-types.get.responses.200.content",
+      "pathMethod": "get",
+      "pathName": "/different-response-types",
+      "value": [
+        "application/json"
+      ]
+    },
+    "type": "error"
   }
 ]

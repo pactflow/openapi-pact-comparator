@@ -15,3 +15,11 @@ paths:
           content:
             application/json:
               schema: {}
+  /different-response-types:
+    get:
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: {}

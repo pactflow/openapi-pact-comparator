@@ -173,6 +173,23 @@
           "Content-Type": "application/json"
         }
       }
+    },
+    {
+      "description": "should warn when spec is missing accept and content-type",
+      "providerState": "",
+      "request": {
+        "method": "GET",
+        "path": "/no-response",
+        "headers": {
+          "accept": "application/json"
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
     }
   ]
 }

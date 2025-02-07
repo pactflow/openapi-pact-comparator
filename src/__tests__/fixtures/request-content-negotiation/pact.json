@@ -81,6 +81,23 @@
       "response": {
         "status": 201
       }
+    },
+    {
+      "description": "should error on unknown request content-type",
+      "request": {
+        "method": "POST",
+        "path": "/no-content",
+        "headers": {
+          "content-type": "application/json"
+        },
+        "body": {
+          "name": "Rover",
+          "genus": "Canis"
+        }
+      },
+      "response": {
+        "status": 201
+      }
     }
   ]
 }

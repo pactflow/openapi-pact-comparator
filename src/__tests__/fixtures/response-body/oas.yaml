@@ -37,6 +37,12 @@ paths:
                   propertyName: petType
                 required:
                   - petType
+  /no-response-schema:
+    get:
+      responses:
+        "200":
+          description: OK
+          content: {}
 components:
   schemas:
     Animal:

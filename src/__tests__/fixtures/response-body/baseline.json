@@ -35,5 +35,51 @@
       "pathName": "/animal"
     },
     "type": "error"
+  },
+  {
+    "code": "response.body.unknown",
+    "message": "No matching schema found for response body",
+    "mockDetails": {
+      "interactionDescription": "should error with unknown respos body",
+      "interactionState": "[none]",
+      "location": "[root].interactions[6].response.body",
+      "value": {
+        "unknown": "schema"
+      }
+    },
+    "specDetails": {
+      "location": "[root].paths./no-response-schema.get.responses.200",
+      "pathMethod": "get",
+      "pathName": "/no-response-schema",
+      "value": {
+        "description": "OK",
+        "content": {}
+      }
+    },
+    "type": "error"
+  },
+  {
+    "code": "response.content-type.unknown",
+    "message": "Response Content-Type header is defined but the spec does not specify any mime-types to produce",
+    "mockDetails": {
+      "interactionDescription": "should error with unknown respos body",
+      "interactionState": "[none]",
+      "location": "[root].interactions[6].response.headers.Content-Type",
+      "value": "application/json"
+    },
+    "specDetails": {
+      "location": "[root].paths./no-response-schema.get",
+      "pathMethod": "get",
+      "pathName": "/no-response-schema",
+      "value": {
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {}
+          }
+        }
+      }
+    },
+    "type": "warning"
   }
 ]

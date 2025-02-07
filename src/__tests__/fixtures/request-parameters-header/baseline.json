@@ -162,5 +162,53 @@
       }
     },
     "type": "error"
+  },
+  {
+    "code": "request.accept.unknown",
+    "message": "Request Accept header is defined but the spec does not specify any mime-types to produce",
+    "mockDetails": {
+      "interactionDescription": "should warn when spec is missing accept and content-type",
+      "interactionState": "[none]",
+      "location": "[root].interactions[8].request.headers.accept",
+      "value": "application/json"
+    },
+    "specDetails": {
+      "location": "[root].paths./no-response.get",
+      "pathMethod": "get",
+      "pathName": "/no-response",
+      "value": {
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {}
+          }
+        }
+      }
+    },
+    "type": "warning"
+  },
+  {
+    "code": "response.content-type.unknown",
+    "message": "Response Content-Type header is defined but the spec does not specify any mime-types to produce",
+    "mockDetails": {
+      "interactionDescription": "should warn when spec is missing accept and content-type",
+      "interactionState": "[none]",
+      "location": "[root].interactions[8].response.headers.Content-Type",
+      "value": "application/json"
+    },
+    "specDetails": {
+      "location": "[root].paths./no-response.get",
+      "pathMethod": "get",
+      "pathName": "/no-response",
+      "value": {
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {}
+          }
+        }
+      }
+    },
+    "type": "warning"
   }
 ]

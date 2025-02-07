@@ -123,6 +123,22 @@
           "detail": null
         }
       }
+    },
+    {
+      "description": "should error with unknown respos body",
+      "request": {
+        "method": "GET",
+        "path": "/no-response-schema"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "unknown": "schema"
+        }
+      }
     }
   ]
 }

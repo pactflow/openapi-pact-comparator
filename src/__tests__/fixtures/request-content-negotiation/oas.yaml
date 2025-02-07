@@ -17,6 +17,11 @@ paths:
       responses:
         "201":
           description: description
+  "/no-content":
+    post:
+      responses:
+        "201":
+          description: description
 components:
   schemas:
     AnimalV1:

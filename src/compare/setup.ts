@@ -2,6 +2,7 @@ import type { OpenAPIV2, OpenAPIV3 } from "openapi-types";
 import Ajv, { Options } from "ajv/dist/2019.js";
 import addFormats from "ajv-formats";
 import Router, { HTTPMethod } from "find-my-way";
+import { uniqWith } from "lodash-es";
 import { cleanPathParameter } from "./utils/parameters";
 
 export function setupAjv(options: Options): Ajv {
@@ -47,10 +48,13 @@ export function setupRouter(
         method as OpenAPIV3.HttpMethods
       ] as OpenAPIV3.OperationObject;
       operation.security ||= oas.security;
-      operation.parameters = [
-        ...(operation.parameters || []),
-        ...(oas.paths[oasPath].parameters || []),
-      ];
+      operation.parameters = uniqWith(
+        [
+          ...(oas.paths[oasPath].parameters || []),
+          ...(operation.parameters || []),
+        ] as OpenAPIV3.ParameterObject[],
+        (a, b) => `${a.name}${a.in}` === `${b.name}${b.in}`,
+      );
       router.on(method.toUpperCase() as HTTPMethod, path, () => {}, {
         method,
         oas,

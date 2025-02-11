@@ -64,13 +64,15 @@ export class Comparator {
       const stringQuery =
         typeof query === "string"
           ? query
-          : Object.keys(query || {}).reduce(
-              (acc, name) =>
-                Array.isArray(query![name])
-                  ? `${acc}&${name}=${(query![name] || []).join(",")}`
-                  : `${acc}&${name}=${query![name] || ""}`,
-              "",
-            );
+          : Object.keys(query || {})
+              .reduce(
+                (acc, name) =>
+                  Array.isArray(query![name])
+                    ? `${acc}&${name}=${(query![name] || []).join(",")}`
+                    : `${acc}&${name}=${query![name] || ""}`,
+                "",
+              )
+              .substring(1);
       const route = this.#router.find(
         method.toUpperCase() as HTTPMethod,
         [path, stringQuery].filter(Boolean).join("?"),

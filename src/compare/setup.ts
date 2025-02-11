@@ -47,6 +47,10 @@ export function setupRouter(
         method as OpenAPIV3.HttpMethods
       ] as OpenAPIV3.OperationObject;
       operation.security ||= oas.security;
+      operation.parameters = [
+        ...(operation.parameters || []),
+        ...(oas.paths[oasPath].parameters || []),
+      ];
       router.on(method.toUpperCase() as HTTPMethod, path, () => {}, {
         method,
         oas,

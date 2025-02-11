@@ -3,7 +3,7 @@ definitions:
     docker#v5.11.0:
       image: node:22.11.0
   cache-node_modules: &cache-node_modules
-    nienbo/cache#v2.4.15:
+    nienbo/cache#v2.4.20:
       id: npm
       backend: s3
       key: v1-{{ id }}-{{ checksum "package-lock.json" }}

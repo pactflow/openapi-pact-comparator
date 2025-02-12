@@ -11,9 +11,12 @@
   "prConcurrentLimit": 0,
   "packageRules": [
     {
-      "preserveSemverRanges": true,
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
       "automerge": true
+    },
+    {
+      "matchDepTypes": ["devDependencies", "dev-dependencies", "dev"],
+      "rangeStrategy": "replace"
     }
   ]
 }

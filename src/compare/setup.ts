@@ -47,14 +47,17 @@ export function setupRouter(
       const operation = (oas.paths[oasPath] as OpenAPIV3.PathItemObject)[
         method as OpenAPIV3.HttpMethods
       ] as OpenAPIV3.OperationObject;
-      operation.security ||= oas.security;
-      operation.parameters = uniqWith(
+      const parameters = uniqWith(
         [
           ...(oas.paths[oasPath].parameters || []),
           ...(operation.parameters || []),
         ] as OpenAPIV3.ParameterObject[],
         (a, b) => `${a.name}${a.in}` === `${b.name}${b.in}`,
       );
+      if (parameters.length) {
+        operation.parameters = parameters;
+      }
+      operation.security ||= oas.security;
       router.on(method.toUpperCase() as HTTPMethod, path, () => {}, {
         method,
         oas,

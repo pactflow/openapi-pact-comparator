@@ -26,7 +26,7 @@ export function* compareReqHeader(
   index: number,
 ): Iterable<Result> {
   const { method, oas, operation, path, securitySchemes } = route.store;
-
+  const { body } = interaction.request;
   const availableRequestContentType =
     operation.consumes ||
     Object.keys(
@@ -104,6 +104,9 @@ export function* compareReqHeader(
     };
   }
 
+  // req body
+  const hasBody = !!(body || body === "");
+
   // request content-type
   // --------------------
   const requestContentType: string =
@@ -157,7 +160,7 @@ export function* compareReqHeader(
     };
   }
 
-  if (!requestContentType && availableRequestContentType.length) {
+  if (!requestContentType && availableRequestContentType.length && hasBody) {
     yield {
       code: "request.content-type.missing",
       message:

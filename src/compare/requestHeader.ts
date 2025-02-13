@@ -160,7 +160,12 @@ export function* compareReqHeader(
     };
   }
 
-  if (!requestContentType && availableRequestContentType.length && hasBody && isValidRequest(interaction)) {
+  if (
+    !requestContentType &&
+    availableRequestContentType.length &&
+    hasBody &&
+    isValidRequest(interaction)
+  ) {
     yield {
       code: "request.content-type.missing",
       message:

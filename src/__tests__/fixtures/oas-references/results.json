@@ -16,6 +16,22 @@
     "type": "error"
   },
   {
+    "code": "request.query.incompatible",
+    "message": "Value is incompatible with the parameter defined in the spec file: must be string",
+    "mockDetails": {
+      "interactionDescription": "should fail with missing parameters",
+      "interactionState": "[none]",
+      "location": "[root].interactions[1].request.query.nested"
+    },
+    "specDetails": {
+      "location": "[root].paths./login.post.parameters[1].schema.type",
+      "pathMethod": "post",
+      "pathName": "/login",
+      "value": "string"
+    },
+    "type": "error"
+  },
+  {
     "code": "request.body.incompatible",
     "message": "Request body is incompatible with the request body schema in the spec file: must have required property 'username'",
     "mockDetails": {

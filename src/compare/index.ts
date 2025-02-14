@@ -14,6 +14,7 @@ import { compareReqHeader } from "./requestHeader";
 import { compareResBody } from "./responseBody";
 import { compareResHeader } from "./responseHeader";
 import { baseMockDetails } from "../results/index";
+import { ARRAY_SEPARATOR } from "../utils/queryParams";
 
 export class Comparator {
   #ajvCoerce: Ajv;
@@ -69,7 +70,7 @@ export class Comparator {
               .reduce(
                 (acc, name) =>
                   Array.isArray(query![name])
-                    ? `${acc}&${name}=${(query![name] || []).join(",")}`
+                    ? `${acc}&${name}=${(query![name] || []).join(ARRAY_SEPARATOR)}`
                     : `${acc}&${name}=${query![name] || ""}`,
                 "",
               )

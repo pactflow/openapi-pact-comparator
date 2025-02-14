@@ -43,6 +43,19 @@ paths:
           description: Bad request
           content:
             application/json: {}
+  /submit:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {}
+      responses:
+        "400":
+          description: Bad request
+          content:
+            "application/json":
+              schema: {}
   /no-response:
     get:
       responses:

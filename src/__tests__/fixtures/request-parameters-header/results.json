@@ -199,5 +199,24 @@
       }
     },
     "type": "warning"
+  },
+  {
+    "code": "request.content-type.incompatible",
+    "message": "Request Content-Type header is incompatible with the mime-types the spec accepts to consume",
+    "mockDetails": {
+      "interactionDescription": "should error about incorrect request content type",
+      "interactionState": "[none]",
+      "location": "[root].interactions[9].request.headers.content-type",
+      "value": "unknown"
+    },
+    "specDetails": {
+      "location": "[root].paths./submit.post.requestBody.content",
+      "pathMethod": "post",
+      "pathName": "/submit",
+      "value": [
+        "application/json"
+      ]
+    },
+    "type": "error"
   }
 ]

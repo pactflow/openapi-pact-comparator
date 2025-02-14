@@ -190,6 +190,24 @@
           "Content-Type": "application/json"
         }
       }
+    },
+    {
+      "description": "should error about incorrect request content type",
+      "providerState": "",
+      "request": {
+        "method": "POST",
+        "path": "/submit",
+        "headers": {
+          "content-type": "unknown"
+        },
+        "body": "unknown"
+      },
+      "response": {
+        "status": 400,
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
     }
   ]
 }

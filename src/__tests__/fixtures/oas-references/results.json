@@ -21,7 +21,7 @@
     "mockDetails": {
       "interactionDescription": "should fail with missing parameters",
       "interactionState": "[none]",
-      "location": "[root].interactions[1].request.query.nested."
+      "location": "[root].interactions[1].request.query.nested"
     },
     "specDetails": {
       "location": "[root].paths./login.post.parameters[1].schema.type",

@@ -33,6 +33,16 @@
       }
     },
     {
+      "description": "should pass when path does not start with /",
+      "request": {
+        "method": "GET",
+        "path": "integer/1"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
       "description": "should error when path does not match integer spec",
       "request": {
         "method": "GET",

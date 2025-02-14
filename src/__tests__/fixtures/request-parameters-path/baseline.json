@@ -5,7 +5,7 @@
     "mockDetails": {
       "interactionDescription": "should error when path does not match integer spec",
       "interactionState": "[none]",
-      "location": "[root].interactions[3].request.path",
+      "location": "[root].interactions[4].request.path",
       "value": "/integer/abc"
     },
     "specDetails": {
@@ -90,7 +90,7 @@
     "mockDetails": {
       "interactionDescription": "should error when path does not match boolean spec",
       "interactionState": "[none]",
-      "location": "[root].interactions[4].request.path",
+      "location": "[root].interactions[5].request.path",
       "value": "/boolean/abc"
     },
     "specDetails": {
@@ -175,7 +175,7 @@
     "mockDetails": {
       "interactionDescription": "should error when path and method does not exist in spec",
       "interactionState": "[none]",
-      "location": "[root].interactions[7].request.path",
+      "location": "[root].interactions[8].request.path",
       "value": "/does-not-exist"
     },
     "specDetails": {
@@ -260,7 +260,7 @@
     "mockDetails": {
       "interactionDescription": "should error when path does not exist in spec",
       "interactionState": "[none]",
-      "location": "[root].interactions[8].request.path",
+      "location": "[root].interactions[9].request.path",
       "value": "/integer/1"
     },
     "specDetails": {

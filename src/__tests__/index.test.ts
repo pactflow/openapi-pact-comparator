@@ -43,24 +43,29 @@ for (const entry of fs.readdirSync(FIXTURES)) {
   };
 
   const runBaseline = async () => {
-    const baseline = await swaggerMockValidator.validate({
-      mockPathOrUrl: pactFile,
-      specPathOrUrl: oasFile,
-    });
-    const orderedBaseline = [...baseline.errors, ...baseline.warnings]
-      .sort((a, b) =>
-        a.mockDetails.location.localeCompare(
-          b.mockDetails.location,
-          undefined,
-          { numeric: true },
-        ),
-      )
-      .map((r) =>
-        omit(r, ["source", "mockDetails.mockFile", "specDetails.specFile"]),
-      );
-    await expect(JSON.stringify(orderedBaseline, null, 2)).toMatchFileSnapshot(
-      baselineFile,
-    );
+    try {
+      const baseline = await swaggerMockValidator.validate({
+        mockPathOrUrl: pactFile,
+        specPathOrUrl: oasFile,
+      });
+      const orderedBaseline = [...baseline.errors, ...baseline.warnings]
+        .sort((a, b) =>
+          a.mockDetails.location.localeCompare(
+            b.mockDetails.location,
+            undefined,
+            { numeric: true },
+          ),
+        )
+        .map((r) =>
+          omit(r, ["source", "mockDetails.mockFile", "specDetails.specFile"]),
+        );
+      await expect(
+        JSON.stringify(orderedBaseline, null, 2),
+      ).toMatchFileSnapshot(baselineFile);
+    } catch (error) {
+      // Swagger Mock Validator crashes!
+      await expect(error.message).toMatchFileSnapshot(baselineFile);
+    }
   };
 
   if (entry.endsWith("skip")) {

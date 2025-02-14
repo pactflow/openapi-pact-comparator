@@ -1,0 +1,16 @@
+{
+  "consumer": { "name": "consumer" },
+  "provider": { "name": "provider" },
+  "interactions": [
+    {
+      "description": "should pass on unknown schemas",
+      "request": {
+        "method": "GET",
+        "path": "/invalid-schema"
+      },
+      "response": {
+        "status": 200
+      }
+    }
+  ]
+}

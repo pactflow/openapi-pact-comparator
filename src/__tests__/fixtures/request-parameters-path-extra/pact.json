@@ -3,27 +3,7 @@
   "provider": { "name": "provider" },
   "interactions": [
     {
-      "description": "should pass when path matches integer spec",
-      "request": {
-        "method": "GET",
-        "path": "/integer/1"
-      },
-      "response": {
-        "status": 200
-      }
-    },
-    {
-      "description": "should pass when path matches boolean spec",
-      "request": {
-        "method": "GET",
-        "path": "/boolean/true"
-      },
-      "response": {
-        "status": 200
-      }
-    },
-    {
-      "description": "should pass when path mathres exploded spec",
+      "description": "should pass when path matches simple exploded spec",
       "request": {
         "method": "GET",
         "path": "/simple/explode-true/1,2,3"
@@ -33,7 +13,7 @@
       }
     },
     {
-      "description": "should pass when path matches non-exploded spec",
+      "description": "should pass when path matches simple non-exploded spec",
       "request": {
         "method": "GET",
         "path": "/simple/explode-false/1,2,3"
@@ -43,37 +23,47 @@
       }
     },
     {
-      "description": "should pass when path matches object spec",
+      "description": "should pass when path matches label exploded spec",
       "request": {
         "method": "GET",
-        "path": "/exploded-object/string=abc,number=123"
+        "path": "/label/explode-true/.1,2,3"
       },
       "response": {
         "status": 200
       }
     },
     {
-      "description": "should error when path does not match integer spec",
+      "description": "should pass when path matches label non-exploded spec",
       "request": {
         "method": "GET",
-        "path": "/integer/abc"
+        "path": "/label/explode-false/.1,2,3"
       },
       "response": {
         "status": 200
       }
     },
     {
-      "description": "should error when path does not match boolean spec",
+      "description": "should pass when path matches matrix exploded spec",
       "request": {
         "method": "GET",
-        "path": "/boolean/abc"
+        "path": "/matrix/explode-true/;1,2,3"
       },
       "response": {
         "status": 200
       }
     },
     {
-      "description": "should error when path does not match exploded integer array spec",
+      "description": "should pass when path matches matrix non-exploded spec",
+      "request": {
+        "method": "GET",
+        "path": "/matrix/explode-false/;1,2,3"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "should error when path does not match simple exploded integer array spec",
       "request": {
         "method": "GET",
         "path": "/simple/explode-true/1,2,abc"
@@ -83,7 +73,7 @@
       }
     },
     {
-      "description": "should error when path does not match non-exploded integer array spec",
+      "description": "should error when path does not match simple non-exploded integer array spec",
       "request": {
         "method": "GET",
         "path": "/simple/explode-false/1,2,abc"
@@ -93,40 +83,40 @@
       }
     },
     {
-      "description": "should error when path does not match object spec",
+      "description": "should error when path does not match label exploded integer array spec",
       "request": {
         "method": "GET",
-        "path": "/exploded-object/string=abc,number=abc"
+        "path": "/label/explode-true/1,2,abc"
       },
       "response": {
         "status": 200
       }
     },
     {
-      "description": "should error when path does not match object spec",
+      "description": "should error when path does not match label non-exploded integer array spec",
       "request": {
         "method": "GET",
-        "path": "/exploded-object/string=abc,number=abc"
+        "path": "/label/explode-false/1,2,abc"
       },
       "response": {
         "status": 200
       }
     },
     {
-      "description": "should error when path does not exist in spec",
+      "description": "should error when path does not match matrix exploded integer array spec",
       "request": {
         "method": "GET",
-        "path": "/does-not-exist"
+        "path": "/matrix/explode-true/1,2,abc"
       },
       "response": {
         "status": 200
       }
     },
     {
-      "description": "should error when path does not exist in spec",
+      "description": "should error when path does not match matrix non-exploded integer array spec",
       "request": {
-        "method": "POST",
-        "path": "/integer/1"
+        "method": "GET",
+        "path": "/matrix/explode-false/1,2,abc"
       },
       "response": {
         "status": 200

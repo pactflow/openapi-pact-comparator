@@ -51,7 +51,6 @@ import { Comparator } from "openapi-pact-comparator";
 
 // openapi is object from JSON.parse() or yaml.load()
 const comparator = new Comparator(openapi);
-await comparator.validate();
 
 // pacts is array of objects the same way
 for (const pact of pacts) {

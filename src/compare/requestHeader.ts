@@ -280,22 +280,8 @@ export function* compareReqHeader(
     }
   }
 
-  // standard headers
-  // ----------------
-  for (const headerName of standardHttpRequestHeaders) {
-    if (
-      !(operation.parameters || []).find(
-        (p: OpenAPIV3.ParameterObject) =>
-          p.in === "header" &&
-          p.name.toLowerCase() === headerName.toLowerCase(),
-      )
-    ) {
-      requestHeaders.delete(headerName);
-    }
-  }
-
-  // other headers
-  // -------------
+  // specified headers
+  // -----------------
   for (const [parameterIndex, parameter] of (
     operation.parameters || []
   ).entries()) {
@@ -362,6 +348,22 @@ export function* compareReqHeader(
     requestHeaders.delete(dereferencedParameter.name);
   }
 
+  // standard headers
+  // ----------------
+  for (const headerName of standardHttpRequestHeaders) {
+    if (
+      !(operation.parameters || []).find(
+        (p: OpenAPIV3.ParameterObject) =>
+          p.in === "header" &&
+          p.name.toLowerCase() === headerName.toLowerCase(),
+      )
+    ) {
+      requestHeaders.delete(headerName);
+    }
+  }
+
+  // remaining headers
+  // -----------------
   if (isValidRequest(interaction)) {
     for (const [headerName, headerValue] of requestHeaders.entries()) {
       yield {

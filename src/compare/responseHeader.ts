@@ -97,32 +97,8 @@ export function* compareResHeader(
   }
   responseHeaders.delete("content-type");
 
-  // standard headers
-  // ----------------
-  for (const headerName of standardHttpResponseHeaders) {
-    if (responseHeaders.has(headerName)) {
-      yield {
-        code: "response.header.undefined",
-        message: `Standard http response header is not defined in the spec file: ${headerName}`,
-        mockDetails: {
-          ...baseMockDetails(interaction),
-          location: `[root].interactions[${index}].response.headers.${headerName}`,
-          value: get(interaction, "request.headers"),
-        },
-        specDetails: {
-          location: `[root].paths.${path}.${method}`,
-          pathMethod: method,
-          pathName: path,
-          value: operation,
-        },
-        type: "warning",
-      };
-    }
-    responseHeaders.delete(headerName);
-  }
-
-  // other headers
-  // -------------
+  // specified headers
+  // -----------------
   const headers =
     dereferenceOas(operation.responses[interaction.response.status] || {}, oas)
       ?.headers || {};
@@ -161,6 +137,32 @@ export function* compareResHeader(
     responseHeaders.delete(headerName);
   }
 
+  // standard headers
+  // ----------------
+  for (const headerName of standardHttpResponseHeaders) {
+    if (responseHeaders.has(headerName)) {
+      yield {
+        code: "response.header.undefined",
+        message: `Standard http response header is not defined in the spec file: ${headerName}`,
+        mockDetails: {
+          ...baseMockDetails(interaction),
+          location: `[root].interactions[${index}].response.headers.${headerName}`,
+          value: get(interaction, "request.headers"),
+        },
+        specDetails: {
+          location: `[root].paths.${path}.${method}`,
+          pathMethod: method,
+          pathName: path,
+          value: operation,
+        },
+        type: "warning",
+      };
+    }
+    responseHeaders.delete(headerName);
+  }
+
+  // remaining headers
+  // -----------------
   for (const [headerName, headerValue] of responseHeaders.entries()) {
     yield {
       code: "response.header.unknown",

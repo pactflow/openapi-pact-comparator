@@ -5,7 +5,7 @@
     "mockDetails": {
       "interactionDescription": "should warn about missing standard response headers",
       "interactionState": "[none]",
-      "location": "[root].interactions[1].response.headers.age",
+      "location": "[root].interactions[2].response.headers.age",
       "value": "60"
     },
     "specDetails": {
@@ -18,6 +18,11 @@
           "specified": {
             "schema": {
               "type": "number"
+            }
+          },
+          "access-control-allow-origin": {
+            "schema": {
+              "type": "string"
             }
           }
         },
@@ -36,7 +41,7 @@
     "mockDetails": {
       "interactionDescription": "should error on incompatible response headers",
       "interactionState": "[none]",
-      "location": "[root].interactions[2].response.headers.specified",
+      "location": "[root].interactions[3].response.headers.specified",
       "value": "abc"
     },
     "specDetails": {
@@ -57,7 +62,7 @@
     "mockDetails": {
       "interactionDescription": "should error on unspecified response headers",
       "interactionState": "[none]",
-      "location": "[root].interactions[3].response.headers.unspecified",
+      "location": "[root].interactions[4].response.headers.unspecified",
       "value": "foo"
     },
     "specDetails": {
@@ -70,6 +75,11 @@
           "specified": {
             "schema": {
               "type": "number"
+            }
+          },
+          "access-control-allow-origin": {
+            "schema": {
+              "type": "string"
             }
           }
         },
@@ -88,7 +98,7 @@
     "mockDetails": {
       "interactionDescription": "should error on unknown response content type",
       "interactionState": "[none]",
-      "location": "[root].interactions[4].response.headers.Content-Type",
+      "location": "[root].interactions[5].response.headers.Content-Type",
       "value": "text/html"
     },
     "specDetails": {

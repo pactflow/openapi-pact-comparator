@@ -17,6 +17,21 @@
       }
     },
     {
+      "description": "should pass about specified standard http response header",
+      "providerState": "",
+      "request": {
+        "method": "GET",
+        "path": "/path"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json"
+        }
+      }
+    },
+    {
       "description": "should warn about missing standard response headers",
       "providerState": "",
       "request": {

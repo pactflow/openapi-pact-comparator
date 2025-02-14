@@ -12,6 +12,9 @@ paths:
             specified:
               schema:
                 type: number
+            access-control-allow-origin:
+              schema:
+                type: string
           content:
             application/json:
               schema: {}

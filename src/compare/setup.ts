@@ -49,8 +49,8 @@ export function setupRouter(
       ] as OpenAPIV3.OperationObject;
       const parameters = uniqWith(
         [
-          ...(oas.paths[oasPath].parameters || []),
           ...(operation.parameters || []),
+          ...(oas.paths[oasPath].parameters || []),
         ] as OpenAPIV3.ParameterObject[],
         (a, b) => `${a.name}${a.in}` === `${b.name}${b.in}`,
       );

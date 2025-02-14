@@ -5,7 +5,7 @@
     "mockDetails": {
       "interactionDescription": "should error when missing parameter using common parameters",
       "interactionState": "[none]",
-      "location": "[root].interactions[5].request.query.common."
+      "location": "[root].interactions[6].request.query.local."
     },
     "specDetails": {
       "location": "[root].paths./common-parameters.get.parameters[0].schema.type",
@@ -21,7 +21,7 @@
     "mockDetails": {
       "interactionDescription": "should error when missing parameter using common parameters",
       "interactionState": "[none]",
-      "location": "[root].interactions[5].request.query.local."
+      "location": "[root].interactions[6].request.query.common."
     },
     "specDetails": {
       "location": "[root].paths./common-parameters.get.parameters[1].schema.type",
@@ -33,11 +33,28 @@
   },
   {
     "code": "request.query.incompatible",
+    "message": "Value is incompatible with the parameter defined in the spec file: must be number",
+    "mockDetails": {
+      "interactionDescription": "should error when using common parameters that has been overridden",
+      "interactionState": "[none]",
+      "location": "[root].interactions[7].request.query.common.",
+      "value": "string"
+    },
+    "specDetails": {
+      "location": "[root].paths./overridden-parameters.get.parameters[0].schema.type",
+      "pathMethod": "get",
+      "pathName": "/overridden-parameters",
+      "value": "number"
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.query.incompatible",
     "message": "Value is incompatible with the parameter defined in the spec file: must be integer",
     "mockDetails": {
       "interactionDescription": "should error when exploded query parameter in object form does not match spec",
       "interactionState": "[none]",
-      "location": "[root].interactions[6].request.query.id.2",
+      "location": "[root].interactions[8].request.query.id.2",
       "value": "abc"
     },
     "specDetails": {
@@ -54,7 +71,7 @@
     "mockDetails": {
       "interactionDescription": "should error when exploded query parameter in string form does not match spec",
       "interactionState": "[none]",
-      "location": "[root].interactions[7].request.query.id.2",
+      "location": "[root].interactions[9].request.query.id.2",
       "value": "abc"
     },
     "specDetails": {
@@ -71,7 +88,7 @@
     "mockDetails": {
       "interactionDescription": "should error when non-exploded query parameter in object form does not match spec",
       "interactionState": "[none]",
-      "location": "[root].interactions[8].request.query.id.2",
+      "location": "[root].interactions[10].request.query.id.2",
       "value": "abc"
     },
     "specDetails": {
@@ -88,7 +105,7 @@
     "mockDetails": {
       "interactionDescription": "should error when non-exploded query parameter in string form does not match spec",
       "interactionState": "[none]",
-      "location": "[root].interactions[9].request.query.id.2",
+      "location": "[root].interactions[11].request.query.id.2",
       "value": "abc"
     },
     "specDetails": {
@@ -105,7 +122,7 @@
     "mockDetails": {
       "interactionDescription": "should warn about unknown query parameters",
       "interactionState": "[none]",
-      "location": "[root].interactions[10].request.query.unknown_key",
+      "location": "[root].interactions[12].request.query.unknown_key",
       "value": "unknown_value"
     },
     "specDetails": {
@@ -145,7 +162,7 @@
     "mockDetails": {
       "interactionDescription": "should error when optional query parameter is incompatible",
       "interactionState": "[none]",
-      "location": "[root].interactions[11].request.query.age.",
+      "location": "[root].interactions[13].request.query.age.",
       "value": "abc"
     },
     "specDetails": {
@@ -162,7 +179,7 @@
     "mockDetails": {
       "interactionDescription": "should error when missing required query parameter",
       "interactionState": "[none]",
-      "location": "[root].interactions[12].request.query.name."
+      "location": "[root].interactions[14].request.query.name."
     },
     "specDetails": {
       "location": "[root].paths./string.get.parameters[0].schema.type",

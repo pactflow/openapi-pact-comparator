@@ -83,6 +83,23 @@ paths:
       responses:
         "200":
           description: OK
+  /overridden-parameters:
+    parameters:
+      - in: query
+        name: common
+        required: true
+        schema:
+          type: string
+    get:
+      parameters:
+        - in: query
+          name: common
+          required: true
+          schema:
+            type: number
+      responses:
+        "200":
+          description: OK
 
 components:
   schemas:

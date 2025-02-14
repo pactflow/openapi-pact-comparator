@@ -1,0 +1,15 @@
+openapi: 3.1.0
+info:
+  title: security
+  version: 1.0.0
+paths:
+  /invalid-schema:
+    get:
+      description: Invalid security scheme
+      responses:
+        "200":
+          description: successful operation
+      security:
+        - invalid: []
+components:
+  securitySchemes: {}

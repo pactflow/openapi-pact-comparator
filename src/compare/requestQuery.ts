@@ -89,7 +89,7 @@ export function* compareReqQuery(
     for (const scheme of operation.security || []) {
       for (const schemeName of Object.keys(scheme)) {
         const scheme = securitySchemes[schemeName];
-        switch (scheme.type) {
+        switch (scheme?.type) {
           case "apiKey":
             switch (scheme.in) {
               case "query":

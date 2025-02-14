@@ -59,16 +59,21 @@ export function setupRouter(
         operation.parameters = parameters;
       }
       operation.security ||= oas.security;
-      router.on(method.toUpperCase() as HTTPMethod, path, () => {}, {
-        method,
-        oas,
-        operation,
-        path: oasPath,
-        securitySchemes:
-          (oas as OpenAPIV2.Document).securityDefinitions ||
-          (oas as OpenAPIV3.Document).components?.securitySchemes ||
-          {},
-      });
+      router.on(
+        method.toUpperCase() as HTTPMethod,
+        path.replaceAll(/\*+/g, "{:wildcard}"),
+        () => {},
+        {
+          method,
+          oas,
+          operation,
+          path: oasPath,
+          securitySchemes:
+            (oas as OpenAPIV2.Document).securityDefinitions ||
+            (oas as OpenAPIV3.Document).components?.securitySchemes ||
+            {},
+        },
+      );
     }
   }
   return router;

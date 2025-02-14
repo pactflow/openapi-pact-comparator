@@ -49,24 +49,10 @@ paths:
         required: true
         content:
           application/json:
-            schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                password:
-                  type: string
-              required:
-                - email
-                - password
+            schema: {}
       responses:
-        "201":
-          description: OK
-          content:
-            "application/json":
-              schema: {}
         "400":
-          description: OK
+          description: Bad request
           content:
             "application/json":
               schema: {}

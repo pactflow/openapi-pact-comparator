@@ -57,6 +57,27 @@
       }
     },
     {
+      "description": "should pass when using common parameters",
+      "request": {
+        "method": "GET",
+        "path": "/common-parameters",
+        "query": "common=common&local=local"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "should error when missing parameter using common parameters",
+      "request": {
+        "method": "GET",
+        "path": "/common-parameters"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
       "description": "should error when exploded query parameter in object form does not match spec",
       "request": {
         "method": "GET",

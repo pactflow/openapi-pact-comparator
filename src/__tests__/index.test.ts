@@ -49,7 +49,11 @@ for (const entry of fs.readdirSync(FIXTURES)) {
     });
     const orderedBaseline = [...baseline.errors, ...baseline.warnings]
       .sort((a, b) =>
-        a.mockDetails.location.localeCompare(b.mockDetails.location),
+        a.mockDetails.location.localeCompare(
+          b.mockDetails.location,
+          undefined,
+          { numeric: true },
+        ),
       )
       .map((r) =>
         omit(r, ["source", "mockDetails.mockFile", "specDetails.specFile"]),

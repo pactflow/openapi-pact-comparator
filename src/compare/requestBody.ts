@@ -71,14 +71,7 @@ export function* compareReqBody(
       oas,
     )?.schema;
 
-  const hasBody = !!(body || body === "");
-
-  if (
-    hasBody &&
-    schema &&
-    canValidate(contentType) &&
-    isValidRequest(interaction)
-  ) {
+  if (schema && canValidate(contentType) && isValidRequest(interaction)) {
     const value = parseBody(body, contentType);
     const schemaId = `[root].paths.${path}.${method}.requestBody.content.${contentType}`;
     const validate = getValidateFunction(ajv, schemaId, () =>
@@ -108,7 +101,7 @@ export function* compareReqBody(
     }
   }
 
-  if (hasBody && !schema && isValidRequest(interaction)) {
+  if (!!body && !schema && isValidRequest(interaction)) {
     yield {
       code: "request.body.unknown",
       message: "No matching schema found for request body",
@@ -125,9 +118,5 @@ export function* compareReqBody(
       },
       type: "error",
     };
-  }
-
-  if (!hasBody && schema) {
-    // TODO: what error code?
   }
 }

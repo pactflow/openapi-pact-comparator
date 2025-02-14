@@ -8,7 +8,6 @@
       "location": "[root].interactions[1]",
       "value": {
         "description": "should fail with missing parameters",
-        "providerState": "",
         "request": {
           "method": "POST",
           "path": "/login",
@@ -51,7 +50,6 @@
       "location": "[root].interactions[1]",
       "value": {
         "description": "should fail with missing parameters",
-        "providerState": "",
         "request": {
           "method": "POST",
           "path": "/login",
@@ -120,6 +118,92 @@
       "pathMethod": "post",
       "pathName": "/login",
       "value": false
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.path-or-method.unknown",
+    "message": "Path or method not defined in spec file: GET /wildcards/foo",
+    "mockDetails": {
+      "interactionDescription": "should error (but not crash) for wildcard routes",
+      "interactionState": "[none]",
+      "location": "[root].interactions[4].request.path",
+      "value": "/wildcards/foo"
+    },
+    "specDetails": {
+      "location": "[root].paths",
+      "pathMethod": null,
+      "pathName": null,
+      "value": {
+        "/login": {
+          "post": {
+            "parameters": [
+              {
+                "in": "query",
+                "name": "account",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                }
+              },
+              {
+                "in": "query",
+                "name": "nested",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                }
+              }
+            ],
+            "requestBody": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "username": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "username"
+                    ]
+                  }
+                }
+              }
+            },
+            "responses": {
+              "201": {
+                "description": "Response body",
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "/wildcards/*": {
+          "get": {
+            "responses": {
+              "200": {
+                "description": "description"
+              }
+            }
+          }
+        }
+      }
     },
     "type": "error"
   }

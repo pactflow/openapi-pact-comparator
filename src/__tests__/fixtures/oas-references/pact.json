@@ -4,7 +4,6 @@
   "interactions": [
     {
       "description": "should pass when json body matches spec",
-      "providerState": "",
       "request": {
         "method": "POST",
         "path": "/login",
@@ -25,7 +24,6 @@
     },
     {
       "description": "should fail with missing parameters",
-      "providerState": "",
       "request": {
         "method": "POST",
         "path": "/login",
@@ -45,7 +43,6 @@
     },
     {
       "description": "should fail with bad request body",
-      "providerState": "",
       "request": {
         "method": "POST",
         "path": "/login",
@@ -64,7 +61,6 @@
     },
     {
       "description": "should fail with bad response body",
-      "providerState": "",
       "request": {
         "method": "POST",
         "path": "/login",
@@ -81,6 +77,16 @@
         "body": {
           "username": "bob"
         }
+      }
+    },
+    {
+      "description": "should error (but not crash) for wildcard routes",
+      "request": {
+        "method": "GET",
+        "path": "/wildcards/foo"
+      },
+      "response": {
+        "status": 200
       }
     }
   ]

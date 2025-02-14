@@ -2,13 +2,16 @@ import type { OpenAPIV3 } from "openapi-types";
 import type { SchemaObject } from "ajv";
 import { each, get } from "lodash-es";
 
+const unescape = (subpath: string) =>
+  subpath.replaceAll("~1", "/").replaceAll("~0", "~");
+
 export const splitPath = (path: string) => {
   if (path.startsWith("#/")) {
-    return path.substring(2).split("/");
+    return path.substring(2).split("/").map(unescape);
   }
 
   if (path.startsWith("/")) {
-    return path.substring(1).split("/");
+    return path.substring(1).split("/").map(unescape);
   }
 
   return path;

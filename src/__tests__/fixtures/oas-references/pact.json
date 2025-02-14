@@ -8,7 +8,7 @@
       "request": {
         "method": "POST",
         "path": "/login",
-        "query": "account=foo",
+        "query": "account=foo&nested=bar",
         "headers": {
           "Content-Type": "application/json"
         },
@@ -49,7 +49,7 @@
       "request": {
         "method": "POST",
         "path": "/login",
-        "query": "account=foo",
+        "query": "account=foo&nested=bar",
         "headers": {
           "Content-Type": "application/json"
         },
@@ -68,7 +68,7 @@
       "request": {
         "method": "POST",
         "path": "/login",
-        "query": "account=foo",
+        "query": "account=foo&nested=bar",
         "headers": {
           "Content-Type": "application/json"
         },

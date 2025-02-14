@@ -4,6 +4,7 @@ import addFormats from "ajv-formats";
 import Router, { HTTPMethod } from "find-my-way";
 import { uniqWith } from "lodash-es";
 import { cleanPathParameter } from "./utils/parameters";
+import { dereferenceOas } from "../utils/schema";
 
 export function setupAjv(options: Options): Ajv {
   const ajv = new Ajv(options);
@@ -51,7 +52,7 @@ export function setupRouter(
         [
           ...(operation.parameters || []),
           ...(oas.paths[oasPath].parameters || []),
-        ] as OpenAPIV3.ParameterObject[],
+        ].map((p) => dereferenceOas(p, oas as OpenAPIV3.Document)),
         (a, b) => `${a.name}${a.in}` === `${b.name}${b.in}`,
       );
       if (parameters.length) {

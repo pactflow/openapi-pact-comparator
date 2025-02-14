@@ -8,6 +8,7 @@ paths:
     post:
       parameters:
         - $ref: "#/components/parameters/Request.Param"
+        - $ref: "#/components/parameters/nested.param~1with~0tilde"
       requestBody:
         $ref: "#/components/requestBodies/Request.Body"
       responses:
@@ -19,6 +20,12 @@ components:
     Request.Param:
       in: query
       name: account
+      required: true
+      schema:
+        type: string
+    "nested.param/with~tilde":
+      in: query
+      name: nested
       required: true
       schema:
         type: string

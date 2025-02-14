@@ -178,6 +178,19 @@
       "response": {
         "status": 200
       }
+    },
+    {
+      "description": "should error when missing required query parameter",
+      "request": {
+        "method": "GET",
+        "path": "/arrays",
+        "query": {
+          "things": ["first"]
+        }
+      },
+      "response": {
+        "status": 200
+      }
     }
   ]
 }

@@ -14,6 +14,7 @@ import {
 } from "../results/index";
 import { minimumSchema } from "../transform/index";
 import { isValidRequest } from "../utils/interaction";
+import { ARRAY_SEPARATOR } from "../utils/queryParams";
 import { dereferenceOas, splitPath } from "../utils/schema";
 import { getValidateFunction } from "../utils/validation";
 
@@ -51,7 +52,14 @@ export function* compareReqQuery(
       const validate = getValidateFunction(ajv, schemaId, () =>
         minimumSchema(schema, oas),
       );
-      if (!validate(value)) {
+
+      if (
+        !validate(
+          schema.type === "array" && typeof value === "string"
+            ? value.split(ARRAY_SEPARATOR)
+            : value,
+        )
+      ) {
         for (const error of validate.errors!) {
           yield {
             code: "request.query.incompatible",

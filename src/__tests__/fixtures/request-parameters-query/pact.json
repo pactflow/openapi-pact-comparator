@@ -68,10 +68,32 @@
       }
     },
     {
+      "description": "should pass when using common parameters",
+      "request": {
+        "method": "GET",
+        "path": "/overridden-parameters",
+        "query": "common=123"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
       "description": "should error when missing parameter using common parameters",
       "request": {
         "method": "GET",
         "path": "/common-parameters"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "should error when using common parameters that has been overridden",
+      "request": {
+        "method": "GET",
+        "path": "/overridden-parameters",
+        "query": "common=string"
       },
       "response": {
         "status": 200

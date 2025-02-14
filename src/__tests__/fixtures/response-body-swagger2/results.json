@@ -22,7 +22,7 @@
     "mockDetails": {
       "interactionDescription": "should error with invalid response",
       "interactionState": "[none]",
-      "location": "[root].interactions[3].response.body.",
+      "location": "[root].interactions[3].response.body",
       "value": {
         "name": "name",
         "detail": null

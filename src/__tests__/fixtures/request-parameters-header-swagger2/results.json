@@ -70,7 +70,7 @@
     "mockDetails": {
       "interactionDescription": "should error when required header does not match the spec",
       "interactionState": "[none]",
-      "location": "[root].interactions[5].request.headers.x-required-number.",
+      "location": "[root].interactions[5].request.headers.x-required-number",
       "value": "abc"
     },
     "specDetails": {
@@ -87,7 +87,7 @@
     "mockDetails": {
       "interactionDescription": "should error when optional header does not match the spec",
       "interactionState": "[none]",
-      "location": "[root].interactions[6].request.headers.x-optional-number.",
+      "location": "[root].interactions[6].request.headers.x-optional-number",
       "value": "abc"
     },
     "specDetails": {

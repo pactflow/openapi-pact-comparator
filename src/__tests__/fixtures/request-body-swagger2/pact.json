@@ -4,7 +4,6 @@
   "interactions": [
     {
       "description": "should pass when json body matches spec",
-      "providerState": "",
       "request": {
         "method": "POST",
         "path": "/login",
@@ -22,7 +21,6 @@
     },
     {
       "description": "should pass when form body matches spec",
-      "providerState": "",
       "request": {
         "method": "POST",
         "path": "/login",
@@ -67,8 +65,33 @@
       }
     },
     {
+      "description": "should pass for 4xx responses even with missing content types",
+      "request": {
+        "method": "POST",
+        "path": "/login",
+        "body": "bad=request"
+      },
+      "response": {
+        "status": 400,
+        "body": {}
+      }
+    },
+    {
+      "description": "should error with missing body",
+      "request": {
+        "method": "POST",
+        "path": "/login",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "response": {
+        "status": 201,
+        "body": {}
+      }
+    },
+    {
       "description": "should error on empty body",
-      "providerState": "",
       "request": {
         "method": "POST",
         "path": "/login",
@@ -83,7 +106,6 @@
     },
     {
       "description": "should error on schema mismatch for json body",
-      "providerState": "",
       "request": {
         "method": "POST",
         "path": "/login",
@@ -100,7 +122,6 @@
     },
     {
       "description": "should error on schema mismatch for form body",
-      "providerState": "",
       "request": {
         "method": "POST",
         "path": "/login",

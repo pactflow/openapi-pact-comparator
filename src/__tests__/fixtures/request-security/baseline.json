@@ -30,34 +30,6 @@
   },
   {
     "code": "request.authorization.missing",
-    "message": "Request Authorization query is missing but is required by the spec file",
-    "mockDetails": {
-      "interactionDescription": "should error on bad request to apikey auth endpoint (query)",
-      "interactionState": "[none]",
-      "location": "[root].interactions[13]",
-      "value": {
-        "description": "should error on bad request to apikey auth endpoint (query)",
-        "request": {
-          "method": "GET",
-          "path": "/query"
-        },
-        "response": {
-          "status": 200
-        }
-      }
-    },
-    "specDetails": {
-      "location": "[root].paths./query.get.security[0].ApiKeyQueryAuth",
-      "pathMethod": "get",
-      "pathName": "/query",
-      "value": [
-        "Admin"
-      ]
-    },
-    "type": "error"
-  },
-  {
-    "code": "request.authorization.missing",
     "message": "Request Authorization header is missing but is required by the spec file",
     "mockDetails": {
       "interactionDescription": "should error on bad request to a bearer auth endpoint",
@@ -107,6 +79,34 @@
       "location": "[root].paths./apikey.get.security[0].ApiKeyAuth",
       "pathMethod": "get",
       "pathName": "/apikey",
+      "value": [
+        "Admin"
+      ]
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.authorization.missing",
+    "message": "Request Authorization query is missing but is required by the spec file",
+    "mockDetails": {
+      "interactionDescription": "should error on bad request to apikey auth endpoint (query)",
+      "interactionState": "[none]",
+      "location": "[root].interactions[13]",
+      "value": {
+        "description": "should error on bad request to apikey auth endpoint (query)",
+        "request": {
+          "method": "GET",
+          "path": "/query"
+        },
+        "response": {
+          "status": 200
+        }
+      }
+    },
+    "specDetails": {
+      "location": "[root].paths./query.get.security[0].ApiKeyQueryAuth",
+      "pathMethod": "get",
+      "pathName": "/query",
       "value": [
         "Admin"
       ]

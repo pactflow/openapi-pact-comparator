@@ -104,9 +104,6 @@ export function* compareReqHeader(
     };
   }
 
-  // req body
-  const hasBody = !!(body || body === "");
-
   // request content-type
   // --------------------
   const requestContentType: string =
@@ -160,12 +157,7 @@ export function* compareReqHeader(
     };
   }
 
-  if (
-    !requestContentType &&
-    availableRequestContentType.length &&
-    hasBody &&
-    isValidRequest(interaction)
-  ) {
+  if (!requestContentType && availableRequestContentType.length && !!body) {
     yield {
       code: "request.content-type.missing",
       message:

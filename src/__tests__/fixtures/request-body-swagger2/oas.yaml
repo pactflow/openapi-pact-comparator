@@ -18,8 +18,10 @@ paths:
       responses:
         "201":
           description: OK
+          schema: {}
         "400":
           description: Bad Request
+          schema: {}
 
 definitions:
   request:

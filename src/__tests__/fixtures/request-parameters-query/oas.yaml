@@ -66,6 +66,23 @@ paths:
       responses:
         "200":
           description: OK
+  /common-parameters:
+    parameters:
+      - in: query
+        name: common
+        required: true
+        schema:
+          type: string
+    get:
+      parameters:
+        - in: query
+          name: local
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
 
 components:
   schemas:

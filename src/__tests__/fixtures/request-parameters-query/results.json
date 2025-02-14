@@ -5,7 +5,7 @@
     "mockDetails": {
       "interactionDescription": "should error when missing parameter using common parameters",
       "interactionState": "[none]",
-      "location": "[root].interactions[6].request.query.local."
+      "location": "[root].interactions[6].request.query.local"
     },
     "specDetails": {
       "location": "[root].paths./common-parameters.get.parameters[0].schema.type",
@@ -21,7 +21,7 @@
     "mockDetails": {
       "interactionDescription": "should error when missing parameter using common parameters",
       "interactionState": "[none]",
-      "location": "[root].interactions[6].request.query.common."
+      "location": "[root].interactions[6].request.query.common"
     },
     "specDetails": {
       "location": "[root].paths./common-parameters.get.parameters[1].schema.type",
@@ -37,7 +37,7 @@
     "mockDetails": {
       "interactionDescription": "should error when using common parameters that has been overridden",
       "interactionState": "[none]",
-      "location": "[root].interactions[7].request.query.common.",
+      "location": "[root].interactions[7].request.query.common",
       "value": "string"
     },
     "specDetails": {
@@ -162,7 +162,7 @@
     "mockDetails": {
       "interactionDescription": "should error when optional query parameter is incompatible",
       "interactionState": "[none]",
-      "location": "[root].interactions[13].request.query.age.",
+      "location": "[root].interactions[13].request.query.age",
       "value": "abc"
     },
     "specDetails": {
@@ -179,7 +179,7 @@
     "mockDetails": {
       "interactionDescription": "should error when missing required query parameter",
       "interactionState": "[none]",
-      "location": "[root].interactions[14].request.query.name."
+      "location": "[root].interactions[14].request.query.name"
     },
     "specDetails": {
       "location": "[root].paths./string.get.parameters[0].schema.type",

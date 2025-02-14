@@ -52,7 +52,7 @@ export const formatMessage = (error: ErrorObject) =>
     : error.message;
 
 export const formatInstancePath = (error: ErrorObject) =>
-  error.instancePath.replace(/\//g, ".").substring(1);
+  error.instancePath.replace(/\//g, ".");
 
 export const formatSchemaPath = (error: ErrorObject) =>
   error.schemaPath.replace(/\//g, ".").substring(2);

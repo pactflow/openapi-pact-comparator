@@ -84,7 +84,7 @@ export function* compareReqBody(
           message: `Request body is incompatible with the request body schema in the spec file: ${formatMessage(error)}`,
           mockDetails: {
             ...baseMockDetails(interaction),
-            location: `[root].interactions[${index}].request.body.${formatInstancePath(error)}`,
+            location: `[root].interactions[${index}].request.body${formatInstancePath(error)}`,
             value: error.instancePath
               ? get(value, splitPath(error.instancePath))
               : value,

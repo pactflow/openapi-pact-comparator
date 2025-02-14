@@ -39,7 +39,7 @@
     "mockDetails": {
       "interactionDescription": "should error on incompatible response headers",
       "interactionState": "[none]",
-      "location": "[root].interactions[2].response.headers.specified.",
+      "location": "[root].interactions[2].response.headers.specified",
       "value": "abc"
     },
     "specDetails": {

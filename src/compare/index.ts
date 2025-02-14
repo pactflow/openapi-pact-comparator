@@ -60,6 +60,7 @@ export class Comparator {
 
     for (const [index, interaction] of parsedPact.interactions.entries()) {
       const { method, path, query } = interaction.request;
+      const pathWithLeadingSlash = path.startsWith("/") ? path : `/${path}`;
       // in pact, query is either a string or an object of only one level deep
       const stringQuery =
         typeof query === "string"
@@ -75,7 +76,7 @@ export class Comparator {
               .substring(1);
       const route = this.#router.find(
         method.toUpperCase() as HTTPMethod,
-        [path, stringQuery].filter(Boolean).join("?"),
+        [pathWithLeadingSlash, stringQuery].filter(Boolean).join("?"),
       );
 
       if (!route) {

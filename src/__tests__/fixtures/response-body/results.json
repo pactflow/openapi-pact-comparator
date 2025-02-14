@@ -5,7 +5,7 @@
     "mockDetails": {
       "interactionDescription": "should error on unknown pet",
       "interactionState": "[none]",
-      "location": "[root].interactions[4].response.body.",
+      "location": "[root].interactions[4].response.body",
       "value": {
         "petType": "Spider"
       }

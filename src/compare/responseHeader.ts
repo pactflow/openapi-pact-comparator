@@ -142,7 +142,7 @@ export function* compareResHeader(
             message: `Value is incompatible with the parameter defined in the spec file: ${formatMessage(error)}`,
             mockDetails: {
               ...baseMockDetails(interaction),
-              location: `[root].interactions[${index}].response.headers.${headerName}.${formatInstancePath(error)}`,
+              location: `[root].interactions[${index}].response.headers.${headerName}${formatInstancePath(error)}`,
               value: error.instancePath
                 ? get(value, splitPath(error.instancePath))
                 : value,

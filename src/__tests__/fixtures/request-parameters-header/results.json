@@ -5,7 +5,7 @@
     "mockDetails": {
       "interactionDescription": "should warn when header is not defined in spec",
       "interactionState": "[none]",
-      "location": "[root].interactions[3].request.headers.x-surprise",
+      "location": "[root].interactions[4].request.headers.x-surprise",
       "value": "unexpected header"
     },
     "specDetails": {
@@ -83,7 +83,7 @@
     "mockDetails": {
       "interactionDescription": "should error when required header is missing",
       "interactionState": "[none]",
-      "location": "[root].interactions[4].request.headers.x-required-number",
+      "location": "[root].interactions[5].request.headers.x-required-number",
       "value": null
     },
     "specDetails": {
@@ -107,7 +107,7 @@
     "mockDetails": {
       "interactionDescription": "should error when required header does not match the spec",
       "interactionState": "[none]",
-      "location": "[root].interactions[5].request.headers.x-required-number",
+      "location": "[root].interactions[6].request.headers.x-required-number",
       "value": "abc"
     },
     "specDetails": {
@@ -124,7 +124,7 @@
     "mockDetails": {
       "interactionDescription": "should error when optional header does not match the spec",
       "interactionState": "[none]",
-      "location": "[root].interactions[6].request.headers.x-optional-number",
+      "location": "[root].interactions[7].request.headers.x-optional-number",
       "value": "abc"
     },
     "specDetails": {
@@ -141,7 +141,7 @@
     "mockDetails": {
       "interactionDescription": "should error when header does not match the array spec",
       "interactionState": "[none]",
-      "location": "[root].interactions[7].request.headers.x-optional-array.2",
+      "location": "[root].interactions[8].request.headers.x-optional-array.2",
       "value": "abc"
     },
     "specDetails": {
@@ -158,7 +158,7 @@
     "mockDetails": {
       "interactionDescription": "should warn when spec is missing accept and content-type",
       "interactionState": "[none]",
-      "location": "[root].interactions[8].request.headers.accept",
+      "location": "[root].interactions[9].request.headers.accept",
       "value": "application/json"
     },
     "specDetails": {
@@ -182,7 +182,7 @@
     "mockDetails": {
       "interactionDescription": "should warn when spec is missing accept and content-type",
       "interactionState": "[none]",
-      "location": "[root].interactions[8].response.headers.content-type",
+      "location": "[root].interactions[9].response.headers.content-type",
       "value": "application/json"
     },
     "specDetails": {
@@ -206,7 +206,7 @@
     "mockDetails": {
       "interactionDescription": "should error about incorrect request content type",
       "interactionState": "[none]",
-      "location": "[root].interactions[9].request.headers.content-type",
+      "location": "[root].interactions[10].request.headers.content-type",
       "value": "unknown"
     },
     "specDetails": {

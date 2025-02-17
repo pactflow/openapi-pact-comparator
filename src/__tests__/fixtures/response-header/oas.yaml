@@ -26,3 +26,9 @@ paths:
           content:
             application/json:
               schema: {}
+  /delete:
+    delete:
+      responses:
+        "204":
+          description: OK
+          content: {}

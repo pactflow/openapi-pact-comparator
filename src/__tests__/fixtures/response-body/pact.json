@@ -92,6 +92,17 @@
       }
     },
     {
+      "description": "should pass when unable to validate content-type",
+      "request": {
+        "method": "GET",
+        "path": "/throws-error"
+      },
+      "response": {
+        "status": 500,
+        "body": "boom"
+      }
+    },
+    {
       "description": "should error on unknown pet",
       "request": {
         "method": "GET",

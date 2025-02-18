@@ -5,7 +5,7 @@
     "mockDetails": {
       "interactionDescription": "should error on unknown pet",
       "interactionState": "[none]",
-      "location": "[root].interactions[4].response.body",
+      "location": "[root].interactions[5].response.body",
       "value": {
         "petType": "Spider"
       }
@@ -26,7 +26,7 @@
     "mockDetails": {
       "interactionDescription": "should error with invalid response",
       "interactionState": "[none]",
-      "location": "[root].interactions[5].response.body.detail",
+      "location": "[root].interactions[6].response.body.detail",
       "value": null
     },
     "specDetails": {
@@ -42,7 +42,7 @@
     "mockDetails": {
       "interactionDescription": "should error with unknown response body",
       "interactionState": "[none]",
-      "location": "[root].interactions[6].response.headers.content-type",
+      "location": "[root].interactions[7].response.headers.content-type",
       "value": "application/json"
     },
     "specDetails": {
@@ -66,7 +66,7 @@
     "mockDetails": {
       "interactionDescription": "should error with unknown response body",
       "interactionState": "[none]",
-      "location": "[root].interactions[6].response.body",
+      "location": "[root].interactions[7].response.body",
       "value": {
         "unknown": "schema"
       }

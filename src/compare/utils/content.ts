@@ -1,3 +1,5 @@
+import type { SchemaObject } from "ajv";
+
 const PARAMETER_SEPARATOR = ";";
 const WILDCARD = "*";
 const TYPE_SUBTYPE_SEPARATOR = "/";
@@ -91,8 +93,14 @@ export function findMatchingType(
   return undefined;
 }
 
-export const getByContentType = (object = {}, contentType: string) => {
-  const key = findMatchingType(contentType, Object.keys(object));
+export const getByContentType = (
+  object = {},
+  contentType: string,
+): { schema: SchemaObject } => {
+  const key = findMatchingType(
+    contentType,
+    Object.keys(object),
+  ) as keyof object;
   return object[key];
 };
 

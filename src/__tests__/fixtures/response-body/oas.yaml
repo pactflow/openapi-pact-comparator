@@ -43,6 +43,15 @@ paths:
         "200":
           description: OK
           content: {}
+  /throws-error:
+    get:
+      responses:
+        "500":
+          description: OK
+          content:
+            "text/html":
+              schema:
+                type: string
 components:
   schemas:
     Animal:

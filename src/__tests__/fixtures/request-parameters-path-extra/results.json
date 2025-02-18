@@ -5,7 +5,7 @@
     "mockDetails": {
       "interactionDescription": "should error when path does not match simple exploded integer array spec",
       "interactionState": "[none]",
-      "location": "[root].interactions[6].request.path",
+      "location": "[root].interactions[12].request.path",
       "value": "/simple/explode-true/1,2,abc"
     },
     "specDetails": {
@@ -44,7 +44,7 @@
     "mockDetails": {
       "interactionDescription": "should error when path does not match simple non-exploded integer array spec",
       "interactionState": "[none]",
-      "location": "[root].interactions[7].request.path",
+      "location": "[root].interactions[13].request.path",
       "value": "/simple/explode-false/1,2,abc"
     },
     "specDetails": {
@@ -83,7 +83,7 @@
     "mockDetails": {
       "interactionDescription": "should error when path does not match label exploded integer array spec",
       "interactionState": "[none]",
-      "location": "[root].interactions[8].request.path",
+      "location": "[root].interactions[14].request.path",
       "value": "/label/explode-true/1,2,abc"
     },
     "specDetails": {
@@ -99,7 +99,7 @@
     "mockDetails": {
       "interactionDescription": "should error when path does not match label non-exploded integer array spec",
       "interactionState": "[none]",
-      "location": "[root].interactions[9].request.path",
+      "location": "[root].interactions[15].request.path",
       "value": "/label/explode-false/1,2,abc"
     },
     "specDetails": {
@@ -115,7 +115,7 @@
     "mockDetails": {
       "interactionDescription": "should error when path does not match matrix exploded integer array spec",
       "interactionState": "[none]",
-      "location": "[root].interactions[10].request.path",
+      "location": "[root].interactions[16].request.path",
       "value": "/matrix/explode-true/1,2,abc"
     },
     "specDetails": {
@@ -131,7 +131,7 @@
     "mockDetails": {
       "interactionDescription": "should error when path does not match matrix non-exploded integer array spec",
       "interactionState": "[none]",
-      "location": "[root].interactions[11].request.path",
+      "location": "[root].interactions[17].request.path",
       "value": "/matrix/explode-false/1,2,abc"
     },
     "specDetails": {

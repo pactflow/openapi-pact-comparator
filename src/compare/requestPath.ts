@@ -39,7 +39,21 @@ export function* compareReqPath(
       const validate = getValidateFunction(ajv, schemaId, () =>
         minimumSchema(schema, oas),
       );
-      if (!validate(value)) {
+
+      let separator = ",";
+      if (parameter.style?.toLowerCase() === "label" && parameter.explode) {
+        separator = ".";
+      }
+      if (parameter.style?.toLowerCase() === "matrix" && parameter.explode) {
+        separator = ";";
+      }
+      if (
+        !validate(
+          schema.type === "array" && typeof value === "string"
+            ? value.split(separator)
+            : value,
+        )
+      ) {
         for (const _error of validate.errors!) {
           yield {
             code: "request.path-or-method.unknown",

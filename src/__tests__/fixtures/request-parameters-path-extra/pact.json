@@ -13,6 +13,16 @@
       }
     },
     {
+      "description": "should pass when path matches simple exploded spec, with only one item",
+      "request": {
+        "method": "GET",
+        "path": "/simple/explode-true/1"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
       "description": "should pass when path matches simple non-exploded spec",
       "request": {
         "method": "GET",
@@ -23,10 +33,30 @@
       }
     },
     {
+      "description": "should pass when path matches simple non-exploded spec, with only one item",
+      "request": {
+        "method": "GET",
+        "path": "/simple/explode-false/1"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
       "description": "should pass when path matches label exploded spec",
       "request": {
         "method": "GET",
-        "path": "/label/explode-true/.1,2,3"
+        "path": "/label/explode-true/.1.2.3"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "should pass when path matches label exploded spec, with only one item",
+      "request": {
+        "method": "GET",
+        "path": "/label/explode-true/.1"
       },
       "response": {
         "status": 200
@@ -43,10 +73,30 @@
       }
     },
     {
+      "description": "should pass when path matches label non-exploded spec, with only one item",
+      "request": {
+        "method": "GET",
+        "path": "/label/explode-false/.1"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
       "description": "should pass when path matches matrix exploded spec",
       "request": {
         "method": "GET",
-        "path": "/matrix/explode-true/;1,2,3"
+        "path": "/matrix/explode-true/;1;2;3"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "should pass when path matches matrix exploded spec, with only one item",
+      "request": {
+        "method": "GET",
+        "path": "/matrix/explode-true/;1"
       },
       "response": {
         "status": 200
@@ -57,6 +107,16 @@
       "request": {
         "method": "GET",
         "path": "/matrix/explode-false/;1,2,3"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "should pass when path matches matrix non-exploded spec, with only one item",
+      "request": {
+        "method": "GET",
+        "path": "/matrix/explode-false/;1"
       },
       "response": {
         "status": 200

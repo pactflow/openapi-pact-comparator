@@ -17,3 +17,17 @@ paths:
           content:
             application/aaa: {}
             application/bbb: {}
+  /with-encoding:
+    get:
+      responses:
+        "200":
+          description: OK
+          content:
+            "application/aaa; utf-8":
+              schema:
+                type: object
+                required:
+                  - name
+                properties:
+                  name:
+                    type: number

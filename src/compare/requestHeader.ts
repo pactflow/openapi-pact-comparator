@@ -109,11 +109,7 @@ export function* compareReqHeader(
   const requestContentType: string =
     requestHeaders.get("content-type")?.split(";")[0] || "";
 
-  if (
-    requestContentType &&
-    !availableRequestContentType.length &&
-    isValidRequest(interaction)
-  ) {
+  if (requestContentType && !availableRequestContentType.length) {
     yield {
       code: "request.content-type.unknown",
       message:

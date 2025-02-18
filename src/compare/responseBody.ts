@@ -15,7 +15,7 @@ import {
 import { minimumSchema, transformResponseSchema } from "../transform/index";
 import { dereferenceOas, splitPath } from "../utils/schema";
 import { getValidateFunction } from "../utils/validation";
-import { findMatchingType } from "./utils/content";
+import { findMatchingType, getByContentType } from "./utils/content";
 
 const canValidate = (contentType = ""): boolean => {
   return !!findMatchingType(contentType, ["application/json"]);
@@ -74,7 +74,8 @@ export function* compareResBody(
     const dereferencedResponse = dereferenceOas(response, oas);
     const schema: SchemaObject | undefined =
       (dereferencedResponse as OpenAPIV2.ResponseObject)?.schema ||
-      dereferencedResponse.content?.[contentType]?.schema;
+      getByContentType(dereferencedResponse.content || {}, contentType)?.schema;
+
     const value = body;
 
     if (!statusResponse) {

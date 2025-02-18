@@ -17,7 +17,7 @@ import { minimumSchema, transformRequestSchema } from "../transform/index";
 import { isValidRequest } from "../utils/interaction";
 import { dereferenceOas, splitPath } from "../utils/schema";
 import { getValidateFunction } from "../utils/validation";
-import { findMatchingType } from "./utils/content";
+import { findMatchingType, getByContentType } from "./utils/content";
 
 const parseBody = (body: unknown, contentType: string) => {
   if (
@@ -56,14 +56,17 @@ export function* compareReqBody(
     Object.keys(
       dereferenceOas(operation.requestBody || {}, oas)?.content || {},
     );
-  const contentType =
-    findMatchingType(
-      requestHeaders.get("content-type") || DEFAULT_CONTENT_TYPE,
-      availableRequestContentTypes,
-    ) || DEFAULT_CONTENT_TYPE;
+
+  const requestContentType = requestHeaders.get("content-type") || "";
+  const contentType = requestContentType
+    ? findMatchingType(requestContentType, availableRequestContentTypes) ||
+      requestContentType
+    : DEFAULT_CONTENT_TYPE;
   const schema: SchemaObject | undefined =
-    dereferenceOas(operation.requestBody || {}, oas)?.content?.[contentType]
-      ?.schema ||
+    getByContentType(
+      dereferenceOas(operation.requestBody || {}, oas)?.content,
+      contentType,
+    )?.schema ||
     dereferenceOas(
       (operation.parameters || []).find(
         (p: OpenAPIV2.ParameterObject) => p.in === "body",
@@ -72,7 +75,7 @@ export function* compareReqBody(
     )?.schema;
 
   if (schema && canValidate(contentType) && isValidRequest(interaction)) {
-    const value = parseBody(body, contentType);
+    const value = parseBody(body, requestContentType);
     const schemaId = `[root].paths.${path}.${method}.requestBody.content.${contentType}`;
     const validate = getValidateFunction(ajv, schemaId, () =>
       transformRequestSchema(minimumSchema(schema, oas)),

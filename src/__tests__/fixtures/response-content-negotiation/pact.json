@@ -4,7 +4,6 @@
   "interactions": [
     {
       "description": "should pass on successful response content negotiation",
-      "providerState": "",
       "request": {
         "method": "GET",
         "path": "/with-content",
@@ -20,8 +19,26 @@
       }
     },
     {
+      "description": "should pass on successful response content negotiation, with encoding",
+      "request": {
+        "method": "GET",
+        "path": "/with-encoding",
+        "headers": {
+          "accept": "application/aaa"
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/aaa"
+        },
+        "body": {
+          "name": "name"
+        }
+      }
+    },
+    {
       "description": "should error on unknown request accept",
-      "providerState": "",
       "request": {
         "method": "GET",
         "path": "/no-content",
@@ -35,7 +52,6 @@
     },
     {
       "description": "should error on incompatible request accept",
-      "providerState": "",
       "request": {
         "method": "GET",
         "path": "/with-content",

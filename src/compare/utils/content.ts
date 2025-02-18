@@ -91,6 +91,11 @@ export function findMatchingType(
   return undefined;
 }
 
+export const getByContentType = (object = {}, contentType: string) => {
+  const key = findMatchingType(contentType, Object.keys(object));
+  return object[key];
+};
+
 export const standardHttpRequestHeaders = [
   "accept",
   "accept-charset",

@@ -83,7 +83,7 @@ export function* compareReqHeader(
   if (
     requestAccept &&
     availableResponseContentType.length &&
-    !findMatchingType(requestAccept, availableResponseContentType)
+    !findMatchingType(requestAccept, allAvailableResponseContentTypes)
   ) {
     yield {
       code: "request.accept.incompatible",

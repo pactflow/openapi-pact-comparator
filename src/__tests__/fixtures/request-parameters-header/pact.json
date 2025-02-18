@@ -4,7 +4,6 @@
   "interactions": [
     {
       "description": "should pass when header matches the spec",
-      "providerState": "",
       "request": {
         "method": "GET",
         "path": "/path",
@@ -24,7 +23,6 @@
     },
     {
       "description": "should pass for 4xx responses",
-      "providerState": "",
       "request": {
         "method": "GET",
         "path": "/path",
@@ -40,8 +38,20 @@
       }
     },
     {
+      "description": "should pass when requested content-type is supported, even if not for current response status",
+      "request": {
+        "method": "GET",
+        "path": "/path",
+        "headers": {
+          "accept": "application/json"
+        }
+      },
+      "response": {
+        "status": 400
+      }
+    },
+    {
       "description": "should pass for standard headers not defined in spec",
-      "providerState": "",
       "request": {
         "method": "GET",
         "path": "/path",
@@ -90,7 +100,6 @@
     },
     {
       "description": "should warn when header is not defined in spec",
-      "providerState": "",
       "request": {
         "method": "GET",
         "path": "/path",
@@ -108,7 +117,6 @@
     },
     {
       "description": "should error when required header is missing",
-      "providerState": "",
       "request": {
         "method": "GET",
         "path": "/path",
@@ -123,7 +131,6 @@
     },
     {
       "description": "should error when required header does not match the spec",
-      "providerState": "",
       "request": {
         "method": "GET",
         "path": "/path",
@@ -140,7 +147,6 @@
     },
     {
       "description": "should error when optional header does not match the spec",
-      "providerState": "",
       "request": {
         "method": "GET",
         "path": "/path",
@@ -158,7 +164,6 @@
     },
     {
       "description": "should error when header does not match the array spec",
-      "providerState": "",
       "request": {
         "method": "GET",
         "path": "/path",
@@ -176,7 +181,6 @@
     },
     {
       "description": "should warn when spec is missing accept and content-type",
-      "providerState": "",
       "request": {
         "method": "GET",
         "path": "/no-response",
@@ -193,7 +197,6 @@
     },
     {
       "description": "should error about incorrect request content type",
-      "providerState": "",
       "request": {
         "method": "POST",
         "path": "/submit",

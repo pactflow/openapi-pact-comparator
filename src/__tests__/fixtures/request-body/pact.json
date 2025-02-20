@@ -96,6 +96,38 @@
       }
     },
     {
+      "description": "should pass on missing optional request bodies",
+      "request": {
+        "method": "POST",
+        "path": "/optional-body",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "response": {
+        "status": 201,
+        "body": {}
+      }
+    },
+    {
+      "description": "should pass on present optional request bodies",
+      "request": {
+        "method": "POST",
+        "path": "/optional-body",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "email": "a@a.com",
+          "password": "password"
+        }
+      },
+      "response": {
+        "status": 201,
+        "body": {}
+      }
+    },
+    {
       "description": "should error with missing body",
       "request": {
         "method": "POST",
@@ -162,6 +194,23 @@
           "Content-Type": "multipart/form-data;boundary=----xxx"
         },
         "body": "------xxx\r\nContent-Disposition: form-data; name=\"email\"\r\n\r\na@a.com\r\n------xxx--"
+      },
+      "response": {
+        "status": 201,
+        "body": {}
+      }
+    },
+    {
+      "description": "should error on schema mismatch for json body",
+      "request": {
+        "method": "POST",
+        "path": "/optional-body",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "email": "a@a.com"
+        }
       },
       "response": {
         "status": 201,

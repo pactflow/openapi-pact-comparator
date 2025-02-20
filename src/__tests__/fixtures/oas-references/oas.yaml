@@ -36,6 +36,7 @@ components:
         type: string
   requestBodies:
     Request.Body:
+      required: true
       content:
         application/json:
           schema:

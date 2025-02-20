@@ -22,6 +22,7 @@
           {
             "in": "body",
             "name": "ignored",
+            "required": true,
             "schema": {
               "$ref": "#/definitions/request"
             }

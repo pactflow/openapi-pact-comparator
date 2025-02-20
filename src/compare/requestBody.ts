@@ -82,17 +82,22 @@ export function* compareReqBody(
     ? findMatchingType(requestContentType, availableRequestContentTypes) ||
       requestContentType
     : DEFAULT_CONTENT_TYPE;
+
+  const bodyParameter = (operation.parameters || []).find(
+    (p: OpenAPIV2.ParameterObject) => p.in === "body",
+  );
   const schema: SchemaObject | undefined =
     getByContentType(
       dereferenceOas(operation.requestBody || {}, oas)?.content,
       contentType,
-    )?.schema ||
-    dereferenceOas(
-      (operation.parameters || []).find(
-        (p: OpenAPIV2.ParameterObject) => p.in === "body",
-      ) || {},
-      oas,
-    )?.schema;
+    )?.schema || dereferenceOas(bodyParameter || {}, oas)?.schema;
+
+  const required =
+    dereferenceOas(operation.requestBody || {}, oas)?.required ||
+    dereferenceOas(bodyParameter || {}, oas)?.required;
+  if (!required && !body) {
+    return;
+  }
 
   if (schema && canValidate(contentType) && isValidRequest(interaction)) {
     const value = parseBody(body, requestContentType);

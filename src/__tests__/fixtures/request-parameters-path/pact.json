@@ -101,6 +101,22 @@
       "response": {
         "status": 200
       }
+    },
+    {
+      "description": "should not raise subsequent errors when request.path-or-method.unknown",
+      "request": {
+        "method": "POST",
+        "path": "/integer/1",
+        "headers": {
+          "additional": "ignored error"
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "accept": "should not be here!"
+        }
+      }
     }
   ]
 }

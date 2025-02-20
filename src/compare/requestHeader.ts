@@ -288,7 +288,11 @@ export function* compareReqHeader(
     const schema: SchemaObject = dereferencedParameter.schema || {
       type: dereferencedParameter.type,
     };
-    const value = parseValue(requestHeaders.get(dereferencedParameter.name));
+
+    const value =
+      dereferencedParameter.schema?.type === "string"
+        ? requestHeaders.get(dereferencedParameter.name)
+        : parseValue(requestHeaders.get(dereferencedParameter.name));
 
     if (value && schema && isValidRequest(interaction)) {
       const schemaId = `[root].paths.${path}.${method}.parameters[${parameterIndex}]`;

@@ -26,10 +26,13 @@ export function* compareReqQuery(
 ): Iterable<Result> {
   const { method, oas, operation, path, securitySchemes } = route.store;
 
-  // TODO: parse different parameters differently?
-  const searchParams = qs.parse(route.searchParams, {
+  const searchParamsParsed = qs.parse(route.searchParams, {
     allowDots: true,
     comma: true,
+  });
+  const searchParamsUnparsed = qs.parse(route.searchParams, {
+    allowDots: false,
+    comma: false,
   });
 
   for (const [parameterIndex, parameter] of (
@@ -42,7 +45,13 @@ export function* compareReqQuery(
     const schema: SchemaObject = dereferencedParameter.schema || {
       type: dereferencedParameter.type,
     };
-    const value = searchParams[dereferencedParameter.name];
+
+    if (dereferencedParameter.schema?.type === "string") {
+      searchParamsParsed[dereferencedParameter.name] =
+        searchParamsUnparsed[dereferencedParameter.name];
+    }
+
+    const value = searchParamsParsed[dereferencedParameter.name];
     if (
       schema &&
       (value || dereferencedParameter.required) &&
@@ -82,7 +91,7 @@ export function* compareReqQuery(
         }
       }
     }
-    delete searchParams[dereferencedParameter.name];
+    delete searchParamsParsed[dereferencedParameter.name];
   }
 
   if (isValidRequest(interaction)) {
@@ -93,7 +102,7 @@ export function* compareReqQuery(
           case "apiKey":
             switch (scheme.in) {
               case "query":
-                if (!searchParams[scheme.name]) {
+                if (!searchParamsParsed[scheme.name]) {
                   yield {
                     code: "request.authorization.missing",
                     message:
@@ -112,7 +121,7 @@ export function* compareReqQuery(
                     type: "error",
                   };
                 }
-                delete searchParams[scheme.name];
+                delete searchParamsParsed[scheme.name];
                 break;
               case "cookie":
               case "header":
@@ -136,7 +145,7 @@ export function* compareReqQuery(
   }
 
   if (isValidRequest(interaction)) {
-    for (const [key, value] of Object.entries(searchParams)) {
+    for (const [key, value] of Object.entries(searchParamsParsed)) {
       yield {
         code: "request.query.unknown",
         message: `Query parameter is not defined in the spec file: ${key}`,

@@ -180,12 +180,13 @@
       }
     },
     {
-      "description": "should error when missing required query parameter",
+      "description": "should parse arrays, but not with strings",
       "request": {
         "method": "GET",
         "path": "/arrays",
         "query": {
-          "things": ["first"]
+          "things": ["first", "second"],
+          "string": ["first", "second"]
         }
       },
       "response": {

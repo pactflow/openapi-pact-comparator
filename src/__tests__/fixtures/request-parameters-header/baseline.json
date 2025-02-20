@@ -39,7 +39,8 @@
               "items": {
                 "type": "integer"
               },
-              "minItems": 1
+              "minItems": 1,
+              "maxItems": 3
             }
           },
           {
@@ -56,6 +57,15 @@
                   "type": "number"
                 }
               }
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-optional-string",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 20
             }
           }
         ],
@@ -226,6 +236,31 @@
       "value": [
         "application/json"
       ]
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.header.incompatible",
+    "message": "Value is incompatible with the parameter defined in the spec file: must NOT have fewer than 20 characters",
+    "mockDetails": {
+      "interactionDescription": "should parse arrays, but not strings",
+      "interactionState": "[none]",
+      "location": "[root].interactions[11].request.headers.x-optional-string",
+      "value": "abc,def,xyz"
+    },
+    "specDetails": {
+      "location": "[root].paths./path.get.parameters[4]",
+      "pathMethod": "get",
+      "pathName": "/path",
+      "value": {
+        "in": "header",
+        "name": "x-optional-string",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "minLength": 20
+        }
+      }
     },
     "type": "error"
   }

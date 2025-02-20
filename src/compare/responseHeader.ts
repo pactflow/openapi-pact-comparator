@@ -24,17 +24,6 @@ export function* compareResHeader(
 ): Iterable<Result> {
   const { method, oas, operation, path } = route.store;
 
-  const allAvailableResponseContentTypes =
-    operation.produces ||
-    Object.entries(operation.responses).reduce(
-      (acc: string[], [_status, response]) => {
-        return [
-          ...acc,
-          ...Object.keys(dereferenceOas(response || {}, oas)?.content || {}),
-        ];
-      },
-      [],
-    );
   const availableResponseContentType =
     operation.produces ||
     Object.keys(
@@ -59,7 +48,7 @@ export function* compareResHeader(
   const responseContentType =
     responseHeaders.get("content-type")?.split(";")[0] || "";
 
-  if (responseContentType && !allAvailableResponseContentTypes.length) {
+  if (responseContentType && !availableResponseContentType.length) {
     yield {
       code: "response.content-type.unknown",
       message:

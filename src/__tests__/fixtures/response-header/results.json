@@ -87,7 +87,7 @@
     "code": "response.content-type.incompatible",
     "message": "Response Content-Type header is incompatible with the mime-types the spec defines to produce",
     "mockDetails": {
-      "interactionDescription": "should error on unknown response content type",
+      "interactionDescription": "should error on unknown response content type, per status code",
       "interactionState": "[none]",
       "location": "[root].interactions[6].response.headers.content-type",
       "value": "text/html"

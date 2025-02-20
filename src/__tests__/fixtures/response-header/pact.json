@@ -86,7 +86,7 @@
       }
     },
     {
-      "description": "should error on unknown response content type",
+      "description": "should error on unknown response content type, per status code",
       "request": {
         "method": "GET",
         "path": "/different-response-types"

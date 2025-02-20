@@ -4,6 +4,7 @@ import type { OpenAPIV2 } from "openapi-types";
 import type Router from "find-my-way";
 import { get } from "lodash-es";
 import qs from "qs";
+import multipart from "parse-multipart-data";
 
 import type { Interaction } from "../documents/pact";
 import type { Result } from "../results/index";
@@ -25,6 +26,25 @@ const parseBody = (body: unknown, contentType: string) => {
     typeof body === "string"
   ) {
     return qs.parse(body as string, { allowDots: true, comma: true });
+  }
+
+  if (contentType.includes("multipart/form-data") && typeof body === "string") {
+    const match = contentType.match(/boundary=(.*)/);
+    const boundary = match?.[1];
+
+    if (boundary) {
+      const parts = multipart.parse(Buffer.from(body), boundary) as {
+        name: string;
+        data: Buffer;
+      }[];
+      return parts.reduce(
+        (acc, part) => {
+          acc[part.name] = part.data.toString();
+          return acc;
+        },
+        {} as Record<string, string>,
+      );
+    }
   }
 
   return body;

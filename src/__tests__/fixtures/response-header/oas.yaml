@@ -26,6 +26,11 @@ paths:
           content:
             application/json:
               schema: {}
+        "201":
+          description: OK
+          content:
+            text/html:
+              schema: {}
   /delete:
     delete:
       responses:

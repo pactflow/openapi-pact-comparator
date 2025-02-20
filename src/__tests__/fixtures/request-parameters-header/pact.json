@@ -211,6 +211,24 @@
           "Content-Type": "application/json"
         }
       }
+    },
+    {
+      "description": "should parse arrays, but not strings",
+      "request": {
+        "method": "GET",
+        "path": "/path",
+        "headers": {
+          "x-required-number": "123",
+          "x-optional-array": "123,456,789,0",
+          "x-optional-string": "abc,def,xyz"
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
     }
   ]
 }

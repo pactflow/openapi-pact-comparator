@@ -110,6 +110,11 @@ paths:
             type: array
             items:
               type: string
+        - in: query
+          name: string
+          schema:
+            type: string
+            minLength: 20
       responses:
         "200":
           description: OK

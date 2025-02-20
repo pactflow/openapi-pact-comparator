@@ -188,5 +188,22 @@
       "value": "string"
     },
     "type": "error"
+  },
+  {
+    "code": "request.query.incompatible",
+    "message": "Value is incompatible with the parameter defined in the spec file: must NOT have fewer than 20 characters",
+    "mockDetails": {
+      "interactionDescription": "should parse arrays, but not with strings",
+      "interactionState": "[none]",
+      "location": "[root].interactions[15].request.query.string",
+      "value": "first,second"
+    },
+    "specDetails": {
+      "location": "[root].paths./arrays.get.parameters[1].schema.minLength",
+      "pathMethod": "get",
+      "pathName": "/arrays",
+      "value": 20
+    },
+    "type": "error"
   }
 ]

@@ -24,6 +24,7 @@ paths:
             items:
               type: integer
             minItems: 1
+            maxItems: 3
         - in: header
           name: x-optional-object
           required: false
@@ -34,6 +35,12 @@ paths:
                 type: string
               number:
                 type: number
+        - in: header
+          name: x-optional-string
+          required: false
+          schema:
+            type: string
+            minLength: 20
       responses:
         "200":
           description: OK

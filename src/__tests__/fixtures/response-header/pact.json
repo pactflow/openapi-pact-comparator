@@ -97,6 +97,19 @@
           "Content-Type": "text/html"
         }
       }
+    },
+    {
+      "description": "should not check for response headers issues if OAS doesn't define it",
+      "request": {
+        "method": "GET",
+        "path": "/path"
+      },
+      "response": {
+        "status": 400,
+        "headers": {
+          "Connection": "close"
+        }
+      }
     }
   ]
 }

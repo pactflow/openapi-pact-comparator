@@ -93,10 +93,16 @@ export function* compareResHeader(
   }
   responseHeaders.delete("content-type");
 
+  // no response found
+  // -----------------
+  if (!operation.responses[interaction.response.status]) {
+    return;
+  }
+
   // specified headers
   // -----------------
   const headers =
-    dereferenceOas(operation.responses[interaction.response.status] || {}, oas)
+    dereferenceOas(operation.responses[interaction.response.status], oas)
       ?.headers || {};
   for (const headerName in headers) {
     const schema: SchemaObject =

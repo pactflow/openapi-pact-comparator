@@ -101,5 +101,43 @@
       ]
     },
     "type": "error"
+  },
+  {
+    "code": "response.status.unknown",
+    "message": "Response status code not defined in spec file: 400",
+    "mockDetails": {
+      "interactionDescription": "should not check for response headers issues if OAS doesn't define it",
+      "interactionState": "[none]",
+      "location": "[root].interactions[7].response.status",
+      "value": 400
+    },
+    "specDetails": {
+      "location": "[root].paths./path.get.responses",
+      "pathMethod": "get",
+      "pathName": "/path",
+      "value": {
+        "200": {
+          "description": "OK",
+          "headers": {
+            "specified": {
+              "schema": {
+                "type": "number"
+              }
+            },
+            "access-control-allow-origin": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          },
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        }
+      }
+    },
+    "type": "error"
   }
 ]

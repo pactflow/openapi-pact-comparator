@@ -54,6 +54,21 @@
       }
     },
     {
+      "description": "should pass on multipart bodies",
+      "request": {
+        "method": "POST",
+        "path": "/login",
+        "headers": {
+          "Content-Type": "multipart/form-data;boundary=----xxx"
+        },
+        "body": "------xxx\r\nContent-Disposition: form-data; name=\"email\"\r\n\r\na@a.com\r\n------xxx\r\nContent-Disposition: form-data; name=\"password\"\r\n\r\npassword\r\n------xxx--"
+      },
+      "response": {
+        "status": 201,
+        "body": {}
+      }
+    },
+    {
       "description": "should pass for 4xx responses",
       "request": {
         "method": "POST",
@@ -132,6 +147,21 @@
           "Content-Type": "application/x-www-form-urlencoded"
         },
         "body": "email=a@a.com"
+      },
+      "response": {
+        "status": 201,
+        "body": {}
+      }
+    },
+    {
+      "description": "should error on schema mismatch for multipart body",
+      "request": {
+        "method": "POST",
+        "path": "/login",
+        "headers": {
+          "Content-Type": "multipart/form-data;boundary=----xxx"
+        },
+        "body": "------xxx\r\nContent-Disposition: form-data; name=\"email\"\r\n\r\na@a.com\r\n------xxx--"
       },
       "response": {
         "status": 201,

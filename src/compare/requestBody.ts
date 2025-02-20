@@ -33,11 +33,17 @@ const parseBody = (body: unknown, contentType: string) => {
     const boundary = match?.[1];
 
     if (boundary) {
-      const parts = multipart.parse(Buffer.from(body), boundary);
-      return parts.reduce((acc, part) => {
-        acc[part.name] = part.data.toString();
-        return acc;
-      }, {});
+      const parts = multipart.parse(Buffer.from(body), boundary) as {
+        name: string;
+        data: Buffer;
+      }[];
+      return parts.reduce(
+        (acc, part) => {
+          acc[part.name] = part.data.toString();
+          return acc;
+        },
+        {} as Record<string, string>,
+      );
     }
   }
 

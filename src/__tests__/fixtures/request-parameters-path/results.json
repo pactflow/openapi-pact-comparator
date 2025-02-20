@@ -182,5 +182,21 @@
       "pathName": null
     },
     "type": "error"
+  },
+  {
+    "code": "request.path-or-method.unknown",
+    "message": "Path or method not defined in spec file: POST /integer/1",
+    "mockDetails": {
+      "interactionDescription": "should not raise subsequent errors when request.path-or-method.unknown",
+      "interactionState": "[none]",
+      "location": "[root].interactions[10].request.path",
+      "value": "/integer/1"
+    },
+    "specDetails": {
+      "location": "[root].paths",
+      "pathMethod": null,
+      "pathName": null
+    },
+    "type": "error"
   }
 ]

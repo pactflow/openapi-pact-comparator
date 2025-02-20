@@ -100,7 +100,15 @@ export class Comparator {
         continue;
       }
 
-      yield* compareReqPath(this.#ajvCoerce, route, interaction, index);
+      const results = Array.from(
+        compareReqPath(this.#ajvCoerce, route, interaction, index),
+      );
+
+      if (results.length) {
+        yield* results;
+        continue;
+      }
+
       yield* compareReqHeader(this.#ajvCoerce, route, interaction, index);
       yield* compareReqQuery(this.#ajvCoerce, route, interaction, index);
       yield* compareReqBody(this.#ajvNocoerce, route, interaction, index);

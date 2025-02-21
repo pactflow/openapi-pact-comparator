@@ -13,7 +13,6 @@ export const minimumSchema = (
   originalSchema: SchemaObject,
   oas: OpenAPIV3.Document,
 ): SchemaObject => {
-
   const refToAdd: string[] = [];
   const refAdded: string[] = [];
   const collectReferences = (s: SchemaObject) => {

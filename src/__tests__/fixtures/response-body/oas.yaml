@@ -52,6 +52,27 @@ paths:
             "text/html":
               schema:
                 type: string
+  /nullable:
+    get:
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  contents:
+                    anyOf:
+                      - type: object
+                        properties:
+                          data:
+                            type: object
+                            nullable: true
+                      - type: object
+                        nullable: true
+                        not:
+                          type: string
 components:
   schemas:
     Animal:

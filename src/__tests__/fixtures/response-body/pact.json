@@ -103,6 +103,24 @@
       }
     },
     {
+      "description": "should pass with nullable schemas",
+      "request": {
+        "method": "GET",
+        "path": "/nullable"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "contents": {
+            "data": "some string"
+          }
+        }
+      }
+    },
+    {
       "description": "should error on unknown pet",
       "request": {
         "method": "GET",

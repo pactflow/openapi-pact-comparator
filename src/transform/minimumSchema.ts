@@ -3,11 +3,16 @@ import { SchemaObject } from "ajv";
 import { cloneDeep, get, set } from "lodash-es";
 import { splitPath, traverse } from "../utils/schema";
 
+const convertNullableToTypeNull = (s: SchemaObject) => {
+  if (s.nullable && !Array.isArray(s.type)) {
+    s.type = [s.type, "null"];
+  }
+};
+
 export const minimumSchema = (
   originalSchema: SchemaObject,
   oas: OpenAPIV3.Document,
 ): SchemaObject => {
-  let schema = originalSchema;
 
   const refToAdd: string[] = [];
   const refAdded: string[] = [];
@@ -17,16 +22,12 @@ export const minimumSchema = (
     }
   };
 
-  traverse(schema, collectReferences);
-  if (refToAdd.length === 0) {
-    // no external references, this is the common case for most inlined schemas
-    return schema;
-  }
-
-  // recursively collect references
-  schema = cloneDeep(originalSchema);
+  const schema = cloneDeep(originalSchema);
   delete schema.description;
   delete schema.example;
+  traverse(schema, collectReferences);
+  traverse(schema, convertNullableToTypeNull);
+
   while (refToAdd.length) {
     const ref = refToAdd.shift() as string;
     const path = splitPath(ref);
@@ -36,6 +37,8 @@ export const minimumSchema = (
     delete subschema.description;
     delete subschema.example;
     traverse(subschema, collectReferences);
+    traverse(subschema, convertNullableToTypeNull);
+
     set(schema, path, subschema);
   }
 

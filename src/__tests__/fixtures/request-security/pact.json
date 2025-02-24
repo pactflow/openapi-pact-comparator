@@ -235,6 +235,19 @@
       "response": {
         "status": 403
       }
+    },
+    {
+      "description": "should pass on successful request using default security",
+      "request": {
+        "method": "GET",
+        "path": "/default",
+        "headers": {
+          "Authorization": "BaSiC dXNlcjpwYXNzd29yZAo="
+        }
+      },
+      "response": {
+        "status": 200
+      }
     }
   ]
 }

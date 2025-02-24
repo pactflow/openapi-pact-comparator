@@ -239,10 +239,10 @@ export function* compareReqHeader(
             let isValid = false;
             switch (scheme.scheme) {
               case "basic":
-                isValid = auth.startsWith("Basic ");
+                isValid = auth.toLowerCase().startsWith("basic ");
                 break;
               case "bearer":
-                isValid = auth.startsWith("Bearer ");
+                isValid = auth.toLowerCase().startsWith("bearer ");
                 break;
             }
 

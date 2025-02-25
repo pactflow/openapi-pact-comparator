@@ -1,0 +1,22 @@
+{
+  "consumer": { "name": "consumer" },
+  "provider": { "name": "provider" },
+  "interactions": [
+    {
+      "description": "should pass schema with exclusive min max",
+      "request": {
+        "method": "GET",
+        "path": "/number-ranges"
+      },
+      "response": {
+        "status": 200,
+        "body": {
+          "lte": 10,
+          "lt": 9,
+          "gte": 10,
+          "gt": 11
+        }
+      }
+    }
+  ]
+}

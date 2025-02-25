@@ -13,6 +13,27 @@ const handleNullableSchema = (s: SchemaObject) => {
   }
 };
 
+// draft-06 onwards converts exclusiveMinimum and exclusiveMaximum to numbers
+const convertExclusiveMinMax = (s: SchemaObject) => {
+  if (s.exclusiveMaximum === true) {
+    s.exclusiveMaximum = s.maximum;
+    delete s.maximum;
+  }
+
+  if (s.exclusiveMaximum === false) {
+    delete s.exclusiveMaximum;
+  }
+
+  if (s.exclusiveMinimum === true) {
+    s.exclusiveMinimum = s.minimum;
+    delete s.minimum;
+  }
+
+  if (s.exclusiveMinimum === false) {
+    delete s.exclusiveMinimum;
+  }
+};
+
 export const minimumSchema = (
   originalSchema: SchemaObject,
   oas: OpenAPIV3.Document,
@@ -30,6 +51,7 @@ export const minimumSchema = (
   delete schema.example;
   traverse(schema, collectReferences);
   traverse(schema, handleNullableSchema);
+  traverse(schema, convertExclusiveMinMax);
 
   while (refToAdd.length) {
     const ref = refToAdd.shift() as string;
@@ -41,6 +63,7 @@ export const minimumSchema = (
     delete subschema.example;
     traverse(subschema, collectReferences);
     traverse(subschema, handleNullableSchema);
+    traverse(subschema, convertExclusiveMinMax);
 
     set(schema, path, subschema);
   }

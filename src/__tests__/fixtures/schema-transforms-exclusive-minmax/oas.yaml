@@ -1,0 +1,30 @@
+openapi: 3.0.0
+info:
+  title: OAS
+  version: 1.0.0
+
+paths:
+  /number-ranges:
+    get:
+      responses:
+        "200":
+          description: description
+          content:
+            "application/json":
+              schema:
+                type: "object"
+                properties:
+                  lte:
+                    type: number
+                    maximum: 10
+                  lt:
+                    type: number
+                    maximum: 10
+                    exclusiveMaximum: true
+                  gte:
+                    type: number
+                    minimum: 10
+                  gt:
+                    type: number
+                    minimum: 10
+                    exclusiveMinimum: true

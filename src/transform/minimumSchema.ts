@@ -3,7 +3,11 @@ import { SchemaObject } from "ajv";
 import { cloneDeep, get, set } from "lodash-es";
 import { splitPath, traverse } from "../utils/schema";
 
-const convertNullableToTypeNull = (s: SchemaObject) => {
+const handleNullableSchema = (s: SchemaObject) => {
+  if (s.nullable && !s.type) {
+    s.type = "object";
+  }
+
   if (s.nullable && !Array.isArray(s.type)) {
     s.type = [s.type, "null"];
   }
@@ -25,7 +29,7 @@ export const minimumSchema = (
   delete schema.description;
   delete schema.example;
   traverse(schema, collectReferences);
-  traverse(schema, convertNullableToTypeNull);
+  traverse(schema, handleNullableSchema);
 
   while (refToAdd.length) {
     const ref = refToAdd.shift() as string;
@@ -36,7 +40,7 @@ export const minimumSchema = (
     delete subschema.description;
     delete subschema.example;
     traverse(subschema, collectReferences);
-    traverse(subschema, convertNullableToTypeNull);
+    traverse(subschema, handleNullableSchema);
 
     set(schema, path, subschema);
   }

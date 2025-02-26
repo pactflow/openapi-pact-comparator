@@ -34,6 +34,7 @@ export function setupRouter(
     ignoreTrailingSlash: true,
     querystringParser: (s: string): string => s, // don't parse query in router
   });
+  const added = [];
   for (const oasPath in oas.paths) {
     // NB: all path parameters are required in OAS
     const path =
@@ -59,21 +60,28 @@ export function setupRouter(
         operation.parameters = parameters;
       }
       operation.security ||= oas.security;
-      router.on(
-        method.toUpperCase() as HTTPMethod,
-        path.replaceAll(/\*+/g, "{:wildcard}"),
-        () => {},
-        {
-          method,
-          oas,
-          operation,
-          path: oasPath,
-          securitySchemes:
-            (oas as OpenAPIV2.Document).securityDefinitions ||
-            (oas as OpenAPIV3.Document).components?.securitySchemes ||
-            {},
-        },
-      );
+
+      // ignore duplicate routes by trailing slash
+      const routerPath = path.replaceAll(/\*+/g, "{:wildcard}");
+      const key = `${method.toUpperCase()}-${routerPath}`.replace(/\/$/, "");
+      if (!added.includes(key)) {
+        added.push(key)
+        router.on(
+          method.toUpperCase() as HTTPMethod,
+          routerPath,
+          () => {},
+          {
+            method,
+            oas,
+            operation,
+            path: oasPath,
+            securitySchemes:
+              (oas as OpenAPIV2.Document).securityDefinitions ||
+              (oas as OpenAPIV3.Document).components?.securitySchemes ||
+              {},
+          },
+        );
+      }
     }
   }
   return router;

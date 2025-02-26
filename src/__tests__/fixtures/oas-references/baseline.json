@@ -195,6 +195,15 @@
             }
           }
         },
+        "/login/": {
+          "post": {
+            "responses": {
+              "201": {
+                "description": "duplicate by trailing slash are ignored"
+              }
+            }
+          }
+        },
         "/wildcards/*": {
           "get": {
             "responses": {

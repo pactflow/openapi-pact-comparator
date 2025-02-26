@@ -95,8 +95,8 @@ const parseAsPactV4Body = (body: unknown) => {
 const cleanString = (s: string) => anyAscii(s).replaceAll(/[\r\n\0]/g, "");
 
 const flattenValues = (
-  values?: string | Record<string, string | string[]>,
-): Record<string, string> | string | undefined => {
+  values?: null | string | Record<string, string | string[]>,
+): undefined | string | Record<string, string> => {
   if (!values) return undefined;
   if (typeof values === "string") return values as string;
 

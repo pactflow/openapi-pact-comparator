@@ -61,7 +61,7 @@ export const Pact = Type.Object({
 export type Pact = Static<typeof Pact>;
 
 const supportedInteractions = (i: Interaction) =>
-  !i.type || i.type === "Synchronous/HTTP";
+  !i.type || i.type.toLowerCase() === "synchronous/http";
 
 const parseAsPactV4Body = (body: unknown) => {
   if (!body) {
@@ -145,12 +145,16 @@ const ajv = new Ajv();
 const validate = ajv.compile(Pact);
 
 export const parse = (pact: Pact): Pact => {
-  const isValid = validate(pact);
+  const { metadata, interactions } = pact;
+
+  const isValid = validate({
+    metadata,
+    interactions: interactions.filter(supportedInteractions),
+  });
   if (!isValid) {
     throw new ParserError(validate.errors!);
   }
 
-  const { metadata, interactions } = pact;
   const version = parseInt(
     metadata?.pactSpecification?.version ||
       metadata?.pactSpecificationVersion ||

@@ -1,5 +1,18 @@
 {
   "consumer": { "name": "consumer" },
   "provider": { "name": "provider" },
-  "interactions": []
+  "interactions": [
+    {
+      "type": "Asynchronous/Messages",
+      "description": "should be ignored"
+    },
+    {
+      "type": "Synchronous/Messages",
+      "description": "should be ignored"
+    },
+    {
+      "type": "not-a-real-type",
+      "description": "should be ignored"
+    }
+  ]
 }

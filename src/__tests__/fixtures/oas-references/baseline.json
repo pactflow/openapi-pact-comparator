@@ -103,12 +103,34 @@
     "type": "error"
   },
   {
+    "code": "response.header.incompatible",
+    "message": "Value is incompatible with the parameter defined in the spec file: must be number",
+    "mockDetails": {
+      "interactionDescription": "should fail with bad response header",
+      "interactionState": "[none]",
+      "location": "[root].interactions[3].response.headers.response-header",
+      "value": "string"
+    },
+    "specDetails": {
+      "location": "[root].paths./login.post.responses.201.headers.response-header",
+      "pathMethod": "post",
+      "pathName": "/login",
+      "value": {
+        "required": true,
+        "schema": {
+          "type": "number"
+        }
+      }
+    },
+    "type": "error"
+  },
+  {
     "code": "response.body.incompatible",
     "message": "Response body is incompatible with the response body schema in the spec file: must NOT have additional properties - username",
     "mockDetails": {
       "interactionDescription": "should fail with bad response body",
       "interactionState": "[none]",
-      "location": "[root].interactions[3].response.body",
+      "location": "[root].interactions[4].response.body",
       "value": {
         "username": "bob"
       }
@@ -127,7 +149,7 @@
     "mockDetails": {
       "interactionDescription": "should error (but not crash) for wildcard routes",
       "interactionState": "[none]",
-      "location": "[root].interactions[4].request.path",
+      "location": "[root].interactions[5].request.path",
       "value": "/wildcards/foo"
     },
     "specDetails": {
@@ -176,6 +198,14 @@
             "responses": {
               "201": {
                 "description": "Response body",
+                "headers": {
+                  "response-header": {
+                    "required": true,
+                    "schema": {
+                      "type": "number"
+                    }
+                  }
+                },
                 "content": {
                   "application/json": {
                     "schema": {

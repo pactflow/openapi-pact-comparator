@@ -17,6 +17,9 @@
       },
       "response": {
         "status": 201,
+        "headers": {
+          "response-header": "123"
+        },
         "body": {
           "id": "123"
         }
@@ -54,6 +57,29 @@
       },
       "response": {
         "status": 201,
+        "body": {
+          "id": "123"
+        }
+      }
+    },
+    {
+      "description": "should fail with bad response header",
+      "request": {
+        "method": "POST",
+        "path": "/login",
+        "query": "account=foo&nested=bar",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "username": "bob"
+        }
+      },
+      "response": {
+        "status": 201,
+        "headers": {
+          "response-header": "string"
+        },
         "body": {
           "id": "123"
         }

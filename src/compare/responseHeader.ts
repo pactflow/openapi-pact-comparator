@@ -106,7 +106,7 @@ export function* compareResHeader(
       ?.headers || {};
   for (const headerName in headers) {
     const schema: SchemaObject =
-      headers[headerName].schema || headers[headerName];
+      dereferenceOas(headers[headerName], oas).schema || headers[headerName];
     const value = responseHeaders.get(headerName);
     if (value && schema) {
       const schemaId = `[root].paths.${path}.${method}.responses.${interaction.response.status}.headers.${headerName}`;

@@ -21,6 +21,11 @@ paths:
           description: description
 
 components:
+  headers:
+    response-header:
+      required: true
+      schema:
+        type: "number"
   parameters:
     Request.Param:
       in: query
@@ -49,6 +54,9 @@ components:
   responses:
     Response.Body:
       description: Response body
+      headers:
+        response-header:
+          $ref: "#/components/headers/response-header"
       content:
         application/json:
           schema:

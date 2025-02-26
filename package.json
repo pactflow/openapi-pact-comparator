@@ -34,6 +34,7 @@
     "@sinclair/typebox": "^0.34.16",
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1",
+    "any-ascii": "^0.3.2",
     "debug": "^4.4.0",
     "find-my-way": "^9.2.0",
     "js-yaml": "^4.1.0",

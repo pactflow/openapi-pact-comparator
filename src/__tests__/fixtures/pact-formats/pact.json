@@ -1,0 +1,33 @@
+{
+  "consumer": { "name": "consumer" },
+  "provider": { "name": "provider" },
+  "interactions": [
+    {
+      "type": "Asynchronous/Messages",
+      "description": "should be ignored"
+    },
+    {
+      "type": "Synchronous/Messages",
+      "description": "should be ignored"
+    },
+    {
+      "type": "not-a-real-type",
+      "description": "should be ignored"
+    },
+    {
+      "description": "should tolerate null values",
+      "request": {
+        "method": "GET",
+        "path": "/path",
+        "query": null,
+        "headers": null,
+        "body": null
+      },
+      "response": {
+        "status": 200,
+        "headers": null,
+        "body": null
+      }
+    }
+  ]
+}

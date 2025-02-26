@@ -16,16 +16,5 @@ export const transformRequestSchema = (schema: SchemaObject): SchemaObject => {
     }
   });
 
-  // draft-06 onwards converts exclusiveMinimum and exclusiveMaximum to numbers
-  traverse(schema, (s) => {
-    if (s.exclusiveMaximum) {
-      s.exclusiveMaximum = s.maximum;
-    }
-
-    if (s.exclusiveMinimum) {
-      s.exclusiveMinimum = s.minimum;
-    }
-  });
-
   return schema;
 };

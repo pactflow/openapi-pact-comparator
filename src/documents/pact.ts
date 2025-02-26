@@ -12,6 +12,7 @@ export const Interaction = Type.Object({
     body: Type.Optional(Type.Unknown()),
     headers: Type.Optional(
       Type.Union([
+        Type.Null(),
         Type.Record(Type.String(), Type.String()),
         Type.Record(Type.String(), Type.Array(Type.String())),
       ]),
@@ -20,6 +21,7 @@ export const Interaction = Type.Object({
     path: Type.String(),
     query: Type.Optional(
       Type.Union([
+        Type.Null(),
         Type.String(),
         Type.Record(Type.String(), Type.String()),
         Type.Record(Type.String(), Type.Array(Type.String())),
@@ -30,6 +32,7 @@ export const Interaction = Type.Object({
     body: Type.Optional(Type.Unknown()),
     headers: Type.Optional(
       Type.Union([
+        Type.Null(),
         Type.Record(Type.String(), Type.String()),
         Type.Record(Type.String(), Type.Array(Type.String())),
       ]),
@@ -94,7 +97,8 @@ const cleanString = (s: string) => anyAscii(s).replaceAll(/[\r\n\0]/g, "");
 const flattenValues = (
   values?: string | Record<string, string | string[]>,
 ): Record<string, string> | string | undefined => {
-  if (!values || typeof values === "string") return values as string;
+  if (!values) return undefined;
+  if (typeof values === "string") return values as string;
 
   return Object.fromEntries(
     Object.entries(values || {}).map(([key, value]) => [

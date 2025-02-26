@@ -55,7 +55,7 @@
         "method": "GET",
         "path": "/bearer",
         "headers": {
-          "Authorization": "Bearer dXNlcjpwYXNzd29yZAo="
+          "Authorization": "Bearer [\u0018"
         }
       },
       "response": {

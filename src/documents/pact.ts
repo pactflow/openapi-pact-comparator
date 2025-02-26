@@ -1,5 +1,6 @@
 import { Static, Type } from "@sinclair/typebox";
 import Ajv, { ErrorObject } from "ajv";
+import { mapValues } from "lodash-es";
 
 // a full schema can be found at https://github.com/pactflow/pact-schemas
 // but we don't use that here, because we try to be permissive with input
@@ -101,15 +102,22 @@ const flattenValues = (
   );
 };
 
+const safeHeaders = (headers: Record<string, string>): Record<string, string> =>
+  mapValues(headers, (value: string) => encodeURI(value));
+
 const interactionV1 = (i: Interaction): Interaction => ({
   ...i,
   request: {
     ...i.request,
-    headers: flattenValues(i.request.headers) as Record<string, string>,
+    headers: safeHeaders(
+      flattenValues(i.request.headers) as Record<string, string>,
+    ),
   },
   response: {
     ...i.response,
-    headers: flattenValues(i.response.headers) as Record<string, string>,
+    headers: safeHeaders(
+      flattenValues(i.response.headers) as Record<string, string>,
+    ),
   },
 });
 
@@ -117,12 +125,16 @@ const interactionV3 = (i: Interaction): Interaction => ({
   ...i,
   request: {
     ...i.request,
-    headers: flattenValues(i.request.headers) as Record<string, string>,
+    headers: safeHeaders(
+      flattenValues(i.request.headers) as Record<string, string>,
+    ),
     query: flattenValues(i.request.query),
   },
   response: {
     ...i.response,
-    headers: flattenValues(i.response.headers) as Record<string, string>,
+    headers: safeHeaders(
+      flattenValues(i.response.headers) as Record<string, string>,
+    ),
   },
 });
 
@@ -131,13 +143,17 @@ const interactionV4 = (i: Interaction): Interaction => ({
   request: {
     ...i.request,
     body: parseAsPactV4Body(i.request.body),
-    headers: flattenValues(i.request.headers) as Record<string, string>,
+    headers: safeHeaders(
+      flattenValues(i.request.headers) as Record<string, string>,
+    ),
     query: flattenValues(i.request.query),
   },
   response: {
     ...i.response,
     body: parseAsPactV4Body(i.response.body),
-    headers: flattenValues(i.response.headers) as Record<string, string>,
+    headers: safeHeaders(
+      flattenValues(i.response.headers) as Record<string, string>,
+    ),
   },
 });
 

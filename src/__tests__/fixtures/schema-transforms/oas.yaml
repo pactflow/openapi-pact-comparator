@@ -1,0 +1,22 @@
+openapi: 3.0.0
+info:
+  title: OAS
+  version: 1.0.0
+
+paths:
+  /nullable-without-type:
+    get:
+      responses:
+        "200":
+          description: description
+          content:
+            "application/json":
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/subschema"
+                nullable: true
+components:
+  schemas:
+    subschema:
+      type: object
+      additionalProperties: false

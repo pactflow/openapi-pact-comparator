@@ -1,0 +1,17 @@
+{
+  "consumer": { "name": "consumer" },
+  "provider": { "name": "provider" },
+  "interactions": [
+    {
+      "description": "should pass schema has nullable without type",
+      "request": {
+        "method": "GET",
+        "path": "/nullable-without-type"
+      },
+      "response": {
+        "status": 200,
+        "body": {}
+      }
+    }
+  ]
+}

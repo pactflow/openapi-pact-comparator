@@ -43,3 +43,27 @@ paths:
       responses:
         "200":
           description: description
+  /path:
+    get:
+      responses:
+        "200":
+          description: OK
+          content:
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  string:
+                    type: string
+  /path/:
+    get:
+      responses:
+        "200":
+          description: OK
+          content:
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  number:
+                    type: number

@@ -10,7 +10,7 @@
       "description": "a request to create a pet (failing as the spec does not explicitly define this scenario)",
       "request": {
         "method": "POST",
-        "path": "/pet/",
+        "path": "/pet",
         "headers": {
           "api_key": "1234",
           "Accept": "application/json",
@@ -41,7 +41,7 @@
       "description": "a request to create a pet with invalid body",
       "request": {
         "method": "POST",
-        "path": "/pet/",
+        "path": "/pet",
         "headers": {
           "api_key": "1234",
           "Accept": "application/json",

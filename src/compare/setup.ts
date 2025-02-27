@@ -31,7 +31,6 @@ export function setupRouter(
   oas: OpenAPIV2.Document | OpenAPIV3.Document,
 ): Router.Instance<Router.HTTPVersion.V1> {
   const router = Router({
-    ignoreTrailingSlash: true,
     querystringParser: (s: string): string => s, // don't parse query in router
   });
   for (const oasPath in oas.paths) {

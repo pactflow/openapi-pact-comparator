@@ -43,6 +43,34 @@
       }
     },
     {
+      "description": "should pass for path without trailing slash",
+      "request": {
+        "method": "GET",
+        "path": "/path"
+      },
+      "response": {
+        "status": 200,
+        "body": {
+          "string": "string"
+        }
+
+      }
+    },
+    {
+      "description": "should pass for path with trailing slash",
+      "request": {
+        "method": "GET",
+        "path": "/path/"
+      },
+      "response": {
+        "status": 200,
+        "body": {
+          "number": 123
+        }
+
+      }
+    },
+    {
       "description": "should error when path does not match integer spec",
       "request": {
         "method": "GET",

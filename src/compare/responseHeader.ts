@@ -43,6 +43,12 @@ export function* compareResHeader(
     responseHeaders.delete("content-type");
   }
 
+  // no response found
+  // -----------------
+  if (!operation.responses[interaction.response.status]) {
+    return;
+  }
+
   // response content-type
   // ---------------------
   const responseContentType =
@@ -92,12 +98,6 @@ export function* compareResHeader(
     };
   }
   responseHeaders.delete("content-type");
-
-  // no response found
-  // -----------------
-  if (!operation.responses[interaction.response.status]) {
-    return;
-  }
 
   // specified headers
   // -----------------

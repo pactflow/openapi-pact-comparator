@@ -110,6 +110,19 @@
           "Connection": "close"
         }
       }
+    },
+    {
+      "description": "should not warn about response.content-type.unknown",
+      "request": {
+        "method": "GET",
+        "path": "/path"
+      },
+      "response": {
+        "status": 400,
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
     }
   ]
 }

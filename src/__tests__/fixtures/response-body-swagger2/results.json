@@ -18,7 +18,7 @@
   },
   {
     "code": "response.body.incompatible",
-    "message": "Response body is incompatible with the response body schema in the spec file: must have required property 'age'",
+    "message": "Response body is incompatible with the response body schema in the spec file: must NOT have additional properties - detail",
     "mockDetails": {
       "interactionDescription": "should error with invalid response",
       "interactionState": "[none]",
@@ -29,13 +29,10 @@
       }
     },
     "specDetails": {
-      "location": "[root].paths./animal.get.responses.200.content.application/json.schema.definitions.Animal.required",
+      "location": "[root].paths./animal.get.responses.200.content.application/json.schema.definitions.Animal.additionalProperties",
       "pathMethod": "get",
       "pathName": "/animal",
-      "value": [
-        "name",
-        "age"
-      ]
+      "value": false
     },
     "type": "error"
   }

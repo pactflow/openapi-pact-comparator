@@ -54,7 +54,7 @@ export function* compareReqQuery(
     const value = searchParamsParsed[dereferencedParameter.name];
     if (
       schema &&
-      (value || dereferencedParameter.required) &&
+      (value !== undefined || dereferencedParameter.required) &&
       isValidRequest(interaction)
     ) {
       const schemaId = `[root].paths.${path}.${method}.parameters[${parameterIndex}]`;

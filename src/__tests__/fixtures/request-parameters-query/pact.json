@@ -57,6 +57,17 @@
       }
     },
     {
+      "description": "should pass when missing optional query parameter",
+      "request": {
+        "method": "GET",
+        "path": "/string",
+        "query": "name=mark&age="
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
       "description": "should pass when using common parameters",
       "request": {
         "method": "GET",

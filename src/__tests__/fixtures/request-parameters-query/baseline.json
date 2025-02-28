@@ -1030,11 +1030,34 @@
   },
   {
     "code": "request.query.incompatible",
+    "message": "Value is incompatible with the parameter defined in the spec file: must be number",
+    "mockDetails": {
+      "interactionDescription": "should pass when missing optional query parameter",
+      "interactionState": "[none]",
+      "location": "[root].interactions[4].request.query.age",
+      "value": ""
+    },
+    "specDetails": {
+      "location": "[root].paths./string.get.parameters[1]",
+      "pathMethod": "get",
+      "pathName": "/string",
+      "value": {
+        "in": "query",
+        "name": "age",
+        "schema": {
+          "type": "number"
+        }
+      }
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.query.incompatible",
     "message": "Value is incompatible with the parameter defined in the spec file: must have required property 'value'",
     "mockDetails": {
       "interactionDescription": "should error when missing parameter using common parameters",
       "interactionState": "[none]",
-      "location": "[root].interactions[6]",
+      "location": "[root].interactions[7]",
       "value": {
         "description": "should error when missing parameter using common parameters",
         "request": {
@@ -1067,7 +1090,7 @@
     "mockDetails": {
       "interactionDescription": "should error when missing parameter using common parameters",
       "interactionState": "[none]",
-      "location": "[root].interactions[6]",
+      "location": "[root].interactions[7]",
       "value": {
         "description": "should error when missing parameter using common parameters",
         "request": {
@@ -1100,7 +1123,7 @@
     "mockDetails": {
       "interactionDescription": "should error when using common parameters that has been overridden",
       "interactionState": "[none]",
-      "location": "[root].interactions[7].request.query.common",
+      "location": "[root].interactions[8].request.query.common",
       "value": "string"
     },
     "specDetails": {
@@ -1124,7 +1147,7 @@
     "mockDetails": {
       "interactionDescription": "should warn about unknown query parameters",
       "interactionState": "[none]",
-      "location": "[root].interactions[12].request.query.unknown_key",
+      "location": "[root].interactions[13].request.query.unknown_key",
       "value": "unknown_value"
     },
     "specDetails": {
@@ -1164,7 +1187,7 @@
     "mockDetails": {
       "interactionDescription": "should error when optional query parameter is incompatible",
       "interactionState": "[none]",
-      "location": "[root].interactions[13].request.query.age",
+      "location": "[root].interactions[14].request.query.age",
       "value": "abc"
     },
     "specDetails": {
@@ -1187,7 +1210,7 @@
     "mockDetails": {
       "interactionDescription": "should error when missing required query parameter",
       "interactionState": "[none]",
-      "location": "[root].interactions[14]",
+      "location": "[root].interactions[15]",
       "value": {
         "description": "should error when missing required query parameter",
         "request": {

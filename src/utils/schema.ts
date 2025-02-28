@@ -20,17 +20,7 @@ export const splitPath = (path: string) => {
 export const dereferenceOas = (
   schema: SchemaObject,
   oas: OpenAPIV3.Document,
-) => {
-  if (schema.$ref) {
-    const { $ref, ...others } = schema;
-    return {
-      ...get(oas, splitPath($ref)),
-      ...others,
-    };
-  }
-
-  return schema;
-};
+) => (schema.$ref ? get(oas, splitPath(schema.$ref)) : schema);
 
 export const traverse = (
   schema: SchemaObject,

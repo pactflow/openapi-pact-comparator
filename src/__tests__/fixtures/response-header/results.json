@@ -84,12 +84,80 @@
     "type": "error"
   },
   {
+    "code": "response.content-type.unknown",
+    "message": "Response Content-Type header is defined but the spec does not specify any mime-types to produce",
+    "mockDetails": {
+      "interactionDescription": "should error based on default response",
+      "interactionState": "[none]",
+      "location": "[root].interactions[6].response.headers.content-type",
+      "value": "application/json"
+    },
+    "specDetails": {
+      "location": "[root].paths./default.get",
+      "pathMethod": "get",
+      "pathName": "/default",
+      "value": {
+        "responses": {
+          "default": {
+            "description": "OK",
+            "headers": {
+              "specified": {
+                "schema": {
+                  "type": "number"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "type": "warning"
+  },
+  {
+    "code": "response.status.default",
+    "message": "Response status code matched default response in spec file: 200",
+    "mockDetails": {
+      "interactionDescription": "should error based on default response",
+      "interactionState": "[none]",
+      "location": "[root].interactions[6].response.status",
+      "value": 200
+    },
+    "specDetails": {
+      "location": "[root].paths./default.get.responses",
+      "pathMethod": "get",
+      "pathName": "/default",
+      "value": {
+        "default": {
+          "description": "OK",
+          "headers": {
+            "specified": {
+              "schema": {
+                "type": "number"
+              }
+            }
+          },
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        }
+      }
+    },
+    "type": "warning"
+  },
+  {
     "code": "response.content-type.incompatible",
     "message": "Response Content-Type header is incompatible with the mime-types the spec defines to produce",
     "mockDetails": {
       "interactionDescription": "should error on unknown response content type, per status code",
       "interactionState": "[none]",
-      "location": "[root].interactions[6].response.headers.content-type",
+      "location": "[root].interactions[7].response.headers.content-type",
       "value": "text/html"
     },
     "specDetails": {
@@ -108,7 +176,7 @@
     "mockDetails": {
       "interactionDescription": "should not check for response headers issues if OAS doesn't define it",
       "interactionState": "[none]",
-      "location": "[root].interactions[7].response.status",
+      "location": "[root].interactions[8].response.status",
       "value": 400
     },
     "specDetails": {
@@ -146,7 +214,7 @@
     "mockDetails": {
       "interactionDescription": "should not warn about response.content-type.unknown",
       "interactionState": "[none]",
-      "location": "[root].interactions[8].response.status",
+      "location": "[root].interactions[9].response.status",
       "value": 400
     },
     "specDetails": {

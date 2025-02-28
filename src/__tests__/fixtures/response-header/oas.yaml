@@ -37,3 +37,15 @@ paths:
         "204":
           description: OK
           content: {}
+  /default:
+    get:
+      responses:
+        default:
+          description: OK
+          headers:
+            specified:
+              schema:
+                type: number
+          content:
+            application/json:
+              schema: {}

@@ -45,7 +45,10 @@ export function* compareResHeader(
 
   // no response found
   // -----------------
-  if (!operation.responses[interaction.response.status]) {
+  const response =
+    operation.responses[interaction.response.status] ||
+    operation.responses["default"];
+  if (!response) {
     return;
   }
 
@@ -101,9 +104,7 @@ export function* compareResHeader(
 
   // specified headers
   // -----------------
-  const headers =
-    dereferenceOas(operation.responses[interaction.response.status], oas)
-      ?.headers || {};
+  const headers = dereferenceOas(response, oas)?.headers || {};
   for (const headerName in headers) {
     const schema: SchemaObject =
       dereferenceOas(headers[headerName], oas).schema || headers[headerName];

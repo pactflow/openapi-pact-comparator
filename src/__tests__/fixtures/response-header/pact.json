@@ -86,6 +86,20 @@
       }
     },
     {
+      "description": "should error based on default response",
+      "request": {
+        "method": "GET",
+        "path": "/default"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json",
+          "specified": "5"
+        }
+      }
+    },
+    {
       "description": "should error on unknown response content type, per status code",
       "request": {
         "method": "GET",

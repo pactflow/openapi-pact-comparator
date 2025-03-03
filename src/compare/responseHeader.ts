@@ -36,13 +36,6 @@ export function* compareResHeader(
     interaction.response.headers as Record<string, string>,
   );
 
-  // no content response
-  // -------------------
-  if (interaction.response.status === 204) {
-    responseHeaders.delete("content-length");
-    responseHeaders.delete("content-type");
-  }
-
   // no response found
   // -----------------
   const response =

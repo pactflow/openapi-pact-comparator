@@ -3,7 +3,7 @@
     "code": "response.header.undefined",
     "message": "Standard http response header is not defined in the spec file: content-length",
     "mockDetails": {
-      "interactionDescription": "should pass with 204 status, ignoring content-length and content-type",
+      "interactionDescription": "should warn even with 204 status",
       "interactionState": "[none]",
       "location": "[root].interactions[2].response.headers.content-length",
       "value": "0"
@@ -23,7 +23,7 @@
     "code": "response.content-type.unknown",
     "message": "Response Content-Type header is defined but the spec does not specify any mime-types to produce",
     "mockDetails": {
-      "interactionDescription": "should pass with 204 status, ignoring content-length and content-type",
+      "interactionDescription": "should warn even with 204 status",
       "interactionState": "[none]",
       "location": "[root].interactions[2].response.headers.content-type",
       "value": "text/plain"

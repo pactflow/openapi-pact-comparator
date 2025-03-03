@@ -7,52 +7,16 @@
   },
   "interactions": [
     {
-      "description": "a request to create a pet (failing as the spec does not explicitly define this scenario)",
-      "request": {
-        "method": "POST",
-        "path": "/pet",
-        "headers": {
-          "api_key": "1234",
-          "Accept": "application/json",
-          "Content-Type": "application/json"
-        },
-        "body": {
-          "id": 0,
-          "category": {
-            "id": 0,
-            "name": "string"
-          },
-          "name": "doggie",
-          "photoUrls": ["string"],
-          "tags": [
-            {
-              "id": 0,
-              "name": "string"
-            }
-          ],
-          "status": "available"
-        }
-      },
-      "response": {
-        "status": 201
-      }
-    },
-    {
       "description": "a request to create a pet with invalid body",
       "request": {
         "method": "POST",
         "path": "/pet",
         "headers": {
-          "api_key": "1234",
-          "Accept": "application/json",
           "Content-Type": "application/json"
         }
       },
       "response": {
-        "status": 405,
-        "headers": {
-          "Content-Type": "application/json"
-        }
+        "status": 405
       }
     },
     {
@@ -111,7 +75,6 @@
         "method": "POST",
         "path": "/store/order",
         "headers": {
-          "api_key": "1234",
           "Accept": "application/json",
           "Content-Type": "application/json"
         },

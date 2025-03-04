@@ -4,6 +4,11 @@ import { cloneDeep, get, set } from "lodash-es";
 import { splitPath, traverse } from "../utils/schema";
 
 const handleNullableSchema = (s: SchemaObject) => {
+  if (s.$ref) {
+    delete s.nullable;
+    return;
+  }
+
   if (s.nullable && !s.type) {
     s.type = "object";
   }

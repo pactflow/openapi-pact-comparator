@@ -34,7 +34,8 @@ export function* compareReqPath(
     const value = parseValue(
       route.params[cleanPathParameter(dereferencedParameter.name)],
     );
-    if (value && schema) {
+
+    if (schema) {
       const schemaId = `[root].paths.${path}.${method}.parameters[${parameterIndex}]`;
       const validate = getValidateFunction(ajv, schemaId, () =>
         minimumSchema(schema, oas),

@@ -131,45 +131,10 @@
     "type": "error"
   },
   {
-    "code": "response.content-type.unknown",
-    "message": "Response Content-Type header is defined but the spec does not specify any mime-types to produce",
-    "mockDetails": {
-      "interactionDescription": "should error based on default response",
-      "interactionState": "[none]",
-      "location": "[root].interactions[6].response.headers.content-type",
-      "value": "application/json"
-    },
-    "specDetails": {
-      "location": "[root].paths./default.get",
-      "pathMethod": "get",
-      "pathName": "/default",
-      "value": {
-        "responses": {
-          "default": {
-            "description": "OK",
-            "headers": {
-              "specified": {
-                "schema": {
-                  "type": "number"
-                }
-              }
-            },
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
-          }
-        }
-      }
-    },
-    "type": "warning"
-  },
-  {
     "code": "response.status.default",
     "message": "Response status code matched default response in spec file: 200",
     "mockDetails": {
-      "interactionDescription": "should error based on default response",
+      "interactionDescription": "should use default response",
       "interactionState": "[none]",
       "location": "[root].interactions[6].response.status",
       "value": 200
@@ -190,7 +155,14 @@
           },
           "content": {
             "application/json": {
-              "schema": {}
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              }
             }
           }
         }

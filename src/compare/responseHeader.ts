@@ -24,29 +24,25 @@ export function* compareResHeader(
 ): Iterable<Result> {
   const { method, oas, operation, path } = route.store;
 
-  const availableResponseContentType =
-    operation.produces ||
-    Object.keys(
-      dereferenceOas(
-        operation.responses[interaction.response.status] || {},
-        oas,
-      )?.content || {},
-    );
-  const responseHeaders = new Headers(
-    interaction.response.headers as Record<string, string>,
-  );
-
-  // no response found
-  // -----------------
   const response =
     operation.responses[interaction.response.status] ||
     operation.responses["default"];
+
+  // no response found
+  // -----------------
   if (!response) {
     return;
   }
 
   // response content-type
   // ---------------------
+  const availableResponseContentType =
+    operation.produces ||
+    Object.keys(dereferenceOas(response || {}, oas)?.content || {});
+  const responseHeaders = new Headers(
+    interaction.response.headers as Record<string, string>,
+  );
+
   const responseContentType =
     responseHeaders.get("content-type")?.split(";")[0] || "";
 

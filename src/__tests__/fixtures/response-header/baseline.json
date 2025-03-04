@@ -140,7 +140,7 @@
     "code": "response.status.default",
     "message": "Response status code matched default response in spec file: 200",
     "mockDetails": {
-      "interactionDescription": "should error based on default response",
+      "interactionDescription": "should use default response",
       "interactionState": "[none]",
       "location": "[root].interactions[6].response.status",
       "value": 200
@@ -161,7 +161,14 @@
           },
           "content": {
             "application/json": {
-              "schema": {}
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              }
             }
           }
         }

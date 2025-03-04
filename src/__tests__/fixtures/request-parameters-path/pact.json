@@ -69,6 +69,16 @@
       }
     },
     {
+      "description": "should error with missing parameter",
+      "request": {
+        "method": "GET",
+        "path": "/integer/"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
       "description": "should error when path does not match integer spec",
       "request": {
         "method": "GET",

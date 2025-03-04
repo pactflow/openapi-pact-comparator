@@ -1,5 +1,52 @@
 [
   {
+    "code": "response.content-type.unknown",
+    "message": "Response Content-Type header is defined but the spec does not specify any mime-types to produce",
+    "mockDetails": {
+      "interactionDescription": "should warn even with 204 status",
+      "interactionState": "[none]",
+      "location": "[root].interactions[2].response.headers.content-type",
+      "value": "text/plain"
+    },
+    "specDetails": {
+      "location": "[root].paths./delete.delete",
+      "pathMethod": "delete",
+      "pathName": "/delete",
+      "value": {
+        "responses": {
+          "204": {
+            "description": "OK",
+            "content": {}
+          }
+        }
+      }
+    },
+    "type": "warning"
+  },
+  {
+    "code": "response.header.undefined",
+    "message": "Standard http response header is not defined in the spec file: content-length",
+    "mockDetails": {
+      "interactionDescription": "should warn even with 204 status",
+      "interactionState": "[none]",
+      "location": "[root].interactions[2].response.headers.content-length"
+    },
+    "specDetails": {
+      "location": "[root].paths./delete.delete",
+      "pathMethod": "delete",
+      "pathName": "/delete",
+      "value": {
+        "responses": {
+          "204": {
+            "description": "OK",
+            "content": {}
+          }
+        }
+      }
+    },
+    "type": "warning"
+  },
+  {
     "code": "response.header.undefined",
     "message": "Standard http response header is not defined in the spec file: age",
     "mockDetails": {

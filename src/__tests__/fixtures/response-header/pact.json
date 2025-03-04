@@ -30,7 +30,7 @@
       }
     },
     {
-      "description": "should pass with 204 status, ignoring content-length and content-type",
+      "description": "should warn even with 204 status",
       "request": {
         "method": "DELETE",
         "path": "/delete"

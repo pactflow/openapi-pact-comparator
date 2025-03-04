@@ -48,4 +48,8 @@ paths:
                 type: number
           content:
             application/json:
-              schema: {}
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string

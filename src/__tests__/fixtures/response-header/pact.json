@@ -86,7 +86,7 @@
       }
     },
     {
-      "description": "should error based on default response",
+      "description": "should use default response",
       "request": {
         "method": "GET",
         "path": "/default"
@@ -96,6 +96,9 @@
         "headers": {
           "Content-Type": "application/json",
           "specified": "5"
+        },
+        "body": {
+          "name": "name"
         }
       }
     },

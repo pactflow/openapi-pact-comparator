@@ -41,6 +41,18 @@ paths:
           schema:
             type: string
             minLength: 20
+        - in: header
+          name: x-optional-oneOf-string
+          required: false
+          schema:
+            oneOf:
+              - type: string
+        - in: header
+          name: x-optional-anyOf-string
+          required: false
+          schema:
+            anyOf:
+              - type: string
       responses:
         "200":
           description: OK

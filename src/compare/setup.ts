@@ -39,7 +39,7 @@ export function setupRouter(
       ((oas as OpenAPIV2.Document).basePath || "") +
       oasPath
         .replaceAll(/{.*?}/g, cleanPathParameter)
-        .replaceAll(/{([.;]?)([^*]+?)\*?}/g, "$1:$2(^\\S+)");
+        .replaceAll(/{([.;]?)([^*]+?)\*?}/g, "$1:$2(.+)");
     for (const method in oas.paths[oasPath]) {
       if (!SUPPORTED_METHODS.includes(method.toUpperCase())) {
         continue;

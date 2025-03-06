@@ -62,13 +62,12 @@ export function* compareReqQuery(
         minimumSchema(schema, oas),
       );
 
-      if (
-        !validate(
-          schema.type === "array" && typeof value === "string"
-            ? value.split(ARRAY_SEPARATOR)
-            : value,
-        )
-      ) {
+      const convertedValue =
+        schema.type === "array" && typeof value === "string"
+          ? value.split(ARRAY_SEPARATOR)
+          : value;
+
+      if (!validate(convertedValue)) {
         for (const error of validate.errors!) {
           yield {
             code: "request.query.incompatible",
@@ -77,8 +76,8 @@ export function* compareReqQuery(
               ...baseMockDetails(interaction),
               location: `[root].interactions[${index}].request.query.${dereferencedParameter.name}${formatInstancePath(error)}`,
               value: error.instancePath
-                ? get(value, splitPath(error.instancePath))
-                : value,
+                ? get(convertedValue, splitPath(error.instancePath))
+                : convertedValue,
             },
             specDetails: {
               location: `${schemaId}.schema.${formatSchemaPath(error)}`,

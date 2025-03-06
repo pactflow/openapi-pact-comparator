@@ -290,7 +290,13 @@ export function* compareReqHeader(
     };
 
     const value =
-      dereferencedParameter.schema?.type === "string"
+      dereferencedParameter.schema?.type === "string" ||
+      !!dereferencedParameter.schema?.anyOf?.find(
+        (s: SchemaObject) => s.type === "string",
+      ) ||
+      !!dereferencedParameter.schema?.oneOf?.find(
+        (s: SchemaObject) => s.type === "string",
+      )
         ? requestHeaders.get(dereferencedParameter.name)
         : parseValue(requestHeaders.get(dereferencedParameter.name));
 

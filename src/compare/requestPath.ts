@@ -7,8 +7,9 @@ import type { Interaction } from "../documents/pact";
 import type { Result } from "../results/index";
 import { baseMockDetails } from "../results/index";
 import { minimumSchema } from "../transform/index";
+import { config } from "../utils/config";
 import { dereferenceOas } from "../utils/schema";
-import { isQuirky } from "../utils/quirks";
+import { isSimpleSchema } from "../utils/quirks";
 import { getValidateFunction } from "../utils/validation";
 import { cleanPathParameter } from "./utils/parameters";
 import { parseValue } from "./utils/parse";
@@ -44,7 +45,9 @@ export function* compareReqPath(
     if (schema) {
       const schemaId = `[root].paths.${path}.${method}.parameters[${parameterIndex}]`;
       const validate = getValidateFunction(ajv, schemaId, () =>
-        process.env.QUIRKS && value && isQuirky(schema)
+        config.get("noValidateComplexParameters") &&
+        isSimpleSchema(schema) &&
+        value
           ? {}
           : minimumSchema(schema, oas),
       );

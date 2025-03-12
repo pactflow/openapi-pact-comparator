@@ -4,6 +4,7 @@ import type { OpenAPIV2 } from "openapi-types";
 import type Router from "find-my-way";
 import { get } from "lodash-es";
 import qs from "qs";
+import querystring from "node:querystring";
 import multipart from "parse-multipart-data";
 
 import type { Interaction } from "../documents/pact";
@@ -15,6 +16,7 @@ import {
   formatSchemaPath,
 } from "../results/index";
 import { minimumSchema, transformRequestSchema } from "../transform/index";
+import { config } from "../utils/config";
 import { isValidRequest } from "../utils/interaction";
 import { dereferenceOas, splitPath } from "../utils/schema";
 import { getValidateFunction } from "../utils/validation";
@@ -25,11 +27,12 @@ const parseBody = (body: unknown, contentType: string) => {
     contentType.includes("application/x-www-form-urlencoded") &&
     typeof body === "string"
   ) {
-    return qs.parse(body as string, {
-      allowDots: true,
-      comma: true,
-      depth: process.env.QUIRKS ? 0 : undefined,
-    });
+    return config.get("legacyParser")
+      ? querystring.parse(body as string)
+      : qs.parse(body as string, {
+          allowDots: true,
+          comma: true,
+        });
   }
 
   if (contentType.includes("multipart/form-data") && typeof body === "string") {
@@ -60,7 +63,7 @@ const canValidate = (contentType: string): boolean => {
     [
       "application/json",
       "application/x-www-form-urlencoded",
-      process.env.QUIRKS ? "" : "multipart/form-data",
+      config.get("disableMultipartFormdata") ? "" : "multipart/form-data",
     ].filter(Boolean),
   );
 };
@@ -110,7 +113,7 @@ export function* compareReqBody(
     schema &&
     canValidate(contentType) &&
     isValidRequest(interaction) &&
-    (process.env.QUIRKS
+    (config.get("noValidateRequestBodyUnlessApplicationJson")
       ? !!findMatchingType("application/json", availableRequestContentTypes)
       : true)
   ) {
@@ -147,7 +150,7 @@ export function* compareReqBody(
     !!body &&
     !schema &&
     isValidRequest(interaction) &&
-    (process.env.QUIRKS
+    (config.get("noValidateRequestBodyUnlessApplicationJson")
       ? !!findMatchingType("application/json", availableRequestContentTypes) ||
         availableRequestContentTypes.length === 0
       : true)

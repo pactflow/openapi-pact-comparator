@@ -1,5 +1,6 @@
 import { SchemaObject } from "ajv";
 import { each, get } from "lodash-es";
+import { config } from "../utils/config";
 import {
   splitPath,
   traverseWithDereferencing as traverse,
@@ -17,7 +18,7 @@ export const transformResponseSchema = (schema: SchemaObject): SchemaObject => {
       !s.anyOf &&
       s.type &&
       s.type === "object" &&
-      (process.env.QUIRKS ? !s.nullable : true)
+      (config.get("noTransformNonNullableResponseSchema") ? !s.nullable : true)
     ) {
       s.additionalProperties = false;
     }

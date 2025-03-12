@@ -14,9 +14,10 @@ import {
   formatSchemaPath,
 } from "../results/index";
 import { minimumSchema } from "../transform/index";
+import { config } from "../utils/config";
 import { isValidRequest } from "../utils/interaction";
 import { ARRAY_SEPARATOR } from "../utils/queryParams";
-import { isQuirky } from "../utils/quirks";
+import { isSimpleSchema } from "../utils/quirks";
 import { dereferenceOas, splitPath } from "../utils/schema";
 import { getValidateFunction } from "../utils/validation";
 
@@ -28,14 +29,14 @@ export function* compareReqQuery(
 ): Iterable<Result> {
   const { method, oas, operation, path, securitySchemes } = route.store;
 
-  const searchParamsParsed = process.env.QUIRKS
+  const searchParamsParsed = config.get("legacyParser")
     ? querystring.parse(route.searchParams as unknown as string)
     : qs.parse(route.searchParams, {
         allowDots: true,
         comma: true,
       });
 
-  const searchParamsUnparsed = process.env.QUIRKS
+  const searchParamsUnparsed = config.get("legacyParser")
     ? querystring.parse(route.searchParams as unknown as string)
     : qs.parse(route.searchParams, {
         allowDots: false,
@@ -66,7 +67,9 @@ export function* compareReqQuery(
     ) {
       const schemaId = `[root].paths.${path}.${method}.parameters[${parameterIndex}]`;
       const validate = getValidateFunction(ajv, schemaId, () =>
-        process.env.QUIRKS && value && isQuirky(schema)
+        config.get("noValidateComplexParameters") &&
+        isSimpleSchema(schema) &&
+        value
           ? {}
           : minimumSchema(schema, oas),
       );

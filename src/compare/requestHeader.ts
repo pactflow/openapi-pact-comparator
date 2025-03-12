@@ -14,7 +14,8 @@ import {
 } from "../results/index";
 import { minimumSchema } from "../transform/index";
 import { isValidRequest } from "../utils/interaction";
-import { isQuirky } from "../utils/quirks";
+import { config } from "../utils/config";
+import { isSimpleSchema } from "../utils/quirks";
 import { dereferenceOas, splitPath } from "../utils/schema";
 import { getValidateFunction } from "../utils/validation";
 import { findMatchingType, standardHttpRequestHeaders } from "./utils/content";
@@ -317,7 +318,9 @@ export function* compareReqHeader(
     if (value !== null && schema && isValidRequest(interaction)) {
       const schemaId = `[root].paths.${path}.${method}.parameters[${parameterIndex}]`;
       const validate = getValidateFunction(ajv, schemaId, () =>
-        process.env.QUIRKS && value && isQuirky(schema)
+        config.get("noValidateComplexParameters") &&
+        isSimpleSchema(schema) &&
+        value
           ? {}
           : minimumSchema(schema, oas),
       );

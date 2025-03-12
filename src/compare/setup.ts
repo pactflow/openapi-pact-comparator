@@ -31,6 +31,8 @@ export function setupRouter(
   oas: OpenAPIV2.Document | OpenAPIV3.Document,
 ): Router.Instance<Router.HTTPVersion.V1> {
   const router = Router({
+    ignoreDuplicateSlashes: process.env.QUIRKS ? true : false,
+    ignoreTrailingSlash: process.env.QUIRKS ? true : false,
     querystringParser: (s: string): string => s, // don't parse query in router
   });
   for (const oasPath in oas.paths) {

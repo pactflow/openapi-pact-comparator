@@ -16,7 +16,8 @@ export const transformResponseSchema = (schema: SchemaObject): SchemaObject => {
       !s.allOf &&
       !s.anyOf &&
       s.type &&
-      s.type === "object"
+      s.type === "object" &&
+      (process.env.QUIRKS ? !s.nullable : true)
     ) {
       s.additionalProperties = false;
     }

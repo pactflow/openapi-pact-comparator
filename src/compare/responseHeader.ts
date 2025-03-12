@@ -98,7 +98,7 @@ export function* compareResHeader(
     const schema: SchemaObject =
       dereferenceOas(headers[headerName], oas).schema || headers[headerName];
     const value = responseHeaders.get(headerName);
-    if (value && schema) {
+    if (value !== null && schema) {
       const schemaId = `[root].paths.${path}.${method}.responses.${interaction.response.status}.headers.${headerName}`;
       const validate = getValidateFunction(ajv, schemaId, () =>
         minimumSchema(schema, oas),

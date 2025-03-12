@@ -3,6 +3,7 @@ import type Ajv from "ajv/dist/2019";
 import type Router from "find-my-way";
 import { get } from "lodash-es";
 import qs from "qs";
+import querystring from "node:querystring";
 
 import type { Result } from "../results/index";
 import type { Interaction } from "../documents/pact";
@@ -15,6 +16,7 @@ import {
 import { minimumSchema } from "../transform/index";
 import { isValidRequest } from "../utils/interaction";
 import { ARRAY_SEPARATOR } from "../utils/queryParams";
+import { isQuirky } from "../utils/quirks";
 import { dereferenceOas, splitPath } from "../utils/schema";
 import { getValidateFunction } from "../utils/validation";
 
@@ -26,14 +28,19 @@ export function* compareReqQuery(
 ): Iterable<Result> {
   const { method, oas, operation, path, securitySchemes } = route.store;
 
-  const searchParamsParsed = qs.parse(route.searchParams, {
-    allowDots: true,
-    comma: true,
-  });
-  const searchParamsUnparsed = qs.parse(route.searchParams, {
-    allowDots: false,
-    comma: false,
-  });
+  const searchParamsParsed = process.env.QUIRKS
+    ? querystring.parse(route.searchParams as unknown as string)
+    : qs.parse(route.searchParams, {
+        allowDots: true,
+        comma: true,
+      });
+
+  const searchParamsUnparsed = process.env.QUIRKS
+    ? querystring.parse(route.searchParams as unknown as string)
+    : qs.parse(route.searchParams, {
+        allowDots: false,
+        comma: false,
+      });
 
   for (const [parameterIndex, parameter] of (
     operation.parameters || []
@@ -59,13 +66,19 @@ export function* compareReqQuery(
     ) {
       const schemaId = `[root].paths.${path}.${method}.parameters[${parameterIndex}]`;
       const validate = getValidateFunction(ajv, schemaId, () =>
-        minimumSchema(schema, oas),
+        process.env.QUIRKS && value && isQuirky(schema)
+          ? {}
+          : minimumSchema(schema, oas),
       );
 
-      const convertedValue =
+      let convertedValue =
         schema.type === "array" && typeof value === "string"
           ? value.split(ARRAY_SEPARATOR)
           : value;
+
+      if (process.env.QUIRKS && value === "[object Object]") {
+        convertedValue = {};
+      }
 
       if (!validate(convertedValue)) {
         for (const error of validate.errors!) {

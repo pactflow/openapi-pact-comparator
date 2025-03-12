@@ -314,7 +314,7 @@ export function* compareReqHeader(
         ? requestHeaders.get(dereferencedParameter.name)
         : parseValue(requestHeaders.get(dereferencedParameter.name));
 
-    if (value && schema && isValidRequest(interaction)) {
+    if (value !== null && schema && isValidRequest(interaction)) {
       const schemaId = `[root].paths.${path}.${method}.parameters[${parameterIndex}]`;
       const validate = getValidateFunction(ajv, schemaId, () =>
         process.env.QUIRKS && value && isQuirky(schema)

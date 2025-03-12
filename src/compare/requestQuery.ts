@@ -3,6 +3,7 @@ import type Ajv from "ajv/dist/2019";
 import type Router from "find-my-way";
 import { get } from "lodash-es";
 import qs from "qs";
+import querystring from "node:querystring";
 
 import type { Result } from "../results/index";
 import type { Interaction } from "../documents/pact";
@@ -27,16 +28,19 @@ export function* compareReqQuery(
 ): Iterable<Result> {
   const { method, oas, operation, path, securitySchemes } = route.store;
 
-  const searchParamsParsed = qs.parse(route.searchParams, {
-    allowDots: true,
-    comma: true,
-    depth: process.env.QUIRKS ? 0 : undefined,
-  });
-  const searchParamsUnparsed = qs.parse(route.searchParams, {
-    allowDots: false,
-    comma: false,
-    depth: process.env.QUIRKS ? 0 : undefined,
-  });
+  const searchParamsParsed = process.env.QUIRKS
+    ? querystring.parse(route.searchParams as unknown as string)
+    : qs.parse(route.searchParams, {
+        allowDots: true,
+        comma: true,
+      });
+
+  const searchParamsUnparsed = process.env.QUIRKS
+    ? querystring.parse(route.searchParams as unknown as string)
+    : qs.parse(route.searchParams, {
+        allowDots: false,
+        comma: false,
+      });
 
   for (const [parameterIndex, parameter] of (
     operation.parameters || []

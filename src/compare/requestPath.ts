@@ -8,6 +8,7 @@ import type { Result } from "../results/index";
 import { baseMockDetails } from "../results/index";
 import { minimumSchema } from "../transform/index";
 import { dereferenceOas } from "../utils/schema";
+import { isQuirky } from "../utils/quirks";
 import { getValidateFunction } from "../utils/validation";
 import { cleanPathParameter } from "./utils/parameters";
 import { parseValue } from "./utils/parse";
@@ -35,10 +36,17 @@ export function* compareReqPath(
       route.params[cleanPathParameter(dereferencedParameter.name)],
     );
 
+    // ignore when OAS has unused parameter in the operation parameters
+    if (!(cleanPathParameter(dereferencedParameter.name) in route.params)) {
+      continue;
+    }
+
     if (schema) {
       const schemaId = `[root].paths.${path}.${method}.parameters[${parameterIndex}]`;
       const validate = getValidateFunction(ajv, schemaId, () =>
-        minimumSchema(schema, oas),
+        process.env.QUIRKS && value && isQuirky(schema)
+          ? {}
+          : minimumSchema(schema, oas),
       );
 
       let separator = ",";

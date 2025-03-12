@@ -62,6 +62,13 @@ const _traverseWithDereferencing = (
   }
   const dereferencedSchema = dereferenceOas(schema, oas);
 
+  if (schema.nullable) {
+    dereferencedSchema.nullable = schema.nullable;
+    if (!dereferencedSchema.type) {
+      dereferencedSchema.type = "object";
+    }
+  }
+
   const traverseSubSchema = (item: SchemaObject) =>
     _traverseWithDereferencing(item, oas, visited, visitor);
 

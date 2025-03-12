@@ -14,6 +14,7 @@ import {
 } from "../results/index";
 import { minimumSchema } from "../transform/index";
 import { isValidRequest } from "../utils/interaction";
+import { isQuirky } from "../utils/quirks";
 import { dereferenceOas, splitPath } from "../utils/schema";
 import { getValidateFunction } from "../utils/validation";
 import { findMatchingType, standardHttpRequestHeaders } from "./utils/content";
@@ -176,6 +177,8 @@ export function* compareReqHeader(
   // security headers
   // ----------------
   if (isValidRequest(interaction)) {
+    let isSecured = false;
+    const maybeResults: Result[] = [];
     for (const scheme of operation.security || []) {
       for (const schemeName of Object.keys(scheme)) {
         const scheme = securitySchemes[schemeName];
@@ -183,8 +186,10 @@ export function* compareReqHeader(
           case "apiKey":
             switch (scheme.in) {
               case "header":
-                if (!requestHeaders.has(scheme.name)) {
-                  yield {
+                if (requestHeaders.has(scheme.name)) {
+                  isSecured = true;
+                } else {
+                  maybeResults.push({
                     code: "request.authorization.missing",
                     message:
                       "Request Authorization header is missing but is required by the spec file",
@@ -200,21 +205,20 @@ export function* compareReqHeader(
                       value: operation,
                     },
                     type: "error",
-                  };
+                  });
                 }
                 requestHeaders.delete(scheme.name);
                 break;
               case "cookie":
-                // FIXME: handle cookies
-                break;
               case "query":
-              // ignore
             }
             break;
           case "basic": {
             const basicAuth = requestHeaders.get("authorization") || "";
-            if (!basicAuth.startsWith("Basic ")) {
-              yield {
+            if (basicAuth.startsWith("Basic ")) {
+              isSecured = true;
+            } else {
+              maybeResults.push({
                 code: "request.authorization.missing",
                 message:
                   "Request Authorization header is missing but is required by the spec file",
@@ -230,7 +234,7 @@ export function* compareReqHeader(
                   value: operation,
                 },
                 type: "error",
-              };
+              });
             }
             break;
           }
@@ -246,8 +250,14 @@ export function* compareReqHeader(
                 break;
             }
 
-            if (!isValid) {
-              yield {
+            if (process.env.QUIRKS) {
+              isValid = requestHeaders.get("authorization") !== null;
+            }
+
+            if (isValid) {
+              isSecured = true;
+            } else {
+              maybeResults.push({
                 code: "request.authorization.missing",
                 message:
                   "Request Authorization header is missing but is required by the spec file",
@@ -263,7 +273,7 @@ export function* compareReqHeader(
                   value: operation,
                 },
                 type: "error",
-              };
+              });
             }
             break;
           }
@@ -273,6 +283,10 @@ export function* compareReqHeader(
           // ignore
         }
       }
+    }
+
+    if (!isSecured) {
+      yield* maybeResults;
     }
   }
 
@@ -303,7 +317,9 @@ export function* compareReqHeader(
     if (value && schema && isValidRequest(interaction)) {
       const schemaId = `[root].paths.${path}.${method}.parameters[${parameterIndex}]`;
       const validate = getValidateFunction(ajv, schemaId, () =>
-        minimumSchema(schema, oas),
+        process.env.QUIRKS && value && isQuirky(schema)
+          ? {}
+          : minimumSchema(schema, oas),
       );
       if (!validate(value)) {
         for (const error of validate.errors!) {
@@ -330,7 +346,7 @@ export function* compareReqHeader(
     }
 
     if (
-      !value &&
+      value === null &&
       dereferencedParameter.required &&
       isValidRequest(interaction)
     ) {

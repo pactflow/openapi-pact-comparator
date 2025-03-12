@@ -1,22 +1,7 @@
 import type { OpenAPIV3 } from "openapi-types";
 import { SchemaObject } from "ajv";
 import { cloneDeep, get, set } from "lodash-es";
-import { splitPath, traverse } from "../utils/schema";
-
-const handleNullableSchema = (s: SchemaObject) => {
-  if (s.$ref) {
-    delete s.nullable;
-    return;
-  }
-
-  if (s.nullable && !s.type) {
-    s.type = "object";
-  }
-
-  if (s.nullable && !Array.isArray(s.type)) {
-    s.type = [s.type, "null"];
-  }
-};
+import { dereferenceOas, splitPath, traverse } from "../utils/schema";
 
 // draft-06 onwards converts exclusiveMinimum and exclusiveMaximum to numbers
 const convertExclusiveMinMax = (s: SchemaObject) => {
@@ -48,6 +33,23 @@ export const minimumSchema = (
   const collectReferences = (s: SchemaObject) => {
     if (s.$ref && !refToAdd.includes(s.$ref) && !refAdded.includes(s.$ref)) {
       refToAdd.push(s.$ref);
+    }
+  };
+
+  const handleNullableSchema = (s: SchemaObject) => {
+    if (s.$ref) {
+      if (s.nullable && !s.type) {
+        s.type = dereferenceOas(s, oas).type;
+      }
+      return;
+    }
+
+    if (s.nullable && !s.type) {
+      s.type = "object";
+    }
+
+    if (s.nullable && !Array.isArray(s.type)) {
+      s.type = [s.type, "null"];
     }
   };
 

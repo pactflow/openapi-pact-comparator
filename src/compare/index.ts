@@ -61,7 +61,12 @@ export class Comparator {
 
     for (const [index, interaction] of parsedPact.interactions.entries()) {
       const { method, path, query } = interaction.request;
-      const pathWithLeadingSlash = path.startsWith("/") ? path : `/${path}`;
+      let pathWithLeadingSlash = path.startsWith("/") ? path : `/${path}`;
+
+      if (process.env.QUIRKS) {
+        pathWithLeadingSlash = pathWithLeadingSlash.replaceAll("%", "%25");
+      }
+
       // in pact, query is either a string or an object of only one level deep
       const stringQuery =
         typeof query === "string"
@@ -80,7 +85,7 @@ export class Comparator {
         [pathWithLeadingSlash, stringQuery].filter(Boolean).join("?"),
       );
 
-      if (!route) {
+      if (!route || pathWithLeadingSlash.includes("?")) {
         yield {
           code: "request.path-or-method.unknown",
           message: `Path or method not defined in spec file: ${method} ${path}`,

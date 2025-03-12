@@ -15,6 +15,7 @@ import {
 import { minimumSchema } from "../transform/index";
 import { isValidRequest } from "../utils/interaction";
 import { ARRAY_SEPARATOR } from "../utils/queryParams";
+import { isQuirky } from "../utils/quirks";
 import { dereferenceOas, splitPath } from "../utils/schema";
 import { getValidateFunction } from "../utils/validation";
 
@@ -29,10 +30,12 @@ export function* compareReqQuery(
   const searchParamsParsed = qs.parse(route.searchParams, {
     allowDots: true,
     comma: true,
+    depth: process.env.QUIRKS ? 0 : undefined,
   });
   const searchParamsUnparsed = qs.parse(route.searchParams, {
     allowDots: false,
     comma: false,
+    depth: process.env.QUIRKS ? 0 : undefined,
   });
 
   for (const [parameterIndex, parameter] of (
@@ -59,13 +62,19 @@ export function* compareReqQuery(
     ) {
       const schemaId = `[root].paths.${path}.${method}.parameters[${parameterIndex}]`;
       const validate = getValidateFunction(ajv, schemaId, () =>
-        minimumSchema(schema, oas),
+        process.env.QUIRKS && value && isQuirky(schema)
+          ? {}
+          : minimumSchema(schema, oas),
       );
 
-      const convertedValue =
+      let convertedValue =
         schema.type === "array" && typeof value === "string"
           ? value.split(ARRAY_SEPARATOR)
           : value;
+
+      if (process.env.QUIRKS && value === "[object Object]") {
+        convertedValue = {};
+      }
 
       if (!validate(convertedValue)) {
         for (const error of validate.errors!) {

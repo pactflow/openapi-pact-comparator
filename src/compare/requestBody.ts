@@ -25,7 +25,11 @@ const parseBody = (body: unknown, contentType: string) => {
     contentType.includes("application/x-www-form-urlencoded") &&
     typeof body === "string"
   ) {
-    return qs.parse(body as string, { allowDots: true, comma: true });
+    return qs.parse(body as string, {
+      allowDots: true,
+      comma: true,
+      depth: process.env.QUIRKS ? 0 : undefined,
+    });
   }
 
   if (contentType.includes("multipart/form-data") && typeof body === "string") {
@@ -51,11 +55,14 @@ const parseBody = (body: unknown, contentType: string) => {
 };
 
 const canValidate = (contentType: string): boolean => {
-  return !!findMatchingType(contentType, [
-    "application/json",
-    "application/x-www-form-urlencoded",
-    "multipart/form-data",
-  ]);
+  return !!findMatchingType(
+    contentType,
+    [
+      "application/json",
+      "application/x-www-form-urlencoded",
+      process.env.QUIRKS ? "" : "multipart/form-data",
+    ].filter(Boolean),
+  );
 };
 
 const DEFAULT_CONTENT_TYPE = "application/json";
@@ -99,7 +106,14 @@ export function* compareReqBody(
     return;
   }
 
-  if (schema && canValidate(contentType) && isValidRequest(interaction)) {
+  if (
+    schema &&
+    canValidate(contentType) &&
+    isValidRequest(interaction) &&
+    (process.env.QUIRKS
+      ? !!findMatchingType("application/json", availableRequestContentTypes)
+      : true)
+  ) {
     const value = parseBody(body, requestContentType);
     const schemaId = `[root].paths.${path}.${method}.requestBody.content.${contentType}`;
     const validate = getValidateFunction(ajv, schemaId, () =>
@@ -129,7 +143,15 @@ export function* compareReqBody(
     }
   }
 
-  if (!!body && !schema && isValidRequest(interaction)) {
+  if (
+    !!body &&
+    !schema &&
+    isValidRequest(interaction) &&
+    (process.env.QUIRKS
+      ? !!findMatchingType("application/json", availableRequestContentTypes) ||
+        availableRequestContentTypes.length === 0
+      : true)
+  ) {
     yield {
       code: "request.body.unknown",
       message: "No matching schema found for request body",

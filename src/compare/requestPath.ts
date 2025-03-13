@@ -7,7 +7,7 @@ import type { Interaction } from "../documents/pact";
 import type { Result } from "../results/index";
 import { baseMockDetails } from "../results/index";
 import { minimumSchema } from "../transform/index";
-import { config } from "../utils/config";
+import type { Config } from "../utils/config";
 import { dereferenceOas } from "../utils/schema";
 import { isSimpleSchema } from "../utils/quirks";
 import { getValidateFunction } from "../utils/validation";
@@ -19,6 +19,7 @@ export function* compareReqPath(
   route: Router.FindResult<Router.HTTPVersion.V1>,
   interaction: Interaction,
   index: number,
+  config: Config,
 ): Iterable<Result> {
   const { method, oas, operation, path } = route.store;
 

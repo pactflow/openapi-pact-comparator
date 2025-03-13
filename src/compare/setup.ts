@@ -5,7 +5,6 @@ import Router, { HTTPMethod } from "find-my-way";
 import { uniqWith } from "lodash-es";
 import { cleanPathParameter } from "./utils/parameters";
 import { dereferenceOas } from "../utils/schema";
-import { config } from "../utils/config";
 
 export function setupAjv(options: Options): Ajv {
   const ajv = new Ajv(options);
@@ -30,6 +29,7 @@ const SUPPORTED_METHODS = [
 
 export function setupRouter(
   oas: OpenAPIV2.Document | OpenAPIV3.Document,
+  config: Map<string, boolean>,
 ): Router.Instance<Router.HTTPVersion.V1> {
   const router = Router({
     ignoreDuplicateSlashes: config.get("duplicateSlashes"),

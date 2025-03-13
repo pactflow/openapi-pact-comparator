@@ -1,6 +1,20 @@
 const quirks = !!process.env.QUIRKS;
 
-export const config = new Map([
+export type Config = Map<
+  | "ignoreDuplicateSlashes"
+  | "ignoreTrailingSlash"
+  | "noTransformNonNullableResponseSchema"
+  | "legacyParser"
+  | "disableMultipartFormdata"
+  | "noValidateRequestBodyUnlessApplicationJson"
+  | "noValidateComplexParameters"
+  | "castObjectsInPact"
+  | "noAuthorizationSchema"
+  | "noPercentEncoding",
+  boolean
+>;
+
+export const defaultConfig: Config = new Map([
   // SMV ignores duplicate slashes in OAS
   ["ignoreDuplicateSlashes", quirks],
 
@@ -28,4 +42,14 @@ export const config = new Map([
   // SMV only validated schemas of arrays and objects in path, headers, and
   // query params
   ["noValidateComplexParameters", quirks],
+
+  // SMV casts "[object Object]" queries as objects for validation purposes,
+  // rather than flag it as a string - suggesting a broken Pact file
+  ["castObjectsInPact", quirks],
+
+  // SMV only checks presence of Authorization header, it does not check its schema
+  ["noAuthorizationSchema", quirks],
+
+  // SMV allows percentages in path, even if it is not percent encoded
+  ["noPercentEncoding", quirks],
 ]);

@@ -14,15 +14,18 @@ import { compareReqHeader } from "./requestHeader";
 import { compareResBody } from "./responseBody";
 import { compareResHeader } from "./responseHeader";
 import { baseMockDetails } from "../results/index";
+import { defaultConfig, Config } from "../utils/config";
 import { ARRAY_SEPARATOR } from "../utils/queryParams";
 
 export class Comparator {
   #ajvCoerce: Ajv;
   #ajvNocoerce: Ajv;
+  #config: Config;
   #oas: OpenAPIV2.Document | OpenAPIV3.Document;
   #router?: Router.Instance<Router.HTTPVersion.V1>;
 
   constructor(oas: OpenAPIV2.Document | OpenAPIV3.Document) {
+    this.#config = new Map(defaultConfig);
     this.#oas = oas;
 
     const ajvOptions = {
@@ -46,7 +49,7 @@ export class Comparator {
   async *compare(pact: Pact): AsyncGenerator<Result> {
     if (!this.#router) {
       await parseOas(this.#oas);
-      this.#router = setupRouter(this.#oas);
+      this.#router = setupRouter(this.#oas, this.#config);
     }
 
     const parsedPact = parsePact(pact);
@@ -63,7 +66,7 @@ export class Comparator {
       const { method, path, query } = interaction.request;
       let pathWithLeadingSlash = path.startsWith("/") ? path : `/${path}`;
 
-      if (process.env.QUIRKS) {
+      if (this.#config.get("noPercentEncoding")) {
         pathWithLeadingSlash = pathWithLeadingSlash.replaceAll("%", "%25");
       }
 
@@ -106,7 +109,13 @@ export class Comparator {
       }
 
       const results = Array.from(
-        compareReqPath(this.#ajvCoerce, route, interaction, index),
+        compareReqPath(
+          this.#ajvCoerce,
+          route,
+          interaction,
+          index,
+          this.#config,
+        ),
       );
 
       if (results.length) {
@@ -114,11 +123,41 @@ export class Comparator {
         continue;
       }
 
-      yield* compareReqHeader(this.#ajvCoerce, route, interaction, index);
-      yield* compareReqQuery(this.#ajvCoerce, route, interaction, index);
-      yield* compareReqBody(this.#ajvNocoerce, route, interaction, index);
-      yield* compareResHeader(this.#ajvCoerce, route, interaction, index);
-      yield* compareResBody(this.#ajvNocoerce, route, interaction, index);
+      yield* compareReqHeader(
+        this.#ajvCoerce,
+        route,
+        interaction,
+        index,
+        this.#config,
+      );
+      yield* compareReqQuery(
+        this.#ajvCoerce,
+        route,
+        interaction,
+        index,
+        this.#config,
+      );
+      yield* compareReqBody(
+        this.#ajvNocoerce,
+        route,
+        interaction,
+        index,
+        this.#config,
+      );
+      yield* compareResHeader(
+        this.#ajvCoerce,
+        route,
+        interaction,
+        index,
+        this.#config,
+      );
+      yield* compareResBody(
+        this.#ajvNocoerce,
+        route,
+        interaction,
+        index,
+        this.#config,
+      );
     }
   }
 }

@@ -14,7 +14,7 @@ import {
   formatSchemaPath,
 } from "../results/index";
 import { minimumSchema } from "../transform/index";
-import { config } from "../utils/config";
+import type { Config } from "../utils/config";
 import { isValidRequest } from "../utils/interaction";
 import { ARRAY_SEPARATOR } from "../utils/queryParams";
 import { isSimpleSchema } from "../utils/quirks";
@@ -26,6 +26,7 @@ export function* compareReqQuery(
   route: Router.FindResult<Router.HTTPVersion.V1>,
   interaction: Interaction,
   index: number,
+  config: Config,
 ): Iterable<Result> {
   const { method, oas, operation, path, securitySchemes } = route.store;
 
@@ -79,7 +80,7 @@ export function* compareReqQuery(
           ? value.split(ARRAY_SEPARATOR)
           : value;
 
-      if (process.env.QUIRKS && value === "[object Object]") {
+      if (config.get("castObjectsInPact") && value === "[object Object]") {
         convertedValue = {};
       }
 

@@ -12,6 +12,7 @@ import {
   formatInstancePath,
   formatSchemaPath,
 } from "../results/index";
+import type { Config } from "../utils/config";
 import { minimumSchema, transformResponseSchema } from "../transform/index";
 import { dereferenceOas, splitPath } from "../utils/schema";
 import { getValidateFunction } from "../utils/validation";
@@ -28,6 +29,7 @@ export function* compareResBody(
   route: Router.FindResult<Router.HTTPVersion.V1>,
   interaction: Interaction,
   index: number,
+  config: Config,
 ): Iterable<Result> {
   const { method, oas, operation, path } = route.store;
   const { body, status } = interaction.response;
@@ -119,7 +121,7 @@ export function* compareResBody(
     if (value && canValidate(contentType) && schema) {
       const schemaId = `[root].paths.${path}.${method}.responses.${status}.content.${contentType}`;
       const validate = getValidateFunction(ajv, schemaId, () =>
-        transformResponseSchema(minimumSchema(schema, oas)),
+        transformResponseSchema(minimumSchema(schema, oas), config),
       );
       if (!validate(value)) {
         for (const error of validate.errors!) {

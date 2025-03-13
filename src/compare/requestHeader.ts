@@ -13,8 +13,8 @@ import {
   formatSchemaPath,
 } from "../results/index";
 import { minimumSchema } from "../transform/index";
+import type { Config } from "../utils/config";
 import { isValidRequest } from "../utils/interaction";
-import { config } from "../utils/config";
 import { isSimpleSchema } from "../utils/quirks";
 import { dereferenceOas, splitPath } from "../utils/schema";
 import { getValidateFunction } from "../utils/validation";
@@ -26,6 +26,7 @@ export function* compareReqHeader(
   route: Router.FindResult<Router.HTTPVersion.V1>,
   interaction: Interaction,
   index: number,
+  config: Config,
 ): Iterable<Result> {
   const { method, oas, operation, path, securitySchemes } = route.store;
   const { body } = interaction.request;
@@ -251,7 +252,7 @@ export function* compareReqHeader(
                 break;
             }
 
-            if (process.env.QUIRKS) {
+            if (config.get("noAuthorizationSchema")) {
               isValid = requestHeaders.get("authorization") !== null;
             }
 

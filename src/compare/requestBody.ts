@@ -16,18 +16,22 @@ import {
   formatSchemaPath,
 } from "../results/index";
 import { minimumSchema, transformRequestSchema } from "../transform/index";
-import { config } from "../utils/config";
+import type { Config } from "../utils/config";
 import { isValidRequest } from "../utils/interaction";
 import { dereferenceOas, splitPath } from "../utils/schema";
 import { getValidateFunction } from "../utils/validation";
 import { findMatchingType, getByContentType } from "./utils/content";
 
-const parseBody = (body: unknown, contentType: string) => {
+const parseBody = (
+  body: unknown,
+  contentType: string,
+  legacyParser: boolean,
+) => {
   if (
     contentType.includes("application/x-www-form-urlencoded") &&
     typeof body === "string"
   ) {
-    return config.get("legacyParser")
+    return legacyParser
       ? querystring.parse(body as string)
       : qs.parse(body as string, {
           allowDots: true,
@@ -57,13 +61,16 @@ const parseBody = (body: unknown, contentType: string) => {
   return body;
 };
 
-const canValidate = (contentType: string): boolean => {
+const canValidate = (
+  contentType: string,
+  disableMultipartFormdata: boolean,
+): boolean => {
   return !!findMatchingType(
     contentType,
     [
       "application/json",
       "application/x-www-form-urlencoded",
-      config.get("disableMultipartFormdata") ? "" : "multipart/form-data",
+      disableMultipartFormdata ? "" : "multipart/form-data",
     ].filter(Boolean),
   );
 };
@@ -75,6 +82,7 @@ export function* compareReqBody(
   route: Router.FindResult<Router.HTTPVersion.V1>,
   interaction: Interaction,
   index: number,
+  config: Config,
 ): Iterable<Result> {
   const { method, oas, operation, path } = route.store;
   const { body } = interaction.request;
@@ -111,13 +119,17 @@ export function* compareReqBody(
 
   if (
     schema &&
-    canValidate(contentType) &&
+    canValidate(contentType, config.get("disableMultipartFormdata")!) &&
     isValidRequest(interaction) &&
     (config.get("noValidateRequestBodyUnlessApplicationJson")
       ? !!findMatchingType("application/json", availableRequestContentTypes)
       : true)
   ) {
-    const value = parseBody(body, requestContentType);
+    const value = parseBody(
+      body,
+      requestContentType,
+      config.get("legacyParser")!,
+    );
     const schemaId = `[root].paths.${path}.${method}.requestBody.content.${contentType}`;
     const validate = getValidateFunction(ajv, schemaId, () =>
       transformRequestSchema(minimumSchema(schema, oas)),

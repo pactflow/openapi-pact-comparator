@@ -12,6 +12,7 @@ import {
   formatSchemaPath,
 } from "../results/index";
 import { minimumSchema } from "../transform/index";
+import type { Config } from "../utils/config";
 import { dereferenceOas, splitPath } from "../utils/schema";
 import { getValidateFunction } from "../utils/validation";
 import { findMatchingType, standardHttpResponseHeaders } from "./utils/content";
@@ -21,6 +22,7 @@ export function* compareResHeader(
   route: Router.FindResult<Router.HTTPVersion.V1>,
   interaction: Interaction,
   index: number,
+  _config: Config,
 ): Iterable<Result> {
   const { method, oas, operation, path } = route.store;
 

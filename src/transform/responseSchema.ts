@@ -1,12 +1,15 @@
 import { SchemaObject } from "ajv";
 import { each, get } from "lodash-es";
-import { config } from "../utils/config";
+import type { Config } from "../utils/config";
 import {
   splitPath,
   traverseWithDereferencing as traverse,
 } from "../utils/schema";
 
-export const transformResponseSchema = (schema: SchemaObject): SchemaObject => {
+export const transformResponseSchema = (
+  schema: SchemaObject,
+  config: Config,
+): SchemaObject => {
   // a provider must provide a superset of what the consumer asks for
   // additionalProperties expected in pact response are disallowed
   traverse(schema, (s) => {

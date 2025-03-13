@@ -59,9 +59,9 @@ for (const entry of fs.readdirSync(FIXTURES)) {
         .map((r) =>
           omit(r, ["source", "mockDetails.mockFile", "specDetails.specFile"]),
         );
-      await expect(
-        JSON.stringify(results, null, 2),
-      ).toMatchFileSnapshot(smvResultFile);
+      await expect(JSON.stringify(results, null, 2)).toMatchFileSnapshot(
+        smvResultFile,
+      );
     } catch (error) {
       // Swagger Mock Validator crashes!
       await expect(error.message).toMatchFileSnapshot(smvResultFile);

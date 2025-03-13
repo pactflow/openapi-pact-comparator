@@ -30,7 +30,7 @@ const SUPPORTED_METHODS = [
 
 export function setupRouter(
   oas: OpenAPIV2.Document | OpenAPIV3.Document,
-  config: Config
+  config: Config,
 ): Router.Instance<Router.HTTPVersion.V1> {
   const router = Router({
     ignoreDuplicateSlashes: config.get("ignore-duplicate-slashes"),

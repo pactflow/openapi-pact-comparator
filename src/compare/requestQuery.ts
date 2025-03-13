@@ -14,9 +14,10 @@ import {
   formatSchemaPath,
 } from "../results/index";
 import { minimumSchema } from "../transform/index";
+import type { Config } from "../utils/config";
 import { isValidRequest } from "../utils/interaction";
 import { ARRAY_SEPARATOR } from "../utils/queryParams";
-import { isQuirky } from "../utils/quirks";
+import { isSimpleSchema } from "../utils/quirks";
 import { dereferenceOas, splitPath } from "../utils/schema";
 import { getValidateFunction } from "../utils/validation";
 
@@ -25,17 +26,18 @@ export function* compareReqQuery(
   route: Router.FindResult<Router.HTTPVersion.V1>,
   interaction: Interaction,
   index: number,
+  config: Config,
 ): Iterable<Result> {
   const { method, oas, operation, path, securitySchemes } = route.store;
 
-  const searchParamsParsed = process.env.QUIRKS
+  const searchParamsParsed = config.get("legacy-parser")
     ? querystring.parse(route.searchParams as unknown as string)
     : qs.parse(route.searchParams, {
         allowDots: true,
         comma: true,
       });
 
-  const searchParamsUnparsed = process.env.QUIRKS
+  const searchParamsUnparsed = config.get("legacy-parser")
     ? querystring.parse(route.searchParams as unknown as string)
     : qs.parse(route.searchParams, {
         allowDots: false,
@@ -66,7 +68,9 @@ export function* compareReqQuery(
     ) {
       const schemaId = `[root].paths.${path}.${method}.parameters[${parameterIndex}]`;
       const validate = getValidateFunction(ajv, schemaId, () =>
-        process.env.QUIRKS && value && isQuirky(schema)
+        config.get("no-validate-complex-parameters") &&
+        isSimpleSchema(schema) &&
+        value
           ? {}
           : minimumSchema(schema, oas),
       );
@@ -76,7 +80,7 @@ export function* compareReqQuery(
           ? value.split(ARRAY_SEPARATOR)
           : value;
 
-      if (process.env.QUIRKS && value === "[object Object]") {
+      if (config.get("cast-objects-in-pact") && value === "[object Object]") {
         convertedValue = {};
       }
 

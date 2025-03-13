@@ -13,8 +13,9 @@ import {
   formatSchemaPath,
 } from "../results/index";
 import { minimumSchema } from "../transform/index";
+import type { Config } from "../utils/config";
 import { isValidRequest } from "../utils/interaction";
-import { isQuirky } from "../utils/quirks";
+import { isSimpleSchema } from "../utils/quirks";
 import { dereferenceOas, splitPath } from "../utils/schema";
 import { getValidateFunction } from "../utils/validation";
 import { findMatchingType, standardHttpRequestHeaders } from "./utils/content";
@@ -25,6 +26,7 @@ export function* compareReqHeader(
   route: Router.FindResult<Router.HTTPVersion.V1>,
   interaction: Interaction,
   index: number,
+  config: Config,
 ): Iterable<Result> {
   const { method, oas, operation, path, securitySchemes } = route.store;
   const { body } = interaction.request;
@@ -250,7 +252,7 @@ export function* compareReqHeader(
                 break;
             }
 
-            if (process.env.QUIRKS) {
+            if (config.get("no-authorization-schema")) {
               isValid = requestHeaders.get("authorization") !== null;
             }
 
@@ -317,7 +319,9 @@ export function* compareReqHeader(
     if (value !== null && schema && isValidRequest(interaction)) {
       const schemaId = `[root].paths.${path}.${method}.parameters[${parameterIndex}]`;
       const validate = getValidateFunction(ajv, schemaId, () =>
-        process.env.QUIRKS && value && isQuirky(schema)
+        config.get("no-validate-complex-parameters") &&
+        isSimpleSchema(schema) &&
+        value
           ? {}
           : minimumSchema(schema, oas),
       );

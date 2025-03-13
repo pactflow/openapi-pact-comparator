@@ -7,8 +7,9 @@ import type { Interaction } from "../documents/pact";
 import type { Result } from "../results/index";
 import { baseMockDetails } from "../results/index";
 import { minimumSchema } from "../transform/index";
+import type { Config } from "../utils/config";
 import { dereferenceOas } from "../utils/schema";
-import { isQuirky } from "../utils/quirks";
+import { isSimpleSchema } from "../utils/quirks";
 import { getValidateFunction } from "../utils/validation";
 import { cleanPathParameter } from "./utils/parameters";
 import { parseValue } from "./utils/parse";
@@ -18,6 +19,7 @@ export function* compareReqPath(
   route: Router.FindResult<Router.HTTPVersion.V1>,
   interaction: Interaction,
   index: number,
+  config: Config,
 ): Iterable<Result> {
   const { method, oas, operation, path } = route.store;
 
@@ -44,7 +46,9 @@ export function* compareReqPath(
     if (schema) {
       const schemaId = `[root].paths.${path}.${method}.parameters[${parameterIndex}]`;
       const validate = getValidateFunction(ajv, schemaId, () =>
-        process.env.QUIRKS && value && isQuirky(schema)
+        config.get("no-validate-complex-parameters") &&
+        isSimpleSchema(schema) &&
+        value
           ? {}
           : minimumSchema(schema, oas),
       );

@@ -5,7 +5,10 @@ import {
   traverseWithDereferencing as traverse,
 } from "../utils/schema";
 
-export const transformResponseSchema = (schema: SchemaObject): SchemaObject => {
+export const transformResponseSchema = (
+  schema: SchemaObject,
+  noTransformNonNullableResponseSchema: boolean,
+): SchemaObject => {
   // a provider must provide a superset of what the consumer asks for
   // additionalProperties expected in pact response are disallowed
   traverse(schema, (s) => {
@@ -17,7 +20,7 @@ export const transformResponseSchema = (schema: SchemaObject): SchemaObject => {
       !s.anyOf &&
       s.type &&
       s.type === "object" &&
-      (process.env.QUIRKS ? !s.nullable : true)
+      (noTransformNonNullableResponseSchema ? !s.nullable : true)
     ) {
       s.additionalProperties = false;
     }

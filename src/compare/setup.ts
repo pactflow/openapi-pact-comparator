@@ -59,6 +59,8 @@ export function setupRouter(
       if (parameters.length) {
         operation.parameters = parameters;
       }
+      (operation as OpenAPIV2.OperationObject).consumes ||= (oas as OpenAPIV2.Document).consumes;
+      (operation as OpenAPIV2.OperationObject).produces ||= (oas as OpenAPIV2.Document).produces;
       operation.security ||= oas.security;
       router.on(
         method.toUpperCase() as HTTPMethod,

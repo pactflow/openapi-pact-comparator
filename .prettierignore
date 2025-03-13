@@ -1,2 +1,2 @@
-src/__tests__/fixtures/**/results.json
-src/__tests__/fixtures/**/baseline.json
+src/__tests__/fixtures/**/opc-results.json
+src/__tests__/fixtures/**/smv-results.json

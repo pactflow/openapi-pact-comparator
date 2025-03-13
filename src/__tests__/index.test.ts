@@ -24,10 +24,10 @@ for (const entry of fs.readdirSync(FIXTURES)) {
   const dir = path.join(FIXTURES, entry);
   const pactFile = path.join(dir, "pact.json");
   const oasFile = path.join(dir, "oas.yaml");
-  const resultFile = path.join(dir, "results.json");
-  const baselineFile = path.join(dir, "baseline.json");
+  const opcResultFile = path.join(dir, "opc-results.json");
+  const smvResultFile = path.join(dir, "smv-results.json");
 
-  const runTest = async () => {
+  const runOpc = async () => {
     const pact = parse(await fs.promises.readFile(pactFile, "utf-8"));
     const oas = parse(await fs.promises.readFile(oasFile, "utf-8"));
 
@@ -38,17 +38,17 @@ for (const entry of fs.readdirSync(FIXTURES)) {
     }
 
     await expect(JSON.stringify(results, null, 2)).toMatchFileSnapshot(
-      resultFile,
+      opcResultFile,
     );
   };
 
-  const runBaseline = async () => {
+  const runSmv = async () => {
     try {
-      const baseline = await swaggerMockValidator.validate({
+      const smv = await swaggerMockValidator.validate({
         mockPathOrUrl: pactFile,
         specPathOrUrl: oasFile,
       });
-      const orderedBaseline = [...baseline.errors, ...baseline.warnings]
+      const results = [...smv.errors, ...smv.warnings]
         .sort((a, b) =>
           a.mockDetails.location.localeCompare(
             b.mockDetails.location,
@@ -59,22 +59,22 @@ for (const entry of fs.readdirSync(FIXTURES)) {
         .map((r) =>
           omit(r, ["source", "mockDetails.mockFile", "specDetails.specFile"]),
         );
-      await expect(
-        JSON.stringify(orderedBaseline, null, 2),
-      ).toMatchFileSnapshot(baselineFile);
+      await expect(JSON.stringify(results, null, 2)).toMatchFileSnapshot(
+        smvResultFile,
+      );
     } catch (error) {
       // Swagger Mock Validator crashes!
-      await expect(error.message).toMatchFileSnapshot(baselineFile);
+      await expect(error.message).toMatchFileSnapshot(smvResultFile);
     }
   };
 
   if (entry.endsWith("skip")) {
     it.skip(entry.replace(/\.skip$/, ""));
   } else if (entry.endsWith("only")) {
-    it.only(entry.replace(/\.only/, ""), runTest);
-    it.only(`${entry.replace(/\.only/, "")} baseline`, runBaseline, 300_000);
+    it.only(entry.replace(/\.only/, ""), runOpc);
+    it.only(`${entry.replace(/\.only/, "")} SMV`, runSmv, 300_000);
   } else {
-    it(entry, runTest);
-    it(`${entry} baseline`, runBaseline, 300_000);
+    it(entry, runOpc);
+    it(`${entry} SMV`, runSmv, 300_000);
   }
 }

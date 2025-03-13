@@ -49,6 +49,11 @@ export class Comparator {
   async *compare(pact: Pact): AsyncGenerator<Result> {
     if (!this.#router) {
       await parseOas(this.#oas);
+      for (const [key, value] of Object.entries(this.#oas.info)) {
+        if (key.startsWith("x-opc-config-")) {
+          this.#config.set(key.substring(13), value);
+        }
+      }
       this.#router = setupRouter(this.#oas, this.#config);
     }
 

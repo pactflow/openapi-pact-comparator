@@ -121,7 +121,10 @@ export function* compareResBody(
     if (value && canValidate(contentType) && schema) {
       const schemaId = `[root].paths.${path}.${method}.responses.${status}.content.${contentType}`;
       const validate = getValidateFunction(ajv, schemaId, () =>
-        transformResponseSchema(minimumSchema(schema, oas), config),
+        transformResponseSchema(
+          minimumSchema(schema, oas),
+          config.get("no-transform-non-nullable-response-schema")!,
+        ),
       );
       if (!validate(value)) {
         for (const error of validate.errors!) {

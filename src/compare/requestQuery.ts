@@ -30,14 +30,14 @@ export function* compareReqQuery(
 ): Iterable<Result> {
   const { method, oas, operation, path, securitySchemes } = route.store;
 
-  const searchParamsParsed = config.get("legacyParser")
+  const searchParamsParsed = config.get("legacy-parser")
     ? querystring.parse(route.searchParams as unknown as string)
     : qs.parse(route.searchParams, {
         allowDots: true,
         comma: true,
       });
 
-  const searchParamsUnparsed = config.get("legacyParser")
+  const searchParamsUnparsed = config.get("legacy-parser")
     ? querystring.parse(route.searchParams as unknown as string)
     : qs.parse(route.searchParams, {
         allowDots: false,
@@ -68,7 +68,7 @@ export function* compareReqQuery(
     ) {
       const schemaId = `[root].paths.${path}.${method}.parameters[${parameterIndex}]`;
       const validate = getValidateFunction(ajv, schemaId, () =>
-        config.get("noValidateComplexParameters") &&
+        config.get("no-validate-complex-parameters") &&
         isSimpleSchema(schema) &&
         value
           ? {}
@@ -80,7 +80,7 @@ export function* compareReqQuery(
           ? value.split(ARRAY_SEPARATOR)
           : value;
 
-      if (config.get("castObjectsInPact") && value === "[object Object]") {
+      if (config.get("cast-objects-in-pact") && value === "[object Object]") {
         convertedValue = {};
       }
 

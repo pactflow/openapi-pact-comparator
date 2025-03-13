@@ -46,7 +46,7 @@ export function* compareReqPath(
     if (schema) {
       const schemaId = `[root].paths.${path}.${method}.parameters[${parameterIndex}]`;
       const validate = getValidateFunction(ajv, schemaId, () =>
-        config.get("noValidateComplexParameters") &&
+        config.get("no-validate-complex-parameters") &&
         isSimpleSchema(schema) &&
         value
           ? {}

@@ -252,7 +252,7 @@ export function* compareReqHeader(
                 break;
             }
 
-            if (config.get("noAuthorizationSchema")) {
+            if (config.get("no-authorization-schema")) {
               isValid = requestHeaders.get("authorization") !== null;
             }
 
@@ -319,7 +319,7 @@ export function* compareReqHeader(
     if (value !== null && schema && isValidRequest(interaction)) {
       const schemaId = `[root].paths.${path}.${method}.parameters[${parameterIndex}]`;
       const validate = getValidateFunction(ajv, schemaId, () =>
-        config.get("noValidateComplexParameters") &&
+        config.get("no-validate-complex-parameters") &&
         isSimpleSchema(schema) &&
         value
           ? {}

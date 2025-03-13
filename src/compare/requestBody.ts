@@ -119,16 +119,16 @@ export function* compareReqBody(
 
   if (
     schema &&
-    canValidate(contentType, config.get("disableMultipartFormdata")!) &&
+    canValidate(contentType, config.get("disable-multipart-formdata")!) &&
     isValidRequest(interaction) &&
-    (config.get("noValidateRequestBodyUnlessApplicationJson")
+    (config.get("no-validate-request-body-unless-application-json")
       ? !!findMatchingType("application/json", availableRequestContentTypes)
       : true)
   ) {
     const value = parseBody(
       body,
       requestContentType,
-      config.get("legacyParser")!,
+      config.get("legacy-parser")!,
     );
     const schemaId = `[root].paths.${path}.${method}.requestBody.content.${contentType}`;
     const validate = getValidateFunction(ajv, schemaId, () =>
@@ -162,7 +162,7 @@ export function* compareReqBody(
     !!body &&
     !schema &&
     isValidRequest(interaction) &&
-    (config.get("noValidateRequestBodyUnlessApplicationJson")
+    (config.get("no-validate-request-body-unless-application-json")
       ? !!findMatchingType("application/json", availableRequestContentTypes) ||
         availableRequestContentTypes.length === 0
       : true)

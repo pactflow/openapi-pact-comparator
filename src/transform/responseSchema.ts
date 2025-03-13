@@ -1,6 +1,5 @@
 import { SchemaObject } from "ajv";
 import { each, get } from "lodash-es";
-import type { Config } from "../utils/config";
 import {
   splitPath,
   traverseWithDereferencing as traverse,
@@ -8,7 +7,7 @@ import {
 
 export const transformResponseSchema = (
   schema: SchemaObject,
-  config: Config,
+  noTransformNonNullableResponseSchema: boolean,
 ): SchemaObject => {
   // a provider must provide a superset of what the consumer asks for
   // additionalProperties expected in pact response are disallowed
@@ -21,7 +20,7 @@ export const transformResponseSchema = (
       !s.anyOf &&
       s.type &&
       s.type === "object" &&
-      (config.get("noTransformNonNullableResponseSchema") ? !s.nullable : true)
+      (noTransformNonNullableResponseSchema ? !s.nullable : true)
     ) {
       s.additionalProperties = false;
     }

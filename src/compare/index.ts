@@ -14,7 +14,7 @@ import { compareReqHeader } from "./requestHeader";
 import { compareResBody } from "./responseBody";
 import { compareResHeader } from "./responseHeader";
 import { baseMockDetails } from "../results/index";
-import { defaultConfig, Config } from "../utils/config";
+import { Config, DEFAULT_CONFIG } from "../utils/config";
 import { ARRAY_SEPARATOR } from "../utils/queryParams";
 
 export class Comparator {
@@ -25,7 +25,7 @@ export class Comparator {
   #router?: Router.Instance<Router.HTTPVersion.V1>;
 
   constructor(oas: OpenAPIV2.Document | OpenAPIV3.Document) {
-    this.#config = new Map(defaultConfig);
+    this.#config = new Map(DEFAULT_CONFIG);
     this.#oas = oas;
 
     const ajvOptions = {
@@ -66,7 +66,7 @@ export class Comparator {
       const { method, path, query } = interaction.request;
       let pathWithLeadingSlash = path.startsWith("/") ? path : `/${path}`;
 
-      if (this.#config.get("noPercentEncoding")) {
+      if (this.#config.get("no-percent-encoding")) {
         pathWithLeadingSlash = pathWithLeadingSlash.replaceAll("%", "%25");
       }
 

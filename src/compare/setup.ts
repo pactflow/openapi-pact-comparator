@@ -4,6 +4,7 @@ import addFormats from "ajv-formats";
 import Router, { HTTPMethod } from "find-my-way";
 import { uniqWith } from "lodash-es";
 import { cleanPathParameter } from "./utils/parameters";
+import type { Config } from "../utils/config";
 import { dereferenceOas } from "../utils/schema";
 
 export function setupAjv(options: Options): Ajv {
@@ -29,11 +30,11 @@ const SUPPORTED_METHODS = [
 
 export function setupRouter(
   oas: OpenAPIV2.Document | OpenAPIV3.Document,
-  config: Map<string, boolean>,
+  config: Config
 ): Router.Instance<Router.HTTPVersion.V1> {
   const router = Router({
-    ignoreDuplicateSlashes: config.get("duplicateSlashes"),
-    ignoreTrailingSlash: config.get("trailingSlash"),
+    ignoreDuplicateSlashes: config.get("ignore-duplicate-slashes"),
+    ignoreTrailingSlash: config.get("ignore-trailing-slash"),
     querystringParser: (s: string): string => s, // don't parse query in router
   });
   for (const oasPath in oas.paths) {

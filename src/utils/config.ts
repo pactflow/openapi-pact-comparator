@@ -1,6 +1,6 @@
 const quirks = !!process.env.QUIRKS;
 
-export type Config = Map<
+export type ConfigKeys =
   | "cast-objects-in-pact"
   | "disable-multipart-formdata"
   | "ignore-duplicate-slashes"
@@ -10,9 +10,9 @@ export type Config = Map<
   | "no-percent-encoding"
   | "no-transform-non-nullable-response-schema"
   | "no-validate-complex-parameters"
-  | "no-validate-request-body-unless-application-json",
-  boolean
->;
+  | "no-validate-request-body-unless-application-json";
+
+export type Config = Map<ConfigKeys, boolean>;
 
 export const DEFAULT_CONFIG: Config = new Map([
   // SMV casts "[object Object]" queries as objects for validation purposes,

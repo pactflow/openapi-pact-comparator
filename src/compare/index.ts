@@ -14,7 +14,7 @@ import { compareReqHeader } from "./requestHeader";
 import { compareResBody } from "./responseBody";
 import { compareResHeader } from "./responseHeader";
 import { baseMockDetails } from "../results/index";
-import { Config, DEFAULT_CONFIG } from "../utils/config";
+import { Config, ConfigKeys, DEFAULT_CONFIG } from "../utils/config";
 import { ARRAY_SEPARATOR } from "../utils/queryParams";
 
 export class Comparator {
@@ -51,7 +51,7 @@ export class Comparator {
       await parseOas(this.#oas);
       for (const [key, value] of Object.entries(this.#oas.info)) {
         if (key.startsWith("x-opc-config-")) {
-          this.#config.set(key.substring(13), value);
+          this.#config.set(key.substring(13) as ConfigKeys, value);
         }
       }
       this.#router = setupRouter(this.#oas, this.#config);

@@ -7,19 +7,19 @@ import qs from "qs";
 import querystring from "node:querystring";
 import multipart from "parse-multipart-data";
 
-import type { Interaction } from "../documents/pact";
-import type { Result } from "../results/index";
+import type { Interaction } from "#documents/pact";
+import type { Result } from "#results/index";
 import {
   baseMockDetails,
   formatMessage,
   formatInstancePath,
   formatSchemaPath,
-} from "../results/index";
-import { minimumSchema, transformRequestSchema } from "../transform/index";
-import type { Config } from "../utils/config";
-import { isValidRequest } from "../utils/interaction";
-import { dereferenceOas, splitPath } from "../utils/schema";
-import { getValidateFunction } from "../utils/validation";
+} from "#results/index";
+import { minimumSchema, transformRequestSchema } from "#transform/index";
+import type { Config } from "#utils/config";
+import { isValidRequest } from "#utils/interaction";
+import { dereferenceOas, splitPath } from "#utils/schema";
+import { getValidateFunction } from "#utils/validation";
 import { findMatchingType, getByContentType } from "./utils/content";
 
 const parseBody = (

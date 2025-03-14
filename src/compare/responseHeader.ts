@@ -3,18 +3,18 @@ import type Ajv from "ajv/dist/2019";
 import type Router from "find-my-way";
 import { get } from "lodash-es";
 
-import type { Interaction } from "../documents/pact";
-import type { Result } from "../results/index";
+import type { Interaction } from "#documents/pact";
+import type { Result } from "#results/index";
 import {
   baseMockDetails,
   formatMessage,
   formatInstancePath,
   formatSchemaPath,
-} from "../results/index";
-import { minimumSchema } from "../transform/index";
-import type { Config } from "../utils/config";
-import { dereferenceOas, splitPath } from "../utils/schema";
-import { getValidateFunction } from "../utils/validation";
+} from "#results/index";
+import { minimumSchema } from "#transform/index";
+import type { Config } from "#utils/config";
+import { dereferenceOas, splitPath } from "#utils/schema";
+import { getValidateFunction } from "#utils/validation";
 import { findMatchingType, standardHttpResponseHeaders } from "./utils/content";
 
 export function* compareResHeader(

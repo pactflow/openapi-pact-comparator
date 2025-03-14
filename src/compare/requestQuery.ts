@@ -5,21 +5,21 @@ import { get } from "lodash-es";
 import qs from "qs";
 import querystring from "node:querystring";
 
-import type { Result } from "../results/index";
-import type { Interaction } from "../documents/pact";
+import type { Result } from "#results/index";
+import type { Interaction } from "#documents/pact";
 import {
   baseMockDetails,
   formatMessage,
   formatInstancePath,
   formatSchemaPath,
-} from "../results/index";
-import { minimumSchema } from "../transform/index";
-import type { Config } from "../utils/config";
-import { isValidRequest } from "../utils/interaction";
-import { ARRAY_SEPARATOR } from "../utils/queryParams";
-import { isSimpleSchema } from "../utils/quirks";
-import { dereferenceOas, splitPath } from "../utils/schema";
-import { getValidateFunction } from "../utils/validation";
+} from "#results/index";
+import { minimumSchema } from "#transform/index";
+import type { Config } from "#utils/config";
+import { isValidRequest } from "#utils/interaction";
+import { ARRAY_SEPARATOR } from "#utils/queryParams";
+import { isSimpleSchema } from "#utils/quirks";
+import { dereferenceOas, splitPath } from "#utils/schema";
+import { getValidateFunction } from "#utils/validation";
 
 export function* compareReqQuery(
   ajv: Ajv,

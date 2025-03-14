@@ -3,7 +3,7 @@ import { each, get } from "lodash-es";
 import {
   splitPath,
   traverseWithDereferencing as traverse,
-} from "../utils/schema";
+} from "#utils/schema";
 
 export const transformResponseSchema = (
   schema: SchemaObject,

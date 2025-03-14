@@ -5,8 +5,10 @@
     "esModuleInterop": true,
     "lib": ["dom", "dom.iterable", "es2021"],
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
+    "noEmit": true,
     "outDir": "dist",
+    "rootDir": ".",
     "strict": true,
     "target": "esnext"
   },

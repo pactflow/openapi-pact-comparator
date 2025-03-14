@@ -2,20 +2,22 @@ import type { OpenAPIV2, OpenAPIV3 } from "openapi-types";
 import Ajv from "ajv/dist/2019";
 import Router, { HTTPMethod } from "find-my-way";
 
-import type { Pact } from "../documents/pact";
-import type { Result } from "../results/index";
+import type { Pact } from "#documents/pact";
+import type { Result } from "#results/index";
+
+import { compareReqPath } from "#compare/requestPath";
+import { compareReqQuery } from "#compare/requestQuery";
+import { compareReqBody } from "#compare/requestBody";
+import { compareReqHeader } from "#compare/requestHeader";
+import { compareResBody } from "#compare/responseBody";
+import { compareResHeader } from "#compare/responseHeader";
+import { parse as parseOas } from "#documents/oas";
+import { parse as parsePact } from "#documents/pact";
+import { baseMockDetails } from "#results/index";
+import { Config, ConfigKeys, DEFAULT_CONFIG } from "#utils/config";
+import { ARRAY_SEPARATOR } from "#utils/queryParams";
+
 import { setupAjv, setupRouter } from "./setup";
-import { parse as parseOas } from "../documents/oas";
-import { parse as parsePact } from "../documents/pact";
-import { compareReqPath } from "./requestPath";
-import { compareReqQuery } from "./requestQuery";
-import { compareReqBody } from "./requestBody";
-import { compareReqHeader } from "./requestHeader";
-import { compareResBody } from "./responseBody";
-import { compareResHeader } from "./responseHeader";
-import { baseMockDetails } from "../results/index";
-import { Config, ConfigKeys, DEFAULT_CONFIG } from "../utils/config";
-import { ARRAY_SEPARATOR } from "../utils/queryParams";
 
 export class Comparator {
   #ajvCoerce: Ajv;

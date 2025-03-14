@@ -4,18 +4,18 @@ import type Router from "find-my-way";
 import type { OpenAPIV2, OpenAPIV3 } from "openapi-types";
 import { get } from "lodash-es";
 
-import type { Interaction } from "../documents/pact";
-import type { Result } from "../results/index";
+import type { Interaction } from "#documents/pact";
+import type { Result } from "#results/index";
 import {
   baseMockDetails,
   formatMessage,
   formatInstancePath,
   formatSchemaPath,
-} from "../results/index";
-import type { Config } from "../utils/config";
-import { minimumSchema, transformResponseSchema } from "../transform/index";
-import { dereferenceOas, splitPath } from "../utils/schema";
-import { getValidateFunction } from "../utils/validation";
+} from "#results/index";
+import type { Config } from "#utils/config";
+import { minimumSchema, transformResponseSchema } from "#transform/index";
+import { dereferenceOas, splitPath } from "#utils/schema";
+import { getValidateFunction } from "#utils/validation";
 import { findMatchingType, getByContentType } from "./utils/content";
 
 const canValidate = (contentType = ""): boolean => {

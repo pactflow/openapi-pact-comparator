@@ -3,12 +3,4 @@ info:
   title: OAS
   version: 1.0.0
 
-paths:
-  /exists:
-    get:
-      responses:
-        "200":
-          description: description
-          content:
-            "application/json":
-              schema: {}
+paths: {}

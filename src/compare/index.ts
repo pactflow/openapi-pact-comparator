@@ -61,14 +61,6 @@ export class Comparator {
 
     const parsedPact = parsePact(pact);
 
-    if (parsedPact.interactions.length === 0) {
-      yield {
-        code: "pact-broker.no-pacts-found",
-        message: "No consumer pacts found in Pact Broker",
-        type: "warning",
-      };
-    }
-
     for (const [index, interaction] of parsedPact.interactions.entries()) {
       const { method, path, query } = interaction.request;
       let pathWithLeadingSlash = path.startsWith("/") ? path : `/${path}`;

@@ -182,6 +182,10 @@ export function* compareReqHeader(
     let isSecured = false;
     const maybeResults: Result[] = [];
     for (const scheme of operation.security || []) {
+      if (Object.keys(scheme).length === 0) {
+        isSecured = true;
+        break;
+      }
       for (const schemeName of Object.keys(scheme)) {
         const scheme = securitySchemes[schemeName];
         switch (scheme?.type) {

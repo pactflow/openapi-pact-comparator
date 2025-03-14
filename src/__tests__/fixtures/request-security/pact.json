@@ -248,6 +248,16 @@
       "response": {
         "status": 200
       }
+    },
+    {
+      "description": "should pass on successful request using empty security",
+      "request": {
+        "method": "GET",
+        "path": "/empty"
+      },
+      "response": {
+        "status": 200
+      }
     }
   ]
 }

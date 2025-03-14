@@ -14,7 +14,7 @@ paths:
       responses:
         "201":
           $ref: "#/components/responses/Response.Body"
-  /wildcards/*:
+  /wildcards/**:
     get:
       responses:
         "200":

@@ -225,7 +225,7 @@
             }
           }
         },
-        "/wildcards/*": {
+        "/wildcards/**": {
           "get": {
             "responses": {
               "200": {

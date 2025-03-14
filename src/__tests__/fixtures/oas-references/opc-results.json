@@ -85,21 +85,5 @@
       "value": false
     },
     "type": "error"
-  },
-  {
-    "code": "request.path-or-method.unknown",
-    "message": "Path or method not defined in spec file: GET /wildcards/foo",
-    "mockDetails": {
-      "interactionDescription": "should error (but not crash) for wildcard routes",
-      "interactionState": "[none]",
-      "location": "[root].interactions[5].request.path",
-      "value": "/wildcards/foo"
-    },
-    "specDetails": {
-      "location": "[root].paths",
-      "pathMethod": null,
-      "pathName": null
-    },
-    "type": "error"
   }
 ]

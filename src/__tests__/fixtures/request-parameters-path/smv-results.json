@@ -5,7 +5,7 @@
     "mockDetails": {
       "interactionDescription": "should pass for path with trailing slash",
       "interactionState": "[none]",
-      "location": "[root].interactions[5].response.body",
+      "location": "[root].interactions[6].response.body",
       "value": {
         "number": 123
       }
@@ -24,7 +24,7 @@
     "mockDetails": {
       "interactionDescription": "should error with missing parameter",
       "interactionState": "[none]",
-      "location": "[root].interactions[6].request.path",
+      "location": "[root].interactions[7].request.path",
       "value": "/integer/"
     },
     "specDetails": {
@@ -32,6 +32,25 @@
       "pathMethod": null,
       "pathName": null,
       "value": {
+        "/string/{id}": {
+          "get": {
+            "parameters": [
+              {
+                "in": "path",
+                "name": "id",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                }
+              }
+            ],
+            "responses": {
+              "200": {
+                "description": "description"
+              }
+            }
+          }
+        },
         "/integer/{id}": {
           "get": {
             "parameters": [
@@ -151,7 +170,7 @@
     "mockDetails": {
       "interactionDescription": "should error when path does not match integer spec",
       "interactionState": "[none]",
-      "location": "[root].interactions[7].request.path",
+      "location": "[root].interactions[8].request.path",
       "value": "/integer/abc"
     },
     "specDetails": {
@@ -159,6 +178,25 @@
       "pathMethod": null,
       "pathName": null,
       "value": {
+        "/string/{id}": {
+          "get": {
+            "parameters": [
+              {
+                "in": "path",
+                "name": "id",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                }
+              }
+            ],
+            "responses": {
+              "200": {
+                "description": "description"
+              }
+            }
+          }
+        },
         "/integer/{id}": {
           "get": {
             "parameters": [
@@ -278,7 +316,7 @@
     "mockDetails": {
       "interactionDescription": "should error when path does not match boolean spec",
       "interactionState": "[none]",
-      "location": "[root].interactions[8].request.path",
+      "location": "[root].interactions[9].request.path",
       "value": "/boolean/abc"
     },
     "specDetails": {
@@ -286,6 +324,25 @@
       "pathMethod": null,
       "pathName": null,
       "value": {
+        "/string/{id}": {
+          "get": {
+            "parameters": [
+              {
+                "in": "path",
+                "name": "id",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                }
+              }
+            ],
+            "responses": {
+              "200": {
+                "description": "description"
+              }
+            }
+          }
+        },
         "/integer/{id}": {
           "get": {
             "parameters": [
@@ -405,7 +462,7 @@
     "mockDetails": {
       "interactionDescription": "should error when path and method does not exist in spec",
       "interactionState": "[none]",
-      "location": "[root].interactions[11].request.path",
+      "location": "[root].interactions[12].request.path",
       "value": "/does-not-exist"
     },
     "specDetails": {
@@ -413,6 +470,25 @@
       "pathMethod": null,
       "pathName": null,
       "value": {
+        "/string/{id}": {
+          "get": {
+            "parameters": [
+              {
+                "in": "path",
+                "name": "id",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                }
+              }
+            ],
+            "responses": {
+              "200": {
+                "description": "description"
+              }
+            }
+          }
+        },
         "/integer/{id}": {
           "get": {
             "parameters": [
@@ -532,7 +608,7 @@
     "mockDetails": {
       "interactionDescription": "should error when path does not exist in spec",
       "interactionState": "[none]",
-      "location": "[root].interactions[12].request.path",
+      "location": "[root].interactions[13].request.path",
       "value": "/integer/1"
     },
     "specDetails": {
@@ -540,6 +616,25 @@
       "pathMethod": null,
       "pathName": null,
       "value": {
+        "/string/{id}": {
+          "get": {
+            "parameters": [
+              {
+                "in": "path",
+                "name": "id",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                }
+              }
+            ],
+            "responses": {
+              "200": {
+                "description": "description"
+              }
+            }
+          }
+        },
         "/integer/{id}": {
           "get": {
             "parameters": [
@@ -659,7 +754,7 @@
     "mockDetails": {
       "interactionDescription": "should not raise subsequent errors when request.path-or-method.unknown",
       "interactionState": "[none]",
-      "location": "[root].interactions[13].request.path",
+      "location": "[root].interactions[14].request.path",
       "value": "/integer/1"
     },
     "specDetails": {
@@ -667,6 +762,25 @@
       "pathMethod": null,
       "pathName": null,
       "value": {
+        "/string/{id}": {
+          "get": {
+            "parameters": [
+              {
+                "in": "path",
+                "name": "id",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                }
+              }
+            ],
+            "responses": {
+              "200": {
+                "description": "description"
+              }
+            }
+          }
+        },
         "/integer/{id}": {
           "get": {
             "parameters": [

@@ -3,6 +3,17 @@ info:
   title: path parameters
   version: 1.0.0
 paths:
+  /string/{id}:
+    get:
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: description
   /integer/{id}:
     get:
       parameters:

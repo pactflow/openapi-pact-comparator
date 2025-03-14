@@ -71,7 +71,7 @@ export function setupRouter(
       operation.security ||= oas.security;
       router.on(
         method.toUpperCase() as HTTPMethod,
-        path.replaceAll(/\*+/g, "{:wildcard}"),
+        path.replaceAll(/\*+/g, "*"),
         () => {},
         {
           method,

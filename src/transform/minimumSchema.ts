@@ -1,7 +1,7 @@
 import type { OpenAPIV3 } from "openapi-types";
 import { SchemaObject } from "ajv";
 import { cloneDeep, get, set } from "lodash-es";
-import { dereferenceOas, splitPath, traverse } from "../utils/schema";
+import { dereferenceOas, splitPath, traverse } from "#utils/schema";
 
 // draft-06 onwards converts exclusiveMinimum and exclusiveMaximum to numbers
 const convertExclusiveMinMax = (s: SchemaObject) => {

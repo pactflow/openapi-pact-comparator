@@ -3,9 +3,10 @@ import Ajv, { Options } from "ajv/dist/2019.js";
 import addFormats from "ajv-formats";
 import Router, { HTTPMethod } from "find-my-way";
 import { uniqWith } from "lodash-es";
+
+import type { Config } from "#utils/config";
+import { dereferenceOas } from "#utils/schema";
 import { cleanPathParameter } from "./utils/parameters";
-import type { Config } from "../utils/config";
-import { dereferenceOas } from "../utils/schema";
 
 export function setupAjv(options: Options): Ajv {
   const ajv = new Ajv(options);

@@ -3,14 +3,14 @@ import type Ajv from "ajv/dist/2019";
 import type Router from "find-my-way";
 import { get } from "lodash-es";
 
-import type { Interaction } from "../documents/pact";
-import type { Result } from "../results/index";
-import { baseMockDetails } from "../results/index";
-import { minimumSchema } from "../transform/index";
-import type { Config } from "../utils/config";
-import { dereferenceOas } from "../utils/schema";
-import { isSimpleSchema } from "../utils/quirks";
-import { getValidateFunction } from "../utils/validation";
+import type { Interaction } from "#documents/pact";
+import type { Result } from "#results/index";
+import { baseMockDetails } from "#results/index";
+import { minimumSchema } from "#transform/index";
+import type { Config } from "#utils/config";
+import { dereferenceOas } from "#utils/schema";
+import { isSimpleSchema } from "#utils/quirks";
+import { getValidateFunction } from "#utils/validation";
 import { cleanPathParameter } from "./utils/parameters";
 import { parseValue } from "./utils/parse";
 

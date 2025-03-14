@@ -178,121 +178,15 @@ export function* compareReqHeader(
 
   // security headers
   // ----------------
+  const securityHeaders = [];
   if (isValidRequest(interaction)) {
-    let isSecured = false;
-    const maybeResults: Result[] = [];
     for (const scheme of operation.security || []) {
-      if (Object.keys(scheme).length === 0) {
-        isSecured = true;
-        break;
-      }
       for (const schemeName of Object.keys(scheme)) {
         const scheme = securitySchemes[schemeName];
-        switch (scheme?.type) {
-          case "apiKey":
-            switch (scheme.in) {
-              case "header":
-                if (requestHeaders.has(scheme.name)) {
-                  isSecured = true;
-                } else {
-                  maybeResults.push({
-                    code: "request.authorization.missing",
-                    message:
-                      "Request Authorization header is missing but is required by the spec file",
-                    mockDetails: {
-                      ...baseMockDetails(interaction),
-                      location: `[root].interactions[${index}].request.headers`,
-                      value: get(interaction, "request.headers"),
-                    },
-                    specDetails: {
-                      location: `[root].paths.${path}.${method}`,
-                      pathMethod: method,
-                      pathName: path,
-                      value: operation,
-                    },
-                    type: "error",
-                  });
-                }
-                requestHeaders.delete(scheme.name);
-                break;
-              case "cookie":
-              case "query":
-            }
-            break;
-          case "basic": {
-            const basicAuth = requestHeaders.get("authorization") || "";
-            if (basicAuth.startsWith("Basic ")) {
-              isSecured = true;
-            } else {
-              maybeResults.push({
-                code: "request.authorization.missing",
-                message:
-                  "Request Authorization header is missing but is required by the spec file",
-                mockDetails: {
-                  ...baseMockDetails(interaction),
-                  location: `[root].interactions[${index}].request.headers`,
-                  value: get(interaction, "request.headers"),
-                },
-                specDetails: {
-                  location: `[root].paths.${path}.${method}`,
-                  pathMethod: method,
-                  pathName: path,
-                  value: operation,
-                },
-                type: "error",
-              });
-            }
-            break;
-          }
-          case "http": {
-            const auth = requestHeaders.get("authorization") || "";
-            let isValid = false;
-            switch (scheme.scheme) {
-              case "basic":
-                isValid = auth.toLowerCase().startsWith("basic ");
-                break;
-              case "bearer":
-                isValid = auth.toLowerCase().startsWith("bearer ");
-                break;
-            }
-
-            if (config.get("no-authorization-schema")) {
-              isValid = requestHeaders.get("authorization") !== null;
-            }
-
-            if (isValid) {
-              isSecured = true;
-            } else {
-              maybeResults.push({
-                code: "request.authorization.missing",
-                message:
-                  "Request Authorization header is missing but is required by the spec file",
-                mockDetails: {
-                  ...baseMockDetails(interaction),
-                  location: `[root].interactions[${index}].request.headers`,
-                  value: get(interaction, "request.headers"),
-                },
-                specDetails: {
-                  location: `[root].paths.${path}.${method}`,
-                  pathMethod: method,
-                  pathName: path,
-                  value: operation,
-                },
-                type: "error",
-              });
-            }
-            break;
-          }
-          case "mutualTLS":
-          case "oauth2":
-          case "openIdConnect":
-          // ignore
+        if (scheme && scheme.type === "apiKey" && scheme.in === "header") {
+          securityHeaders.push(scheme.name.toLowerCase());
         }
       }
-    }
-
-    if (!isSecured) {
-      yield* maybeResults;
     }
   }
 
@@ -396,22 +290,24 @@ export function* compareReqHeader(
   // -----------------
   if (isValidRequest(interaction)) {
     for (const [headerName, headerValue] of requestHeaders.entries()) {
-      yield {
-        code: "request.header.unknown",
-        message: `Request header is not defined in the spec file: ${headerName}`,
-        mockDetails: {
-          ...baseMockDetails(interaction),
-          location: `[root].interactions[${index}].request.headers.${headerName}`,
-          value: headerValue,
-        },
-        specDetails: {
-          location: `[root].paths.${path}.${method}`,
-          pathMethod: method,
-          pathName: path,
-          value: operation,
-        },
-        type: "warning",
-      };
+      if (!securityHeaders.includes(headerName)) {
+        yield {
+          code: "request.header.unknown",
+          message: `Request header is not defined in the spec file: ${headerName}`,
+          mockDetails: {
+            ...baseMockDetails(interaction),
+            location: `[root].interactions[${index}].request.headers.${headerName}`,
+            value: headerValue,
+          },
+          specDetails: {
+            location: `[root].paths.${path}.${method}`,
+            pathMethod: method,
+            pathName: path,
+            value: operation,
+          },
+          type: "warning",
+        };
+      }
     }
   }
 }

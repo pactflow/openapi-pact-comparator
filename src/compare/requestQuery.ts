@@ -110,74 +110,38 @@ export function* compareReqQuery(
     delete searchParamsParsed[dereferencedParameter.name];
   }
 
+  const securityQueries = [];
   if (isValidRequest(interaction)) {
     for (const scheme of operation.security || []) {
       for (const schemeName of Object.keys(scheme)) {
         const scheme = securitySchemes[schemeName];
-        switch (scheme?.type) {
-          case "apiKey":
-            switch (scheme.in) {
-              case "query":
-                if (!searchParamsParsed[scheme.name]) {
-                  yield {
-                    code: "request.authorization.missing",
-                    message:
-                      "Request Authorization query is missing but is required by the spec file",
-                    mockDetails: {
-                      ...baseMockDetails(interaction),
-                      location: `[root].interactions[${index}].request.query`,
-                      value: get(interaction, "request.query"),
-                    },
-                    specDetails: {
-                      location: `[root].paths.${path}.${method}`,
-                      pathMethod: method,
-                      pathName: path,
-                      value: operation,
-                    },
-                    type: "error",
-                  };
-                }
-                delete searchParamsParsed[scheme.name];
-                break;
-              case "cookie":
-              case "header":
-              // ignore
-            }
-            break;
-          case "http":
-            switch (scheme.scheme) {
-              case "basic":
-              case "bearer":
-              // ignore
-            }
-            break;
-          case "mutualTLS":
-          case "oauth2":
-          case "openIdConnect":
-          // ignore
+        if (scheme?.type === "apiKey" && scheme?.in === "query") {
+          securityQueries.push(scheme.name);
         }
       }
     }
   }
 
   if (isValidRequest(interaction)) {
-    for (const [key, value] of Object.entries(searchParamsParsed)) {
-      yield {
-        code: "request.query.unknown",
-        message: `Query parameter is not defined in the spec file: ${key}`,
-        mockDetails: {
-          ...baseMockDetails(interaction),
-          location: `[root].interactions[${index}].request.query.${key}`,
-          value: value,
-        },
-        specDetails: {
-          location: `[root].paths.${path}.${method}`,
-          pathMethod: method,
-          pathName: path,
-          value: operation,
-        },
-        type: "warning",
-      };
+    for (const [queryName, queryValue] of Object.entries(searchParamsParsed)) {
+      if (!securityQueries.includes(queryName)) {
+        yield {
+          code: "request.query.unknown",
+          message: `Query parameter is not defined in the spec file: ${queryName}`,
+          mockDetails: {
+            ...baseMockDetails(interaction),
+            location: `[root].interactions[${index}].request.query.${queryName}`,
+            value: queryValue,
+          },
+          specDetails: {
+            location: `[root].paths.${path}.${method}`,
+            pathMethod: method,
+            pathName: path,
+            value: operation,
+          },
+          type: "warning",
+        };
+      }
     }
   }
 }

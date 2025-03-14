@@ -9,6 +9,7 @@ import { compareReqPath } from "#compare/requestPath";
 import { compareReqQuery } from "#compare/requestQuery";
 import { compareReqBody } from "#compare/requestBody";
 import { compareReqHeader } from "#compare/requestHeader";
+import { compareReqSecurity } from "#compare/requestSecurity";
 import { compareResBody } from "#compare/responseBody";
 import { compareResHeader } from "#compare/responseHeader";
 import { parse as parseOas } from "#documents/oas";
@@ -130,6 +131,13 @@ export class Comparator {
         continue;
       }
 
+      yield* compareReqSecurity(
+        this.#ajvCoerce,
+        route,
+        interaction,
+        index,
+        this.#config,
+      );
       yield* compareReqHeader(
         this.#ajvCoerce,
         route,

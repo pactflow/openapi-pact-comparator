@@ -34,9 +34,12 @@ export function* compareReqPath(
     const schema: SchemaObject = dereferencedParameter.schema || {
       type: dereferencedParameter.type,
     };
-    const value = parseValue(
-      route.params[cleanPathParameter(dereferencedParameter.name)],
-    );
+    const value =
+      schema?.type === "string"
+        ? route.params[cleanPathParameter(dereferencedParameter.name)]
+        : parseValue(
+            route.params[cleanPathParameter(dereferencedParameter.name)],
+          );
 
     // ignore when OAS has unused parameter in the operation parameters
     if (!(cleanPathParameter(dereferencedParameter.name) in route.params)) {

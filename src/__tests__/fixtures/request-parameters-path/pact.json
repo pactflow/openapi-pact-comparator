@@ -3,6 +3,16 @@
   "provider": { "name": "provider" },
   "interactions": [
     {
+      "description": "should pass when path matches string spec",
+      "request": {
+        "method": "GET",
+        "path": "/string/a,b,c"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
       "description": "should pass when path matches integer spec",
       "request": {
         "method": "GET",

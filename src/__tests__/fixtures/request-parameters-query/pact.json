@@ -1,6 +1,11 @@
 {
   "consumer": { "name": "consumer" },
   "provider": { "name": "provider" },
+  "metadata": {
+    "pactSpecification": {
+      "version": "4.0"
+    }
+  },
   "interactions": [
     {
       "description": "should pass for query in object form",
@@ -62,6 +67,20 @@
         "method": "GET",
         "path": "/string",
         "query": "name=mark&age="
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "should handle queries with unicode characters",
+      "request": {
+        "method": "GET",
+        "path": "/string",
+        "query": {
+          "unicode": ["푟Ꝫ띡ⴵ"],
+          "name": ["mark"]
+        }
       },
       "response": {
         "status": 200

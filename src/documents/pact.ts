@@ -1,6 +1,5 @@
 import { Static, Type } from "@sinclair/typebox";
 import Ajv, { ErrorObject } from "ajv";
-import anyAscii from "any-ascii";
 
 // a full schema can be found at https://github.com/pactflow/pact-schemas
 // but we don't use that here, because we try to be permissive with input
@@ -92,7 +91,7 @@ const parseAsPactV4Body = (body: unknown) => {
   }
 };
 
-const cleanString = (s: string) => anyAscii(s).replaceAll(/[\r\n\0]/g, "");
+const cleanString = (s: string) => s.replaceAll(/[\r\n\0]/g, "");
 
 const flattenValues = (
   values?: null | string | Record<string, string | string[]>,

@@ -4,10 +4,14 @@
   "description": "",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
+  "files": [
+    "dist"
+  ],
   "exports": {
     ".": {
+      "default": "./dist/index.js",
       "import": "./dist/index.mjs",
-      "default": "./dist/index.js"
+      "types": "./dist/src/index.d.ts"
     }
   },
   "scripts": {

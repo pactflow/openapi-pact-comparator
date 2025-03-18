@@ -5,7 +5,7 @@
     "mockDetails": {
       "interactionDescription": "should error with missing parameter",
       "interactionState": "[none]",
-      "location": "[root].interactions[7].request.path",
+      "location": "[root].interactions[8].request.path",
       "value": "/integer/"
     },
     "specDetails": {
@@ -38,7 +38,7 @@
     "mockDetails": {
       "interactionDescription": "should error when path does not match integer spec",
       "interactionState": "[none]",
-      "location": "[root].interactions[8].request.path",
+      "location": "[root].interactions[9].request.path",
       "value": "/integer/abc"
     },
     "specDetails": {
@@ -71,7 +71,7 @@
     "mockDetails": {
       "interactionDescription": "should error when path does not match boolean spec",
       "interactionState": "[none]",
-      "location": "[root].interactions[9].request.path",
+      "location": "[root].interactions[10].request.path",
       "value": "/boolean/abc"
     },
     "specDetails": {
@@ -87,49 +87,6 @@
             "schema": {
               "type": "boolean"
             }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "description"
-          }
-        }
-      }
-    },
-    "type": "error"
-  },
-  {
-    "code": "request.path-or-method.unknown",
-    "message": "Path or method not defined in spec file: GET /exploded-object/string=abc,number=abc",
-    "mockDetails": {
-      "interactionDescription": "should error when path does not match object spec",
-      "interactionState": "[none]",
-      "location": "[root].interactions[10].request.path",
-      "value": "/exploded-object/string=abc,number=abc"
-    },
-    "specDetails": {
-      "location": "[root].paths",
-      "pathMethod": null,
-      "pathName": null,
-      "value": {
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "string": {
-                  "type": "string"
-                },
-                "number": {
-                  "type": "number"
-                }
-              }
-            },
-            "style": "simple",
-            "explode": true
           }
         ],
         "responses": {
@@ -186,11 +143,54 @@
   },
   {
     "code": "request.path-or-method.unknown",
+    "message": "Path or method not defined in spec file: GET /exploded-object/string=abc,number=abc",
+    "mockDetails": {
+      "interactionDescription": "should error when path does not match object spec",
+      "interactionState": "[none]",
+      "location": "[root].interactions[12].request.path",
+      "value": "/exploded-object/string=abc,number=abc"
+    },
+    "specDetails": {
+      "location": "[root].paths",
+      "pathMethod": null,
+      "pathName": null,
+      "value": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "string": {
+                  "type": "string"
+                },
+                "number": {
+                  "type": "number"
+                }
+              }
+            },
+            "style": "simple",
+            "explode": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "description"
+          }
+        }
+      }
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.path-or-method.unknown",
     "message": "Path or method not defined in spec file: GET /does-not-exist",
     "mockDetails": {
       "interactionDescription": "should error when path and method does not exist in spec",
       "interactionState": "[none]",
-      "location": "[root].interactions[12].request.path",
+      "location": "[root].interactions[13].request.path",
       "value": "/does-not-exist"
     },
     "specDetails": {
@@ -206,7 +206,7 @@
     "mockDetails": {
       "interactionDescription": "should error when path does not exist in spec",
       "interactionState": "[none]",
-      "location": "[root].interactions[13].request.path",
+      "location": "[root].interactions[14].request.path",
       "value": "/integer/1"
     },
     "specDetails": {
@@ -222,7 +222,7 @@
     "mockDetails": {
       "interactionDescription": "should not raise subsequent errors when request.path-or-method.unknown",
       "interactionState": "[none]",
-      "location": "[root].interactions[14].request.path",
+      "location": "[root].interactions[15].request.path",
       "value": "/integer/1"
     },
     "specDetails": {

@@ -36,6 +36,7 @@ export function setupRouter(
   const router = Router({
     ignoreDuplicateSlashes: config.get("ignore-duplicate-slashes"),
     ignoreTrailingSlash: config.get("ignore-trailing-slash"),
+    maxParamLength: 2048, // default = 100
     querystringParser: (s: string): string => s, // don't parse query in router
   });
   for (const oasPath in oas.paths) {

@@ -68,5 +68,73 @@
       "value": "string"
     },
     "type": "error"
+  },
+  {
+    "code": "request.query.incompatible",
+    "message": "Value is incompatible with the parameter defined in the spec file: must be number",
+    "mockDetails": {
+      "interactionDescription": "should warn about incompatible array types",
+      "interactionState": "[none]",
+      "location": "[root].interactions[4].request.query.ssv.2",
+      "value": "a"
+    },
+    "specDetails": {
+      "location": "[root].paths./array.get.parameters[0].schema.items.type",
+      "pathMethod": "get",
+      "pathName": "/array",
+      "value": "number"
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.query.incompatible",
+    "message": "Value is incompatible with the parameter defined in the spec file: must be number",
+    "mockDetails": {
+      "interactionDescription": "should warn about incompatible array types",
+      "interactionState": "[none]",
+      "location": "[root].interactions[4].request.query.tsv.2",
+      "value": "b"
+    },
+    "specDetails": {
+      "location": "[root].paths./array.get.parameters[1].schema.items.type",
+      "pathMethod": "get",
+      "pathName": "/array",
+      "value": "number"
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.query.incompatible",
+    "message": "Value is incompatible with the parameter defined in the spec file: must be number",
+    "mockDetails": {
+      "interactionDescription": "should warn about incompatible array types",
+      "interactionState": "[none]",
+      "location": "[root].interactions[4].request.query.pipes.2",
+      "value": "c"
+    },
+    "specDetails": {
+      "location": "[root].paths./array.get.parameters[2].schema.items.type",
+      "pathMethod": "get",
+      "pathName": "/array",
+      "value": "number"
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.query.incompatible",
+    "message": "Value is incompatible with the parameter defined in the spec file: must be number",
+    "mockDetails": {
+      "interactionDescription": "should warn about incompatible array types",
+      "interactionState": "[none]",
+      "location": "[root].interactions[4].request.query.multi.2",
+      "value": "d"
+    },
+    "specDetails": {
+      "location": "[root].paths./array.get.parameters[3].schema.items.type",
+      "pathMethod": "get",
+      "pathName": "/array",
+      "value": "number"
+    },
+    "type": "error"
   }
 ]

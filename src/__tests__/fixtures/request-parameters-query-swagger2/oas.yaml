@@ -17,3 +17,37 @@ paths:
       responses:
         "200":
           description: OK
+  /array:
+    get:
+      parameters:
+        - in: query
+          name: ssv
+          required: true
+          type: array
+          items:
+            type: number
+          collectionFormat: ssv
+        - in: query
+          name: tsv
+          required: true
+          type: array
+          items:
+            type: number
+          collectionFormat: tsv
+        - in: query
+          name: pipes
+          required: true
+          type: array
+          items:
+            type: number
+          collectionFormat: pipes
+        - in: query
+          name: multi
+          required: true
+          type: array
+          items:
+            type: number
+          collectionFormat: multi
+      responses:
+        "200":
+          description: OK

@@ -44,6 +44,17 @@
       "response": {
         "status": 200
       }
+    },
+    {
+      "description": "should warn about incompatible array types",
+      "request": {
+        "method": "GET",
+        "path": "/array",
+        "query": "ssv=1 2 a&tsv=3\t4\tb&pipes=5|6|c&multi=7&multi=8&multi=d"
+      },
+      "response": {
+        "status": 200
+      }
     }
   ]
 }

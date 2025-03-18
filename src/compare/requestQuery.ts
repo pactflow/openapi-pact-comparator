@@ -1,7 +1,7 @@
 import type { SchemaObject } from "ajv";
 import type Ajv from "ajv/dist/2019";
 import type Router from "find-my-way";
-import { get } from "lodash-es";
+import { get, omit } from "lodash-es";
 import qs from "qs";
 import querystring from "node:querystring";
 
@@ -20,6 +20,12 @@ import { ARRAY_SEPARATOR } from "#utils/queryParams";
 import { isSimpleSchema } from "#utils/quirks";
 import { dereferenceOas, splitPath } from "#utils/schema";
 import { getValidateFunction } from "#utils/validation";
+
+const SWAGGER2_SEPARATORS = {
+  ssv: " ",
+  tsv: "\t",
+  pipes: "|",
+} as Record<string, string>;
 
 export function* compareReqQuery(
   ajv: Ajv,
@@ -51,9 +57,10 @@ export function* compareReqQuery(
     if (dereferencedParameter.in !== "query") {
       continue;
     }
-    const schema: SchemaObject = dereferencedParameter.schema || {
-      type: dereferencedParameter.type,
-    };
+
+    const schema: SchemaObject =
+      dereferencedParameter.schema ||
+      omit(dereferencedParameter, ["name", "in", "description", "required"]);
 
     if (dereferencedParameter.schema?.type === "string") {
       searchParamsParsed[dereferencedParameter.name] =
@@ -69,6 +76,7 @@ export function* compareReqQuery(
       const schemaId = `[root].paths.${path}.${method}.parameters[${parameterIndex}]`;
       const validate = getValidateFunction(ajv, schemaId, () =>
         config.get("no-validate-complex-parameters") &&
+        oas.openapi &&
         isSimpleSchema(schema) &&
         value
           ? {}
@@ -77,7 +85,12 @@ export function* compareReqQuery(
 
       let convertedValue =
         schema.type === "array" && typeof value === "string"
-          ? value.split(ARRAY_SEPARATOR)
+          ? value.split(
+              (oas.openapi
+                ? ARRAY_SEPARATOR
+                : SWAGGER2_SEPARATORS[schema.collectionFormat]) ||
+                ARRAY_SEPARATOR,
+            )
           : value;
 
       if (config.get("cast-objects-in-pact") && value === "[object Object]") {

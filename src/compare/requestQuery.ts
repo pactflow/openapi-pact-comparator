@@ -25,7 +25,7 @@ const SWAGGER2_SEPARATORS = {
   ssv: " ",
   tsv: "\t",
   pipes: "|",
-};
+} as Record<string, string>;
 
 export function* compareReqQuery(
   ajv: Ajv,

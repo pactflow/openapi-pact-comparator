@@ -1,7 +1,5 @@
 # OpenAPI-Pact-Comparator
 
-> This code is still in BETA. Proceed with caution.
-
 ## What is this?
 
 This compares OpenAPI schemas and Pact contracts to determine if they are
@@ -59,3 +57,17 @@ for (const pact of pacts) {
   }
 }
 ```
+
+## Quirks mode
+
+To retain compatibility with
+[swagger-mock-validator](https://github.com/pactflow/swagger-mock-validator),
+an environment variable `QUIRKS` can be set [to any value]. When this is true,
+all of SMV quirks are reproduced in case you are unable to migrate immediately.
+
+The quirks can also be enabled/disabled by adding to the `info` section of the
+OAS some extensions in the form of `x-opc-config-${quirk-name}`, where quirks
+are listed [here](./src/utils/config.ts).
+
+This mode may be removed eventually, so you should always endeavour to try to
+update your comparisons to use the latest functionality.

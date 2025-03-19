@@ -28,7 +28,7 @@ jobs:
           node-version: ${{ matrix.node }}
           cache: npm
       - name: Install dependencies
-        run: npm ci --include=dev
+        run: npm install
       - name: Lint
         run: npm run lint
       - name: Prettier
@@ -50,7 +50,7 @@ jobs:
           node-version: 22
           cache: npm
       - name: Install dependencies
-        run: npm ci --include=dev
+        run: npm install
       - name: Release
         id: changesets
         uses: changesets/action@v1

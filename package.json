@@ -30,8 +30,15 @@
     "typecheck": "tsc --project tsconfig.json"
   },
   "keywords": [],
-  "author": "Voon Siong Wong",
-  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pactflow/openapi-pact-comparator.git"
+  },
+  "author": {
+    "name": "Voon Siong Wong",
+    "email": "voon.wong@smartbear.com"
+  },
+  "license": "Apache-2.0",
   "type": "module",
   "devDependencies": {
     "@apidevtools/swagger-parser": "10.1.1",

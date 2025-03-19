@@ -20,6 +20,7 @@
     "changeset:publish": "changeset publish",
     "changeset:version": "changeset version",
     "lint": "eslint --max-warnings=0",
+    "postinstall": "patch-package",
     "prepare": "npm run build",
     "prettier": "prettier --check .",
     "prettier:fix": "prettier --cache --list-different --write .",

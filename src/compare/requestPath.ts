@@ -1,7 +1,7 @@
 import type { SchemaObject } from "ajv";
 import type Ajv from "ajv/dist/2019";
 import type Router from "find-my-way";
-import { get } from "lodash-es";
+import { get, omit } from "lodash-es";
 
 import type { Interaction } from "#documents/pact";
 import type { Result } from "#results/index";
@@ -31,9 +31,9 @@ export function* compareReqPath(
     }
 
     const dereferencedParameter = dereferenceOas(parameter, oas);
-    const schema: SchemaObject = dereferencedParameter.schema || {
-      type: dereferencedParameter.type,
-    };
+    const schema: SchemaObject =
+      dereferencedParameter.schema ||
+      omit(dereferencedParameter, ["name", "in", "description", "required"]);
     const value =
       schema?.type === "string"
         ? route.params[cleanPathParameter(dereferencedParameter.name)]
@@ -48,9 +48,9 @@ export function* compareReqPath(
 
     if (schema) {
       const schemaId = `[root].paths.${path}.${method}.parameters[${parameterIndex}]`;
-      const validate = getValidateFunction(ajv, schemaId, () =>
+      const validate = getValidateFunction(ajv, schemaId + !!value, () =>
         config.get("no-validate-complex-parameters") &&
-        isSimpleSchema(schema) &&
+        isSimpleSchema(schema, oas) &&
         value
           ? {}
           : minimumSchema(schema, oas),

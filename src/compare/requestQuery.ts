@@ -74,10 +74,10 @@ export function* compareReqQuery(
       isValidRequest(interaction)
     ) {
       const schemaId = `[root].paths.${path}.${method}.parameters[${parameterIndex}]`;
-      const validate = getValidateFunction(ajv, schemaId, () =>
+      const validate = getValidateFunction(ajv, schemaId + !!value, () =>
         config.get("no-validate-complex-parameters") &&
         oas.openapi &&
-        isSimpleSchema(schema) &&
+        isSimpleSchema(schema, oas) &&
         value
           ? {}
           : minimumSchema(schema, oas),

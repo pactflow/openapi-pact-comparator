@@ -1,7 +1,7 @@
 {
-  "name": "openapi-pact-comparator",
-  "version": "1.0.0",
-  "description": "",
+  "name": "@pactflow/openapi-pact-comparator",
+  "version": "0.0.1",
+  "description": "An OpenAPI Specification and Pact Comparison library",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
   "files": [
@@ -16,6 +16,9 @@
   },
   "scripts": {
     "build": "rollup --config",
+    "changeset:add": "changeset add",
+    "changeset:publish": "changeset publish",
+    "changeset:version": "changeset version",
     "lint": "eslint --max-warnings=0",
     "postinstall": "patch-package",
     "prepare": "npm run build",
@@ -27,11 +30,19 @@
     "typecheck": "tsc --project tsconfig.json"
   },
   "keywords": [],
-  "author": "Voon Siong Wong",
-  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pactflow/openapi-pact-comparator.git"
+  },
+  "author": {
+    "name": "Voon Siong Wong",
+    "email": "voon.wong@smartbear.com"
+  },
+  "license": "Apache-2.0",
   "type": "module",
   "devDependencies": {
     "@apidevtools/swagger-parser": "10.1.1",
+    "@changesets/cli": "^2.28.1",
     "@eslint/js": "9.22.0",
     "@pactflow/swagger-mock-validator": "14.5.0",
     "@rollup/plugin-commonjs": "28.0.3",

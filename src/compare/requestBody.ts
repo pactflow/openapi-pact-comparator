@@ -113,7 +113,7 @@ export function* compareReqBody(
   const required =
     dereferenceOas(operation.requestBody || {}, oas)?.required ||
     dereferenceOas(bodyParameter || {}, oas)?.required;
-  if (!required && !body) {
+  if (!required && body === undefined) {
     return;
   }
 

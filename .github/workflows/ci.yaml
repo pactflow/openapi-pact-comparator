@@ -27,6 +27,7 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
           cache: npm
+          cache-dependency-path: 'patches/*.patch'
       - name: Install dependencies
         run: npm ci && npm run patch-package
       - name: Lint
@@ -49,6 +50,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
+          cache-dependency-path: 'patches/*.patch'
       - name: Install dependencies
         run: npm ci && npm run patch-package
       - name: Creating .npmrc

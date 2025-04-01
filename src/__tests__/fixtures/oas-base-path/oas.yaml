@@ -1,0 +1,12 @@
+openapi: 3.0.0
+info:
+  x-opc-config-base-path: /custom-prefix
+  title: OAS
+  version: 1.0.0
+
+paths:
+  /path:
+    get:
+      responses:
+        "200":
+          description: ok

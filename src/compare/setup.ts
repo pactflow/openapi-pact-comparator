@@ -29,6 +29,10 @@ const SUPPORTED_METHODS = [
   "TRACE",
 ];
 
+interface ExtendedOpenAPIV3InfoObject extends OpenAPIV3.InfoObject {
+  "x-opc-config-base-path"?: string;
+}
+
 export function setupRouter(
   oas: OpenAPIV2.Document | OpenAPIV3.Document,
   config: Config,
@@ -41,8 +45,12 @@ export function setupRouter(
   });
   for (const oasPath in oas.paths) {
     // NB: all path parameters are required in OAS
+    const basePath =
+      (oas.info as ExtendedOpenAPIV3InfoObject)["x-opc-config-base-path"] ||
+      (oas as OpenAPIV2.Document).basePath ||
+      "";
     const path =
-      ((oas as OpenAPIV2.Document).basePath || "") +
+      basePath +
       oasPath
         .replaceAll(/{.*?}/g, cleanPathParameter)
         .replaceAll(/{([.;]?)([^*]+?)\*?}/g, "$1:$2(.+)");

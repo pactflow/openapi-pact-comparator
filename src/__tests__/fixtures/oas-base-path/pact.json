@@ -1,0 +1,16 @@
+{
+  "consumer": { "name": "consumer" },
+  "provider": { "name": "provider" },
+  "interactions": [
+    {
+      "description": "should pass when using prefix",
+      "request": {
+        "method": "GET",
+        "path": "/custom-prefix/path"
+      },
+      "response": {
+        "status": 200
+      }
+    }
+  ]
+}

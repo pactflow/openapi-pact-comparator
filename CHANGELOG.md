@@ -1,5 +1,11 @@
 # @pactflow/openapi-pact-comparator
 
+## 1.2.0
+
+### Minor Changes
+
+- 17103d0: Handle URI encoding in OAS references
+
 ## 1.1.0
 
 ### Minor Changes

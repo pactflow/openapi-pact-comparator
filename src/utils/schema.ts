@@ -3,7 +3,7 @@ import type { SchemaObject } from "ajv";
 import { each, get } from "lodash-es";
 
 const unescape = (subpath: string) =>
-  subpath.replaceAll("~1", "/").replaceAll("~0", "~");
+  decodeURI(subpath.replaceAll("~1", "/").replaceAll("~0", "~"));
 
 export const splitPath = (path: string) => {
   if (path.startsWith("#/")) {

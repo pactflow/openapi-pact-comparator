@@ -84,6 +84,48 @@
     "type": "error"
   },
   {
+    "code": "request.query.incompatible",
+    "message": "Value is incompatible with the parameter defined in the spec file: must have required property 'value'",
+    "mockDetails": {
+      "interactionDescription": "should fail with missing parameters",
+      "interactionState": "[none]",
+      "location": "[root].interactions[1]",
+      "value": {
+        "description": "should fail with missing parameters",
+        "request": {
+          "method": "POST",
+          "path": "/login",
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "username": "bob"
+          }
+        },
+        "response": {
+          "status": 201,
+          "body": {
+            "id": "123"
+          }
+        }
+      }
+    },
+    "specDetails": {
+      "location": "[root].paths./login.post.parameters[2]",
+      "pathMethod": "post",
+      "pathName": "/login",
+      "value": {
+        "in": "query",
+        "name": "bracket",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      }
+    },
+    "type": "error"
+  },
+  {
     "code": "request.body.incompatible",
     "message": "Request body is incompatible with the request body schema in the spec file: must have required property 'username'",
     "mockDetails": {
@@ -171,6 +213,14 @@
               {
                 "in": "query",
                 "name": "nested",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                }
+              },
+              {
+                "in": "query",
+                "name": "bracket",
                 "required": true,
                 "schema": {
                   "type": "string"

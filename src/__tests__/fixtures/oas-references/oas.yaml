@@ -9,6 +9,7 @@ paths:
       parameters:
         - $ref: "#/components/parameters/Request.Param"
         - $ref: "#/components/parameters/nested.param~1with~0tilde"
+        - $ref: "#/components/parameters/nested.param.with%7Bbrackets%7D"
       requestBody:
         $ref: "#/components/requestBodies/Request.Body"
       responses:
@@ -36,6 +37,12 @@ components:
     "nested.param/with~tilde":
       in: query
       name: nested
+      required: true
+      schema:
+        type: string
+    "nested.param.with{brackets}":
+      in: query
+      name: bracket
       required: true
       schema:
         type: string

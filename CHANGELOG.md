@@ -1,5 +1,11 @@
 # @pactflow/openapi-pact-comparator
 
+## 1.3.0
+
+### Minor Changes
+
+- d081434: Remove swagger-parser validation as it is very slow
+
 ## 1.2.0
 
 ### Minor Changes

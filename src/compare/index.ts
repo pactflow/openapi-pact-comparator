@@ -31,6 +31,8 @@ export class Comparator {
     this.#config = new Map(DEFAULT_CONFIG);
     this.#oas = oas;
 
+    parseOas(oas);
+
     const ajvOptions = {
       allErrors: true,
       discriminator: true,
@@ -51,7 +53,6 @@ export class Comparator {
 
   async *compare(pact: Pact): AsyncGenerator<Result> {
     if (!this.#router) {
-      await parseOas(this.#oas);
       for (const [key, value] of Object.entries(this.#oas.info)) {
         if (key.startsWith("x-opc-config-")) {
           this.#config.set(key.substring(13) as ConfigKeys, value);

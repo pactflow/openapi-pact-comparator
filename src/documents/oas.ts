@@ -1,6 +1,4 @@
 import type { OpenAPIV2, OpenAPIV3 } from "openapi-types";
-import SwaggerParser from "@apidevtools/swagger-parser";
-import { cloneDeep } from "lodash-es";
 
 const isSwagger2 = (oas: OpenAPIV2.Document): boolean =>
   Object.prototype.hasOwnProperty.call(oas, "swagger") &&
@@ -12,9 +10,7 @@ const isOpenApi3 = (oas: OpenAPIV3.Document): boolean =>
   typeof oas.openapi === "string" &&
   oas.openapi.indexOf("3.") === 0;
 
-export const parse = async (
-  oas: OpenAPIV2.Document | OpenAPIV3.Document,
-): Promise<void> => {
+export const parse = (oas: OpenAPIV2.Document | OpenAPIV3.Document): void => {
   if (
     !isSwagger2(oas as OpenAPIV2.Document) &&
     !isOpenApi3(oas as OpenAPIV3.Document)
@@ -22,7 +18,7 @@ export const parse = async (
     throw new ParserError();
   }
 
-  await SwaggerParser.validate(cloneDeep(oas));
+  // FIXME: ideally, we validate the document here
 };
 
 export class ParserError extends Error {

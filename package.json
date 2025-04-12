@@ -48,7 +48,7 @@
     "@rollup/plugin-json": "6.1.0",
     "@rollup/plugin-node-resolve": "16.0.1",
     "@rollup/plugin-typescript": "12.1.2",
-    "@sinclair/typebox": "0.34.32",
+    "@sinclair/typebox": "0.34.33",
     "@types/js-yaml": "4.0.9",
     "@types/lodash-es": "4.17.12",
     "@types/node": "22.13.17",

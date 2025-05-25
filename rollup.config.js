@@ -3,26 +3,34 @@ import { nodeResolve } from "@rollup/plugin-node-resolve";
 import typescript from "@rollup/plugin-typescript";
 import json from "@rollup/plugin-json";
 
-const common = {
-  input: "src/index.ts",
-  plugins: [commonjs(), typescript(), nodeResolve(), json()],
-};
+const plugins = [commonjs(), typescript(), nodeResolve(), json()];
 
 export default [
   {
-    ...common,
+    input: "src/cli.ts",
+    output: {
+      file: "dist/cli.cjs",
+      format: "cjs",
+      sourcemap: true,
+    },
+    plugins,
+  },
+  {
+    input: "src/index.ts",
     output: {
       file: "dist/index.mjs",
       format: "es",
       sourcemap: true,
     },
+    plugins,
   },
   {
-    ...common,
+    input: "src/index.ts",
     output: {
       file: "dist/index.cjs",
       format: "cjs",
       sourcemap: true,
     },
+    plugins,
   },
 ];

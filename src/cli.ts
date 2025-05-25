@@ -22,11 +22,13 @@ const readAndParse = async (filename: string) => {
 program
   .version(packageJson.version)
   .command("opc")
-  .description(`Compares an OAS file against one or more Pact files.
+  .description(
+    `Compares an OAS file against one or more Pact files.
 
 Comparison output is presented as ND-JSON, with one line per Pact file.
 
-The exit code equals the number of Pact files with errors (not the number of errors in one comparison).`)
+The exit code equals the number of Pact files with errors (not the number of errors in one comparison).`,
+  )
   .argument("<oas>", "path to OAS file")
   .argument("<pact...>", "path(s) to Pact file(s)")
   .action(async (oasPath, pactPaths) => {
@@ -42,7 +44,7 @@ The exit code equals the number of Pact files with errors (not the number of err
         results.push(result);
       }
 
-      errors += results.some(r => r.type === "error") ? 1 : 0;
+      errors += results.some((r) => r.type === "error") ? 1 : 0;
       console.log(JSON.stringify(results));
     }
 

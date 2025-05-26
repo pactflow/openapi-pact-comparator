@@ -38,7 +38,7 @@
     "name": "Voon Siong Wong",
     "email": "voon.wong@smartbear.com"
   },
-  "license": "Apache-2.0",
+  "license": "MIT",
   "type": "module",
   "devDependencies": {
     "@changesets/cli": "2.29.4",

@@ -23,7 +23,7 @@ program
   .version(packageJson.version)
   .command("opc")
   .description(
-    `Compares an OAS file against one or more Pact files.
+    `Compares an OAD file against one or more Pact files.
 
 Comparison output is presented as ND-JSON, with one line per Pact file.
 

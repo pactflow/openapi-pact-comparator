@@ -40,11 +40,11 @@
     "name": "Voon Siong Wong",
     "email": "voon.wong@smartbear.com"
   },
-  "license": "Apache-2.0",
+  "license": "MIT",
   "type": "module",
   "devDependencies": {
     "@changesets/cli": "2.29.4",
-    "@eslint/js": "9.26.0",
+    "@eslint/js": "9.27.0",
     "@pactflow/swagger-mock-validator": "14.5.0",
     "@rollup/plugin-commonjs": "28.0.3",
     "@rollup/plugin-json": "6.1.0",
@@ -59,7 +59,7 @@
     "ajv": "8.17.1",
     "ajv-formats": "3.0.1",
     "commander": "14.0.0",
-    "eslint": "9.26.0",
+    "eslint": "9.27.0",
     "eslint-config-prettier": "10.1.5",
     "find-my-way": "9.3.0",
     "js-yaml": "4.1.0",

@@ -1,5 +1,11 @@
 # @pactflow/openapi-pact-comparator
 
+## 1.4.0
+
+### Minor Changes
+
+- d47416d: Add CLI tool
+
 ## 1.3.0
 
 ### Minor Changes

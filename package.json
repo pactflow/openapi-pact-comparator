@@ -43,7 +43,7 @@
   "license": "MIT",
   "type": "module",
   "devDependencies": {
-    "@changesets/cli": "2.29.4",
+    "@changesets/cli": "2.29.5",
     "@eslint/js": "9.29.0",
     "@pactflow/swagger-mock-validator": "14.5.0",
     "@rollup/plugin-commonjs": "28.0.6",

@@ -60,7 +60,7 @@
     "ajv-formats": "3.0.1",
     "commander": "14.0.0",
     "eslint": "9.31.0",
-    "eslint-config-prettier": "10.1.5",
+    "eslint-config-prettier": "10.1.8",
     "find-my-way": "9.3.0",
     "js-yaml": "4.1.0",
     "lodash-es": "4.17.21",

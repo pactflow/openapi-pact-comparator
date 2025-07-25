@@ -37,7 +37,7 @@ for (const entry of fs.readdirSync(FIXTURES)) {
       results.push(result);
     }
 
-    await expect(JSON.stringify(results, null, 2)).toMatchFileSnapshot(
+    await expect(JSON.stringify(results, null, 2) + "\n").toMatchFileSnapshot(
       opcResultFile,
     );
   };
@@ -59,7 +59,7 @@ for (const entry of fs.readdirSync(FIXTURES)) {
         .map((r) =>
           omit(r, ["source", "mockDetails.mockFile", "specDetails.specFile"]),
         );
-      await expect(JSON.stringify(results, null, 2)).toMatchFileSnapshot(
+      await expect(JSON.stringify(results, null, 2) + "\n").toMatchFileSnapshot(
         smvResultFile,
       );
     } catch (error) {

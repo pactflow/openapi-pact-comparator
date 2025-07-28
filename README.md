@@ -28,7 +28,7 @@ references. Further, unused references are skipped to speed up schema
 compilation in AJV.
 
 **Multiple pacts can be compared in one invocation to maximise schema reuse**.
-Instead of perforing the comparison per pair of OAS + Pact, we can reuse the
+Instead of performing the comparison per pair of OAS + Pact, we can reuse the
 compiled OAS schemas across multiple Pacts.
 
 **A fast HTTP router is used to match provider routes**. Instead of iterating

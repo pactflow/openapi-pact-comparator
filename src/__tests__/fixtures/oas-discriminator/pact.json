@@ -1,0 +1,79 @@
+{
+  "consumer": {
+    "name": "animal-consumer"
+  },
+  "provider": {
+    "name": "animal-provider"
+  },
+  "interactions": [
+    {
+      "description": "a request to get a Dog",
+      "request": {
+        "method": "GET",
+        "path": "/animals/1",
+        "headers": {
+          "Authorization": "Bearer 2019-01-14T11:34:18.045Z"
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "petType": "notadog",
+          "name": "Rover",
+          "owner": "Drover",
+          "bark": "dry"
+        }
+      }
+    },
+    {
+      "description": "a request to get a Cat",
+      "request": {
+        "method": "GET",
+        "path": "/animals/2",
+        "headers": {
+          "Authorization": "Bearer 2019-01-14T11:34:18.045Z"
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "petType": "notacat",
+          "name": "kitty",
+          "owner": "crazy cat lady",
+          "meow": "squeely"
+        }
+      }
+    },
+    {
+      "description": "a request to get a Cat (would fail if no discriminator)",
+      "request": {
+        "method": "GET",
+        "path": "/animals/2",
+        "headers": {
+          "Authorization": "Bearer 2019-01-14T11:34:18.045Z"
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "petType": "notacat",
+          "name": "kitty"
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "pactSpecification": {
+      "version": "2.0.0"
+    }
+  }
+}

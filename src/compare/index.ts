@@ -35,7 +35,7 @@ export class Comparator {
 
     const ajvOptions = {
       allErrors: true,
-      discriminator: true,
+      discriminator: { strict: false },
       strictSchema: false,
     };
 

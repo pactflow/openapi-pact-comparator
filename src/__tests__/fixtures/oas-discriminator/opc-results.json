@@ -1,0 +1,84 @@
+[
+  {
+    "code": "response.body.incompatible",
+    "message": "Response body is incompatible with the response body schema in the spec file: value of tag \"petType\" must be in oneOf",
+    "mockDetails": {
+      "interactionDescription": "a request to get a Dog",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].response.body",
+      "value": {
+        "petType": "notadog",
+        "name": "Rover",
+        "owner": "Drover",
+        "bark": "dry"
+      }
+    },
+    "specDetails": {
+      "location": "[root].paths./animals/{id}.get.responses.200.content.application/json.schema.discriminator",
+      "pathMethod": "get",
+      "pathName": "/animals/{id}",
+      "value": {
+        "propertyName": "petType",
+        "mapping": {
+          "notadog": "#/components/schemas/Dog",
+          "notacat": "#/components/schemas/Cat"
+        }
+      }
+    },
+    "type": "error"
+  },
+  {
+    "code": "response.body.incompatible",
+    "message": "Response body is incompatible with the response body schema in the spec file: value of tag \"petType\" must be in oneOf",
+    "mockDetails": {
+      "interactionDescription": "a request to get a Cat",
+      "interactionState": "[none]",
+      "location": "[root].interactions[1].response.body",
+      "value": {
+        "petType": "notacat",
+        "name": "kitty",
+        "owner": "crazy cat lady",
+        "meow": "squeely"
+      }
+    },
+    "specDetails": {
+      "location": "[root].paths./animals/{id}.get.responses.200.content.application/json.schema.discriminator",
+      "pathMethod": "get",
+      "pathName": "/animals/{id}",
+      "value": {
+        "propertyName": "petType",
+        "mapping": {
+          "notadog": "#/components/schemas/Dog",
+          "notacat": "#/components/schemas/Cat"
+        }
+      }
+    },
+    "type": "error"
+  },
+  {
+    "code": "response.body.incompatible",
+    "message": "Response body is incompatible with the response body schema in the spec file: value of tag \"petType\" must be in oneOf",
+    "mockDetails": {
+      "interactionDescription": "a request to get a Cat (would fail if no discriminator)",
+      "interactionState": "[none]",
+      "location": "[root].interactions[2].response.body",
+      "value": {
+        "petType": "notacat",
+        "name": "kitty"
+      }
+    },
+    "specDetails": {
+      "location": "[root].paths./animals/{id}.get.responses.200.content.application/json.schema.discriminator",
+      "pathMethod": "get",
+      "pathName": "/animals/{id}",
+      "value": {
+        "propertyName": "petType",
+        "mapping": {
+          "notadog": "#/components/schemas/Dog",
+          "notacat": "#/components/schemas/Cat"
+        }
+      }
+    },
+    "type": "error"
+  }
+]

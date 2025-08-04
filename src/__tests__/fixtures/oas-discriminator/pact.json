@@ -51,7 +51,7 @@
       }
     },
     {
-      "description": "a request to get a Cat (would fail if no discriminator)",
+      "description": "a request to get a Cat (will fail with invalid discriminator value)",
       "request": {
         "method": "GET",
         "path": "/animals/2",

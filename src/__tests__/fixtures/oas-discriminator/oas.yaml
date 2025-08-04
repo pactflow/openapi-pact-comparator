@@ -29,7 +29,7 @@ paths:
                 discriminator:
                   propertyName: petType
                   mapping:
-                    notadog: "#/components/schemas/Dog"
+                    dog: "#/components/schemas/Dog"
                     notacat: "#/components/schemas/Cat"
                 required:
                   - petType

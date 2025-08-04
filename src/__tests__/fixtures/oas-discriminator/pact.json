@@ -21,7 +21,7 @@
           "Content-Type": "application/json"
         },
         "body": {
-          "petType": "Dog",
+          "petType": "dog",
           "name": "Rover",
           "owner": "Drover",
           "bark": "dry"

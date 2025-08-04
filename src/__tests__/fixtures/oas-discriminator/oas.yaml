@@ -30,7 +30,7 @@ paths:
                   propertyName: petType
                   mapping:
                     dog: "#/components/schemas/Dog"
-                    notacat: "#/components/schemas/Cat"
+                    cat: "#/components/schemas/Cat"
                 required:
                   - petType
         "400":

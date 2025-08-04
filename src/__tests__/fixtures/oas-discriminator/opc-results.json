@@ -3,7 +3,7 @@
     "code": "response.body.incompatible",
     "message": "Response body is incompatible with the response body schema in the spec file: value of tag \"petType\" must be in oneOf",
     "mockDetails": {
-      "interactionDescription": "a request to get a Cat (would fail if no discriminator)",
+      "interactionDescription": "a request to get a Cat (will fail with invalid discriminator value)",
       "interactionState": "[none]",
       "location": "[root].interactions[2].response.body",
       "value": {

@@ -43,7 +43,7 @@
           "Content-Type": "application/json"
         },
         "body": {
-          "petType": "Cat",
+          "petType": "cat",
           "name": "kitty",
           "owner": "crazy cat lady",
           "meow": "squeely"

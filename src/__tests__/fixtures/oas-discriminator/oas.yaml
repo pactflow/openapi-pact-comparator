@@ -64,7 +64,7 @@ components:
         - meow
       properties:
         petType:
-          const: Cat # "Cat" is a value for the petType property (the discriminator value)
+          const: cat # "cat" is a value for the petType property (the discriminator value)
         name:
           type: string
         owner:

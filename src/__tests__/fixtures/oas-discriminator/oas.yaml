@@ -49,7 +49,7 @@ components:
         - bark
       properties:
         petType:
-          const: Dog # "Dog" is a value for the petType property (the discriminator value)
+          const: dog # "dog" is a value for the petType property (the discriminator value)
         name:
           type: string
         owner:

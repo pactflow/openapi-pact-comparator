@@ -34,6 +34,11 @@ export const minimumSchema = (
     if (s.$ref && !refToAdd.includes(s.$ref) && !refAdded.includes(s.$ref)) {
       refToAdd.push(s.$ref);
     }
+
+    // no-op from a validation perspective
+    if (s.discriminator?.mapping) {
+      delete s.discriminator.mapping;
+    }
   };
 
   const handleNullableSchema = (s: SchemaObject) => {

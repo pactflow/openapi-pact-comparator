@@ -64,7 +64,7 @@ for (const entry of fs.readdirSync(FIXTURES)) {
       );
     } catch (error) {
       // Swagger Mock Validator crashes!
-      await expect(error.message).toMatchFileSnapshot(smvResultFile);
+      await expect(error.message + "\n").toMatchFileSnapshot(smvResultFile);
     }
   };
 

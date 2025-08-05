@@ -1,6 +1,6 @@
 {
   "name": "@pactflow/openapi-pact-comparator",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "An OpenAPI Specification and Pact Comparison library",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",

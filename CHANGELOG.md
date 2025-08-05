@@ -1,5 +1,11 @@
 # @pactflow/openapi-pact-comparator
 
+## 1.5.0
+
+### Minor Changes
+
+- 33b94e4: Ignore discriminator.mapping in comparison
+
 ## 1.4.0
 
 ### Minor Changes

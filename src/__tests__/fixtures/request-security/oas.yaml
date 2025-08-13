@@ -169,7 +169,7 @@ components:
       scheme: basic
     BearerAuth:
       type: http
-      scheme: bearer
+      scheme: Bearer
     ApiKeyAuth:
       type: apiKey
       in: header

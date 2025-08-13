@@ -34,9 +34,9 @@ export function* compareReqSecurity(
       }
       for (const schemeName of Object.keys(scheme)) {
         const scheme = securitySchemes[schemeName];
-        switch (scheme?.type) {
-          case "apiKey":
-            switch (scheme.in) {
+        switch (scheme?.type?.toLowerCase()) {
+          case "apikey":
+            switch (scheme.in.toLowerCase()) {
               case "header":
                 if (requestHeaders.has(scheme.name)) {
                   isSecured = true;
@@ -130,7 +130,7 @@ export function* compareReqSecurity(
             if (config.get("no-authorization-schema")) {
               isValidSchema = requestHeaders.get("authorization") !== null;
             } else {
-              switch (scheme.scheme) {
+              switch (scheme.scheme.toLowerCase()) {
                 case "basic":
                   isValidSchema = auth.toLowerCase().startsWith("basic ");
                   break;
@@ -163,9 +163,9 @@ export function* compareReqSecurity(
             }
             break;
           }
-          case "mutualTLS":
+          case "mutualtls":
           case "oauth2":
-          case "openIdConnect":
+          case "openidconnect":
             // nothing can be validated, assume meets security requirements
             isSecured = true;
             break;

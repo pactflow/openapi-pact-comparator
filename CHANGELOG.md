@@ -1,5 +1,12 @@
 # @pactflow/openapi-pact-comparator
 
+## 1.5.1
+
+### Patch Changes
+
+- dd96925: Gracefully handle bad schema references
+- 56d13d1: Handle security schemes case insensitively
+
 ## 1.5.0
 
 ### Minor Changes

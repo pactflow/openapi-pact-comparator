@@ -70,7 +70,7 @@ export const minimumSchema = (
     const path = splitPath(ref);
     refAdded.push(ref);
 
-    const subschema = cloneDeep(get(oas, path));
+    const subschema = cloneDeep(get(oas, path, {}));
     delete subschema.description;
     delete subschema.example;
     traverse(subschema, collectReferences);

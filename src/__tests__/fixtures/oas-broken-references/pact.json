@@ -1,0 +1,30 @@
+{
+  "consumer": { "name": "consumer" },
+  "provider": { "name": "provider" },
+  "interactions": [
+    {
+      "description": "should pass with broken specs",
+      "request": {
+        "method": "POST",
+        "path": "/path",
+        "query": "request-query=value",
+        "headers": {
+          "Content-Type": "application/json",
+          "request-header": "value"
+        },
+        "body": {
+          "request-body": "value"
+        }
+      },
+      "response": {
+        "status": 201,
+        "headers": {
+          "response-header": "123"
+        },
+        "body": {
+          "response-body": "123"
+        }
+      }
+    }
+  ]
+}

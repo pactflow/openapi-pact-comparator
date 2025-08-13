@@ -1,0 +1,36 @@
+openapi: 3.0.0
+info:
+  title: OAS
+  version: 1.0.0
+
+paths:
+  /path:
+    post:
+      parameters:
+        - in: header
+          name: request-header
+          schema:
+            $ref: "#/components/schemas/missing"
+        - in: query
+          name: request-query
+          schema:
+            $ref: "#/components/schemas/missing"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/missing"
+      responses:
+        "201":
+          description: OK
+          headers:
+            response-header:
+              schema:
+                $ref: "#/components/schemas/missing"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/missing"
+
+components:
+  schemas: {}

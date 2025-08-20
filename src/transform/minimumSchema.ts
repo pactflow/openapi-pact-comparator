@@ -33,7 +33,7 @@ const cleanupDiscriminators = (s: SchemaObject) => {
   if (s.discriminator && !s.oneOf) {
     delete s.discriminator;
   }
-}
+};
 
 export const minimumSchema = (
   originalSchema: SchemaObject,

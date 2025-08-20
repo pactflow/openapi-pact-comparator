@@ -1,2 +1,2 @@
-export const genericCode = (status: number): string =>
+export const patternedStatus = (status: number): string =>
   `${Math.floor(status / 100)}XX`;

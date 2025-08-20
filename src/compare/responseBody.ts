@@ -17,7 +17,7 @@ import { minimumSchema, transformResponseSchema } from "#transform/index";
 import { dereferenceOas, splitPath } from "#utils/schema";
 import { getValidateFunction } from "#utils/validation";
 import { findMatchingType, getByContentType } from "./utils/content";
-import { genericCode } from "./utils/statusCodes";
+import { patternedStatus } from "./utils/statusCodes";
 
 const canValidate = (contentType = ""): boolean => {
   return !!findMatchingType(contentType, ["application/json"]);
@@ -39,9 +39,9 @@ export function* compareResBody(
   );
 
   const statusResponse = operation.responses?.[status];
-  const genericResponse = operation.responses?.[genericCode(status)];
+  const patternedResponse = operation.responses?.[patternedStatus(status)];
   const defaultResponse = operation.responses?.["default"];
-  const response = statusResponse || genericResponse || defaultResponse;
+  const response = statusResponse || patternedResponse || defaultResponse;
 
   if (!response) {
     yield {
@@ -79,7 +79,7 @@ export function* compareResBody(
 
     const value = body;
 
-    if (!statusResponse && !genericResponse) {
+    if (!statusResponse && !patternedResponse) {
       yield {
         code: "response.status.default",
         message: `Response status code matched default response in spec file: ${status}`,

@@ -20,7 +20,7 @@ for (const entry of fs.readdirSync(FIXTURES)) {
   const dir = path.join(FIXTURES, entry);
   const pactFile = path.join(dir, "pact.json");
   const oasFile = path.join(dir, "oas.yaml");
-  const resultFile = path.join(dir, "opc-results.json");
+  const resultFile = path.join(dir, "results.json");
 
   const runOpc = async () => {
     const pact = parse(await fs.promises.readFile(pactFile, "utf-8"));

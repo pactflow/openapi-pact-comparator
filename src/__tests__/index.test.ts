@@ -2,7 +2,6 @@
 // @ts-nocheck
 import fs from "fs";
 import yaml from "js-yaml";
-import { omit } from "lodash-es";
 import path from "path";
 import { expect, it } from "vitest";
 import { Comparator } from "../../src/compare";
@@ -21,8 +20,7 @@ for (const entry of fs.readdirSync(FIXTURES)) {
   const dir = path.join(FIXTURES, entry);
   const pactFile = path.join(dir, "pact.json");
   const oasFile = path.join(dir, "oas.yaml");
-  const opcResultFile = path.join(dir, "opc-results.json");
-  const smvResultFile = path.join(dir, "smv-results.json");
+  const resultFile = path.join(dir, "opc-results.json");
 
   const runOpc = async () => {
     const pact = parse(await fs.promises.readFile(pactFile, "utf-8"));
@@ -35,7 +33,7 @@ for (const entry of fs.readdirSync(FIXTURES)) {
     }
 
     await expect(JSON.stringify(results, null, 2) + "\n").toMatchFileSnapshot(
-      opcResultFile,
+      resultFile,
     );
   };
 

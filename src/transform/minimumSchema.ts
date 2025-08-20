@@ -24,20 +24,27 @@ const convertExclusiveMinMax = (s: SchemaObject) => {
   }
 };
 
+const cleanupDiscriminators = (s: SchemaObject) => {
+  // no-op from a validation perspective
+  if (s.discriminator?.mapping) {
+    delete s.discriminator.mapping;
+  }
+
+  if (s.discriminator && !s.oneOf) {
+    delete s.discriminator;
+  }
+};
+
 export const minimumSchema = (
   originalSchema: SchemaObject,
   oas: OpenAPIV3.Document,
 ): SchemaObject => {
   const refToAdd: string[] = [];
   const refAdded: string[] = [];
+
   const collectReferences = (s: SchemaObject) => {
     if (s.$ref && !refToAdd.includes(s.$ref) && !refAdded.includes(s.$ref)) {
       refToAdd.push(s.$ref);
-    }
-
-    // no-op from a validation perspective
-    if (s.discriminator?.mapping) {
-      delete s.discriminator.mapping;
     }
   };
 
@@ -61,6 +68,7 @@ export const minimumSchema = (
   const schema = cloneDeep(originalSchema);
   delete schema.description;
   delete schema.example;
+  traverse(schema, cleanupDiscriminators);
   traverse(schema, collectReferences);
   traverse(schema, handleNullableSchema);
   traverse(schema, convertExclusiveMinMax);

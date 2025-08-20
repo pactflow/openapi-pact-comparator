@@ -33,6 +33,18 @@ paths:
                     cat: "#/components/schemas/Cat"
                 required:
                   - petType
+        "201":
+          description: bad discriminator shouldn't crash
+          content:
+            "application/json":
+              schema:
+                discriminator:
+                  propertyName: petType
+                  mapping:
+                    dog: "#/components/schemas/Dog"
+                    cat: "#/components/schemas/Cat"
+                required:
+                  - petType
         "400":
           description: Invalid ID supplied
           content: {}

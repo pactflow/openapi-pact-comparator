@@ -1,5 +1,12 @@
 # @pactflow/openapi-pact-comparator
 
+## 1.6.0
+
+### Minor Changes
+
+- ecd0fe6: Tolerate schemas with discriminators but missing oneOf
+- 0f03c0f: Support patterned response status codes
+
 ## 1.5.1
 
 ### Patch Changes

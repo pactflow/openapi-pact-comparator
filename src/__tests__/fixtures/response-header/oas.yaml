@@ -37,6 +37,14 @@ paths:
         "204":
           description: OK
           content: {}
+  /patterned:
+    get:
+      responses:
+        "4XX":
+          description: Bad request
+          content:
+            application/json:
+              schema: {}
   /default:
     get:
       responses:

@@ -17,6 +17,7 @@ import { minimumSchema, transformResponseSchema } from "#transform/index";
 import { dereferenceOas, splitPath } from "#utils/schema";
 import { getValidateFunction } from "#utils/validation";
 import { findMatchingType, getByContentType } from "./utils/content";
+import { genericCode } from "./utils/statusCodes";
 
 const canValidate = (contentType = ""): boolean => {
   return !!findMatchingType(contentType, ["application/json"]);
@@ -37,12 +38,13 @@ export function* compareResBody(
     interaction.request.headers as Record<string, string>,
   );
 
-  const statusResponse = operation.responses?.[
-    status
-  ] as OpenAPIV3.ResponseObject;
-  const defaultResponse = operation.responses
-    ?.default as OpenAPIV3.ResponseObject;
-  const response = statusResponse || defaultResponse;
+  const statusResponse = operation.responses?.[status];
+  const genericResponse = operation.responses?.[genericCode(status)];
+  const defaultResponse = operation.responses?.["default"];
+  const response =
+    statusResponse ||
+    genericResponse ||
+    defaultResponse;
 
   if (!response) {
     yield {
@@ -80,7 +82,7 @@ export function* compareResBody(
 
     const value = body;
 
-    if (!statusResponse) {
+    if (!statusResponse && !genericResponse) {
       yield {
         code: "response.status.default",
         message: `Response status code matched default response in spec file: ${status}`,

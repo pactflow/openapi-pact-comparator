@@ -40,6 +40,12 @@ paths:
   /patterned:
     get:
       responses:
+        "201":
+          description: OK
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/Animal"
         "2XX":
           description: OK
           content:

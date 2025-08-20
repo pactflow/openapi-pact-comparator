@@ -138,6 +138,40 @@
       }
     },
     {
+      "description": "should pass with patterned fields, preferring exact status",
+      "request": {
+        "method": "GET",
+        "path": "/patterned"
+      },
+      "response": {
+        "status": 201,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "name": "name",
+          "detail": {
+            "foo": "bar",
+            "bar": false,
+            "baz": 1,
+            "bat": [
+              true,
+              "string",
+              1,
+              {
+                "foo": "bar",
+                "bar": false,
+                "baz": 1,
+                "bat": ["you get the idea..."],
+                "qix": null
+              }
+            ],
+            "qix": null
+          }
+        }
+      }
+    },
+    {
       "description": "should error on unknown pet",
       "request": {
         "method": "GET",

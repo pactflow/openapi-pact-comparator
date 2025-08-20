@@ -13,6 +13,14 @@
       "pathMethod": "get",
       "pathName": "/patterned",
       "value": {
+        "401": {
+          "description": "Bad request",
+          "content": {
+            "text/html": {
+              "schema": {}
+            }
+          }
+        },
         "4XX": {
           "description": "Bad request",
           "content": {
@@ -31,7 +39,7 @@
     "mockDetails": {
       "interactionDescription": "should warn even with 204 status",
       "interactionState": "[none]",
-      "location": "[root].interactions[3].response.headers.content-length",
+      "location": "[root].interactions[4].response.headers.content-length",
       "value": "0"
     },
     "specDetails": {
@@ -51,7 +59,7 @@
     "mockDetails": {
       "interactionDescription": "should warn even with 204 status",
       "interactionState": "[none]",
-      "location": "[root].interactions[3].response.headers.content-type",
+      "location": "[root].interactions[4].response.headers.content-type",
       "value": "text/plain"
     },
     "specDetails": {
@@ -75,7 +83,7 @@
     "mockDetails": {
       "interactionDescription": "should warn about missing standard response headers",
       "interactionState": "[none]",
-      "location": "[root].interactions[4].response.headers.age",
+      "location": "[root].interactions[5].response.headers.age",
       "value": "60"
     },
     "specDetails": {
@@ -111,7 +119,7 @@
     "mockDetails": {
       "interactionDescription": "should error on incompatible response headers",
       "interactionState": "[none]",
-      "location": "[root].interactions[5].response.headers.specified",
+      "location": "[root].interactions[6].response.headers.specified",
       "value": "abc"
     },
     "specDetails": {
@@ -132,7 +140,7 @@
     "mockDetails": {
       "interactionDescription": "should error on unspecified response headers",
       "interactionState": "[none]",
-      "location": "[root].interactions[6].response.headers.unspecified",
+      "location": "[root].interactions[7].response.headers.unspecified",
       "value": "foo"
     },
     "specDetails": {
@@ -168,7 +176,7 @@
     "mockDetails": {
       "interactionDescription": "should use default response",
       "interactionState": "[none]",
-      "location": "[root].interactions[7].response.status",
+      "location": "[root].interactions[8].response.status",
       "value": 200
     },
     "specDetails": {
@@ -208,7 +216,7 @@
     "mockDetails": {
       "interactionDescription": "should error on unknown response content type, per status code",
       "interactionState": "[none]",
-      "location": "[root].interactions[8].response.headers.Content-Type",
+      "location": "[root].interactions[9].response.headers.Content-Type",
       "value": "text/html"
     },
     "specDetails": {
@@ -227,7 +235,7 @@
     "mockDetails": {
       "interactionDescription": "should not check for response headers issues if OAS doesn't define it",
       "interactionState": "[none]",
-      "location": "[root].interactions[9].response.status",
+      "location": "[root].interactions[10].response.status",
       "value": 400
     },
     "specDetails": {
@@ -265,7 +273,7 @@
     "mockDetails": {
       "interactionDescription": "should not warn about response.content-type.unknown",
       "interactionState": "[none]",
-      "location": "[root].interactions[10].response.status",
+      "location": "[root].interactions[11].response.status",
       "value": 400
     },
     "specDetails": {

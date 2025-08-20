@@ -40,6 +40,11 @@ paths:
   /patterned:
     get:
       responses:
+        "401":
+          description: Bad request
+          content:
+            text/html:
+              schema: {}
         "4XX":
           description: Bad request
           content:

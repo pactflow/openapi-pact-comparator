@@ -16,6 +16,7 @@ import type { Config } from "#utils/config";
 import { dereferenceOas, splitPath } from "#utils/schema";
 import { getValidateFunction } from "#utils/validation";
 import { findMatchingType, standardHttpResponseHeaders } from "./utils/content";
+import { patternedStatus } from "./utils/statusCodes";
 
 export function* compareResHeader(
   ajv: Ajv,
@@ -25,9 +26,11 @@ export function* compareResHeader(
   _config: Config,
 ): Iterable<Result> {
   const { method, oas, operation, path } = route.store;
+  const { status } = interaction.response;
 
   const response =
-    operation.responses[interaction.response.status] ||
+    operation.responses[status] ||
+    operation.responses[patternedStatus(status)] ||
     operation.responses["default"];
 
   // no response found

@@ -1,7 +1,7 @@
 import type { SchemaObject } from "ajv";
 import type Ajv from "ajv/dist/2019";
 import type Router from "find-my-way";
-import type { OpenAPIV2, OpenAPIV3 } from "openapi-types";
+import type { OpenAPIV2 } from "openapi-types";
 import { get } from "lodash-es";
 
 import type { Interaction } from "#documents/pact";
@@ -17,6 +17,7 @@ import { minimumSchema, transformResponseSchema } from "#transform/index";
 import { dereferenceOas, splitPath } from "#utils/schema";
 import { getValidateFunction } from "#utils/validation";
 import { findMatchingType, getByContentType } from "./utils/content";
+import { patternedStatus } from "./utils/statusCodes";
 
 const canValidate = (contentType = ""): boolean => {
   return !!findMatchingType(contentType, ["application/json"]);
@@ -37,12 +38,10 @@ export function* compareResBody(
     interaction.request.headers as Record<string, string>,
   );
 
-  const statusResponse = operation.responses?.[
-    status
-  ] as OpenAPIV3.ResponseObject;
-  const defaultResponse = operation.responses
-    ?.default as OpenAPIV3.ResponseObject;
-  const response = statusResponse || defaultResponse;
+  const statusResponse = operation.responses?.[status];
+  const patternedResponse = operation.responses?.[patternedStatus(status)];
+  const defaultResponse = operation.responses?.["default"];
+  const response = statusResponse || patternedResponse || defaultResponse;
 
   if (!response) {
     yield {
@@ -80,7 +79,7 @@ export function* compareResBody(
 
     const value = body;
 
-    if (!statusResponse) {
+    if (!statusResponse && !patternedResponse) {
       yield {
         code: "response.status.default",
         message: `Response status code matched default response in spec file: ${status}`,

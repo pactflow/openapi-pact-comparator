@@ -1,11 +1,50 @@
 [
   {
+    "code": "response.status.unknown",
+    "message": "Response status code not defined in spec file: 200",
+    "mockDetails": {
+      "interactionDescription": "should pass with patterned fields",
+      "interactionState": "[none]",
+      "location": "[root].interactions[6].response.status",
+      "value": 200
+    },
+    "specDetails": {
+      "location": "[root].paths./patterned.get.responses",
+      "pathMethod": "get",
+      "pathName": "/patterned",
+      "value": {
+        "201": {
+          "description": "OK",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Animal"
+              }
+            }
+          }
+        },
+        "2XX": {
+          "description": "OK",
+          "content": {
+            "image/png": {
+              "schema": {
+                "type": "string",
+                "format": "binary"
+              }
+            }
+          }
+        }
+      }
+    },
+    "type": "error"
+  },
+  {
     "code": "response.body.incompatible",
     "message": "Response body is incompatible with the response body schema in the spec file: value of tag \"petType\" must be in oneOf",
     "mockDetails": {
       "interactionDescription": "should error on unknown pet",
       "interactionState": "[none]",
-      "location": "[root].interactions[6].response.body",
+      "location": "[root].interactions[8].response.body",
       "value": {
         "petType": "Spider"
       }
@@ -26,7 +65,7 @@
     "mockDetails": {
       "interactionDescription": "should error with invalid response",
       "interactionState": "[none]",
-      "location": "[root].interactions[7].response.body.detail",
+      "location": "[root].interactions[9].response.body.detail",
       "value": null
     },
     "specDetails": {
@@ -42,7 +81,7 @@
     "mockDetails": {
       "interactionDescription": "should error with unknown response body",
       "interactionState": "[none]",
-      "location": "[root].interactions[8].response.body",
+      "location": "[root].interactions[10].response.body",
       "value": {
         "unknown": "schema"
       }
@@ -64,7 +103,7 @@
     "mockDetails": {
       "interactionDescription": "should error with unknown response body",
       "interactionState": "[none]",
-      "location": "[root].interactions[8].response.headers.Content-Type",
+      "location": "[root].interactions[10].response.headers.Content-Type",
       "value": "application/json"
     },
     "specDetails": {

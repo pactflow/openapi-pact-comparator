@@ -121,6 +121,57 @@
       }
     },
     {
+      "description": "should pass with patterned fields",
+      "request": {
+        "headers": {
+          "Accept": "image/png"
+        },
+        "method": "GET",
+        "path": "/patterned"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "image/png"
+        },
+        "body": "some base64 encoded body (this is the format pact uses, which various across spec versions)"
+      }
+    },
+    {
+      "description": "should pass with patterned fields, preferring exact status",
+      "request": {
+        "method": "GET",
+        "path": "/patterned"
+      },
+      "response": {
+        "status": 201,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "name": "name",
+          "detail": {
+            "foo": "bar",
+            "bar": false,
+            "baz": 1,
+            "bat": [
+              true,
+              "string",
+              1,
+              {
+                "foo": "bar",
+                "bar": false,
+                "baz": 1,
+                "bat": ["you get the idea..."],
+                "qix": null
+              }
+            ],
+            "qix": null
+          }
+        }
+      }
+    },
+    {
       "description": "should error on unknown pet",
       "request": {
         "method": "GET",

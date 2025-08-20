@@ -37,6 +37,22 @@ paths:
                   propertyName: petType
                 required:
                   - petType
+  /patterned:
+    get:
+      responses:
+        "201":
+          description: OK
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/Animal"
+        "2XX":
+          description: OK
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
   /no-response-schema:
     get:
       responses:

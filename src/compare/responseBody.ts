@@ -1,7 +1,7 @@
 import type { SchemaObject } from "ajv";
 import type Ajv from "ajv/dist/2019";
 import type Router from "find-my-way";
-import type { OpenAPIV2, OpenAPIV3 } from "openapi-types";
+import type { OpenAPIV2 } from "openapi-types";
 import { get } from "lodash-es";
 
 import type { Interaction } from "#documents/pact";
@@ -41,10 +41,7 @@ export function* compareResBody(
   const statusResponse = operation.responses?.[status];
   const genericResponse = operation.responses?.[genericCode(status)];
   const defaultResponse = operation.responses?.["default"];
-  const response =
-    statusResponse ||
-    genericResponse ||
-    defaultResponse;
+  const response = statusResponse || genericResponse || defaultResponse;
 
   if (!response) {
     yield {

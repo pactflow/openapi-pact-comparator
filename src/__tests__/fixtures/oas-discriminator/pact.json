@@ -69,6 +69,24 @@
           "name": "kitty"
         }
       }
+    },
+    {
+      "description": "test OAS with schema that has 'discriminator' but without 'oneOf'",
+      "request": {
+        "method": "GET",
+        "path": "/animals/3",
+        "headers": {
+          "Authorization": "Bearer 2019-01-14T11:34:18.045Z"
+        }
+      },
+      "response": {
+        "status": 201,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+        }
+      }
     }
   ],
   "metadata": {

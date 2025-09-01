@@ -1,5 +1,11 @@
 # @pactflow/openapi-pact-comparator
 
+## 1.6.1
+
+### Patch Changes
+
+- 34fd8ca: Recursively cleanup discriminators
+
 ## 1.6.0
 
 ### Minor Changes

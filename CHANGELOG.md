@@ -1,5 +1,15 @@
 # @pactflow/openapi-pact-comparator
 
+## 1.7.0
+
+### Minor Changes
+
+- 5954df0: Mutate schema to properly support OAD allOf
+
+### Patch Changes
+
+- aa0e0a6: Remove discriminator.mapping (again)
+
 ## 1.6.1
 
 ### Patch Changes

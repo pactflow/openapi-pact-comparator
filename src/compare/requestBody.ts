@@ -15,7 +15,7 @@ import {
   formatInstancePath,
   formatSchemaPath,
 } from "#results/index";
-import { minimumSchema, transformRequestSchema } from "#transform/index";
+import { minimumSchema } from "#transform/index";
 import type { Config } from "#utils/config";
 import { isValidRequest } from "#utils/interaction";
 import { dereferenceOas, splitPath } from "#utils/schema";
@@ -132,7 +132,7 @@ export function* compareReqBody(
     );
     const schemaId = `[root].paths.${path}.${method}.requestBody.content.${contentType}`;
     const validate = getValidateFunction(ajv, schemaId, () =>
-      transformRequestSchema(minimumSchema(schema, oas)),
+      minimumSchema(schema, oas),
     );
     if (!validate(value)) {
       for (const error of validate.errors!) {

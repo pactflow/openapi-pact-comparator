@@ -1,0 +1,44 @@
+{
+  "consumer": { "name": "consumer" },
+  "provider": { "name": "provider" },
+  "interactions": [
+    {
+      "description": "search",
+      "request": {
+        "method": "POST",
+        "path": "/path",
+        "headers": {
+          "Content-Type": ["application/json"]
+        },
+        "body": {
+          "filters": {
+            "timezone": "Europe/Madrid"
+          },
+          "paging": {
+            "cursor": "eyJwYWiAyMH0=",
+            "size": 100
+          },
+          "sorting": "updated_at"
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "data": {
+            "items": [
+              {
+                "id": "0000000",
+                "updated_at": "2025-06-25T11:38:41.616386+00:00"
+              }
+            ],
+            "next_cursor": "null"
+          },
+          "error": null
+        }
+      }
+    }
+  ]
+}

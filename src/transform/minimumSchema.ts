@@ -82,7 +82,7 @@ export const minimumSchema = (
     const subschema = cloneDeep(get(oas, path, {}));
     delete subschema.description;
     delete subschema.example;
-    traverse(schema, cleanupDiscriminators);
+    traverse(subschema, cleanupDiscriminators);
     traverse(subschema, collectReferences);
     traverse(subschema, handleNullableSchema);
     traverse(subschema, convertExclusiveMinMax);

@@ -1,0 +1,109 @@
+openapi: 3.0.0
+info:
+  title: OAS
+  version: 1.0.0
+paths:
+  /path:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - type: object
+                  properties:
+                    filters:
+                      $ref: "#/components/schemas/FilterRequest"
+                    paging:
+                      $ref: "#/components/schemas/PagingRequest"
+                    sorting:
+                      $ref: "#/components/schemas/SortingRequest"
+                - properties:
+                    filters:
+                      allOf:
+                        - $ref: "#/components/schemas/FilterRequest"
+                        - properties:
+                            timezone:
+                              type: string
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CityListResponse"
+components:
+  schemas:
+    FilterRequest:
+      type: object
+      properties:
+        updated_since:
+          type: string
+          format: date-time
+    PagingRequest:
+      type: object
+      properties:
+        cursor:
+          type: string
+        size:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 100
+    SortingRequest:
+      type: string
+      enum:
+        - updated_at
+        - id
+
+    CityListResponse:
+      allOf:
+        - $ref: "#/components/schemas/ListResponse"
+        - properties:
+            data:
+              allOf:
+                - $ref: "#/components/schemas/CursorPaginatedListResponse"
+                - properties:
+                    items:
+                      items:
+                        $ref: "#/components/schemas/CityListItemResponse"
+    ListResponse:
+      allOf:
+        - $ref: "#/components/schemas/SuccessfulResponse"
+        - properties:
+            data:
+              required:
+                - items
+              properties:
+                items:
+                  type: array
+                  items:
+                    type: object
+    CursorPaginatedListResponse:
+      type: object
+      properties:
+        next_cursor:
+          type: string
+          nullable: true
+    CityListItemResponse:
+      type: object
+      required:
+        - id
+        - updated_at
+      properties:
+        id:
+          type: string
+        updated_at:
+          type: string
+          format: date-time
+    SuccessfulResponse:
+      type: object
+      required:
+        - data
+        - error
+      properties:
+        data:
+          type: object
+        error:
+          nullable: true
+          type: object

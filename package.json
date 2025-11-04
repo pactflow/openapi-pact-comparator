@@ -44,7 +44,7 @@
   "type": "module",
   "devDependencies": {
     "@changesets/cli": "2.29.7",
-    "@eslint/js": "9.38.0",
+    "@eslint/js": "9.39.0",
     "@rollup/plugin-commonjs": "28.0.9",
     "@rollup/plugin-json": "6.1.0",
     "@rollup/plugin-node-resolve": "16.0.3",
@@ -58,7 +58,7 @@
     "ajv": "8.17.1",
     "ajv-formats": "3.0.1",
     "commander": "14.0.2",
-    "eslint": "9.38.0",
+    "eslint": "9.39.0",
     "eslint-config-prettier": "10.1.8",
     "find-my-way": "9.3.0",
     "js-yaml": "4.1.0",

@@ -174,9 +174,9 @@ export const parse = (pact: Pact): Pact => {
 
   return {
     metadata,
-    interactions: interactions
-      .filter(supportedInteractions)
-      .map(interactionParser),
+    interactions: interactions.map((i: Interaction) =>
+      supportedInteractions(i) ? interactionParser(i) : undefined,
+    ),
   };
 };
 

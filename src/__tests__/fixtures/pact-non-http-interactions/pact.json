@@ -1,0 +1,23 @@
+{
+  "consumer": { "name": "consumer" },
+  "provider": { "name": "provider" },
+  "interactions": [
+    {
+      "type": "Async/Messages"
+    },
+    {
+      "description": "should error with missing body",
+      "request": {
+        "method": "POST",
+        "path": "/login",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "response": {
+        "status": 201,
+        "body": {}
+      }
+    }
+  ]
+}

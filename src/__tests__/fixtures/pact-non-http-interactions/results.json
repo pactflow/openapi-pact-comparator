@@ -1,0 +1,18 @@
+[
+  {
+    "code": "request.body.incompatible",
+    "message": "Request body is incompatible with the request body schema in the spec file: must be object",
+    "mockDetails": {
+      "interactionDescription": "should error with missing body",
+      "interactionState": "[none]",
+      "location": "[root].interactions[1].request.body"
+    },
+    "specDetails": {
+      "location": "[root].paths./login.post.requestBody.content.application/json.schema.type",
+      "pathMethod": "post",
+      "pathName": "/login",
+      "value": "object"
+    },
+    "type": "error"
+  }
+]

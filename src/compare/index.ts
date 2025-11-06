@@ -64,6 +64,11 @@ export class Comparator {
     const parsedPact = parsePact(pact);
 
     for (const [index, interaction] of parsedPact.interactions.entries()) {
+      if (!interaction) {
+        // non http/synchronous have been zero-ed out
+        continue;
+      }
+
       const { method, path, query } = interaction.request;
       let pathWithLeadingSlash = path.startsWith("/") ? path : `/${path}`;
 

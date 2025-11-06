@@ -4,6 +4,7 @@ import Ajv, { ErrorObject } from "ajv";
 // a full schema can be found at https://github.com/pactflow/pact-schemas
 // but we don't use that here, because we try to be permissive with input
 export const Interaction = Type.Object({
+  _skip: Type.Optional(Type.Boolean()),
   type: Type.Optional(Type.String()),
   description: Type.Optional(Type.String()),
   providerState: Type.Optional(Type.String()),
@@ -175,7 +176,9 @@ export const parse = (pact: Pact): Pact => {
   return {
     metadata,
     interactions: interactions.map((i: Interaction) =>
-      supportedInteractions(i) ? interactionParser(i) : undefined,
+      supportedInteractions(i)
+        ? interactionParser(i)
+        : { _skip: true } as Interaction
     ),
   };
 };

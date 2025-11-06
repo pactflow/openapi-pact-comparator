@@ -69,8 +69,8 @@ describe("#parser", () => {
     expect(pact.interactions.length).toBe(4);
     expect(pact.interactions[0].description).toBe("no-type");
     expect(pact.interactions[1].description).toBe("http");
-    expect(pact.interactions[2]).toBeUndefined();
-    expect(pact.interactions[3]).toBeUndefined();
+    expect(pact.interactions[2]._skip).toBe(true);
+    expect(pact.interactions[3]._skip).toBe(true);
   });
 
   it("should parse V4 body types", () => {

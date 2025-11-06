@@ -64,7 +64,7 @@ export class Comparator {
     const parsedPact = parsePact(pact);
 
     for (const [index, interaction] of parsedPact.interactions.entries()) {
-      if (!interaction) {
+      if (interaction._skip) {
         // non http/synchronous have been zero-ed out
         continue;
       }

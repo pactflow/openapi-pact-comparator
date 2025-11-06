@@ -178,7 +178,7 @@ export const parse = (pact: Pact): Pact => {
     interactions: interactions.map((i: Interaction) =>
       supportedInteractions(i)
         ? interactionParser(i)
-        : { _skip: true } as Interaction
+        : ({ _skip: true } as Interaction),
     ),
   };
 };

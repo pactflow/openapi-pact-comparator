@@ -1,5 +1,11 @@
 # @pactflow/openapi-pact-comparator
 
+## 1.7.1
+
+### Patch Changes
+
+- bfbd1da: Preserve indexes of http/synchronous interactions
+
 ## 1.7.0
 
 ### Minor Changes

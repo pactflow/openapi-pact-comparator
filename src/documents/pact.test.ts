@@ -82,9 +82,7 @@ describe("#parser", () => {
       status: 200,
     };
     const json = {
-      interactions: [
-        { description: "no-type", request, response }
-      ],
+      interactions: [{ description: "no-type", request, response }],
       messages: [
         {
           content: "some-message-content",
@@ -98,7 +96,6 @@ describe("#parser", () => {
     expect(pact.messages!.length).toBe(1);
     expect(pact.messages![0]).toEqual({ content: "some-message-content" });
   });
-  
 
   it("should parse V4 body types", () => {
     const withRequestBody = (body: unknown) => ({

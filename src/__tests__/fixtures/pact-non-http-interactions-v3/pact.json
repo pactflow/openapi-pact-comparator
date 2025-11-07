@@ -1,0 +1,79 @@
+{
+  "consumer": {
+    "name": "consumer"
+  },
+  "messages": [
+    {
+      "_id": "e7918bd59533f7fe75b86192865f89898df6cd3f",
+      "contents": {
+        "event": "CREATED",
+        "id": "5cc989d0-d800-434c-b4bb-b1268499e850",
+        "name": "product name",
+        "type": "product series",
+        "version": "v1"
+      },
+      "description": "a product created event",
+      "matchingRules": {
+        "body": {
+          "$.event": {
+            "combine": "AND",
+            "matchers": [
+              {
+                "match": "regex",
+                "regex": "^(CREATED|UPDATED|DELETED)$"
+              }
+            ]
+          },
+          "$.id": {
+            "combine": "AND",
+            "matchers": [
+              {
+                "match": "type"
+              }
+            ]
+          },
+          "$.name": {
+            "combine": "AND",
+            "matchers": [
+              {
+                "match": "type"
+              }
+            ]
+          },
+          "$.type": {
+            "combine": "AND",
+            "matchers": [
+              {
+                "match": "type"
+              }
+            ]
+          },
+          "$.version": {
+            "combine": "AND",
+            "matchers": [
+              {
+                "match": "regex",
+                "regex": "v[a-zA-z0-9]+"
+              }
+            ]
+          }
+        }
+      },
+      "metaData": {
+        "contentType": "application/json",
+        "kafka_topic": "products"
+      }
+    }
+  ],
+  "metadata": {
+    "pact-jvm": {
+      "version": "4.6.17"
+    },
+    "pactSpecification": {
+      "version": "3.0.0"
+    }
+  },
+  "provider": {
+    "name": "provider"
+  }
+}

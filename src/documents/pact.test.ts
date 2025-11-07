@@ -33,7 +33,7 @@ describe("#parser", () => {
     expect(response.headers!["Content-Type"]).toEqual("application/json");
   });
 
-  it("filters out non-HTTP interactions", () => {
+  it("marks out non-HTTP interactions from v4 pact as skip `true`", () => {
     const request = {
       method: "GET",
       path: "/path",
@@ -72,6 +72,33 @@ describe("#parser", () => {
     expect(pact.interactions![2]._skip).toBe(true);
     expect(pact.interactions![3]._skip).toBe(true);
   });
+
+  it("if messages are present it parses it to be dealt with later", () => {
+    const request = {
+      method: "GET",
+      path: "/path",
+    };
+    const response = {
+      status: 200,
+    };
+    const json = {
+      interactions: [
+        { description: "no-type", request, response }
+      ],
+      messages: [
+        {
+          content: "some-message-content",
+        },
+      ],
+    };
+
+    const pact = parse(json as Pact);
+    expect(pact.interactions!.length).toBe(1);
+    expect(pact.interactions![0].description).toBe("no-type");
+    expect(pact.messages!.length).toBe(1);
+    expect(pact.messages![0]).toEqual({ content: "some-message-content" });
+  });
+  
 
   it("should parse V4 body types", () => {
     const withRequestBody = (body: unknown) => ({

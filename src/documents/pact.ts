@@ -59,7 +59,8 @@ export const Pact = Type.Object({
       ),
     }),
   ),
-  interactions: Type.Array(Interaction),
+  interactions: Type.Optional(Type.Array(Interaction)),
+  messages: Type.Optional(Type.Array(Type.Unknown())),
 });
 
 export type Pact = Static<typeof Pact>;
@@ -154,11 +155,12 @@ const ajv = new Ajv();
 const validate = ajv.compile(Pact);
 
 export const parse = (pact: Pact): Pact => {
-  const { metadata, interactions } = pact;
+  const { metadata, interactions, messages } = pact;
 
   const isValid = validate({
     metadata,
-    interactions: interactions.filter(supportedInteractions),
+    interactions: interactions?.filter(supportedInteractions),
+    messages,
   });
   if (!isValid) {
     throw new ParserError(validate.errors!);
@@ -175,11 +177,12 @@ export const parse = (pact: Pact): Pact => {
 
   return {
     metadata,
-    interactions: interactions.map((i: Interaction) =>
+    interactions: interactions?.map((i: Interaction) =>
       supportedInteractions(i)
         ? interactionParser(i)
         : ({ _skip: true } as Interaction),
     ),
+    messages,
   };
 };
 

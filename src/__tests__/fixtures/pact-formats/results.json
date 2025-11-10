@@ -1,1 +1,17 @@
-[]
+[
+  {
+    "code": "interaction.type.unsupported",
+    "message": "Non-HTTP Interaction is not supported, OPC can only compare HTTP interactions.",
+    "type": "warning"
+  },
+  {
+    "code": "interaction.type.unsupported",
+    "message": "Non-HTTP Interaction is not supported, OPC can only compare HTTP interactions.",
+    "type": "warning"
+  },
+  {
+    "code": "interaction.type.unsupported",
+    "message": "Non-HTTP Interaction is not supported, OPC can only compare HTTP interactions.",
+    "type": "warning"
+  }
+]

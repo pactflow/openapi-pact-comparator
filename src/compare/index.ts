@@ -63,9 +63,17 @@ export class Comparator {
 
     const parsedPact = parsePact(pact);
 
-    for (const [index, interaction] of parsedPact.interactions.entries()) {
+    const parsedInteractions = parsedPact.interactions || [];
+
+    const UNSUPPORTED_INTERACTION_WARNING = {
+      code: "interaction.type.unsupported",
+      message: `Non-HTTP Interaction is not supported, OPC can only compare HTTP interactions.`,
+      type: "warning",
+    } as Result;
+
+    for (const [index, interaction] of parsedInteractions.entries()) {
       if (interaction._skip) {
-        // non http/synchronous have been zero-ed out
+        yield UNSUPPORTED_INTERACTION_WARNING;
         continue;
       }
 
@@ -171,6 +179,12 @@ export class Comparator {
         index,
         this.#config,
       );
+    }
+
+    if (parsedPact.messages) {
+      for (const [_message] of parsedPact.messages.entries()) {
+        yield UNSUPPORTED_INTERACTION_WARNING;
+      }
     }
   }
 }

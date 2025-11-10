@@ -1,5 +1,11 @@
 # @pactflow/openapi-pact-comparator
 
+## 1.8.0
+
+### Minor Changes
+
+- 1d35775: Throws warning when pact contains non-http interactions
+
 ## 1.7.1
 
 ### Patch Changes

@@ -74,7 +74,7 @@ export class Comparator {
             location: `[root].interactions[${index}].type`,
             value: interaction.type,
           },
-          message: `Non-HTTP Interaction is not supported, OPC can only compare HTTP interactions.`,
+          message: `Non-HTTP messages cannot be verified against an HTTP-only OpenAPI Document.`,
           type: "warning",
         };
         continue;
@@ -194,7 +194,7 @@ export class Comparator {
             location: `[root].messages[${index}]`,
             value: message,
           },
-          message: `Non-HTTP Interaction is not supported, OPC can only compare HTTP interactions.`,
+          message: `Non-HTTP messages cannot be verified against an HTTP-only OpenAPI Document.`,
           type: "warning",
         };
       }

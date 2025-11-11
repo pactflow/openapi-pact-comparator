@@ -6,7 +6,7 @@
       "location": "[root].interactions[0].type",
       "value": "Async/Messages"
     },
-    "message": "Non-HTTP Interaction is not supported, OPC can only compare HTTP interactions.",
+    "message": "Non-HTTP messages cannot be verified against an HTTP-only OpenAPI Document.",
     "type": "warning"
   },
   {

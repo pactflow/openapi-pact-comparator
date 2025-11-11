@@ -192,7 +192,7 @@ export class Comparator {
             interactionDescription: message.description,
             interactionState: message.providerState || "[none]",
             location: `[root].messages[${index}]`,
-            value: message
+            value: message,
           },
           message: `Non-HTTP Interaction is not supported, OPC can only compare HTTP interactions.`,
           type: "warning",

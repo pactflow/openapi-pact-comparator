@@ -1,17 +1,35 @@
 [
   {
     "code": "interaction.type.unsupported",
-    "message": "Non-HTTP Interaction is not supported, OPC can only compare HTTP interactions.",
+    "mockDetails": {
+      "interactionDescription": "should be ignored",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].type",
+      "value": "Asynchronous/Messages"
+    },
+    "message": "Non-HTTP messages cannot be verified against an HTTP-only OpenAPI Document.",
     "type": "warning"
   },
   {
     "code": "interaction.type.unsupported",
-    "message": "Non-HTTP Interaction is not supported, OPC can only compare HTTP interactions.",
+    "mockDetails": {
+      "interactionDescription": "should be ignored",
+      "interactionState": "[none]",
+      "location": "[root].interactions[1].type",
+      "value": "Synchronous/Messages"
+    },
+    "message": "Non-HTTP messages cannot be verified against an HTTP-only OpenAPI Document.",
     "type": "warning"
   },
   {
     "code": "interaction.type.unsupported",
-    "message": "Non-HTTP Interaction is not supported, OPC can only compare HTTP interactions.",
+    "mockDetails": {
+      "interactionDescription": "should be ignored",
+      "interactionState": "[none]",
+      "location": "[root].interactions[2].type",
+      "value": "not-a-real-type"
+    },
+    "message": "Non-HTTP messages cannot be verified against an HTTP-only OpenAPI Document.",
     "type": "warning"
   }
 ]

@@ -1,5 +1,11 @@
 # @pactflow/openapi-pact-comparator
 
+## 1.8.1
+
+### Patch Changes
+
+- ef22f35: Add mockDetails location to non-HTTP interactions/messages
+
 ## 1.8.0
 
 ### Minor Changes

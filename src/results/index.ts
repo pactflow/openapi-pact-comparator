@@ -26,8 +26,7 @@ type WarningCode =
   | "request.query.unknown"
   | "response.content-type.unknown"
   | "response.header.undefined"
-  | "response.status.default"
-  | "interaction.type.unsupported";
+  | "response.status.default";
 
 export interface Result {
   code: ErrorCode | WarningCode;

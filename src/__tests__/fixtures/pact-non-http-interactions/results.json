@@ -1,15 +1,5 @@
 [
   {
-    "code": "interaction.type.unsupported",
-    "mockDetails": {
-      "interactionState": "[none]",
-      "location": "[root].interactions[0].type",
-      "value": "Async/Messages"
-    },
-    "message": "Non-HTTP messages cannot be verified against an HTTP-only OpenAPI Document.",
-    "type": "warning"
-  },
-  {
     "code": "request.body.incompatible",
     "message": "Request body is incompatible with the request body schema in the spec file: must be object",
     "mockDetails": {

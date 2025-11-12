@@ -63,20 +63,9 @@ export class Comparator {
 
     const parsedPact = parsePact(pact);
 
-    const parsedInteractions = parsedPact.interactions || [];
-
-    for (const [index, interaction] of parsedInteractions.entries()) {
-      if (interaction._nonHTTP) {
-        yield {
-          code: "interaction.type.unsupported",
-          mockDetails: {
-            ...baseMockDetails(interaction),
-            location: `[root].interactions[${index}].type`,
-            value: interaction.type,
-          },
-          message: `Non-HTTP messages cannot be verified against an HTTP-only OpenAPI Document.`,
-          type: "warning",
-        };
+    for (const [index, interaction] of parsedPact.interactions.entries()) {
+      if (interaction._skip) {
+        // non http/synchronous have been zero-ed out
         continue;
       }
 
@@ -182,22 +171,6 @@ export class Comparator {
         index,
         this.#config,
       );
-    }
-
-    if (parsedPact.messages) {
-      for (const [index, message] of parsedPact.messages.entries()) {
-        yield {
-          code: "interaction.type.unsupported",
-          mockDetails: {
-            interactionDescription: message.description,
-            interactionState: message.providerState || "[none]",
-            location: `[root].messages[${index}]`,
-            value: message,
-          },
-          message: `Non-HTTP messages cannot be verified against an HTTP-only OpenAPI Document.`,
-          type: "warning",
-        };
-      }
     }
   }
 }

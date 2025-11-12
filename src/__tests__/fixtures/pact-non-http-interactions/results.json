@@ -1,10 +1,5 @@
 [
   {
-    "code": "interaction.type.unsupported",
-    "message": "Non-HTTP Interaction is not supported, OPC can only compare HTTP interactions.",
-    "type": "warning"
-  },
-  {
     "code": "request.body.incompatible",
     "message": "Request body is incompatible with the request body schema in the spec file: must be object",
     "mockDetails": {

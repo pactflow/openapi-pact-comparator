@@ -1,5 +1,11 @@
 # @pactflow/openapi-pact-comparator
 
+## 1.9.0
+
+### Minor Changes
+
+- 94fc70f: Remove warnings about unsupported interaction types
+
 ## 1.8.1
 
 ### Patch Changes

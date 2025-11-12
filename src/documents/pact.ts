@@ -4,7 +4,7 @@ import Ajv, { ErrorObject } from "ajv";
 // a full schema can be found at https://github.com/pactflow/pact-schemas
 // but we don't use that here, because we try to be permissive with input
 export const Interaction = Type.Object({
-  _nonHTTP: Type.Optional(Type.Boolean()),
+  _skip: Type.Optional(Type.Boolean()),
   type: Type.Optional(Type.String()),
   description: Type.Optional(Type.String()),
   providerState: Type.Optional(Type.String()),
@@ -43,13 +43,6 @@ export const Interaction = Type.Object({
 
 export type Interaction = Static<typeof Interaction>;
 
-export const Message = Type.Object({
-  description: Type.Optional(Type.String()),
-  providerState: Type.Optional(Type.String()),
-});
-
-export type Message = Static<typeof Message>;
-
 export const Pact = Type.Object({
   metadata: Type.Optional(
     Type.Object({
@@ -67,7 +60,7 @@ export const Pact = Type.Object({
     }),
   ),
   interactions: Type.Optional(Type.Array(Interaction)),
-  messages: Type.Optional(Type.Array(Message)),
+  messages: Type.Optional(Type.Array(Type.Unknown())),
 });
 
 export type Pact = Static<typeof Pact>;
@@ -158,11 +151,6 @@ const interactionV4 = (i: Interaction): Interaction => ({
   },
 });
 
-const interactionNonHTTP = (i: Interaction): Interaction => ({
-  ...i,
-  _nonHTTP: true,
-});
-
 const ajv = new Ajv();
 const validate = ajv.compile(Pact);
 
@@ -190,7 +178,9 @@ export const parse = (pact: Pact): Pact => {
   return {
     metadata,
     interactions: interactions?.map((i: Interaction) =>
-      supportedInteractions(i) ? interactionParser(i) : interactionNonHTTP(i),
+      supportedInteractions(i)
+        ? interactionParser(i)
+        : ({ _skip: true } as Interaction),
     ),
     messages,
   };

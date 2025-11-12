@@ -1,73 +1,7 @@
 [
   {
     "code": "interaction.type.unsupported",
-    "mockDetails": {
-      "interactionDescription": "a product created event",
-      "interactionState": "[none]",
-      "location": "[root].messages[0]",
-      "value": {
-        "_id": "e7918bd59533f7fe75b86192865f89898df6cd3f",
-        "contents": {
-          "event": "CREATED",
-          "id": "5cc989d0-d800-434c-b4bb-b1268499e850",
-          "name": "product name",
-          "type": "product series",
-          "version": "v1"
-        },
-        "description": "a product created event",
-        "matchingRules": {
-          "body": {
-            "$.event": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "regex",
-                  "regex": "^(CREATED|UPDATED|DELETED)$"
-                }
-              ]
-            },
-            "$.id": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "type"
-                }
-              ]
-            },
-            "$.name": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "type"
-                }
-              ]
-            },
-            "$.type": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "type"
-                }
-              ]
-            },
-            "$.version": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "regex",
-                  "regex": "v[a-zA-z0-9]+"
-                }
-              ]
-            }
-          }
-        },
-        "metaData": {
-          "contentType": "application/json",
-          "kafka_topic": "products"
-        }
-      }
-    },
-    "message": "Non-HTTP messages cannot be verified against an HTTP-only OpenAPI Document.",
+    "message": "Non-HTTP Interaction is not supported, OPC can only compare HTTP interactions.",
     "type": "warning"
   }
 ]

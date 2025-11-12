@@ -65,18 +65,15 @@ export class Comparator {
 
     const parsedInteractions = parsedPact.interactions || [];
 
+    const UNSUPPORTED_INTERACTION_WARNING = {
+      code: "interaction.type.unsupported",
+      message: `Non-HTTP Interaction is not supported, OPC can only compare HTTP interactions.`,
+      type: "warning",
+    } as Result;
+
     for (const [index, interaction] of parsedInteractions.entries()) {
-      if (interaction._nonHTTP) {
-        yield {
-          code: "interaction.type.unsupported",
-          mockDetails: {
-            ...baseMockDetails(interaction),
-            location: `[root].interactions[${index}].type`,
-            value: interaction.type,
-          },
-          message: `Non-HTTP messages cannot be verified against an HTTP-only OpenAPI Document.`,
-          type: "warning",
-        };
+      if (interaction._skip) {
+        yield UNSUPPORTED_INTERACTION_WARNING;
         continue;
       }
 
@@ -185,18 +182,8 @@ export class Comparator {
     }
 
     if (parsedPact.messages) {
-      for (const [index, message] of parsedPact.messages.entries()) {
-        yield {
-          code: "interaction.type.unsupported",
-          mockDetails: {
-            interactionDescription: message.description,
-            interactionState: message.providerState || "[none]",
-            location: `[root].messages[${index}]`,
-            value: message,
-          },
-          message: `Non-HTTP messages cannot be verified against an HTTP-only OpenAPI Document.`,
-          type: "warning",
-        };
+      for (const [_message] of parsedPact.messages.entries()) {
+        yield UNSUPPORTED_INTERACTION_WARNING;
       }
     }
   }

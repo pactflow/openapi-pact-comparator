@@ -1,0 +1,32 @@
+{
+  "consumer": { "name": "consumer" },
+  "provider": { "name": "provider" },
+  "interactions": [
+    {
+      "description": "should pass with valid enum",
+      "request": {
+        "method": "GET",
+        "path": "/foo"
+      },
+      "response": {
+        "status": 200,
+        "body": {
+          "foo": "A"
+        }
+      }
+    },
+    {
+      "description": "should fail with invalid enum",
+      "request": {
+        "method": "GET",
+        "path": "/foo"
+      },
+      "response": {
+        "status": 200,
+        "body": {
+          "foo": "X"
+        }
+      }
+    }
+  ]
+}

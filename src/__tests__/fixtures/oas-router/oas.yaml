@@ -1,0 +1,21 @@
+openapi: 3.0.0
+info:
+  title: OAS
+  version: 1.0.0
+
+paths:
+  "/foo:bar":
+    get:
+      responses:
+        "200":
+          description: description
+  "/foo::bar":
+    get:
+      responses:
+        "200":
+          description: description
+  "/foo:bar:":
+    get:
+      responses:
+        "200":
+          description: description

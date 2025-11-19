@@ -52,6 +52,7 @@ export function setupRouter(
     const path =
       basePath +
       oasPath
+        .replaceAll(":", "::")
         .replaceAll(/{.*?}/g, cleanPathParameter)
         .replaceAll(/{([.;]?)([^*]+?)\*?}/g, "$1:$2(.+)");
     for (const method in oas.paths[oasPath]) {

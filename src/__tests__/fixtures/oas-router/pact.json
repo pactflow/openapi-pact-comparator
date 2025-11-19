@@ -1,0 +1,36 @@
+{
+  "consumer": { "name": "consumer" },
+  "provider": { "name": "provider" },
+  "interactions": [
+    {
+      "description": "should pass with colon in path",
+      "request": {
+        "method": "GET",
+        "path": "/foo:bar"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "should pass with double colon in path",
+      "request": {
+        "method": "GET",
+        "path": "/foo::bar"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "should pass with colon at end of path",
+      "request": {
+        "method": "GET",
+        "path": "/foo:bar:"
+      },
+      "response": {
+        "status": 200
+      }
+    }
+  ]
+}

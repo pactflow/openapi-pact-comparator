@@ -1,0 +1,23 @@
+[
+  {
+    "code": "response.body.incompatible",
+    "message": "Response body is incompatible with the response body schema in the spec file: must be equal to one of the allowed values",
+    "mockDetails": {
+      "interactionDescription": "should fail with invalid enum",
+      "interactionState": "[none]",
+      "location": "[root].interactions[1].response.body.foo",
+      "value": "X"
+    },
+    "specDetails": {
+      "location": "[root].paths./foo.get.responses.200.content.application/json.schema.properties.foo.enum",
+      "pathMethod": "get",
+      "pathName": "/foo",
+      "value": [
+        "A",
+        "B",
+        "C"
+      ]
+    },
+    "type": "error"
+  }
+]

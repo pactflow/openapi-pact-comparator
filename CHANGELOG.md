@@ -1,5 +1,11 @@
 # @pactflow/openapi-pact-comparator
 
+## 1.10.0
+
+### Minor Changes
+
+- 33920bb: Support colons in path
+
 ## 1.9.0
 
 ### Minor Changes

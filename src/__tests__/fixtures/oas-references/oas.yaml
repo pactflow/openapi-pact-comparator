@@ -20,6 +20,11 @@ paths:
       responses:
         "200":
           description: description
+  /ping:
+    get:
+      responses:
+        "200":
+          $ref: "#/components/responses/Ping.Body"
 
 components:
   headers:
@@ -73,3 +78,10 @@ components:
                 type: string
             required:
               - id
+    Ping.Body:
+      description: Ping body
+      content:
+        text/plain:
+          schema:
+            type: string
+            enum: ["OK"]

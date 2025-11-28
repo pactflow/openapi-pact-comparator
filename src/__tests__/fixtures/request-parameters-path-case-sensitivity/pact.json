@@ -1,0 +1,36 @@
+{
+  "consumer": { "name": "consumer" },
+  "provider": { "name": "provider" },
+  "interactions": [
+    {
+      "description": "request mixed case, OAS lowercase",
+      "request": {
+        "method": "GET",
+        "path": "/LoWeRcAsE"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "should match case insensitively",
+      "request": {
+        "method": "GET",
+        "path": "/UpPeRcAsE"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "should match case insensitively",
+      "request": {
+        "method": "GET",
+        "path": "/mixedcase"
+      },
+      "response": {
+        "status": 200
+      }
+    }
+  ]
+}

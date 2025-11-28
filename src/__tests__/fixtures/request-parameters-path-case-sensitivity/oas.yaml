@@ -1,0 +1,21 @@
+openapi: 3.1.0
+info:
+  x-opc-config-case-insensitive: true
+  title: path case sensitivity
+  version: 1.0.0
+paths:
+  /lowercase:
+    get:
+      responses:
+        "200":
+          description: ok
+  /UPPERCASE:
+    get:
+      responses:
+        "200":
+          description: ok
+  /MixedCase:
+    get:
+      responses:
+        "200":
+          description: OK

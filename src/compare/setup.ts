@@ -38,6 +38,7 @@ export function setupRouter(
   config: Config,
 ): Router.Instance<Router.HTTPVersion.V1> {
   const router = Router({
+    caseSensitive: !config.get("case-insensitive"),
     ignoreDuplicateSlashes: config.get("ignore-duplicate-slashes"),
     ignoreTrailingSlash: config.get("ignore-trailing-slash"),
     maxParamLength: 2048, // default = 100

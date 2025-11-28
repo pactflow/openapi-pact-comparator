@@ -2,6 +2,7 @@ const quirks = !!process.env.QUIRKS;
 
 export type ConfigKeys =
   | "cast-objects-in-pact"
+  | "case-insensitive"
   | "disable-multipart-formdata"
   | "ignore-duplicate-slashes"
   | "ignore-trailing-slash"
@@ -18,6 +19,9 @@ export const DEFAULT_CONFIG: Config = new Map([
   // SMV casts "[object Object]" queries as objects for validation purposes,
   // rather than flag it as a string - suggesting a broken Pact file
   ["cast-objects-in-pact", quirks],
+
+  // OPC (like SMV) is case sensitive by default, according to RFC3986
+  ["case-insensitive", false],
 
   // SMV didn't support multipart/form-data
   ["disable-multipart-formdata", quirks],

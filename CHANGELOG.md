@@ -1,5 +1,15 @@
 # @pactflow/openapi-pact-comparator
 
+## 1.11.0
+
+### Minor Changes
+
+- dce7a82: Optionally allow case-insensitive path matching
+
+### Patch Changes
+
+- d6e9e91: Resolve $ref before comparing response body.
+
 ## 1.10.0
 
 ### Minor Changes

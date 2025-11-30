@@ -63,8 +63,9 @@ export function* compareResBody(
   }
 
   if (response) {
+    const dereferencedResponse = dereferenceOas(response, oas);
     const availableResponseContentTypes =
-      operation.produces || Object.keys(response.content || {});
+      operation.produces || Object.keys(dereferencedResponse.content || {});
     const contentType =
       findMatchingType(
         requestHeaders.get("accept") || DEFAULT_CONTENT_TYPE,
@@ -72,7 +73,6 @@ export function* compareResBody(
       ) ||
       availableResponseContentTypes[0] ||
       DEFAULT_CONTENT_TYPE;
-    const dereferencedResponse = dereferenceOas(response, oas);
     const schema: SchemaObject | undefined =
       (dereferencedResponse as OpenAPIV2.ResponseObject)?.schema ||
       getByContentType(dereferencedResponse.content || {}, contentType)?.schema;

@@ -5,7 +5,7 @@
     "mockDetails": {
       "interactionDescription": "should fail with missing parameters",
       "interactionState": "[none]",
-      "location": "[root].interactions[1].request.query.account"
+      "location": "[root].interactions[2].request.query.account"
     },
     "specDetails": {
       "location": "[root].paths./login.post.parameters[0].schema.type",
@@ -21,7 +21,7 @@
     "mockDetails": {
       "interactionDescription": "should fail with missing parameters",
       "interactionState": "[none]",
-      "location": "[root].interactions[1].request.query.nested"
+      "location": "[root].interactions[2].request.query.nested"
     },
     "specDetails": {
       "location": "[root].paths./login.post.parameters[1].schema.type",
@@ -37,7 +37,7 @@
     "mockDetails": {
       "interactionDescription": "should fail with missing parameters",
       "interactionState": "[none]",
-      "location": "[root].interactions[1].request.query.bracket"
+      "location": "[root].interactions[2].request.query.bracket"
     },
     "specDetails": {
       "location": "[root].paths./login.post.parameters[2].schema.type",
@@ -53,7 +53,7 @@
     "mockDetails": {
       "interactionDescription": "should fail with bad request body",
       "interactionState": "[none]",
-      "location": "[root].interactions[2].request.body",
+      "location": "[root].interactions[3].request.body",
       "value": {}
     },
     "specDetails": {
@@ -72,7 +72,7 @@
     "mockDetails": {
       "interactionDescription": "should fail with bad response header",
       "interactionState": "[none]",
-      "location": "[root].interactions[3].response.headers.response-header",
+      "location": "[root].interactions[4].response.headers.response-header",
       "value": "string"
     },
     "specDetails": {
@@ -89,7 +89,7 @@
     "mockDetails": {
       "interactionDescription": "should fail with bad response body",
       "interactionState": "[none]",
-      "location": "[root].interactions[4].response.body",
+      "location": "[root].interactions[5].response.body",
       "value": {
         "username": "bob"
       }

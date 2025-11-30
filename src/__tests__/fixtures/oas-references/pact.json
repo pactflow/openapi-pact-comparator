@@ -26,6 +26,20 @@
       }
     },
     {
+      "description": "should pass when text body matches spec",
+      "request": {
+        "method": "GET",
+        "path": "/ping"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "text/plain"
+        },
+        "body": "OK"
+      }
+    },
+    {
       "description": "should fail with missing parameters",
       "request": {
         "method": "POST",

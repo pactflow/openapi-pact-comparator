@@ -14,8 +14,8 @@ Comparison output is presented as ND-JSON, with one line per Pact file.
 
 The exit code equals the number of Pact files with errors (not the number of errors in one comparison).`,
   )
-  .argument("<oas>", "path to OAS file")
-  .argument("<pact...>", "path(s) to Pact file(s)")
+  .argument("<oas>", "path or URL to OAS file")
+  .argument("<pact...>", "path(s) or URL(s) to Pact file(s)")
   .action(async (oasPath: string, pactPaths: string[]) => {
     const runner = new Runner();
     const exitCode = await runner.run(oasPath, pactPaths);

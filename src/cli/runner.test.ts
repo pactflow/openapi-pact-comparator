@@ -7,21 +7,32 @@ describe("Runner", () => {
   const defaultOasContent = JSON.stringify({ openapi: "3.0.0" });
   const defaultPactContent = JSON.stringify({ interactions: [] });
 
-  let readFile: Mock;
-  let output: Mock;
-  let compare: Mock;
-  let createComparator: Mock;
+  let readFileMock: Mock;
+  let fetchMock: Mock;
+  let outputMock: Mock;
+  let compareMock: Mock;
+  let createComparatorMock: Mock;
 
   const givenReadFileReturns = (...contents: string[]) => {
-    readFile.mockReset();
+    readFileMock.mockReset();
     for (const content of contents) {
-      readFile.mockResolvedValueOnce(content);
+      readFileMock.mockResolvedValueOnce(content);
+    }
+  };
+
+  const givenFetchReturns = (...contents: string[]) => {
+    fetchMock.mockReset();
+    for (const content of contents) {
+      fetchMock.mockResolvedValueOnce({
+        ok: true,
+        text: () => Promise.resolve(content),
+      });
     }
   };
 
   const givenCompareReturns = (...resultsPerCall: Result[][]) => {
     let callCount = 0;
-    compare.mockImplementation(async function* () {
+    compareMock.mockImplementation(async function* () {
       const results = resultsPerCall[callCount] ?? [];
       callCount++;
       for (const result of results) {
@@ -31,20 +42,26 @@ describe("Runner", () => {
   };
 
   beforeEach(() => {
-    readFile = vi.fn();
-    output = vi.fn();
-    compare = vi.fn();
-    createComparator = vi.fn().mockReturnValue({ compare });
+    readFileMock = vi.fn();
+    fetchMock = vi.fn();
+    outputMock = vi.fn();
+    compareMock = vi.fn();
+    createComparatorMock = vi.fn().mockReturnValue({ compare: compareMock });
     givenReadFileReturns(defaultOasContent, defaultPactContent);
     givenCompareReturns([]);
   });
 
   const whenRunIsCalled = (oasPath: string, pactPaths: string[]) => {
-    const runner = new Runner({ readFile, output, createComparator });
+    const runner = new Runner({
+      readFile: readFileMock,
+      fetch: fetchMock,
+      output: outputMock,
+      createComparator: createComparatorMock,
+    });
     return runner.run(oasPath, pactPaths);
   };
 
-  describe("reading and parsing input files", () => {
+  describe("reading and parsing inputs", () => {
     it("should parse JSON content", async () => {
       const oasDocument = {
         openapi: "3.0.0",
@@ -57,8 +74,8 @@ describe("Runner", () => {
 
       await whenRunIsCalled("oas.json", ["pact.json"]);
 
-      expect(createComparator).toHaveBeenCalledWith(oasDocument);
-      expect(compare).toHaveBeenCalledWith(pactDocument);
+      expect(createComparatorMock).toHaveBeenCalledWith(oasDocument);
+      expect(compareMock).toHaveBeenCalledWith(pactDocument);
     });
 
     it("should parse YAML content when JSON parsing fails", async () => {
@@ -71,7 +88,7 @@ describe("Runner", () => {
 
       await whenRunIsCalled("oas.yaml", ["pact.json"]);
 
-      expect(createComparator).toHaveBeenCalledWith(oasDocument);
+      expect(createComparatorMock).toHaveBeenCalledWith(oasDocument);
     });
 
     it("should throw JSON error when both JSON and YAML parsing fail", async () => {
@@ -80,6 +97,50 @@ describe("Runner", () => {
       await expect(
         whenRunIsCalled("invalid.txt", ["pact.json"]),
       ).rejects.toThrow(SyntaxError);
+    });
+
+    it.each([
+      ["https URL", "https://example.com/oas.yaml"],
+      ["http URL", "http://example.com/oas.yaml"],
+      ["HTTPS URL (uppercase)", "HTTPS://example.com/oas.yaml"],
+    ])(
+      "should fetch content when OAS path is a %s",
+      async (_description, oasUrl) => {
+        const oasDocument = { openapi: "3.0.0" };
+        givenFetchReturns(JSON.stringify(oasDocument));
+
+        await whenRunIsCalled(oasUrl, ["pact.json"]);
+
+        expect(fetchMock).toHaveBeenCalledWith(oasUrl);
+        expect(readFileMock).not.toHaveBeenCalledWith(oasUrl);
+        expect(createComparatorMock).toHaveBeenCalledWith(oasDocument);
+      },
+    );
+
+    it("should fetch content when Pact path is a URL", async () => {
+      const pactUrl = "https://example.com/pact.json";
+      const pactDocument = { interactions: [] };
+      givenFetchReturns(JSON.stringify(pactDocument));
+
+      await whenRunIsCalled("oas.json", [pactUrl]);
+
+      expect(fetchMock).toHaveBeenCalledWith(pactUrl);
+      expect(readFileMock).not.toHaveBeenCalledWith(pactUrl);
+      expect(compareMock).toHaveBeenCalledWith(pactDocument);
+    });
+
+    it("should throw error when URL response status is not ok", async () => {
+      const oasUrl = "https://example.com/oas.yaml";
+      fetchMock.mockResolvedValue({
+        ok: false,
+        status: 404,
+        statusText: "Not Found",
+        text: () => Promise.resolve("Not Found"),
+      });
+
+      await expect(whenRunIsCalled(oasUrl, ["pact.json"])).rejects.toThrow(
+        "HTTP 404: Not Found",
+      );
     });
   });
 
@@ -90,8 +151,8 @@ describe("Runner", () => {
 
       await whenRunIsCalled("oas.json", ["pact.json"]);
 
-      expect(createComparator).toHaveBeenCalledTimes(1);
-      expect(createComparator).toHaveBeenCalledWith(oasDocument);
+      expect(createComparatorMock).toHaveBeenCalledTimes(1);
+      expect(createComparatorMock).toHaveBeenCalledWith(oasDocument);
     });
 
     it("should reuse same Comparator instance for multiple pact files", async () => {
@@ -106,10 +167,10 @@ describe("Runner", () => {
 
       await whenRunIsCalled("oas.json", ["pact1.json", "pact2.json"]);
 
-      expect(createComparator).toHaveBeenCalledTimes(1);
-      expect(compare).toHaveBeenCalledTimes(2);
-      expect(compare).toHaveBeenNthCalledWith(1, pactDocument1);
-      expect(compare).toHaveBeenNthCalledWith(2, pactDocument2);
+      expect(createComparatorMock).toHaveBeenCalledTimes(1);
+      expect(compareMock).toHaveBeenCalledTimes(2);
+      expect(compareMock).toHaveBeenNthCalledWith(1, pactDocument1);
+      expect(compareMock).toHaveBeenNthCalledWith(2, pactDocument2);
     });
   });
 
@@ -126,7 +187,7 @@ describe("Runner", () => {
 
       await whenRunIsCalled("oas.json", ["pact.json"]);
 
-      expect(output).toHaveBeenCalledWith(JSON.stringify(mockResults));
+      expect(outputMock).toHaveBeenCalledWith(JSON.stringify(mockResults));
     });
 
     it("should output separate JSON lines for each pact file", async () => {
@@ -145,9 +206,9 @@ describe("Runner", () => {
 
       await whenRunIsCalled("oas.json", ["pact1.json", "pact2.json"]);
 
-      expect(output).toHaveBeenCalledTimes(2);
-      expect(output).toHaveBeenNthCalledWith(1, JSON.stringify(results1));
-      expect(output).toHaveBeenNthCalledWith(2, JSON.stringify(results2));
+      expect(outputMock).toHaveBeenCalledTimes(2);
+      expect(outputMock).toHaveBeenNthCalledWith(1, JSON.stringify(results1));
+      expect(outputMock).toHaveBeenNthCalledWith(2, JSON.stringify(results2));
     });
   });
 

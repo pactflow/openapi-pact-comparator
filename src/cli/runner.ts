@@ -6,6 +6,8 @@ import type { Result } from "#results/index";
 
 type OASDocument = OpenAPIV2.Document | OpenAPIV3.Document;
 
+const MAX_EXIT_CODE = 255;
+
 export interface ComparatorLike {
   compare(pact: unknown): AsyncGenerator<Result>;
 }
@@ -59,6 +61,6 @@ export class Runner {
       this.deps.output(JSON.stringify(results));
     }
 
-    return errors;
+    return Math.min(errors, MAX_EXIT_CODE);
   }
 }

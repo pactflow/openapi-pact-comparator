@@ -239,6 +239,25 @@ describe("Runner", () => {
 
       expect(exitCode).toBe(1);
     });
+
+    it("should cap exit code at 255 to avoid shell overflow", async () => {
+      const pactCount = 300;
+      const errorResults: Result[] = [
+        { type: "error", code: "request.body.incompatible", message: "error" },
+      ];
+      givenCompareReturns(...Array(pactCount).fill(errorResults));
+      givenReadFileReturns(
+        defaultOasContent,
+        ...Array(pactCount).fill(defaultPactContent),
+      );
+
+      const exitCode = await whenRunIsCalled(
+        "oas.json",
+        Array(pactCount).fill("pact.json"),
+      );
+
+      expect(exitCode).toBe(255);
+    });
   });
 
   describe("default dependencies", () => {

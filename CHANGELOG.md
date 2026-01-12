@@ -1,5 +1,17 @@
 # @pactflow/openapi-pact-comparator
 
+## 1.12.0
+
+### Minor Changes
+
+- e9b06dc: Support URLs for OAS and Pact file arguments
+  - CLI now accepts http:// and https:// URLs for both OAS and Pact files
+  - Fixed exit code overflow by capping at 255
+
+### Patch Changes
+
+- 1385c14: Export Results interface
+
 ## 1.11.0
 
 ### Minor Changes

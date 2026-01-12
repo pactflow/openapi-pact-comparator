@@ -1,7 +1,7 @@
 import { describe, expect, it, vi, beforeEach, type Mock } from "vitest";
 import yaml from "js-yaml";
 import { Runner } from "./runner";
-import type { Result } from "#results/index";
+import type { Result } from "../index";
 
 describe("Runner", () => {
   const defaultOasContent = JSON.stringify({ openapi: "3.0.0" });

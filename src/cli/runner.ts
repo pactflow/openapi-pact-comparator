@@ -1,8 +1,7 @@
 import type { OpenAPIV2, OpenAPIV3 } from "openapi-types";
 import yaml from "js-yaml";
 import fs from "node:fs";
-import { Comparator } from "../index";
-import type { Result } from "#results/index";
+import { Comparator, type Result } from "../index";
 
 type OASDocument = OpenAPIV2.Document | OpenAPIV3.Document;
 

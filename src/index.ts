@@ -1,2 +1,2 @@
 export * from "./compare";
-export { Result } from "./results";
+export { type Result } from "./results";

@@ -1,0 +1,330 @@
+import { describe, expect, it, vi, beforeEach, type Mock } from "vitest";
+import yaml from "js-yaml";
+import { Runner } from "./runner";
+import type { Result } from "#results/index";
+
+describe("Runner", () => {
+  const defaultOasContent = JSON.stringify({ openapi: "3.0.0" });
+  const defaultPactContent = JSON.stringify({ interactions: [] });
+
+  let readFileMock: Mock;
+  let fetchMock: Mock;
+  let outputMock: Mock;
+  let compareMock: Mock;
+  let createComparatorMock: Mock;
+
+  const givenReadFileReturns = (...contents: string[]) => {
+    readFileMock.mockReset();
+    for (const content of contents) {
+      readFileMock.mockResolvedValueOnce(content);
+    }
+  };
+
+  const givenFetchReturns = (...contents: string[]) => {
+    fetchMock.mockReset();
+    for (const content of contents) {
+      fetchMock.mockResolvedValueOnce({
+        ok: true,
+        text: () => Promise.resolve(content),
+      });
+    }
+  };
+
+  const givenCompareReturns = (...resultsPerCall: Result[][]) => {
+    let callCount = 0;
+    compareMock.mockImplementation(async function* () {
+      const results = resultsPerCall[callCount] ?? [];
+      callCount++;
+      for (const result of results) {
+        yield result;
+      }
+    });
+  };
+
+  beforeEach(() => {
+    readFileMock = vi.fn();
+    fetchMock = vi.fn();
+    outputMock = vi.fn();
+    compareMock = vi.fn();
+    createComparatorMock = vi.fn().mockReturnValue({ compare: compareMock });
+    givenReadFileReturns(defaultOasContent, defaultPactContent);
+    givenCompareReturns([]);
+  });
+
+  const whenRunIsCalled = (oasPath: string, pactPaths: string[]) => {
+    const runner = new Runner({
+      readFile: readFileMock,
+      fetch: fetchMock,
+      output: outputMock,
+      createComparator: createComparatorMock,
+    });
+    return runner.run(oasPath, pactPaths);
+  };
+
+  describe("reading and parsing inputs", () => {
+    it("should parse JSON content", async () => {
+      const oasDocument = {
+        openapi: "3.0.0",
+        info: { title: "Test", version: "1.0" },
+      };
+      const pactDocument = { interactions: [] };
+      const oasJsonContent = JSON.stringify(oasDocument);
+      const pactJsonContent = JSON.stringify(pactDocument);
+      givenReadFileReturns(oasJsonContent, pactJsonContent);
+
+      await whenRunIsCalled("oas.json", ["pact.json"]);
+
+      expect(createComparatorMock).toHaveBeenCalledWith(oasDocument);
+      expect(compareMock).toHaveBeenCalledWith(pactDocument);
+    });
+
+    it("should parse YAML content when JSON parsing fails", async () => {
+      const oasDocument = {
+        openapi: "3.0.0",
+        info: { title: "Test API", version: "1.0" },
+      };
+      const yamlContent = yaml.dump(oasDocument);
+      givenReadFileReturns(yamlContent, defaultPactContent);
+
+      await whenRunIsCalled("oas.yaml", ["pact.json"]);
+
+      expect(createComparatorMock).toHaveBeenCalledWith(oasDocument);
+    });
+
+    it("should throw JSON error when both JSON and YAML parsing fail", async () => {
+      givenReadFileReturns("{ invalid json and not valid yaml either: [");
+
+      await expect(
+        whenRunIsCalled("invalid.txt", ["pact.json"]),
+      ).rejects.toThrow(SyntaxError);
+    });
+
+    it.each([
+      ["https URL", "https://example.com/oas.yaml"],
+      ["http URL", "http://example.com/oas.yaml"],
+      ["HTTPS URL (uppercase)", "HTTPS://example.com/oas.yaml"],
+    ])(
+      "should fetch content when OAS path is a %s",
+      async (_description, oasUrl) => {
+        const oasDocument = { openapi: "3.0.0" };
+        givenFetchReturns(JSON.stringify(oasDocument));
+
+        await whenRunIsCalled(oasUrl, ["pact.json"]);
+
+        expect(fetchMock).toHaveBeenCalledWith(oasUrl);
+        expect(readFileMock).not.toHaveBeenCalledWith(oasUrl);
+        expect(createComparatorMock).toHaveBeenCalledWith(oasDocument);
+      },
+    );
+
+    it("should fetch content when Pact path is a URL", async () => {
+      const pactUrl = "https://example.com/pact.json";
+      const pactDocument = { interactions: [] };
+      givenFetchReturns(JSON.stringify(pactDocument));
+
+      await whenRunIsCalled("oas.json", [pactUrl]);
+
+      expect(fetchMock).toHaveBeenCalledWith(pactUrl);
+      expect(readFileMock).not.toHaveBeenCalledWith(pactUrl);
+      expect(compareMock).toHaveBeenCalledWith(pactDocument);
+    });
+
+    it("should throw error when URL response status is not ok", async () => {
+      const oasUrl = "https://example.com/oas.yaml";
+      fetchMock.mockResolvedValue({
+        ok: false,
+        status: 404,
+        statusText: "Not Found",
+        text: () => Promise.resolve("Not Found"),
+      });
+
+      await expect(whenRunIsCalled(oasUrl, ["pact.json"])).rejects.toThrow(
+        "HTTP 404: Not Found",
+      );
+    });
+  });
+
+  describe("Comparator initialization", () => {
+    it("should initialize Comparator with parsed OAS document", async () => {
+      const oasDocument = { openapi: "3.0.0", paths: {} };
+      givenReadFileReturns(JSON.stringify(oasDocument), defaultPactContent);
+
+      await whenRunIsCalled("oas.json", ["pact.json"]);
+
+      expect(createComparatorMock).toHaveBeenCalledTimes(1);
+      expect(createComparatorMock).toHaveBeenCalledWith(oasDocument);
+    });
+
+    it("should reuse same Comparator instance for multiple pact files", async () => {
+      const oasDocument = { openapi: "3.0.0" };
+      const pactDocument1 = { interactions: [], name: "pact1" };
+      const pactDocument2 = { interactions: [], name: "pact2" };
+      givenReadFileReturns(
+        JSON.stringify(oasDocument),
+        JSON.stringify(pactDocument1),
+        JSON.stringify(pactDocument2),
+      );
+
+      await whenRunIsCalled("oas.json", ["pact1.json", "pact2.json"]);
+
+      expect(createComparatorMock).toHaveBeenCalledTimes(1);
+      expect(compareMock).toHaveBeenCalledTimes(2);
+      expect(compareMock).toHaveBeenNthCalledWith(1, pactDocument1);
+      expect(compareMock).toHaveBeenNthCalledWith(2, pactDocument2);
+    });
+  });
+
+  describe("compare results handling", () => {
+    it("should output results as JSON to stdout", async () => {
+      const mockResults: Result[] = [
+        {
+          type: "warning",
+          code: "request.header.unknown",
+          message: "Test warning",
+        },
+      ];
+      givenCompareReturns(mockResults);
+
+      await whenRunIsCalled("oas.json", ["pact.json"]);
+
+      expect(outputMock).toHaveBeenCalledWith(JSON.stringify(mockResults));
+    });
+
+    it("should output separate JSON lines for each pact file", async () => {
+      const results1: Result[] = [
+        { type: "warning", code: "request.header.unknown", message: "warn 1" },
+      ];
+      const results2: Result[] = [
+        { type: "warning", code: "request.query.unknown", message: "warn 2" },
+      ];
+      givenCompareReturns(results1, results2);
+      givenReadFileReturns(
+        defaultOasContent,
+        defaultPactContent,
+        defaultPactContent,
+      );
+
+      await whenRunIsCalled("oas.json", ["pact1.json", "pact2.json"]);
+
+      expect(outputMock).toHaveBeenCalledTimes(2);
+      expect(outputMock).toHaveBeenNthCalledWith(1, JSON.stringify(results1));
+      expect(outputMock).toHaveBeenNthCalledWith(2, JSON.stringify(results2));
+    });
+  });
+
+  describe("exit codes", () => {
+    it("should return 0 when no errors are found", async () => {
+      givenCompareReturns([
+        { type: "warning", code: "request.header.unknown", message: "warning" },
+      ]);
+
+      const exitCode = await whenRunIsCalled("oas.json", ["pact.json"]);
+
+      expect(exitCode).toBe(0);
+    });
+
+    it("should return 1 when one pact file has errors", async () => {
+      givenCompareReturns([
+        {
+          type: "error",
+          code: "request.body.incompatible",
+          message: "An error",
+        },
+      ]);
+
+      const exitCode = await whenRunIsCalled("oas.json", ["pact.json"]);
+
+      expect(exitCode).toBe(1);
+    });
+
+    it("should return count of pact files that have errors", async () => {
+      givenCompareReturns(
+        [
+          {
+            type: "error",
+            code: "request.body.incompatible",
+            message: "error",
+          },
+        ],
+        [
+          {
+            type: "warning",
+            code: "request.header.unknown",
+            message: "warning",
+          },
+        ],
+        [
+          {
+            type: "error",
+            code: "request.body.incompatible",
+            message: "error",
+          },
+        ],
+      );
+      givenReadFileReturns(
+        defaultOasContent,
+        defaultPactContent,
+        defaultPactContent,
+        defaultPactContent,
+      );
+
+      const exitCode = await whenRunIsCalled("oas.json", [
+        "pact1.json",
+        "pact2.json",
+        "pact3.json",
+      ]);
+
+      expect(exitCode).toBe(2);
+    });
+
+    it("should count only one error per pact file even with multiple errors", async () => {
+      givenCompareReturns([
+        {
+          type: "error",
+          code: "request.body.incompatible",
+          message: "First error",
+        },
+        {
+          type: "error",
+          code: "request.header.incompatible",
+          message: "Second error",
+        },
+        {
+          type: "error",
+          code: "request.query.incompatible",
+          message: "Third error",
+        },
+      ]);
+
+      const exitCode = await whenRunIsCalled("oas.json", ["pact.json"]);
+
+      expect(exitCode).toBe(1);
+    });
+
+    it("should cap exit code at 255 to avoid shell overflow", async () => {
+      const pactCount = 300;
+      const errorResults: Result[] = [
+        { type: "error", code: "request.body.incompatible", message: "error" },
+      ];
+      givenCompareReturns(...Array(pactCount).fill(errorResults));
+      givenReadFileReturns(
+        defaultOasContent,
+        ...Array(pactCount).fill(defaultPactContent),
+      );
+
+      const exitCode = await whenRunIsCalled(
+        "oas.json",
+        Array(pactCount).fill("pact.json"),
+      );
+
+      expect(exitCode).toBe(255);
+    });
+  });
+
+  describe("default dependencies", () => {
+    it("should use default dependencies when none provided", () => {
+      const runner = new Runner();
+      expect(runner).toBeInstanceOf(Runner);
+    });
+  });
+});

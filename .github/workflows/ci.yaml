@@ -39,4 +39,5 @@ jobs:
       - name: Test
         run: npm run test
   call-workflow:
-    uses: pactflow/.github/.github/workflows/publish@main
+    uses: ./.github/workflows/publish.yaml
+    if: ${{ github.repository_owner == 'pactflow' && github.event_name == 'push' }}

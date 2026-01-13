@@ -1,16 +1,11 @@
 name: Publish
 
-permissions:
-  id-token: write
-  contents: read
-
 on:
   workflow_call:
 
 jobs:
   publish:
     runs-on: ubuntu-latest
-    environment: NPM
     steps:
       - name: Checkout code
         uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
@@ -33,4 +28,4 @@ jobs:
           title: "[ci] release"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ""
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

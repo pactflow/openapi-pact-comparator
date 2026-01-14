@@ -1,5 +1,11 @@
 # @pactflow/openapi-pact-comparator
 
+## 1.12.1
+
+### Patch Changes
+
+- e7e7333: Fix bin path in package.json
+
 ## 1.12.0
 
 ### Minor Changes

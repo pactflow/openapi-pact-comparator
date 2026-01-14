@@ -38,7 +38,8 @@ jobs:
         run: npm run typecheck
       - name: Test
         run: npm run test
-  call-workflow:
+
+  publish:
     uses: ./.github/workflows/publish.yaml
     if: ${{ github.repository_owner == 'pactflow' && github.event_name == 'push' }}
     needs: test

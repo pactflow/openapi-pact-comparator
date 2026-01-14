@@ -20,9 +20,6 @@
   "scripts": {
     "build": "rollup --config",
     "build:watch": "rollup --config --watch",
-    "changeset:add": "changeset add",
-    "changeset:publish": "changeset publish",
-    "changeset:version": "changeset version",
     "lint": "eslint --max-warnings=0",
     "patch-package": "patch-package",
     "prepare": "npm run build",

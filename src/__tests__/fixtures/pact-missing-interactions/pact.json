@@ -1,0 +1,4 @@
+{
+  "consumer": { "name": "consumer" },
+  "provider": { "name": "provider" }
+}

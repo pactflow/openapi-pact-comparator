@@ -154,7 +154,7 @@ const ajv = new Ajv();
 const validate = ajv.compile(Pact);
 
 export const parse = (pact: Pact): Pact => {
-  const { metadata, interactions } = pact;
+  const { metadata, interactions = [] } = pact;
 
   const isValid = validate({
     metadata,

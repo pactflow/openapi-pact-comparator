@@ -43,5 +43,4 @@ jobs:
     if: ${{ github.repository_owner == 'pactflow' && github.event_name == 'push' }}
     needs: test
     secrets:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

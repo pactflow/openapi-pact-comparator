@@ -1,0 +1,219 @@
+{
+  "consumer": {
+    "name": "mixed-consumer"
+  },
+  "provider": {
+    "name": "mixed-provider"
+  },
+  "interactions": [
+    {
+      "description": "get user by id",
+      "providerStates": [
+        {
+          "name": "user exists"
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/api/users/123",
+        "headers": {
+          "Accept": "application/json"
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "id": "123",
+          "username": "john.doe",
+          "email": "john.doe@example.com",
+          "createdAt": "2024-01-15T10:30:00Z"
+        },
+        "matchingRules": {
+          "body": {
+            "$.id": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.username": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.email": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"
+                }
+              ]
+            },
+            "$.createdAt": {
+              "matchers": [
+                {
+                  "match": "datetime",
+                  "format": "yyyy-MM-dd'T'HH:mm:ssX"
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "description": "create new order",
+      "providerStates": [
+        {
+          "name": "product is in stock"
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "path": "/api/orders",
+        "headers": {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        "body": {
+          "productId": "PROD-001",
+          "quantity": 2,
+          "customerId": "CUST-999"
+        }
+      },
+      "response": {
+        "status": 201,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "orderId": 7890,
+          "productId": "PROD-001",
+          "quantity": 2,
+          "customerId": "CUST-999",
+          "totalAmount": 59.98,
+          "status": "pending"
+        },
+        "matchingRules": {
+          "body": {
+            "$.orderId": {
+              "matchers": [
+                {
+                  "match": "integer"
+                }
+              ]
+            },
+            "$.quantity": {
+              "matchers": [
+                {
+                  "match": "integer"
+                }
+              ]
+            },
+            "$.totalAmount": {
+              "matchers": [
+                {
+                  "match": "decimal"
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  ],
+  "messages": [
+    {
+      "description": "a user created event message",
+      "providerState": "a user signup occurred",
+      "contents": {
+        "eventType": "user.created",
+        "userId": "12345",
+        "username": "john.doe",
+        "email": "john.doe@example.com",
+        "timestamp": "2024-01-15T10:30:00Z"
+      },
+      "metaData": {
+        "contentType": "application/json",
+        "kafka_topic": "user-events"
+      },
+      "matchingRules": {
+        "body": {
+          "$.userId": {
+            "matchers": [
+              {
+                "match": "type"
+              }
+            ]
+          },
+          "$.username": {
+            "matchers": [
+              {
+                "match": "type"
+              }
+            ]
+          },
+          "$.email": {
+            "matchers": [
+              {
+                "match": "regex",
+                "regex": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"
+              }
+            ]
+          },
+          "$.timestamp": {
+            "matchers": [
+              {
+                "match": "datetime",
+                "format": "yyyy-MM-dd'T'HH:mm:ssX"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "description": "an order placed event",
+      "providerState": "order processing is enabled",
+      "contents": {
+        "eventType": "order.placed",
+        "orderId": 7890,
+        "customerId": "CUST-999",
+        "totalAmount": 59.98
+      },
+      "metaData": {
+        "contentType": "application/json",
+        "queue": "orders"
+      },
+      "matchingRules": {
+        "body": {
+          "$.orderId": {
+            "matchers": [
+              {
+                "match": "integer"
+              }
+            ]
+          },
+          "$.totalAmount": {
+            "matchers": [
+              {
+                "match": "decimal"
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "pactSpecification": {
+      "version": "3.0.0"
+    }
+  }
+}

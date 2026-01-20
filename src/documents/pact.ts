@@ -156,9 +156,14 @@ const validate = ajv.compile(Pact);
 export const parse = (pact: Pact): Pact => {
   const { metadata, interactions } = pact;
 
+  // If interactions is undefined, return empty array
+  const filteredInteractions = interactions
+    ? interactions.filter(supportedInteractions)
+    : [];
+
   const isValid = validate({
     metadata,
-    interactions: interactions.filter(supportedInteractions),
+    interactions: filteredInteractions,
   });
   if (!isValid) {
     throw new ParserError(validate.errors!);
@@ -175,11 +180,13 @@ export const parse = (pact: Pact): Pact => {
 
   return {
     metadata,
-    interactions: interactions.map((i: Interaction) =>
-      supportedInteractions(i)
-        ? interactionParser(i)
-        : ({ _skip: true } as Interaction),
-    ),
+    interactions: interactions
+      ? interactions.map((i: Interaction) =>
+          supportedInteractions(i)
+            ? interactionParser(i)
+            : ({ _skip: true } as Interaction),
+        )
+      : [],
   };
 };
 

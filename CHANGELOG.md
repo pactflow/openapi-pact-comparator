@@ -1,5 +1,11 @@
 # @pactflow/openapi-pact-comparator
 
+## 1.13.0
+
+### Minor Changes
+
+- d1b0aac: Support Pact-V3 without any interactions
+
 ## 1.12.1
 
 ### Patch Changes

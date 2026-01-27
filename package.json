@@ -62,7 +62,7 @@
     "commander": "14.0.2",
     "eslint": "9.39.2",
     "eslint-config-prettier": "10.1.8",
-    "find-my-way": "9.3.0",
+    "find-my-way": "9.4.0",
     "js-yaml": "4.1.1",
     "lodash-es": "4.17.23",
     "openapi-types": "12.1.3",

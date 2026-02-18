@@ -94,7 +94,7 @@ export function* compareReqSecurity(
             break;
           case "basic": {
             const auth = requestHeaders.get("authorization") || "";
-            let isValidSchema = false;
+            let isValidSchema;
             if (config.get("no-authorization-schema")) {
               isValidSchema = requestHeaders.get("authorization") !== null;
             } else {

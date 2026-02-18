@@ -57,7 +57,7 @@
     "@types/node": "24.10.13",
     "@types/qs": "6.14.0",
     "@vitest/coverage-v8": "4.0.18",
-    "ajv": "8.17.1",
+    "ajv": "8.18.0",
     "ajv-formats": "3.0.1",
     "commander": "14.0.3",
     "eslint": "9.39.2",

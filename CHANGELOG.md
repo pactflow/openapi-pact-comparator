@@ -1,5 +1,11 @@
 # @pactflow/openapi-pact-comparator
 
+## 1.13.1
+
+### Patch Changes
+
+- 5aa22db: Bump package due to AJV CVE https://github.com/advisories/GHSA-2g4f-4pwh-qvx6
+
 ## 1.13.0
 
 ### Minor Changes

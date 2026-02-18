@@ -1,5 +1,5 @@
 diff --git a/node_modules/ajv/dist/compile/validate/dataType.js b/node_modules/ajv/dist/compile/validate/dataType.js
-index 6d03e0d..8e19a97 100644
+index 6d03e0d..01bdfc4 100644
 --- a/node_modules/ajv/dist/compile/validate/dataType.js
 +++ b/node_modules/ajv/dist/compile/validate/dataType.js
 @@ -94,13 +94,13 @@ function coerceData(it, types, coerceTo) {

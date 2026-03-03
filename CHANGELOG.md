@@ -1,5 +1,11 @@
 # @pactflow/openapi-pact-comparator
 
+## 1.14.0
+
+### Minor Changes
+
+- cbfce24: Downgrade `request.body.unknown` from `error` to `warning`
+
 ## 1.13.1
 
 ### Patch Changes

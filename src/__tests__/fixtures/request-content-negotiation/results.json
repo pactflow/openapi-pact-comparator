@@ -45,7 +45,7 @@
         }
       }
     },
-    "type": "error"
+    "type": "warning"
   },
   {
     "code": "request.content-type.missing",
@@ -125,6 +125,6 @@
       "pathMethod": "post",
       "pathName": "/no-content"
     },
-    "type": "error"
+    "type": "warning"
   }
 ]

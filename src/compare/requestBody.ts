@@ -181,7 +181,7 @@ export function* compareReqBody(
         pathName: path,
         value: get(operation, "requestBody.content"),
       },
-      type: "error",
+      type: "warning",
     };
   }
 }

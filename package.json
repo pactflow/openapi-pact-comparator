@@ -45,7 +45,7 @@
   "license": "MIT",
   "type": "module",
   "devDependencies": {
-    "@changesets/cli": "2.29.8",
+    "@changesets/cli": "2.30.0",
     "@eslint/js": "10.0.1",
     "@rollup/plugin-commonjs": "29.0.0",
     "@rollup/plugin-json": "6.1.0",

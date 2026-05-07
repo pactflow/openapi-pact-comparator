@@ -1,0 +1,20 @@
+[
+  {
+    "code": "message.headers.incompatible",
+    "message": "Message headers are incompatible with the schema in the spec file: must NOT have additional properties - x-unknown",
+    "mockDetails": {
+      "interactionDescription": "an organization-deleted event with incompatible headers",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].metadata",
+      "value": {
+        "detail-type": "organization-deleted",
+        "x-unknown": "extra"
+      }
+    },
+    "specDetails": {
+      "location": "[root].operations.consumeFromEventsQueue.messages.organizationDeleted.headers.additionalProperties",
+      "value": false
+    },
+    "type": "error"
+  }
+]

@@ -1,0 +1,21 @@
+[
+  {
+    "code": "message.id.unknown",
+    "message": "Message not defined in AsyncAPI spec: nonExistentMessage",
+    "mockDetails": {
+      "interactionDescription": "an organization-deleted event with unknown message id",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].comments.references.AsyncAPI.messageId",
+      "value": "nonExistentMessage"
+    },
+    "specDetails": {
+      "location": "[root].operations.consumeFromEventsQueue.messages",
+      "value": [
+        {
+          "$ref": "#/channels/eventsQueue/messages/organizationDeleted"
+        }
+      ]
+    },
+    "type": "error"
+  }
+]

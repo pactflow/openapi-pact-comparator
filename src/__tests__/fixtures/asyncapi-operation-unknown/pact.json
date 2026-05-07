@@ -1,0 +1,26 @@
+{
+  "consumer": { "name": "consumer" },
+  "provider": { "name": "provider" },
+  "interactions": [
+    {
+      "comments": {
+        "references": {
+          "AsyncAPI": {
+            "messageId": "organizationDeleted",
+            "operationId": "nonExistentOp"
+          }
+        }
+      },
+      "contents": {
+        "content": { "organizationId": "e4f5a1af-eb7e-4792-b89c-74249d28cec2" },
+        "contentType": "application/json",
+        "encoded": false
+      },
+      "description": "an organization-deleted event with unknown operation",
+      "metadata": { "detail-type": "organization-deleted" },
+      "pending": false,
+      "type": "Asynchronous/Messages"
+    }
+  ],
+  "metadata": { "pactSpecification": { "version": "4.0" } }
+}

@@ -20,13 +20,19 @@ for (const entry of fs.readdirSync(FIXTURES)) {
   const dir = path.join(FIXTURES, entry);
   const pactFile = path.join(dir, "pact.json");
   const oasFile = path.join(dir, "oas.yaml");
+  const asyncapiFile = path.join(dir, "asyncapi.yaml");
   const resultFile = path.join(dir, "results.json");
 
   const runOpc = async () => {
     const pact = parse(await fs.promises.readFile(pactFile, "utf-8"));
-    const oas = parse(await fs.promises.readFile(oasFile, "utf-8"));
+    const oas = fs.existsSync(oasFile)
+      ? parse(await fs.promises.readFile(oasFile, "utf-8"))
+      : undefined;
+    const asyncapi = fs.existsSync(asyncapiFile)
+      ? parse(await fs.promises.readFile(asyncapiFile, "utf-8"))
+      : undefined;
 
-    const comparator = new Comparator(oas);
+    const comparator = new Comparator({ oas, asyncapi });
     const results = [];
     for await (const result of comparator.compare(pact)) {
       results.push(result);

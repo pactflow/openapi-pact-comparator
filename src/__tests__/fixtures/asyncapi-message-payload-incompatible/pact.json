@@ -1,0 +1,26 @@
+{
+  "consumer": { "name": "consumer" },
+  "provider": { "name": "provider" },
+  "interactions": [
+    {
+      "comments": {
+        "references": {
+          "AsyncAPI": {
+            "messageId": "organizationDeleted",
+            "operationId": "consumeFromEventsQueue"
+          }
+        }
+      },
+      "contents": {
+        "content": { "organizationId": 12345 },
+        "contentType": "application/json",
+        "encoded": false
+      },
+      "description": "an organization-deleted event with invalid payload",
+      "metadata": { "detail-type": "organization-deleted" },
+      "pending": false,
+      "type": "Asynchronous/Messages"
+    }
+  ],
+  "metadata": { "pactSpecification": { "version": "4.0" } }
+}

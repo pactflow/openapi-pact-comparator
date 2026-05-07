@@ -1,0 +1,16 @@
+[
+  {
+    "code": "message.operation.unknown",
+    "message": "Operation not defined in AsyncAPI spec: nonExistentOp",
+    "mockDetails": {
+      "interactionDescription": "an organization-deleted event with unknown operation",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].comments.references.AsyncAPI.operationId",
+      "value": "nonExistentOp"
+    },
+    "specDetails": {
+      "location": "[root].operations"
+    },
+    "type": "error"
+  }
+]

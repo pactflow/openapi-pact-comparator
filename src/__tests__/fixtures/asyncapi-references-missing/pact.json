@@ -1,0 +1,18 @@
+{
+  "consumer": { "name": "consumer" },
+  "provider": { "name": "provider" },
+  "interactions": [
+    {
+      "contents": {
+        "content": { "organizationId": "e4f5a1af-eb7e-4792-b89c-74249d28cec2" },
+        "contentType": "application/json",
+        "encoded": false
+      },
+      "description": "an async event with no AsyncAPI references",
+      "metadata": { "detail-type": "organization-deleted" },
+      "pending": false,
+      "type": "Asynchronous/Messages"
+    }
+  ],
+  "metadata": { "pactSpecification": { "version": "4.0" } }
+}

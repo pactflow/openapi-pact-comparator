@@ -1,0 +1,17 @@
+[
+  {
+    "code": "message.payload.incompatible",
+    "message": "Message payload is incompatible with the schema in the spec file: must be string",
+    "mockDetails": {
+      "interactionDescription": "an organization-deleted event with invalid payload",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].contents.organizationId",
+      "value": 12345
+    },
+    "specDetails": {
+      "location": "[root].operations.consumeFromEventsQueue.messages.organizationDeleted.payload.properties.organizationId.type",
+      "value": "string"
+    },
+    "type": "error"
+  }
+]

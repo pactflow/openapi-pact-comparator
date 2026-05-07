@@ -83,4 +83,31 @@ describe("compareMessagePayload", () => {
     );
     expect(results).toHaveLength(0);
   });
+
+  it("skips validation when contentType is not a string", () => {
+    const interaction = {
+      ...baseInteraction,
+      contentType: 42 as unknown as string,
+    };
+    expect(() =>
+      Array.from(
+        compareMessagePayload(makeAjv(), baseMessage, interaction, 0, "consumeOp", "myMsg"),
+      ),
+    ).not.toThrow();
+    const results = Array.from(
+      compareMessagePayload(makeAjv(), baseMessage, interaction, 0, "consumeOp", "myMsg"),
+    );
+    expect(results).toHaveLength(0);
+  });
+
+  it("validates JSON content types with +json suffix", () => {
+    const interaction: AsyncInteraction = {
+      ...baseInteraction,
+      contentType: "application/cloudevents+json; charset=utf-8",
+    };
+    const results = Array.from(
+      compareMessagePayload(makeAjv(), baseMessage, interaction, 0, "consumeOp", "myMsg"),
+    );
+    expect(results).toHaveLength(0);
+  });
 });

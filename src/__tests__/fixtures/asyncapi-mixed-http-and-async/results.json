@@ -1,1 +1,38 @@
-[]
+[
+  {
+    "code": "response.status.unknown",
+    "message": "Response status code not defined in spec file: 404",
+    "mockDetails": {
+      "interactionDescription": "a health check",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].response.status",
+      "value": 404
+    },
+    "specDetails": {
+      "location": "[root].paths./health.get.responses",
+      "pathMethod": "get",
+      "pathName": "/health",
+      "value": {
+        "200": {
+          "description": "OK"
+        }
+      }
+    },
+    "type": "error"
+  },
+  {
+    "code": "message.payload.incompatible",
+    "message": "Message payload is incompatible with the schema in the spec file: must be string",
+    "mockDetails": {
+      "interactionDescription": "an organization-deleted event",
+      "interactionState": "[none]",
+      "location": "[root].interactions[1].contents.organizationId",
+      "value": 12345
+    },
+    "specDetails": {
+      "location": "[root].operations.consumeFromEventsQueue.messages.organizationDeleted.payload.properties.organizationId.type",
+      "value": "string"
+    },
+    "type": "error"
+  }
+]

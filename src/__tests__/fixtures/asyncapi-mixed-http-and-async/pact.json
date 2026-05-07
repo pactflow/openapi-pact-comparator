@@ -9,7 +9,7 @@
         "path": "/health"
       },
       "response": {
-        "status": 200
+        "status": 404
       }
     },
     {
@@ -22,7 +22,7 @@
         }
       },
       "contents": {
-        "content": { "organizationId": "e4f5a1af-eb7e-4792-b89c-74249d28cec2" },
+        "content": { "organizationId": 12345 },
         "contentType": "application/json",
         "encoded": false
       },

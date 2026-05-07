@@ -93,6 +93,23 @@ describe("#parser", () => {
     expect(interaction.providerState).toBe("an org exists");
   });
 
+  it("does not crash and skips interactions with non-string type values", () => {
+    const request = { method: "GET", path: "/path" };
+    const response = { status: 200 };
+    const json = {
+      interactions: [
+        { type: 123, description: "numeric-type", request, response },
+        { type: true, description: "bool-type", request, response },
+        { type: {}, description: "object-type", request, response },
+      ],
+    };
+
+    expect(() => parse(json as Pact)).not.toThrow();
+    const pact = parse(json as Pact);
+    expect(pact.interactions).toHaveLength(3);
+    pact.interactions.forEach((i) => expect(i._kind).toBe("skip"));
+  });
+
   it("leaves asyncapiReferences undefined when comments.references.AsyncAPI is absent", () => {
     const json = {
       interactions: [

@@ -13,8 +13,11 @@ import {
 import { splitPath } from "#utils/schema";
 import { getValidateFunction } from "#utils/validation";
 
-const canValidate = (contentType: string): boolean =>
-  contentType.toLowerCase().includes("application/json");
+const canValidate = (contentType: string): boolean => {
+  if (typeof contentType !== "string") return false;
+  const normalized = contentType.split(";", 1)[0].trim().toLowerCase();
+  return normalized === "application/json" || normalized.endsWith("+json");
+};
 
 export function* compareMessagePayload(
   ajv: Ajv,

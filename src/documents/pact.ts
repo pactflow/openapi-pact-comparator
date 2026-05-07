@@ -145,10 +145,11 @@ interface RawInteraction {
 }
 
 const isHttpInteraction = (i: RawInteraction) =>
-  !i.type || i.type.toLowerCase() === "synchronous/http";
+  !i.type ||
+  (typeof i.type === "string" && i.type.toLowerCase() === "synchronous/http");
 
 const isAsyncInteraction = (i: RawInteraction) =>
-  i.type?.toLowerCase() === "asynchronous/messages";
+  typeof i.type === "string" && i.type.toLowerCase() === "asynchronous/messages";
 
 const parseAsPactV4Body = (body: unknown) => {
   if (!body) {

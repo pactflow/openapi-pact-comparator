@@ -22,6 +22,11 @@ export const dereferenceOas = (
   oas: OpenAPIV3.Document,
 ) => (schema.$ref ? get(oas, splitPath(schema.$ref)) : schema);
 
+export const dereferenceDoc = (
+  schema: { $ref?: string },
+  doc: object,
+): unknown => (schema.$ref ? get(doc, splitPath(schema.$ref as string)) : schema);
+
 export const traverse = (
   schema: SchemaObject,
   visitor: (schema: SchemaObject) => void,

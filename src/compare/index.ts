@@ -2,7 +2,7 @@ import type { OpenAPIV2, OpenAPIV3 } from "openapi-types";
 import Ajv from "ajv/dist/2019";
 import Router, { HTTPMethod } from "find-my-way";
 
-import type { HttpInteraction, Pact } from "#documents/pact";
+import type { AsyncInteraction, HttpInteraction, Pact } from "#documents/pact";
 import type { Result } from "#results/index";
 
 import { compareReqPath } from "#compare/requestPath";
@@ -14,24 +14,43 @@ import { compareResBody } from "#compare/responseBody";
 import { compareResHeader } from "#compare/responseHeader";
 import { parse as parseOas } from "#documents/oas";
 import { parse as parsePact } from "#documents/pact";
+import type { AsyncAPIDocument, Message } from "#documents/asyncapi";
+import { parse as parseAsyncapi } from "#documents/asyncapi";
 import { baseMockDetails } from "#results/index";
 import { Config, ConfigKeys, DEFAULT_CONFIG } from "#utils/config";
 import { ARRAY_SEPARATOR } from "#utils/queryParams";
 
+import { compareAsyncInteraction } from "#compare/asyncapi/index";
 import { setupAjv, setupRouter } from "./setup";
+
+export interface ComparatorOptions {
+  oas?: OpenAPIV2.Document | OpenAPIV3.Document;
+  asyncapi?: AsyncAPIDocument;
+}
 
 export class Comparator {
   #ajvCoerce: Ajv;
   #ajvNocoerce: Ajv;
   #config: Config;
-  #oas: OpenAPIV2.Document | OpenAPIV3.Document;
+  #oas?: OpenAPIV2.Document | OpenAPIV3.Document;
+  #asyncapi?: AsyncAPIDocument;
   #router?: Router.Instance<Router.HTTPVersion.V1>;
+  #resolvedMessages: Map<string, Message | null> = new Map();
 
-  constructor(oas: OpenAPIV2.Document | OpenAPIV3.Document) {
+  constructor(options: ComparatorOptions | OpenAPIV2.Document | OpenAPIV3.Document) {
     this.#config = new Map(DEFAULT_CONFIG);
-    this.#oas = oas;
 
-    parseOas(oas);
+    // Support legacy constructor(oas) and new constructor({ oas?, asyncapi? })
+    if (options && ("oas" in options || "asyncapi" in options)) {
+      const opts = options as ComparatorOptions;
+      this.#oas = opts.oas;
+      this.#asyncapi = opts.asyncapi;
+      if (opts.oas) parseOas(opts.oas);
+      if (opts.asyncapi) parseAsyncapi(opts.asyncapi);
+    } else {
+      this.#oas = options as OpenAPIV2.Document | OpenAPIV3.Document;
+      parseOas(this.#oas);
+    }
 
     const ajvOptions = {
       allErrors: true,
@@ -52,7 +71,9 @@ export class Comparator {
   }
 
   async *compare(pact: Pact): AsyncGenerator<Result> {
-    if (!this.#router) {
+    this.#resolvedMessages = new Map();
+
+    if (this.#oas && !this.#router) {
       for (const [key, value] of Object.entries(this.#oas.info)) {
         if (key.startsWith("x-opc-config-")) {
           this.#config.set(key.substring(13) as ConfigKeys, value);
@@ -64,8 +85,34 @@ export class Comparator {
     const parsedPact = parsePact(pact);
 
     for (const [index, interaction] of parsedPact.interactions.entries()) {
-      if (interaction._kind === "skip" || interaction._kind === "async") {
-        // async interactions handled in a later task; non-http skipped entirely
+      if (interaction._kind === "skip") {
+        continue;
+      }
+
+      if (interaction._kind === "async") {
+        yield* compareAsyncInteraction(
+          this.#ajvNocoerce,
+          this.#asyncapi,
+          this.#resolvedMessages,
+          interaction as AsyncInteraction,
+          index,
+        );
+        continue;
+      }
+
+      // HTTP interaction — require OAS
+      if (!this.#oas) {
+        yield {
+          code: "request.spec.missing",
+          message: "No OpenAPI document provided to validate HTTP interaction",
+          mockDetails: {
+            ...baseMockDetails(interaction as HttpInteraction),
+            location: `[root].interactions[${index}]`,
+            value: (interaction as HttpInteraction).description,
+          },
+          specDetails: { location: "[root]", value: undefined },
+          type: "error",
+        };
         continue;
       }
 
@@ -90,7 +137,7 @@ export class Comparator {
                 "",
               )
               .substring(1);
-      const route = this.#router.find(
+      const route = this.#router!.find(
         method.toUpperCase() as HTTPMethod,
         [pathWithLeadingSlash, stringQuery].filter(Boolean).join("?"),
       );

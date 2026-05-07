@@ -1,6 +1,7 @@
 import { describe, expect, it, vi, beforeEach, type Mock } from "vitest";
 import yaml from "js-yaml";
 import { Runner } from "./runner";
+import type { ComparatorDocs } from "./runner";
 import type { Result } from "../index";
 
 describe("Runner", () => {
@@ -58,7 +59,7 @@ describe("Runner", () => {
       output: outputMock,
       createComparator: createComparatorMock,
     });
-    return runner.run(oasPath, pactPaths);
+    return runner.run({ oasPath }, pactPaths);
   };
 
   describe("reading and parsing inputs", () => {
@@ -74,7 +75,7 @@ describe("Runner", () => {
 
       await whenRunIsCalled("oas.json", ["pact.json"]);
 
-      expect(createComparatorMock).toHaveBeenCalledWith(oasDocument);
+      expect(createComparatorMock).toHaveBeenCalledWith({ oas: oasDocument });
       expect(compareMock).toHaveBeenCalledWith(pactDocument);
     });
 
@@ -88,7 +89,7 @@ describe("Runner", () => {
 
       await whenRunIsCalled("oas.yaml", ["pact.json"]);
 
-      expect(createComparatorMock).toHaveBeenCalledWith(oasDocument);
+      expect(createComparatorMock).toHaveBeenCalledWith({ oas: oasDocument });
     });
 
     it("should throw JSON error when both JSON and YAML parsing fail", async () => {
@@ -113,7 +114,7 @@ describe("Runner", () => {
 
         expect(fetchMock).toHaveBeenCalledWith(oasUrl);
         expect(readFileMock).not.toHaveBeenCalledWith(oasUrl);
-        expect(createComparatorMock).toHaveBeenCalledWith(oasDocument);
+        expect(createComparatorMock).toHaveBeenCalledWith({ oas: oasDocument });
       },
     );
 
@@ -152,7 +153,7 @@ describe("Runner", () => {
       await whenRunIsCalled("oas.json", ["pact.json"]);
 
       expect(createComparatorMock).toHaveBeenCalledTimes(1);
-      expect(createComparatorMock).toHaveBeenCalledWith(oasDocument);
+      expect(createComparatorMock).toHaveBeenCalledWith({ oas: oasDocument });
     });
 
     it("should reuse same Comparator instance for multiple pact files", async () => {
@@ -325,6 +326,60 @@ describe("Runner", () => {
     it("should use default dependencies when none provided", () => {
       const runner = new Runner();
       expect(runner).toBeInstanceOf(Runner);
+    });
+  });
+
+  describe("AsyncAPI spec path support", () => {
+    it("should read and pass asyncapi document when asyncapiPath provided", async () => {
+      const asyncapiDocument = { asyncapi: "3.0.0", info: { title: "Test", version: "1.0" } };
+      givenReadFileReturns(JSON.stringify(asyncapiDocument), defaultPactContent);
+
+      const runner = new Runner({
+        readFile: readFileMock,
+        fetch: fetchMock,
+        output: outputMock,
+        createComparator: createComparatorMock,
+      });
+      await runner.run({ asyncapiPath: "asyncapi.json" }, ["pact.json"]);
+
+      expect(createComparatorMock).toHaveBeenCalledWith({ asyncapi: asyncapiDocument });
+    });
+
+    it("should pass both oas and asyncapi when both paths provided", async () => {
+      const oasDocument = { openapi: "3.0.0" };
+      const asyncapiDocument = { asyncapi: "3.0.0", info: { title: "T", version: "1" } };
+      givenReadFileReturns(
+        JSON.stringify(oasDocument),
+        JSON.stringify(asyncapiDocument),
+        defaultPactContent,
+      );
+
+      const runner = new Runner({
+        readFile: readFileMock,
+        fetch: fetchMock,
+        output: outputMock,
+        createComparator: createComparatorMock,
+      });
+      await runner.run({ oasPath: "oas.json", asyncapiPath: "asyncapi.json" }, ["pact.json"]);
+
+      expect(createComparatorMock).toHaveBeenCalledWith({
+        oas: oasDocument,
+        asyncapi: asyncapiDocument,
+      });
+    });
+
+    it("should pass empty docs object when no spec paths provided", async () => {
+      givenReadFileReturns(defaultPactContent);
+
+      const runner = new Runner({
+        readFile: readFileMock,
+        fetch: fetchMock,
+        output: outputMock,
+        createComparator: createComparatorMock,
+      });
+      await runner.run({}, ["pact.json"]);
+
+      expect(createComparatorMock).toHaveBeenCalledWith({});
     });
   });
 });

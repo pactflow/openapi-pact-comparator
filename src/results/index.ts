@@ -1,7 +1,12 @@
 import type { ErrorObject } from "ajv";
-import type { Interaction } from "../documents/pact";
 
 type ErrorCode =
+  | "message.headers.incompatible"
+  | "message.id.unknown"
+  | "message.operation.unknown"
+  | "message.payload.incompatible"
+  | "message.references.missing"
+  | "message.spec.missing"
   | "request.accept.incompatible"
   | "request.authorization.missing"
   | "request.body.incompatible"
@@ -9,6 +14,7 @@ type ErrorCode =
   | "request.header.incompatible"
   | "request.path-or-method.unknown"
   | "request.query.incompatible"
+  | "request.spec.missing"
   | "response.body.incompatible"
   | "response.body.unknown"
   | "response.content-type.incompatible"
@@ -17,6 +23,7 @@ type ErrorCode =
   | "response.status.unknown";
 
 type WarningCode =
+  | "message.payload.unknown"
   | "pact-broker.no-pacts-found"
   | "request.accept.unknown"
   | "request.body.unknown"
@@ -57,7 +64,9 @@ export const formatInstancePath = (error: ErrorObject) =>
 export const formatSchemaPath = (error: ErrorObject) =>
   error.schemaPath.replace(/\//g, ".").substring(2);
 
-export const baseMockDetails = (interaction: Interaction) => ({
+export const baseMockDetails = (
+  interaction: { description?: string; providerState?: string },
+) => ({
   interactionDescription: interaction.description,
   interactionState: interaction.providerState || "[none]",
 });

@@ -58,6 +58,11 @@ describe("parse", () => {
   it("rejects documents where asyncapi is not a string", () => {
     expect(() => parse({ asyncapi: 3 } as unknown as AsyncAPIDocument)).toThrow(ParserError);
   });
+
+  it("rejects nullish documents", () => {
+    expect(() => parse(null as unknown as AsyncAPIDocument)).toThrow(ParserError);
+    expect(() => parse(undefined as unknown as AsyncAPIDocument)).toThrow(ParserError);
+  });
 });
 
 describe("resolveMessage", () => {
@@ -104,6 +109,27 @@ describe("resolveMessage", () => {
     };
     const msg = resolveMessage(docNoId, "consumeFromEventsQueue", "organizationDeleted", new Map());
     expect(msg).not.toBeNull();
+  });
+
+  it("resolves inline message objects by messageId", () => {
+    const docInline: AsyncAPIDocument = {
+      ...baseDoc,
+      operations: {
+        consumeFromEventsQueue: {
+          action: "receive",
+          channel: { $ref: "#/channels/eventsQueue" },
+          messages: [
+            {
+              messageId: "organizationDeleted",
+              payload: { type: "object" },
+            },
+          ],
+        },
+      },
+    };
+    const msg = resolveMessage(docInline, "consumeFromEventsQueue", "organizationDeleted", new Map());
+    expect(msg).not.toBeNull();
+    expect(msg?.messageId).toBe("organizationDeleted");
   });
 
   it("caches null for unresolved messages", () => {

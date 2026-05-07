@@ -96,7 +96,7 @@ export interface AsyncInteraction {
   providerState?: string;
   asyncapiReferences?: { messageId: string; operationId: string };
   payload: unknown;
-  contentType: string;
+  contentType?: string;
   metadata?: Record<string, string>;
 }
 
@@ -145,7 +145,7 @@ interface RawInteraction {
 }
 
 const isHttpInteraction = (i: RawInteraction) =>
-  !i.type ||
+  i.type === undefined ||
   (typeof i.type === "string" && i.type.toLowerCase() === "synchronous/http");
 
 const isAsyncInteraction = (i: RawInteraction) =>
@@ -212,24 +212,6 @@ const interactionV1 = (i: RawInteraction): HttpInteraction => ({
   },
 });
 
-const interactionV3 = (i: RawInteraction): HttpInteraction => ({
-  _kind: "http",
-  description: i.description,
-  providerState: i.providerState,
-  request: {
-    ...i.request,
-    method: i.request!.method!,
-    path: i.request!.path!,
-    headers: flattenValues(i.request?.headers) as Record<string, string>,
-    query: flattenValues(i.request?.query),
-  },
-  response: {
-    ...i.response,
-    status: i.response!.status!,
-    headers: flattenValues(i.response?.headers) as Record<string, string>,
-  },
-});
-
 const interactionV4 = (i: RawInteraction): HttpInteraction => ({
   _kind: "http",
   description: i.description,
@@ -260,7 +242,7 @@ const parseAsyncInteraction = (i: RawInteraction): AsyncInteraction => {
       ? { messageId: asyncapiRef.messageId, operationId: asyncapiRef.operationId }
       : undefined,
     payload: parseAsPactV4Body(i.contents),
-    contentType: i.contents?.contentType ?? "",
+    contentType: i.contents?.contentType,
     metadata: i.metadata,
   };
 };
@@ -284,7 +266,7 @@ export const parse = (pact: Pact): ParsedPact => {
       "0",
   );
   const httpParser =
-    version >= 4 ? interactionV4 : version >= 3 ? interactionV3 : interactionV1;
+    version >= 4 ? interactionV4 : interactionV1;
 
   return {
     metadata,

@@ -1,5 +1,6 @@
 import { describe, expect, it, vi, beforeEach, type Mock } from "vitest";
 import yaml from "js-yaml";
+import { Comparator } from "../compare";
 import { Runner } from "./runner";
 import type { ComparatorDocs } from "./runner";
 import type { Result } from "../index";
@@ -52,14 +53,17 @@ describe("Runner", () => {
     givenCompareReturns([]);
   });
 
-  const whenRunIsCalled = (oasPath: string, pactPaths: string[]) => {
+  const whenRunIsCalled = (
+    specs: { oasPath?: string; asyncapiPath?: string },
+    pactPaths: string[],
+  ) => {
     const runner = new Runner({
       readFile: readFileMock,
       fetch: fetchMock,
       output: outputMock,
       createComparator: createComparatorMock,
     });
-    return runner.run({ oasPath }, pactPaths);
+    return runner.run(specs, pactPaths);
   };
 
   describe("reading and parsing inputs", () => {
@@ -73,7 +77,7 @@ describe("Runner", () => {
       const pactJsonContent = JSON.stringify(pactDocument);
       givenReadFileReturns(oasJsonContent, pactJsonContent);
 
-      await whenRunIsCalled("oas.json", ["pact.json"]);
+      await whenRunIsCalled({ oasPath: "oas.json" }, ["pact.json"]);
 
       expect(createComparatorMock).toHaveBeenCalledWith({ oas: oasDocument });
       expect(compareMock).toHaveBeenCalledWith(pactDocument);
@@ -87,7 +91,7 @@ describe("Runner", () => {
       const yamlContent = yaml.dump(oasDocument);
       givenReadFileReturns(yamlContent, defaultPactContent);
 
-      await whenRunIsCalled("oas.yaml", ["pact.json"]);
+      await whenRunIsCalled({ oasPath: "oas.yaml" }, ["pact.json"]);
 
       expect(createComparatorMock).toHaveBeenCalledWith({ oas: oasDocument });
     });
@@ -96,7 +100,7 @@ describe("Runner", () => {
       givenReadFileReturns("{ invalid json and not valid yaml either: [");
 
       await expect(
-        whenRunIsCalled("invalid.txt", ["pact.json"]),
+        whenRunIsCalled({ oasPath: "invalid.txt" }, ["pact.json"]),
       ).rejects.toThrow(SyntaxError);
     });
 
@@ -110,7 +114,7 @@ describe("Runner", () => {
         const oasDocument = { openapi: "3.0.0" };
         givenFetchReturns(JSON.stringify(oasDocument));
 
-        await whenRunIsCalled(oasUrl, ["pact.json"]);
+        await whenRunIsCalled({ oasPath: oasUrl }, ["pact.json"]);
 
         expect(fetchMock).toHaveBeenCalledWith(oasUrl);
         expect(readFileMock).not.toHaveBeenCalledWith(oasUrl);
@@ -123,7 +127,7 @@ describe("Runner", () => {
       const pactDocument = { interactions: [] };
       givenFetchReturns(JSON.stringify(pactDocument));
 
-      await whenRunIsCalled("oas.json", [pactUrl]);
+      await whenRunIsCalled({ oasPath: "oas.json" }, [pactUrl]);
 
       expect(fetchMock).toHaveBeenCalledWith(pactUrl);
       expect(readFileMock).not.toHaveBeenCalledWith(pactUrl);
@@ -139,7 +143,7 @@ describe("Runner", () => {
         text: () => Promise.resolve("Not Found"),
       });
 
-      await expect(whenRunIsCalled(oasUrl, ["pact.json"])).rejects.toThrow(
+      await expect(whenRunIsCalled({ oasPath: oasUrl }, ["pact.json"])).rejects.toThrow(
         "HTTP 404: Not Found",
       );
     });
@@ -150,7 +154,7 @@ describe("Runner", () => {
       const oasDocument = { openapi: "3.0.0", paths: {} };
       givenReadFileReturns(JSON.stringify(oasDocument), defaultPactContent);
 
-      await whenRunIsCalled("oas.json", ["pact.json"]);
+      await whenRunIsCalled({ oasPath: "oas.json" }, ["pact.json"]);
 
       expect(createComparatorMock).toHaveBeenCalledTimes(1);
       expect(createComparatorMock).toHaveBeenCalledWith({ oas: oasDocument });
@@ -166,7 +170,7 @@ describe("Runner", () => {
         JSON.stringify(pactDocument2),
       );
 
-      await whenRunIsCalled("oas.json", ["pact1.json", "pact2.json"]);
+      await whenRunIsCalled({ oasPath: "oas.json" }, ["pact1.json", "pact2.json"]);
 
       expect(createComparatorMock).toHaveBeenCalledTimes(1);
       expect(compareMock).toHaveBeenCalledTimes(2);
@@ -186,7 +190,7 @@ describe("Runner", () => {
       ];
       givenCompareReturns(mockResults);
 
-      await whenRunIsCalled("oas.json", ["pact.json"]);
+      await whenRunIsCalled({ oasPath: "oas.json" }, ["pact.json"]);
 
       expect(outputMock).toHaveBeenCalledWith(JSON.stringify(mockResults));
     });
@@ -205,7 +209,7 @@ describe("Runner", () => {
         defaultPactContent,
       );
 
-      await whenRunIsCalled("oas.json", ["pact1.json", "pact2.json"]);
+      await whenRunIsCalled({ oasPath: "oas.json" }, ["pact1.json", "pact2.json"]);
 
       expect(outputMock).toHaveBeenCalledTimes(2);
       expect(outputMock).toHaveBeenNthCalledWith(1, JSON.stringify(results1));
@@ -219,7 +223,7 @@ describe("Runner", () => {
         { type: "warning", code: "request.header.unknown", message: "warning" },
       ]);
 
-      const exitCode = await whenRunIsCalled("oas.json", ["pact.json"]);
+      const exitCode = await whenRunIsCalled({ oasPath: "oas.json" }, ["pact.json"]);
 
       expect(exitCode).toBe(0);
     });
@@ -233,7 +237,7 @@ describe("Runner", () => {
         },
       ]);
 
-      const exitCode = await whenRunIsCalled("oas.json", ["pact.json"]);
+      const exitCode = await whenRunIsCalled({ oasPath: "oas.json" }, ["pact.json"]);
 
       expect(exitCode).toBe(1);
     });
@@ -269,7 +273,7 @@ describe("Runner", () => {
         defaultPactContent,
       );
 
-      const exitCode = await whenRunIsCalled("oas.json", [
+      const exitCode = await whenRunIsCalled({ oasPath: "oas.json" }, [
         "pact1.json",
         "pact2.json",
         "pact3.json",
@@ -297,7 +301,7 @@ describe("Runner", () => {
         },
       ]);
 
-      const exitCode = await whenRunIsCalled("oas.json", ["pact.json"]);
+      const exitCode = await whenRunIsCalled({ oasPath: "oas.json" }, ["pact.json"]);
 
       expect(exitCode).toBe(1);
     });
@@ -314,7 +318,7 @@ describe("Runner", () => {
       );
 
       const exitCode = await whenRunIsCalled(
-        "oas.json",
+        { oasPath: "oas.json" },
         Array(pactCount).fill("pact.json"),
       );
 
@@ -380,6 +384,19 @@ describe("Runner", () => {
       await runner.run({}, ["pact.json"]);
 
       expect(createComparatorMock).toHaveBeenCalledWith({});
+    });
+
+    it("should support empty docs object with the real Comparator", async () => {
+      givenReadFileReturns(defaultPactContent);
+
+      const runner = new Runner({
+        readFile: readFileMock,
+        fetch: fetchMock,
+        output: outputMock,
+        createComparator: (docs: ComparatorDocs) => new Comparator(docs),
+      });
+
+      await expect(runner.run({}, ["pact.json"])).resolves.toBe(0);
     });
   });
 });

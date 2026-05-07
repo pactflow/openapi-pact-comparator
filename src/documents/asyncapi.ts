@@ -3,8 +3,7 @@
 // the operations/channels/messages subset of the spec. A full parser library
 // would add a heavy dependency while providing validation we deliberately defer
 // (see the FIXME in `parse()`), so we define only what we need here.
-import { get } from "lodash-es";
-import { splitPath } from "#utils/schema";
+import { dereferenceDoc } from "#utils/schema";
 
 export interface AsyncAPIDocument {
   asyncapi: string;
@@ -21,7 +20,7 @@ export interface Channel {
 export interface Operation {
   action: "send" | "receive";
   channel: Ref;
-  messages?: Array<Ref>;
+  messages?: Array<Ref | Message>;
 }
 
 export interface Message {
@@ -35,6 +34,12 @@ export interface Ref {
   $ref: string;
 }
 
+const isRef = (value: Ref | Message): value is Ref =>
+  typeof value === "object" &&
+  value !== null &&
+  "$ref" in value &&
+  typeof value.$ref === "string";
+
 export class ParserError extends Error {
   constructor() {
     super("Malformed AsyncAPI file");
@@ -42,6 +47,9 @@ export class ParserError extends Error {
 }
 
 export const parse = (doc: AsyncAPIDocument): void => {
+  if (doc == null || typeof doc !== "object") {
+    throw new ParserError();
+  }
   if (
     !Object.prototype.hasOwnProperty.call(doc, "asyncapi") ||
     typeof doc.asyncapi !== "string" ||
@@ -69,13 +77,21 @@ export const resolveMessage = (
 
   for (const ref of Array.isArray(operation.messages) ? operation.messages : []) {
     if (ref == null || typeof ref !== "object") continue;
-    if (typeof ref.$ref !== "string") continue;
-    const message = get(doc, splitPath(ref.$ref)) as Message | undefined;
-    if (!message) continue;
-    const refKey = ref.$ref.split("/").pop() ?? "";
-    if (message.messageId === messageId || refKey === messageId) {
-      cache.set(cacheKey, message);
-      return message;
+    if (isRef(ref)) {
+      const message = dereferenceDoc(ref, doc) as Message | undefined;
+      if (!message) continue;
+      const refKey = ref.$ref.split("/").pop() ?? "";
+      if (message.messageId === messageId || refKey === messageId) {
+        cache.set(cacheKey, message);
+        return message;
+      }
+      continue;
+    }
+
+    const inlineMessage = ref as Message;
+    if (inlineMessage.messageId === messageId) {
+      cache.set(cacheKey, inlineMessage);
+      return inlineMessage;
     }
   }
 

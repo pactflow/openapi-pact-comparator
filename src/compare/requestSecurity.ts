@@ -3,7 +3,7 @@ import type Router from "find-my-way";
 import { get } from "lodash-es";
 import querystring from "node:querystring";
 
-import type { Interaction } from "#documents/pact";
+import type { HttpInteraction } from "#documents/pact";
 import type { Result } from "#results/index";
 import { baseMockDetails } from "#results/index";
 import type { Config } from "#utils/config";
@@ -12,7 +12,7 @@ import { isValidRequest } from "#utils/interaction";
 export function* compareReqSecurity(
   ajv: Ajv,
   route: Router.FindResult<Router.HTTPVersion.V1>,
-  interaction: Interaction,
+  interaction: HttpInteraction,
   index: number,
   config: Config,
 ): Iterable<Result> {

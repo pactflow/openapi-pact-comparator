@@ -25,52 +25,104 @@ describe("#parser", () => {
       ],
     } as Pact;
 
-    const { request, response } = parse(json).interactions[0];
-    expect(request.headers!["Content-Type"]).toEqual("text/json");
-    expect(request.headers!["Accept"]).toEqual(
+    const parsed = parse(json).interactions[0];
+    if (parsed._kind !== "http") throw new Error("expected http interaction");
+    expect(parsed.request.headers!["Content-Type"]).toEqual("text/json");
+    expect(parsed.request.headers!["Accept"]).toEqual(
       "text/plain,application/json,text/json",
     );
-    expect(response.headers!["Content-Type"]).toEqual("application/json");
+    expect(parsed.response.headers!["Content-Type"]).toEqual("application/json");
   });
 
-  it("filters out non-HTTP interactions", () => {
-    const request = {
-      method: "GET",
-      path: "/path",
-    };
-    const response = {
-      status: 200,
-    };
+  it("maps interactions to _kind discriminants", () => {
+    const request = { method: "GET", path: "/path" };
+    const response = { status: 200 };
     const json = {
       interactions: [
         { description: "no-type", request, response },
-        {
-          type: "Synchronous/HTTP",
-          description: "http",
-          request,
-          response,
-        },
-        {
-          type: "Asynchronous/Messages",
-          description: "async-message",
-          request,
-          response,
-        },
-        {
-          type: "Synchronous/Messages",
-          description: "sync-message",
-          request,
-          response,
-        },
+        { type: "Synchronous/HTTP", description: "http", request, response },
+        { type: "Asynchronous/Messages", description: "async-message" },
+        { type: "Synchronous/Messages", description: "sync-message", request, response },
       ],
     };
 
     const pact = parse(json as Pact);
     expect(pact.interactions.length).toBe(4);
-    expect(pact.interactions[0].description).toBe("no-type");
-    expect(pact.interactions[1].description).toBe("http");
-    expect(pact.interactions[2]._skip).toBe(true);
-    expect(pact.interactions[3]._skip).toBe(true);
+    expect(pact.interactions[0]._kind).toBe("http");
+    expect(pact.interactions[1]._kind).toBe("http");
+    expect(pact.interactions[2]._kind).toBe("async");
+    expect(pact.interactions[3]._kind).toBe("skip");
+  });
+
+  it("parses asyncapiReferences when present in comments", () => {
+    const json = {
+      interactions: [
+        {
+          type: "Asynchronous/Messages",
+          description: "org-deleted",
+          providerState: "an org exists",
+          comments: {
+            references: {
+              AsyncAPI: {
+                messageId: "organizationDeleted",
+                operationId: "consumeFromEventsQueue",
+              },
+            },
+          },
+          contents: {
+            content: { organizationId: "abc-123" },
+            contentType: "application/json",
+            encoded: false,
+          },
+          metadata: { "detail-type": "organization-deleted" },
+        },
+      ],
+    };
+
+    const pact = parse(json as Pact);
+    const interaction = pact.interactions[0];
+    if (interaction._kind !== "async") throw new Error("expected async interaction");
+    expect(interaction.asyncapiReferences).toEqual({
+      messageId: "organizationDeleted",
+      operationId: "consumeFromEventsQueue",
+    });
+    expect(interaction.payload).toEqual({ organizationId: "abc-123" });
+    expect(interaction.contentType).toBe("application/json");
+    expect(interaction.metadata).toEqual({ "detail-type": "organization-deleted" });
+    expect(interaction.description).toBe("org-deleted");
+    expect(interaction.providerState).toBe("an org exists");
+  });
+
+  it("leaves asyncapiReferences undefined when comments.references.AsyncAPI is absent", () => {
+    const json = {
+      interactions: [
+        {
+          type: "Asynchronous/Messages",
+          contents: {
+            content: { foo: "bar" },
+            contentType: "application/json",
+            encoded: false,
+          },
+        },
+        {
+          type: "Asynchronous/Messages",
+          comments: { references: {} },
+          contents: {
+            content: "plain",
+            contentType: "text/plain",
+            encoded: false,
+          },
+        },
+      ],
+    };
+
+    const pact = parse(json as Pact);
+    const first = pact.interactions[0];
+    const second = pact.interactions[1];
+    if (first._kind !== "async" || second._kind !== "async")
+      throw new Error("expected async interactions");
+    expect(first.asyncapiReferences).toBeUndefined();
+    expect(second.asyncapiReferences).toBeUndefined();
   });
 
   it("should parse V4 body types", () => {
@@ -139,13 +191,18 @@ describe("#parser", () => {
 
     const pact = parse(json as Pact);
 
-    expect(pact.interactions[0].response.body).toEqual({ hello: "world" });
-    expect(pact.interactions[1].response.body).toEqual({ hello: "world" });
-    expect(pact.interactions[2].response.body).toEqual("hello world");
-    expect(pact.interactions[3].request.body).toEqual({ hello: "world" });
-    expect(pact.interactions[4].request.body).toEqual({ hello: "world" });
-    expect(pact.interactions[5].request.body).toEqual("hello world");
-    expect(pact.interactions[6].request.body).toEqual("{ not: json }");
-    expect(pact.interactions[7].request.body).toEqual("abcdef");
+    const interactions = pact.interactions.map((i) => {
+      if (i._kind !== "http") throw new Error("expected http interaction");
+      return i;
+    });
+
+    expect(interactions[0].response.body).toEqual({ hello: "world" });
+    expect(interactions[1].response.body).toEqual({ hello: "world" });
+    expect(interactions[2].response.body).toEqual("hello world");
+    expect(interactions[3].request.body).toEqual({ hello: "world" });
+    expect(interactions[4].request.body).toEqual({ hello: "world" });
+    expect(interactions[5].request.body).toEqual("hello world");
+    expect(interactions[6].request.body).toEqual("{ not: json }");
+    expect(interactions[7].request.body).toEqual("abcdef");
   });
 });

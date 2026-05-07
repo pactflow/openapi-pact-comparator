@@ -4,7 +4,7 @@ import type Router from "find-my-way";
 import type { OpenAPIV2 } from "openapi-types";
 import { get } from "lodash-es";
 
-import type { Interaction } from "#documents/pact";
+import type { HttpInteraction } from "#documents/pact";
 import type { Result } from "#results/index";
 import {
   baseMockDetails,
@@ -28,7 +28,7 @@ const DEFAULT_CONTENT_TYPE = "application/json";
 export function* compareResBody(
   ajv: Ajv,
   route: Router.FindResult<Router.HTTPVersion.V1>,
-  interaction: Interaction,
+  interaction: HttpInteraction,
   index: number,
   config: Config,
 ): Iterable<Result> {

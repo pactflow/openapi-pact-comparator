@@ -7,7 +7,7 @@ import qs from "qs";
 import querystring from "node:querystring";
 import multipart from "parse-multipart-data";
 
-import type { Interaction } from "#documents/pact";
+import type { HttpInteraction } from "#documents/pact";
 import type { Result } from "#results/index";
 import {
   baseMockDetails,
@@ -80,7 +80,7 @@ const DEFAULT_CONTENT_TYPE = "application/json";
 export function* compareReqBody(
   ajv: Ajv,
   route: Router.FindResult<Router.HTTPVersion.V1>,
-  interaction: Interaction,
+  interaction: HttpInteraction,
   index: number,
   config: Config,
 ): Iterable<Result> {

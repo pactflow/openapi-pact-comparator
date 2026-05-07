@@ -4,7 +4,7 @@ import type Ajv from "ajv/dist/2019";
 import type Router from "find-my-way";
 import { get, omit } from "lodash-es";
 
-import type { Interaction } from "#documents/pact";
+import type { HttpInteraction } from "#documents/pact";
 import type { Result } from "#results/index";
 import {
   baseMockDetails,
@@ -24,7 +24,7 @@ import { parseValue } from "./utils/parse";
 export function* compareReqHeader(
   ajv: Ajv,
   route: Router.FindResult<Router.HTTPVersion.V1>,
-  interaction: Interaction,
+  interaction: HttpInteraction,
   index: number,
   config: Config,
 ): Iterable<Result> {

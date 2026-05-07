@@ -6,7 +6,7 @@ import qs from "qs";
 import querystring from "node:querystring";
 
 import type { Result } from "#results/index";
-import type { Interaction } from "#documents/pact";
+import type { HttpInteraction } from "#documents/pact";
 import {
   baseMockDetails,
   formatMessage,
@@ -30,7 +30,7 @@ const SWAGGER2_SEPARATORS = {
 export function* compareReqQuery(
   ajv: Ajv,
   route: Router.FindResult<Router.HTTPVersion.V1>,
-  interaction: Interaction,
+  interaction: HttpInteraction,
   index: number,
   config: Config,
 ): Iterable<Result> {

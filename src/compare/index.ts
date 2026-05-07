@@ -2,7 +2,7 @@ import type { OpenAPIV2, OpenAPIV3 } from "openapi-types";
 import Ajv from "ajv/dist/2019";
 import Router, { HTTPMethod } from "find-my-way";
 
-import type { Pact } from "#documents/pact";
+import type { HttpInteraction, Pact } from "#documents/pact";
 import type { Result } from "#results/index";
 
 import { compareReqPath } from "#compare/requestPath";
@@ -64,12 +64,13 @@ export class Comparator {
     const parsedPact = parsePact(pact);
 
     for (const [index, interaction] of parsedPact.interactions.entries()) {
-      if (interaction._skip) {
-        // non http/synchronous have been zero-ed out
+      if (interaction._kind === "skip" || interaction._kind === "async") {
+        // async interactions handled in a later task; non-http skipped entirely
         continue;
       }
 
-      const { method, path, query } = interaction.request;
+      const httpInteraction = interaction as HttpInteraction;
+      const { method, path, query } = httpInteraction.request;
       let pathWithLeadingSlash = path.startsWith("/") ? path : `/${path}`;
 
       if (this.#config.get("no-percent-encoding")) {
@@ -99,9 +100,9 @@ export class Comparator {
           code: "request.path-or-method.unknown",
           message: `Path or method not defined in spec file: ${method} ${path}`,
           mockDetails: {
-            ...baseMockDetails(interaction),
+            ...baseMockDetails(httpInteraction),
             location: `[root].interactions[${index}].request.path`,
-            value: interaction.request.path,
+            value: httpInteraction.request.path,
           },
           specDetails: {
             location: "[root].paths",
@@ -118,7 +119,7 @@ export class Comparator {
         compareReqPath(
           this.#ajvCoerce,
           route,
-          interaction,
+          httpInteraction,
           index,
           this.#config,
         ),
@@ -132,42 +133,42 @@ export class Comparator {
       yield* compareReqSecurity(
         this.#ajvCoerce,
         route,
-        interaction,
+        httpInteraction,
         index,
         this.#config,
       );
       yield* compareReqHeader(
         this.#ajvCoerce,
         route,
-        interaction,
+        httpInteraction,
         index,
         this.#config,
       );
       yield* compareReqQuery(
         this.#ajvCoerce,
         route,
-        interaction,
+        httpInteraction,
         index,
         this.#config,
       );
       yield* compareReqBody(
         this.#ajvNocoerce,
         route,
-        interaction,
+        httpInteraction,
         index,
         this.#config,
       );
       yield* compareResHeader(
         this.#ajvCoerce,
         route,
-        interaction,
+        httpInteraction,
         index,
         this.#config,
       );
       yield* compareResBody(
         this.#ajvNocoerce,
         route,
-        interaction,
+        httpInteraction,
         index,
         this.#config,
       );

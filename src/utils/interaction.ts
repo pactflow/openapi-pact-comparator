@@ -1,4 +1,4 @@
-import type { Interaction } from "../documents/pact";
+import type { HttpInteraction } from "../documents/pact";
 
-export const isValidRequest = (interaction: Interaction): boolean =>
+export const isValidRequest = (interaction: HttpInteraction): boolean =>
   interaction.response.status < 400;

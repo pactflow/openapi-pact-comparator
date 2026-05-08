@@ -45,6 +45,35 @@ export const Interaction = Type.Object({
 
 export type Interaction = Static<typeof Interaction>;
 
+// Async interaction schema used for AJV validation of "Asynchronous/Messages" interactions
+const AsyncMessage = Type.Object({
+  type: Type.String(),
+  description: Type.Optional(Type.String()),
+  providerState: Type.Optional(Type.String()),
+  contents: Type.Optional(
+    Type.Object({
+      content: Type.Optional(Type.Unknown()),
+      contentType: Type.Optional(Type.String()),
+      encoded: Type.Optional(Type.Union([Type.String(), Type.Boolean()])),
+    }),
+  ),
+  metadata: Type.Optional(Type.Record(Type.String(), Type.String())),
+  comments: Type.Optional(
+    Type.Object({
+      references: Type.Optional(
+        Type.Object({
+          AsyncAPI: Type.Optional(
+            Type.Object({
+              messageId: Type.String(),
+              operationId: Type.String(),
+            }),
+          ),
+        }),
+      ),
+    }),
+  ),
+});
+
 // Permissive pact schema — interactions may be HTTP or async; validation of
 // each interaction is performed after classification inside parse().
 export const Pact = Type.Object({
@@ -249,6 +278,7 @@ const parseAsyncInteraction = (i: RawInteraction): AsyncInteraction => {
 
 const ajv = new Ajv();
 const validateHttpInteractions = ajv.compile(Type.Array(Interaction));
+const validateAsyncInteractions = ajv.compile(Type.Array(AsyncMessage));
 
 export const parse = (pact: Pact): ParsedPact => {
   const { metadata, interactions = [] } = pact;
@@ -257,6 +287,11 @@ export const parse = (pact: Pact): ParsedPact => {
   const isValid = validateHttpInteractions(rawInteractions.filter(isHttpInteraction));
   if (!isValid) {
     throw new ParserError(validateHttpInteractions.errors!);
+  }
+
+  const isAsyncValid = validateAsyncInteractions(rawInteractions.filter(isAsyncInteraction));
+  if (!isAsyncValid) {
+    throw new ParserError(validateAsyncInteractions.errors!);
   }
 
   const version = parseInt(

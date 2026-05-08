@@ -1,26 +1,24 @@
+import type Ajv from "ajv/dist/2019";
+import type Router from "find-my-way";
+import type { HTTPMethod } from "find-my-way";
 import type { OpenAPIV2, OpenAPIV3 } from "openapi-types";
-import Ajv from "ajv/dist/2019";
-import Router, { HTTPMethod } from "find-my-way";
-
-import type { AsyncInteraction, HttpInteraction, Pact } from "#documents/pact";
-import type { Result } from "#results/index";
-
-import { compareReqPath } from "#compare/requestPath";
-import { compareReqQuery } from "#compare/requestQuery";
+import { compareAsyncInteraction } from "#compare/asyncapi/index";
 import { compareReqBody } from "#compare/requestBody";
 import { compareReqHeader } from "#compare/requestHeader";
+import { compareReqPath } from "#compare/requestPath";
+import { compareReqQuery } from "#compare/requestQuery";
 import { compareReqSecurity } from "#compare/requestSecurity";
 import { compareResBody } from "#compare/responseBody";
 import { compareResHeader } from "#compare/responseHeader";
-import { parse as parseOas } from "#documents/oas";
-import { parse as parsePact } from "#documents/pact";
 import type { AsyncAPIDocument, Message } from "#documents/asyncapi";
 import { parse as parseAsyncapi } from "#documents/asyncapi";
+import { parse as parseOas } from "#documents/oas";
+import type { AsyncInteraction, HttpInteraction, Pact } from "#documents/pact";
+import { parse as parsePact } from "#documents/pact";
+import type { Result } from "#results/index";
 import { baseMockDetails } from "#results/index";
-import { Config, ConfigKeys, DEFAULT_CONFIG } from "#utils/config";
+import { type Config, type ConfigKeys, DEFAULT_CONFIG } from "#utils/config";
 import { ARRAY_SEPARATOR } from "#utils/queryParams";
-
-import { compareAsyncInteraction } from "#compare/asyncapi/index";
 import { setupAjv, setupRouter } from "./setup";
 
 export interface ComparatorOptions {
@@ -37,7 +35,9 @@ export class Comparator {
   #router?: Router.Instance<Router.HTTPVersion.V1>;
   #resolvedMessages: Map<string, Message | null> = new Map();
 
-  constructor(options: ComparatorOptions | OpenAPIV2.Document | OpenAPIV3.Document = {}) {
+  constructor(
+    options: ComparatorOptions | OpenAPIV2.Document | OpenAPIV3.Document = {},
+  ) {
     this.#config = new Map(DEFAULT_CONFIG);
 
     // Support legacy constructor(oas) and new constructor({ oas?, asyncapi? }).

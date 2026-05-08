@@ -1,13 +1,12 @@
 import type Ajv from "ajv/dist/2019";
 import { get } from "lodash-es";
-
-import type { AsyncInteraction } from "#documents/pact";
 import type { Message } from "#documents/asyncapi";
+import type { AsyncInteraction } from "#documents/pact";
 import type { Result } from "#results/index";
 import {
   baseMockDetails,
-  formatMessage,
   formatInstancePath,
+  formatMessage,
   formatSchemaPath,
 } from "#results/index";
 import { splitPath } from "#utils/schema";
@@ -52,7 +51,11 @@ export function* compareMessagePayload(
   }
 
   const schemaId = `[root].operations.${operationId}.messages.${messageId}.payload`;
-  const validate = getValidateFunction(ajv, schemaId, () => message.payload as object);
+  const validate = getValidateFunction(
+    ajv,
+    schemaId,
+    () => message.payload as object,
+  );
   if (!validate(payload)) {
     for (const error of validate.errors!) {
       yield {
@@ -61,7 +64,9 @@ export function* compareMessagePayload(
         mockDetails: {
           ...baseMockDetails(interaction),
           location: `[root].interactions[${index}].contents${formatInstancePath(error)}`,
-          value: error.instancePath ? get(payload, splitPath(error.instancePath)) : payload,
+          value: error.instancePath
+            ? get(payload, splitPath(error.instancePath))
+            : payload,
         },
         specDetails: {
           location: `${schemaId}.${formatSchemaPath(error)}`,

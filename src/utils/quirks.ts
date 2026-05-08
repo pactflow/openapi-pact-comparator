@@ -1,5 +1,5 @@
-import type { OpenAPIV3 } from "openapi-types";
 import type { SchemaObject } from "ajv";
+import type { OpenAPIV3 } from "openapi-types";
 import { dereferenceOas } from "#utils/schema";
 
 export const isSimpleSchema = (

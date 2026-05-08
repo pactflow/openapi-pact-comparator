@@ -1,18 +1,18 @@
+import querystring from "node:querystring";
 import type { SchemaObject } from "ajv";
 import type Ajv from "ajv/dist/2019";
-import type { OpenAPIV2 } from "openapi-types";
 import type Router from "find-my-way";
 import { get } from "lodash-es";
-import qs from "qs";
-import querystring from "node:querystring";
+import type { OpenAPIV2 } from "openapi-types";
 import multipart from "parse-multipart-data";
+import qs from "qs";
 
 import type { HttpInteraction } from "#documents/pact";
 import type { Result } from "#results/index";
 import {
   baseMockDetails,
-  formatMessage,
   formatInstancePath,
+  formatMessage,
   formatSchemaPath,
 } from "#results/index";
 import { minimumSchema } from "#transform/index";
@@ -159,7 +159,7 @@ export function* compareReqBody(
   }
 
   if (
-    !!body &&
+    body &&
     !schema &&
     isValidRequest(interaction) &&
     (config.get("no-validate-request-body-unless-application-json")

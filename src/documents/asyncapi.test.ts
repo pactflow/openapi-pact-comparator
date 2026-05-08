@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { parse, resolveMessage, ParserError } from "./asyncapi";
 import type { AsyncAPIDocument, Ref } from "./asyncapi";
+import { ParserError, parse, resolveMessage } from "./asyncapi";
 
 const baseDoc: AsyncAPIDocument = {
   asyncapi: "3.1.0",
@@ -27,7 +27,9 @@ const baseDoc: AsyncAPIDocument = {
     consumeFromEventsQueue: {
       action: "receive",
       channel: { $ref: "#/channels/eventsQueue" },
-      messages: [{ $ref: "#/channels/eventsQueue/messages/organizationDeleted" }],
+      messages: [
+        { $ref: "#/channels/eventsQueue/messages/organizationDeleted" },
+      ],
     },
   },
 };
@@ -35,19 +37,28 @@ const baseDoc: AsyncAPIDocument = {
 describe("parse", () => {
   it("accepts AsyncAPI 3.0 documents", () => {
     expect(() =>
-      parse({ asyncapi: "3.0.0", info: { title: "T", version: "1" } } as AsyncAPIDocument),
+      parse({
+        asyncapi: "3.0.0",
+        info: { title: "T", version: "1" },
+      } as AsyncAPIDocument),
     ).not.toThrow();
   });
 
   it("accepts AsyncAPI 3.1 documents", () => {
     expect(() =>
-      parse({ asyncapi: "3.1.0", info: { title: "T", version: "1" } } as AsyncAPIDocument),
+      parse({
+        asyncapi: "3.1.0",
+        info: { title: "T", version: "1" },
+      } as AsyncAPIDocument),
     ).not.toThrow();
   });
 
   it("rejects AsyncAPI 2.x documents", () => {
     expect(() =>
-      parse({ asyncapi: "2.6.0", info: { title: "T", version: "1" } } as AsyncAPIDocument),
+      parse({
+        asyncapi: "2.6.0",
+        info: { title: "T", version: "1" },
+      } as AsyncAPIDocument),
     ).toThrow(ParserError);
   });
 
@@ -56,40 +67,75 @@ describe("parse", () => {
   });
 
   it("rejects documents where asyncapi is not a string", () => {
-    expect(() => parse({ asyncapi: 3 } as unknown as AsyncAPIDocument)).toThrow(ParserError);
+    expect(() => parse({ asyncapi: 3 } as unknown as AsyncAPIDocument)).toThrow(
+      ParserError,
+    );
   });
 
   it("rejects nullish documents", () => {
-    expect(() => parse(null as unknown as AsyncAPIDocument)).toThrow(ParserError);
-    expect(() => parse(undefined as unknown as AsyncAPIDocument)).toThrow(ParserError);
+    expect(() => parse(null as unknown as AsyncAPIDocument)).toThrow(
+      ParserError,
+    );
+    expect(() => parse(undefined as unknown as AsyncAPIDocument)).toThrow(
+      ParserError,
+    );
   });
 });
 
 describe("resolveMessage", () => {
   it("resolves a message by messageId field", () => {
     const cache = new Map();
-    const msg = resolveMessage(baseDoc, "consumeFromEventsQueue", "organizationDeleted", cache);
+    const msg = resolveMessage(
+      baseDoc,
+      "consumeFromEventsQueue",
+      "organizationDeleted",
+      cache,
+    );
     expect(msg).not.toBeNull();
     expect(msg?.messageId).toBe("organizationDeleted");
   });
 
   it("returns null for unknown operationId", () => {
-    const msg = resolveMessage(baseDoc, "unknownOp", "organizationDeleted", new Map());
+    const msg = resolveMessage(
+      baseDoc,
+      "unknownOp",
+      "organizationDeleted",
+      new Map(),
+    );
     expect(msg).toBeNull();
   });
 
   it("returns null for unknown messageId", () => {
-    const msg = resolveMessage(baseDoc, "consumeFromEventsQueue", "unknownMsg", new Map());
+    const msg = resolveMessage(
+      baseDoc,
+      "consumeFromEventsQueue",
+      "unknownMsg",
+      new Map(),
+    );
     expect(msg).toBeNull();
   });
 
   it("caches results so the same key is not re-resolved", () => {
     const cache = new Map();
-    resolveMessage(baseDoc, "consumeFromEventsQueue", "organizationDeleted", cache);
-    expect(cache.has(JSON.stringify(["consumeFromEventsQueue", "organizationDeleted"]))).toBe(true);
+    resolveMessage(
+      baseDoc,
+      "consumeFromEventsQueue",
+      "organizationDeleted",
+      cache,
+    );
+    expect(
+      cache.has(
+        JSON.stringify(["consumeFromEventsQueue", "organizationDeleted"]),
+      ),
+    ).toBe(true);
     // Mutate doc — cached result should still be returned
     const docCopy = { ...baseDoc, operations: {} };
-    const msg = resolveMessage(docCopy, "consumeFromEventsQueue", "organizationDeleted", cache);
+    const msg = resolveMessage(
+      docCopy,
+      "consumeFromEventsQueue",
+      "organizationDeleted",
+      cache,
+    );
     expect(msg).not.toBeNull();
   });
 
@@ -107,7 +153,12 @@ describe("resolveMessage", () => {
         },
       },
     };
-    const msg = resolveMessage(docNoId, "consumeFromEventsQueue", "organizationDeleted", new Map());
+    const msg = resolveMessage(
+      docNoId,
+      "consumeFromEventsQueue",
+      "organizationDeleted",
+      new Map(),
+    );
     expect(msg).not.toBeNull();
   });
 
@@ -127,7 +178,12 @@ describe("resolveMessage", () => {
         },
       },
     };
-    const msg = resolveMessage(docInline, "consumeFromEventsQueue", "organizationDeleted", new Map());
+    const msg = resolveMessage(
+      docInline,
+      "consumeFromEventsQueue",
+      "organizationDeleted",
+      new Map(),
+    );
     expect(msg).not.toBeNull();
     expect(msg?.messageId).toBe("organizationDeleted");
   });
@@ -135,7 +191,9 @@ describe("resolveMessage", () => {
   it("caches null for unresolved messages", () => {
     const cache = new Map();
     resolveMessage(baseDoc, "consumeFromEventsQueue", "nope", cache);
-    expect(cache.get(JSON.stringify(["consumeFromEventsQueue", "nope"]))).toBeNull();
+    expect(
+      cache.get(JSON.stringify(["consumeFromEventsQueue", "nope"])),
+    ).toBeNull();
   });
 
   it("safely handles malformed operation message refs where $ref is missing", () => {
@@ -153,7 +211,12 @@ describe("resolveMessage", () => {
       },
     };
     expect(() =>
-      resolveMessage(docMalformed, "consumeFromEventsQueue", "organizationDeleted", new Map()),
+      resolveMessage(
+        docMalformed,
+        "consumeFromEventsQueue",
+        "organizationDeleted",
+        new Map(),
+      ),
     ).not.toThrow();
     const msg = resolveMessage(
       docMalformed,
@@ -177,7 +240,12 @@ describe("resolveMessage", () => {
       },
     };
     expect(() =>
-      resolveMessage(docMalformed, "consumeFromEventsQueue", "organizationDeleted", new Map()),
+      resolveMessage(
+        docMalformed,
+        "consumeFromEventsQueue",
+        "organizationDeleted",
+        new Map(),
+      ),
     ).not.toThrow();
     const msg = resolveMessage(
       docMalformed,
@@ -200,10 +268,20 @@ describe("resolveMessage", () => {
       },
     };
     expect(() =>
-      resolveMessage(docNullEntry, "consumeFromEventsQueue", "organizationDeleted", new Map()),
+      resolveMessage(
+        docNullEntry,
+        "consumeFromEventsQueue",
+        "organizationDeleted",
+        new Map(),
+      ),
     ).not.toThrow();
     expect(
-      resolveMessage(docNullEntry, "consumeFromEventsQueue", "organizationDeleted", new Map()),
+      resolveMessage(
+        docNullEntry,
+        "consumeFromEventsQueue",
+        "organizationDeleted",
+        new Map(),
+      ),
     ).toBeNull();
   });
 
@@ -219,10 +297,20 @@ describe("resolveMessage", () => {
       },
     };
     expect(() =>
-      resolveMessage(docNumericEntry, "consumeFromEventsQueue", "organizationDeleted", new Map()),
+      resolveMessage(
+        docNumericEntry,
+        "consumeFromEventsQueue",
+        "organizationDeleted",
+        new Map(),
+      ),
     ).not.toThrow();
     expect(
-      resolveMessage(docNumericEntry, "consumeFromEventsQueue", "organizationDeleted", new Map()),
+      resolveMessage(
+        docNumericEntry,
+        "consumeFromEventsQueue",
+        "organizationDeleted",
+        new Map(),
+      ),
     ).toBeNull();
   });
 
@@ -244,7 +332,12 @@ describe("resolveMessage", () => {
       },
     };
     expect(() =>
-      resolveMessage(docMixed, "consumeFromEventsQueue", "organizationDeleted", new Map()),
+      resolveMessage(
+        docMixed,
+        "consumeFromEventsQueue",
+        "organizationDeleted",
+        new Map(),
+      ),
     ).not.toThrow();
     const msg = resolveMessage(
       docMixed,
@@ -268,10 +361,20 @@ describe("resolveMessage", () => {
       },
     };
     expect(() =>
-      resolveMessage(docObjectMessages, "consumeFromEventsQueue", "organizationDeleted", new Map()),
+      resolveMessage(
+        docObjectMessages,
+        "consumeFromEventsQueue",
+        "organizationDeleted",
+        new Map(),
+      ),
     ).not.toThrow();
     expect(
-      resolveMessage(docObjectMessages, "consumeFromEventsQueue", "organizationDeleted", new Map()),
+      resolveMessage(
+        docObjectMessages,
+        "consumeFromEventsQueue",
+        "organizationDeleted",
+        new Map(),
+      ),
     ).toBeNull();
   });
 
@@ -287,10 +390,20 @@ describe("resolveMessage", () => {
       },
     };
     expect(() =>
-      resolveMessage(docStringMessages, "consumeFromEventsQueue", "organizationDeleted", new Map()),
+      resolveMessage(
+        docStringMessages,
+        "consumeFromEventsQueue",
+        "organizationDeleted",
+        new Map(),
+      ),
     ).not.toThrow();
     expect(
-      resolveMessage(docStringMessages, "consumeFromEventsQueue", "organizationDeleted", new Map()),
+      resolveMessage(
+        docStringMessages,
+        "consumeFromEventsQueue",
+        "organizationDeleted",
+        new Map(),
+      ),
     ).toBeNull();
   });
 

@@ -1,8 +1,8 @@
-import type { OpenAPIV2, OpenAPIV3 } from "openapi-types";
-import Ajv, { Options } from "ajv/dist/2019.js";
+import Ajv, { type Options } from "ajv/dist/2019.js";
 import addFormats from "ajv-formats";
-import Router, { HTTPMethod } from "find-my-way";
+import Router, { type HTTPMethod } from "find-my-way";
 import { uniqWith } from "lodash-es";
+import type { OpenAPIV2, OpenAPIV3 } from "openapi-types";
 
 import type { Config } from "#utils/config";
 import { dereferenceOas } from "#utils/schema";

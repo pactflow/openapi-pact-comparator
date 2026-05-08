@@ -1,5 +1,5 @@
-import { Static, Type } from "@sinclair/typebox";
-import Ajv, { ErrorObject } from "ajv";
+import { type Static, Type } from "@sinclair/typebox";
+import Ajv, { type ErrorObject } from "ajv";
 
 // a full schema can be found at https://github.com/pactflow/pact-schemas
 // but we don't use that here, because we try to be permissive with input
@@ -178,7 +178,8 @@ const isHttpInteraction = (i: RawInteraction) =>
   (typeof i.type === "string" && i.type.toLowerCase() === "synchronous/http");
 
 const isAsyncInteraction = (i: RawInteraction) =>
-  typeof i.type === "string" && i.type.toLowerCase() === "asynchronous/messages";
+  typeof i.type === "string" &&
+  i.type.toLowerCase() === "asynchronous/messages";
 
 const parseAsPactV4Body = (body: unknown) => {
   if (!body) {
@@ -268,7 +269,10 @@ const parseAsyncInteraction = (i: RawInteraction): AsyncInteraction => {
     description: i.description,
     providerState: i.providerState,
     asyncapiReferences: asyncapiRef
-      ? { messageId: asyncapiRef.messageId, operationId: asyncapiRef.operationId }
+      ? {
+          messageId: asyncapiRef.messageId,
+          operationId: asyncapiRef.operationId,
+        }
       : undefined,
     payload: parseAsPactV4Body(i.contents),
     contentType: i.contents?.contentType,
@@ -284,12 +288,16 @@ export const parse = (pact: Pact): ParsedPact => {
   const { metadata, interactions = [] } = pact;
   const rawInteractions = interactions as RawInteraction[];
 
-  const isValid = validateHttpInteractions(rawInteractions.filter(isHttpInteraction));
+  const isValid = validateHttpInteractions(
+    rawInteractions.filter(isHttpInteraction),
+  );
   if (!isValid) {
     throw new ParserError(validateHttpInteractions.errors!);
   }
 
-  const isAsyncValid = validateAsyncInteractions(rawInteractions.filter(isAsyncInteraction));
+  const isAsyncValid = validateAsyncInteractions(
+    rawInteractions.filter(isAsyncInteraction),
+  );
   if (!isAsyncValid) {
     throw new ParserError(validateAsyncInteractions.errors!);
   }
@@ -300,8 +308,7 @@ export const parse = (pact: Pact): ParsedPact => {
       metadata?.["pact-specification"]?.version ||
       "0",
   );
-  const httpParser =
-    version >= 4 ? interactionV4 : interactionV1;
+  const httpParser = version >= 4 ? interactionV4 : interactionV1;
 
   return {
     metadata,

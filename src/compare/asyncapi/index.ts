@@ -34,7 +34,8 @@ export function* compareAsyncInteraction(
   if (!interaction.asyncapiReferences) {
     yield {
       code: "message.references.missing",
-      message: "Async interaction has no AsyncAPI references in comments.references.AsyncAPI",
+      message:
+        "Async interaction has no AsyncAPI references in comments.references.AsyncAPI",
       mockDetails: {
         ...baseMockDetails(interaction),
         location: `[root].interactions[${index}].comments.references.AsyncAPI`,
@@ -82,6 +83,20 @@ export function* compareAsyncInteraction(
     return;
   }
 
-  yield* compareMessagePayload(ajv, message, interaction, index, operationId, messageId);
-  yield* compareMessageHeaders(ajv, message, interaction, index, operationId, messageId);
+  yield* compareMessagePayload(
+    ajv,
+    message,
+    interaction,
+    index,
+    operationId,
+    messageId,
+  );
+  yield* compareMessageHeaders(
+    ajv,
+    message,
+    interaction,
+    index,
+    operationId,
+    messageId,
+  );
 }

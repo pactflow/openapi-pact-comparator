@@ -64,9 +64,10 @@ export const formatInstancePath = (error: ErrorObject) =>
 export const formatSchemaPath = (error: ErrorObject) =>
   error.schemaPath.replace(/\//g, ".").substring(2);
 
-export const baseMockDetails = (
-  interaction: { description?: string; providerState?: string },
-) => ({
+export const baseMockDetails = (interaction: {
+  description?: string;
+  providerState?: string;
+}) => ({
   interactionDescription: interaction.description,
   interactionState: interaction.providerState || "[none]",
 });

@@ -51,7 +51,7 @@ export const parse = (doc: AsyncAPIDocument): void => {
     throw new ParserError();
   }
   if (
-    !Object.prototype.hasOwnProperty.call(doc, "asyncapi") ||
+    !Object.hasOwn(doc, "asyncapi") ||
     typeof doc.asyncapi !== "string" ||
     !doc.asyncapi.startsWith("3.")
   ) {
@@ -75,7 +75,9 @@ export const resolveMessage = (
     return null;
   }
 
-  for (const ref of Array.isArray(operation.messages) ? operation.messages : []) {
+  for (const ref of Array.isArray(operation.messages)
+    ? operation.messages
+    : []) {
     if (ref == null || typeof ref !== "object") continue;
     if (isRef(ref)) {
       const message = dereferenceDoc(ref, doc) as Message | undefined;

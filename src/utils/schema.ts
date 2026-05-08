@@ -1,6 +1,6 @@
-import type { OpenAPIV3 } from "openapi-types";
 import type { SchemaObject } from "ajv";
 import { each, get } from "lodash-es";
+import type { OpenAPIV3 } from "openapi-types";
 
 const unescape = (subpath: string) =>
   decodeURI(subpath.replaceAll("~1", "/").replaceAll("~0", "~"));
@@ -25,7 +25,8 @@ export const dereferenceOas = (
 export const dereferenceDoc = (
   schema: { $ref?: string },
   doc: object,
-): unknown => (schema.$ref ? get(doc, splitPath(schema.$ref as string)) : schema);
+): unknown =>
+  schema.$ref ? get(doc, splitPath(schema.$ref as string)) : schema;
 
 export const traverse = (
   schema: SchemaObject,

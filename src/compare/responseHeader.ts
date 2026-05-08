@@ -7,8 +7,8 @@ import type { HttpInteraction } from "#documents/pact";
 import type { Result } from "#results/index";
 import {
   baseMockDetails,
-  formatMessage,
   formatInstancePath,
+  formatMessage,
   formatSchemaPath,
 } from "#results/index";
 import { minimumSchema } from "#transform/index";

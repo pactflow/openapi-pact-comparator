@@ -1,4 +1,4 @@
-import { SchemaObject } from "ajv";
+import type { SchemaObject } from "ajv";
 import { traverseWithDereferencing as traverse } from "#utils/schema";
 
 export const transformResponseSchema = (

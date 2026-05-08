@@ -1,9 +1,9 @@
-import { describe, expect, it } from "vitest";
 import Ajv from "ajv/dist/2019";
 import addFormats from "ajv-formats";
-import { compareMessagePayload } from "./messagePayload";
-import type { AsyncInteraction } from "#documents/pact";
+import { describe, expect, it } from "vitest";
 import type { Message } from "#documents/asyncapi";
+import type { AsyncInteraction } from "#documents/pact";
+import { compareMessagePayload } from "./messagePayload";
 
 const makeAjv = () => {
   const ajv = new Ajv({ allErrors: true, strictSchema: false });
@@ -33,7 +33,14 @@ const baseMessage: Message = {
 describe("compareMessagePayload", () => {
   it("yields no results when payload matches schema", () => {
     const results = Array.from(
-      compareMessagePayload(makeAjv(), baseMessage, baseInteraction, 0, "consumeOp", "myMsg"),
+      compareMessagePayload(
+        makeAjv(),
+        baseMessage,
+        baseInteraction,
+        0,
+        "consumeOp",
+        "myMsg",
+      ),
     );
     expect(results).toHaveLength(0);
   });
@@ -44,7 +51,14 @@ describe("compareMessagePayload", () => {
       payload: { organizationId: 12345 },
     };
     const results = Array.from(
-      compareMessagePayload(makeAjv(), baseMessage, interaction, 0, "consumeOp", "myMsg"),
+      compareMessagePayload(
+        makeAjv(),
+        baseMessage,
+        interaction,
+        0,
+        "consumeOp",
+        "myMsg",
+      ),
     );
     expect(results).toHaveLength(1);
     expect(results[0].code).toBe("message.payload.incompatible");
@@ -57,7 +71,14 @@ describe("compareMessagePayload", () => {
   it("yields message.payload.unknown warning when no schema defined", () => {
     const message: Message = { messageId: "myMsg" }; // no payload schema
     const results = Array.from(
-      compareMessagePayload(makeAjv(), message, baseInteraction, 0, "consumeOp", "myMsg"),
+      compareMessagePayload(
+        makeAjv(),
+        message,
+        baseInteraction,
+        0,
+        "consumeOp",
+        "myMsg",
+      ),
     );
     expect(results).toHaveLength(1);
     expect(results[0].code).toBe("message.payload.unknown");
@@ -66,9 +87,19 @@ describe("compareMessagePayload", () => {
 
   it("skips validation when payload is undefined and no schema", () => {
     const message: Message = { messageId: "myMsg" };
-    const interaction: AsyncInteraction = { ...baseInteraction, payload: undefined };
+    const interaction: AsyncInteraction = {
+      ...baseInteraction,
+      payload: undefined,
+    };
     const results = Array.from(
-      compareMessagePayload(makeAjv(), message, interaction, 0, "consumeOp", "myMsg"),
+      compareMessagePayload(
+        makeAjv(),
+        message,
+        interaction,
+        0,
+        "consumeOp",
+        "myMsg",
+      ),
     );
     expect(results).toHaveLength(0);
   });
@@ -79,7 +110,14 @@ describe("compareMessagePayload", () => {
       contentType: "application/avro",
     };
     const results = Array.from(
-      compareMessagePayload(makeAjv(), baseMessage, interaction, 0, "consumeOp", "myMsg"),
+      compareMessagePayload(
+        makeAjv(),
+        baseMessage,
+        interaction,
+        0,
+        "consumeOp",
+        "myMsg",
+      ),
     );
     expect(results).toHaveLength(0);
   });
@@ -91,11 +129,25 @@ describe("compareMessagePayload", () => {
     };
     expect(() =>
       Array.from(
-        compareMessagePayload(makeAjv(), baseMessage, interaction, 0, "consumeOp", "myMsg"),
+        compareMessagePayload(
+          makeAjv(),
+          baseMessage,
+          interaction,
+          0,
+          "consumeOp",
+          "myMsg",
+        ),
       ),
     ).not.toThrow();
     const results = Array.from(
-      compareMessagePayload(makeAjv(), baseMessage, interaction, 0, "consumeOp", "myMsg"),
+      compareMessagePayload(
+        makeAjv(),
+        baseMessage,
+        interaction,
+        0,
+        "consumeOp",
+        "myMsg",
+      ),
     );
     expect(results).toHaveLength(0);
   });
@@ -106,7 +158,14 @@ describe("compareMessagePayload", () => {
       contentType: "application/cloudevents+json; charset=utf-8",
     };
     const results = Array.from(
-      compareMessagePayload(makeAjv(), baseMessage, interaction, 0, "consumeOp", "myMsg"),
+      compareMessagePayload(
+        makeAjv(),
+        baseMessage,
+        interaction,
+        0,
+        "consumeOp",
+        "myMsg",
+      ),
     );
     expect(results).toHaveLength(0);
   });

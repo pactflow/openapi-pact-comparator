@@ -1,15 +1,15 @@
-import type { OpenAPIV3 } from "openapi-types";
 import type { SchemaObject } from "ajv";
 import type Ajv from "ajv/dist/2019";
 import type Router from "find-my-way";
 import { get, omit } from "lodash-es";
+import type { OpenAPIV3 } from "openapi-types";
 
 import type { HttpInteraction } from "#documents/pact";
 import type { Result } from "#results/index";
 import {
   baseMockDetails,
-  formatMessage,
   formatInstancePath,
+  formatMessage,
   formatSchemaPath,
 } from "#results/index";
 import { minimumSchema } from "#transform/index";
@@ -156,7 +156,7 @@ export function* compareReqHeader(
     };
   }
 
-  if (!requestContentType && availableRequestContentType.length && !!body) {
+  if (!requestContentType && availableRequestContentType.length && body) {
     yield {
       code: "request.content-type.missing",
       message:
@@ -205,10 +205,10 @@ export function* compareReqHeader(
 
     const value =
       dereferencedParameter.schema?.type === "string" ||
-      !!dereferencedParameter.schema?.anyOf?.find(
+      dereferencedParameter.schema?.anyOf?.find(
         (s: SchemaObject) => s.type === "string",
       ) ||
-      !!dereferencedParameter.schema?.oneOf?.find(
+      dereferencedParameter.schema?.oneOf?.find(
         (s: SchemaObject) => s.type === "string",
       )
         ? requestHeaders.get(dereferencedParameter.name)

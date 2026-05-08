@@ -1,9 +1,9 @@
-import { describe, expect, it } from "vitest";
 import Ajv from "ajv/dist/2019";
 import addFormats from "ajv-formats";
-import { compareAsyncInteraction } from "./index";
+import { describe, expect, it } from "vitest";
 import type { AsyncAPIDocument, Message } from "#documents/asyncapi";
 import type { AsyncInteraction } from "#documents/pact";
+import { compareAsyncInteraction } from "./index";
 
 const makeAjv = () => {
   const ajv = new Ajv({ allErrors: true, strictSchema: false });
@@ -19,7 +19,11 @@ const baseDoc: AsyncAPIDocument = {
       messages: {
         orgDeleted: {
           messageId: "orgDeleted",
-          payload: { type: "object", properties: { id: { type: "string" } }, required: ["id"] },
+          payload: {
+            type: "object",
+            properties: { id: { type: "string" } },
+            required: ["id"],
+          },
         },
       },
     },
@@ -44,14 +48,26 @@ const validInteraction: AsyncInteraction = {
 describe("compareAsyncInteraction", () => {
   it("yields no results for a valid interaction", () => {
     const results = Array.from(
-      compareAsyncInteraction(makeAjv(), baseDoc, new Map(), validInteraction, 0),
+      compareAsyncInteraction(
+        makeAjv(),
+        baseDoc,
+        new Map(),
+        validInteraction,
+        0,
+      ),
     );
     expect(results).toHaveLength(0);
   });
 
   it("yields message.spec.missing when no AAD provided", () => {
     const results = Array.from(
-      compareAsyncInteraction(makeAjv(), undefined, new Map(), validInteraction, 0),
+      compareAsyncInteraction(
+        makeAjv(),
+        undefined,
+        new Map(),
+        validInteraction,
+        0,
+      ),
     );
     expect(results).toHaveLength(1);
     expect(results[0].code).toBe("message.spec.missing");
@@ -59,7 +75,10 @@ describe("compareAsyncInteraction", () => {
   });
 
   it("yields message.references.missing when asyncapiReferences absent", () => {
-    const interaction: AsyncInteraction = { ...validInteraction, asyncapiReferences: undefined };
+    const interaction: AsyncInteraction = {
+      ...validInteraction,
+      asyncapiReferences: undefined,
+    };
     const results = Array.from(
       compareAsyncInteraction(makeAjv(), baseDoc, new Map(), interaction, 0),
     );
@@ -70,7 +89,10 @@ describe("compareAsyncInteraction", () => {
   it("yields message.operation.unknown when operationId not in AAD", () => {
     const interaction: AsyncInteraction = {
       ...validInteraction,
-      asyncapiReferences: { operationId: "nonExistent", messageId: "orgDeleted" },
+      asyncapiReferences: {
+        operationId: "nonExistent",
+        messageId: "orgDeleted",
+      },
     };
     const results = Array.from(
       compareAsyncInteraction(makeAjv(), baseDoc, new Map(), interaction, 0),
@@ -82,7 +104,10 @@ describe("compareAsyncInteraction", () => {
   it("yields message.id.unknown when messageId not found in operation", () => {
     const interaction: AsyncInteraction = {
       ...validInteraction,
-      asyncapiReferences: { operationId: "consume", messageId: "nonExistentMsg" },
+      asyncapiReferences: {
+        operationId: "consume",
+        messageId: "nonExistentMsg",
+      },
     };
     const results = Array.from(
       compareAsyncInteraction(makeAjv(), baseDoc, new Map(), interaction, 0),
@@ -105,7 +130,9 @@ describe("compareAsyncInteraction", () => {
 
   it("shares cache across calls", () => {
     const cache = new Map<string, Message | null>();
-    Array.from(compareAsyncInteraction(makeAjv(), baseDoc, cache, validInteraction, 0));
+    Array.from(
+      compareAsyncInteraction(makeAjv(), baseDoc, cache, validInteraction, 0),
+    );
     // cache should now contain the resolved message
     expect(cache.size).toBeGreaterThan(0);
     // second call with same cache should still resolve correctly

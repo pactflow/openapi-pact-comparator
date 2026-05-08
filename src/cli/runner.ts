@@ -1,8 +1,8 @@
-import type { OpenAPIV2, OpenAPIV3 } from "openapi-types";
-import yaml from "js-yaml";
 import fs from "node:fs";
-import { Comparator, type Result } from "../index";
+import yaml from "js-yaml";
+import type { OpenAPIV2, OpenAPIV3 } from "openapi-types";
 import type { AsyncAPIDocument } from "../documents/asyncapi";
+import { Comparator, type Result } from "../index";
 
 type OASDocument = OpenAPIV2.Document | OpenAPIV3.Document;
 
@@ -80,8 +80,11 @@ export class Runner {
     return this.parseContent(content);
   }
 
-  async run(specPaths: SpecPaths | string, pactPaths: string[]): Promise<number> {
-    let docs: ComparatorDocs = {};
+  async run(
+    specPaths: SpecPaths | string,
+    pactPaths: string[],
+  ): Promise<number> {
+    const docs: ComparatorDocs = {};
 
     if (typeof specPaths === "string") {
       // Legacy: run(oasPath, pactPaths)
@@ -91,7 +94,9 @@ export class Runner {
         docs.oas = (await this.readAndParse(specPaths.oasPath)) as OASDocument;
       }
       if (specPaths.asyncapiPath) {
-        docs.asyncapi = (await this.readAndParse(specPaths.asyncapiPath)) as AsyncAPIDocument;
+        docs.asyncapi = (await this.readAndParse(
+          specPaths.asyncapiPath,
+        )) as AsyncAPIDocument;
       }
     }
 

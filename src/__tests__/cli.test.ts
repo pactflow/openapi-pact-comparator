@@ -1,8 +1,8 @@
-import { describe, expect, it, beforeAll, afterAll } from "vitest";
 import { spawn } from "node:child_process";
-import { createServer, type Server } from "node:http";
 import { readFileSync } from "node:fs";
+import { createServer, type Server } from "node:http";
 import path from "node:path";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 const fixturesDir = path.join(__dirname, "fixtures");
 const cliPath = path.join(__dirname, "..", "cli.ts");
@@ -60,46 +60,34 @@ const runCli = (
 };
 
 describe("CLI integration", () => {
-  it(
-    "should exit with code 0 when no errors are found",
-    async () => {
-      const { exitCode, stdout } = await runCli(
-        path.join("example-petstore-valid", "oas.yaml"),
-        path.join("example-petstore-valid", "pact.json"),
-      );
+  it("should exit with code 0 when no errors are found", async () => {
+    const { exitCode, stdout } = await runCli(
+      path.join("example-petstore-valid", "oas.yaml"),
+      path.join("example-petstore-valid", "pact.json"),
+    );
 
-      expect(exitCode).toBe(0);
-      expect(stdout.trim()).toBe("[]");
-    },
-    15000,
-  );
+    expect(exitCode).toBe(0);
+    expect(stdout.trim()).toBe("[]");
+  }, 15000);
 
-  it(
-    "should exit with non-zero code when errors are found",
-    async () => {
-      const { exitCode, stdout } = await runCli(
-        path.join("example-petstore-invalid", "oas.yaml"),
-        path.join("example-petstore-invalid", "pact.json"),
-      );
+  it("should exit with non-zero code when errors are found", async () => {
+    const { exitCode, stdout } = await runCli(
+      path.join("example-petstore-invalid", "oas.yaml"),
+      path.join("example-petstore-invalid", "pact.json"),
+    );
 
-      expect(exitCode).toBe(1);
-      expect(stdout).toContain('"type":"error"');
-      expect(stdout).toContain('"code":"response.status.unknown"');
-    },
-    15000,
-  );
+    expect(exitCode).toBe(1);
+    expect(stdout).toContain('"type":"error"');
+    expect(stdout).toContain('"code":"response.status.unknown"');
+  }, 15000);
 
-  it(
-    "should fetch OAS and Pact from URLs",
-    async () => {
-      const oasUrl = `${baseUrl}/example-petstore-valid/oas.yaml`;
-      const pactUrl = `${baseUrl}/example-petstore-valid/pact.json`;
+  it("should fetch OAS and Pact from URLs", async () => {
+    const oasUrl = `${baseUrl}/example-petstore-valid/oas.yaml`;
+    const pactUrl = `${baseUrl}/example-petstore-valid/pact.json`;
 
-      const { exitCode, stdout } = await runCli(oasUrl, pactUrl);
+    const { exitCode, stdout } = await runCli(oasUrl, pactUrl);
 
-      expect(exitCode).toBe(0);
-      expect(stdout.trim()).toBe("[]");
-    },
-    15000,
-  );
+    expect(exitCode).toBe(0);
+    expect(stdout.trim()).toBe("[]");
+  }, 15000);
 });

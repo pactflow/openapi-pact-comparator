@@ -1,4 +1,5 @@
-import Ajv, { AnySchema, ValidateFunction } from "ajv";
+import type Ajv from "ajv";
+import type { AnySchema, ValidateFunction } from "ajv";
 
 export const getValidateFunction = (
   ajv: Ajv,

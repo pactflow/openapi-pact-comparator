@@ -1,19 +1,19 @@
 import type { SchemaObject } from "ajv";
 import type Ajv from "ajv/dist/2019";
 import type Router from "find-my-way";
-import type { OpenAPIV2 } from "openapi-types";
 import { get } from "lodash-es";
+import type { OpenAPIV2 } from "openapi-types";
 
 import type { HttpInteraction } from "#documents/pact";
 import type { Result } from "#results/index";
 import {
   baseMockDetails,
-  formatMessage,
   formatInstancePath,
+  formatMessage,
   formatSchemaPath,
 } from "#results/index";
-import type { Config } from "#utils/config";
 import { minimumSchema, transformResponseSchema } from "#transform/index";
+import type { Config } from "#utils/config";
 import { dereferenceOas, splitPath } from "#utils/schema";
 import { getValidateFunction } from "#utils/validation";
 import { findMatchingType, getByContentType } from "./utils/content";

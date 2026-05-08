@@ -1,12 +1,17 @@
 import { describe, expect, it } from "vitest";
-import { Comparator } from "./index";
 import { ParserError } from "#documents/oas";
+import { Comparator } from "./index";
 
 describe("Comparator constructor", () => {
   describe("legacy OAS input", () => {
     it("accepts a valid OpenAPI 3 document", () => {
       expect(
-        () => new Comparator({ openapi: "3.0.0", info: { title: "T", version: "1" }, paths: {} }),
+        () =>
+          new Comparator({
+            openapi: "3.0.0",
+            info: { title: "T", version: "1" },
+            paths: {},
+          }),
       ).not.toThrow();
     });
 
@@ -41,15 +46,19 @@ describe("Comparator constructor", () => {
       expect(
         () =>
           new Comparator({
-            oas: { openapi: "3.0.0", info: { title: "T", version: "1" }, paths: {} },
+            oas: {
+              openapi: "3.0.0",
+              info: { title: "T", version: "1" },
+              paths: {},
+            },
           }),
       ).not.toThrow();
     });
 
     it("throws ParserError when oas value is malformed", () => {
-      expect(
-        () => new Comparator({ oas: { paths: {} } as never }),
-      ).toThrow(ParserError);
+      expect(() => new Comparator({ oas: { paths: {} } as never })).toThrow(
+        ParserError,
+      );
     });
 
     it("accepts options with only an asyncapi key (no oas validation)", () => {

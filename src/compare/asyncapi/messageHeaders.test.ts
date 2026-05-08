@@ -1,9 +1,9 @@
-import { describe, expect, it } from "vitest";
 import Ajv from "ajv/dist/2019";
 import addFormats from "ajv-formats";
-import { compareMessageHeaders } from "./messageHeaders";
-import type { AsyncInteraction } from "#documents/pact";
+import { describe, expect, it } from "vitest";
 import type { Message } from "#documents/asyncapi";
+import type { AsyncInteraction } from "#documents/pact";
+import { compareMessageHeaders } from "./messageHeaders";
 
 const makeAjv = () => {
   const ajv = new Ajv({ allErrors: true, strictSchema: false });
@@ -18,7 +18,10 @@ const baseInteraction: AsyncInteraction = {
   asyncapiReferences: { operationId: "consumeOp", messageId: "myMsg" },
   payload: { organizationId: "abc-123" },
   contentType: "application/json",
-  metadata: { "detail-type": "organization-deleted", time: "2024-02-06T18:36:26.102Z" },
+  metadata: {
+    "detail-type": "organization-deleted",
+    time: "2024-02-06T18:36:26.102Z",
+  },
 };
 
 const baseMessage: Message = {
@@ -36,7 +39,14 @@ const baseMessage: Message = {
 describe("compareMessageHeaders", () => {
   it("yields no results when metadata matches schema", () => {
     const results = Array.from(
-      compareMessageHeaders(makeAjv(), baseMessage, baseInteraction, 0, "consumeOp", "myMsg"),
+      compareMessageHeaders(
+        makeAjv(),
+        baseMessage,
+        baseInteraction,
+        0,
+        "consumeOp",
+        "myMsg",
+      ),
     );
     expect(results).toHaveLength(0);
   });
@@ -47,7 +57,14 @@ describe("compareMessageHeaders", () => {
       metadata: { "detail-type": 12345 as unknown as string },
     };
     const results = Array.from(
-      compareMessageHeaders(makeAjv(), baseMessage, interaction, 0, "consumeOp", "myMsg"),
+      compareMessageHeaders(
+        makeAjv(),
+        baseMessage,
+        interaction,
+        0,
+        "consumeOp",
+        "myMsg",
+      ),
     );
     expect(results).toHaveLength(1);
     expect(results[0].code).toBe("message.headers.incompatible");
@@ -60,7 +77,14 @@ describe("compareMessageHeaders", () => {
   it("yields no results when message has no headers schema", () => {
     const message: Message = { messageId: "myMsg" };
     const results = Array.from(
-      compareMessageHeaders(makeAjv(), message, baseInteraction, 0, "consumeOp", "myMsg"),
+      compareMessageHeaders(
+        makeAjv(),
+        message,
+        baseInteraction,
+        0,
+        "consumeOp",
+        "myMsg",
+      ),
     );
     expect(results).toHaveLength(0);
   });
@@ -71,7 +95,14 @@ describe("compareMessageHeaders", () => {
       metadata: undefined,
     };
     const results = Array.from(
-      compareMessageHeaders(makeAjv(), baseMessage, interaction, 0, "consumeOp", "myMsg"),
+      compareMessageHeaders(
+        makeAjv(),
+        baseMessage,
+        interaction,
+        0,
+        "consumeOp",
+        "myMsg",
+      ),
     );
     expect(results).toHaveLength(1);
     expect(results[0].code).toBe("message.headers.incompatible");

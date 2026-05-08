@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parse, Pact } from "./pact";
+import { type Pact, parse } from "./pact";
 
 describe("#parser", () => {
   it("flattens headers", () => {
@@ -31,7 +31,9 @@ describe("#parser", () => {
     expect(parsed.request.headers!["Accept"]).toEqual(
       "text/plain,application/json,text/json",
     );
-    expect(parsed.response.headers!["Content-Type"]).toEqual("application/json");
+    expect(parsed.response.headers!["Content-Type"]).toEqual(
+      "application/json",
+    );
   });
 
   it("maps interactions to _kind discriminants", () => {
@@ -42,7 +44,12 @@ describe("#parser", () => {
         { description: "no-type", request, response },
         { type: "Synchronous/HTTP", description: "http", request, response },
         { type: "Asynchronous/Messages", description: "async-message" },
-        { type: "Synchronous/Messages", description: "sync-message", request, response },
+        {
+          type: "Synchronous/Messages",
+          description: "sync-message",
+          request,
+          response,
+        },
       ],
     };
 
@@ -81,14 +88,17 @@ describe("#parser", () => {
 
     const pact = parse(json as Pact);
     const interaction = pact.interactions[0];
-    if (interaction._kind !== "async") throw new Error("expected async interaction");
+    if (interaction._kind !== "async")
+      throw new Error("expected async interaction");
     expect(interaction.asyncapiReferences).toEqual({
       messageId: "organizationDeleted",
       operationId: "consumeFromEventsQueue",
     });
     expect(interaction.payload).toEqual({ organizationId: "abc-123" });
     expect(interaction.contentType).toBe("application/json");
-    expect(interaction.metadata).toEqual({ "detail-type": "organization-deleted" });
+    expect(interaction.metadata).toEqual({
+      "detail-type": "organization-deleted",
+    });
     expect(interaction.description).toBe("org-deleted");
     expect(interaction.providerState).toBe("an org exists");
   });

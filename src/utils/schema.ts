@@ -2,6 +2,33 @@ import type { SchemaObject } from "ajv";
 import { each, get } from "lodash-es";
 import type { OpenAPIV3 } from "openapi-types";
 
+export const resolveSchemaRefs = (
+  schema: unknown,
+  doc: object,
+  visited: Set<string> = new Set(),
+): unknown => {
+  if (schema === null || typeof schema !== "object") return schema;
+  if (Array.isArray(schema)) {
+    return schema.map((item) => resolveSchemaRefs(item, doc, visited));
+  }
+  const obj = schema as Record<string, unknown>;
+  if (typeof obj.$ref === "string") {
+    const ref = obj.$ref;
+    if (visited.has(ref)) return {};
+    return resolveSchemaRefs(
+      get(doc, splitPath(ref)),
+      doc,
+      new Set([...visited, ref]),
+    );
+  }
+  return Object.fromEntries(
+    Object.entries(obj).map(([k, v]) => [
+      k,
+      resolveSchemaRefs(v, doc, visited),
+    ]),
+  );
+};
+
 const unescape = (subpath: string) =>
   decodeURI(subpath.replaceAll("~1", "/").replaceAll("~0", "~"));
 

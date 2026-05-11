@@ -10,7 +10,10 @@ export interface AsyncAPIDocument {
   info: { title: string; version: string };
   channels?: Record<string, Channel>;
   operations?: Record<string, Operation>;
-  components?: { messages?: Record<string, Message> };
+  components?: {
+    messages?: Record<string, Message>;
+    schemas?: Record<string, object>;
+  };
 }
 
 export interface Channel {

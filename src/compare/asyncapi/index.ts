@@ -1,10 +1,15 @@
 import type Ajv from "ajv/dist/2019";
 
-import type { AsyncAPIDocument, ResolvedMessage } from "#documents/asyncapi";
+import type {
+  AsyncAPIDocument,
+  Message,
+  ResolvedMessage,
+} from "#documents/asyncapi";
 import { resolveMessage } from "#documents/asyncapi";
 import type { AsyncInteraction } from "#documents/pact";
 import type { Result } from "#results/index";
 import { baseMockDetails } from "#results/index";
+import { resolveSchemaRefs } from "#utils/schema";
 
 import { compareMessageHeaders } from "./messageHeaders";
 import { compareMessagePayload } from "./messagePayload";
@@ -83,18 +88,16 @@ export function* compareAsyncInteraction(
     return;
   }
 
-  yield* compareMessagePayload(
-    ajv,
-    resolved.message,
-    interaction,
-    index,
-    resolved.path,
-  );
-  yield* compareMessageHeaders(
-    ajv,
-    resolved.message,
-    interaction,
-    index,
-    resolved.path,
-  );
+  const message: Message = {
+    ...resolved.message,
+    payload: resolved.message.payload
+      ? (resolveSchemaRefs(resolved.message.payload, asyncapi) as object)
+      : undefined,
+    headers: resolved.message.headers
+      ? (resolveSchemaRefs(resolved.message.headers, asyncapi) as object)
+      : undefined,
+  };
+
+  yield* compareMessagePayload(ajv, message, interaction, index, resolved.path);
+  yield* compareMessageHeaders(ajv, message, interaction, index, resolved.path);
 }

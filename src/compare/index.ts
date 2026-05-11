@@ -1,24 +1,15 @@
 import type Ajv from "ajv/dist/2019";
 import type Router from "find-my-way";
-import type { HTTPMethod } from "find-my-way";
 import type { OpenAPIV2, OpenAPIV3 } from "openapi-types";
 import { compareAsyncInteraction } from "#compare/asyncapi/index";
-import { compareReqBody } from "#compare/oas/requestBody";
-import { compareReqHeader } from "#compare/oas/requestHeader";
-import { compareReqPath } from "#compare/oas/requestPath";
-import { compareReqQuery } from "#compare/oas/requestQuery";
-import { compareReqSecurity } from "#compare/oas/requestSecurity";
-import { compareResBody } from "#compare/oas/responseBody";
-import { compareResHeader } from "#compare/oas/responseHeader";
+import { compareHttpInteraction } from "#compare/oas/index";
 import type { AsyncAPIDocument, Message } from "#documents/asyncapi";
 import { parse as parseAsyncapi } from "#documents/asyncapi";
 import { parse as parseOas } from "#documents/oas";
 import type { AsyncInteraction, HttpInteraction, Pact } from "#documents/pact";
 import { parse as parsePact } from "#documents/pact";
 import type { Result } from "#results/index";
-import { baseMockDetails } from "#results/index";
 import { type Config, type ConfigKeys, DEFAULT_CONFIG } from "#utils/config";
-import { ARRAY_SEPARATOR } from "#utils/queryParams";
 import { setupRouter } from "./oas/setup";
 import { setupAjv } from "./setup";
 
@@ -91,122 +82,11 @@ export class Comparator {
         continue;
       }
 
-      // HTTP interaction — require OAS
-      if (!this.#oas) {
-        yield {
-          code: "request.spec.missing",
-          message: "No OpenAPI document provided to validate HTTP interaction",
-          mockDetails: {
-            ...baseMockDetails(interaction as HttpInteraction),
-            location: `[root].interactions[${index}]`,
-            value: (interaction as HttpInteraction).description,
-          },
-          specDetails: { location: "[root]", value: undefined },
-          type: "error",
-        };
-        continue;
-      }
-
-      const httpInteraction = interaction as HttpInteraction;
-      const { method, path, query } = httpInteraction.request;
-      let pathWithLeadingSlash = path.startsWith("/") ? path : `/${path}`;
-
-      if (this.#config.get("no-percent-encoding")) {
-        pathWithLeadingSlash = pathWithLeadingSlash.replaceAll("%", "%25");
-      }
-
-      // in pact, query is either a string or an object of only one level deep
-      const stringQuery =
-        typeof query === "string"
-          ? query
-          : Object.keys(query || {})
-              .reduce(
-                (acc, name) =>
-                  Array.isArray(query![name])
-                    ? `${acc}&${name}=${(query![name] || []).join(ARRAY_SEPARATOR)}`
-                    : `${acc}&${name}=${query![name] || ""}`,
-                "",
-              )
-              .substring(1);
-      const route = this.#router!.find(
-        method.toUpperCase() as HTTPMethod,
-        [pathWithLeadingSlash, stringQuery].filter(Boolean).join("?"),
-      );
-
-      if (!route || pathWithLeadingSlash.includes("?")) {
-        yield {
-          code: "request.path-or-method.unknown",
-          message: `Path or method not defined in spec file: ${method} ${path}`,
-          mockDetails: {
-            ...baseMockDetails(httpInteraction),
-            location: `[root].interactions[${index}].request.path`,
-            value: httpInteraction.request.path,
-          },
-          specDetails: {
-            location: "[root].paths",
-            pathMethod: null,
-            pathName: null,
-            value: undefined,
-          },
-          type: "error",
-        };
-        continue;
-      }
-
-      const results = Array.from(
-        compareReqPath(
-          this.#ajvCoerce,
-          route,
-          httpInteraction,
-          index,
-          this.#config,
-        ),
-      );
-
-      if (results.length) {
-        yield* results;
-        continue;
-      }
-
-      yield* compareReqSecurity(
+      yield* compareHttpInteraction(
         this.#ajvCoerce,
-        route,
-        httpInteraction,
-        index,
-        this.#config,
-      );
-      yield* compareReqHeader(
-        this.#ajvCoerce,
-        route,
-        httpInteraction,
-        index,
-        this.#config,
-      );
-      yield* compareReqQuery(
-        this.#ajvCoerce,
-        route,
-        httpInteraction,
-        index,
-        this.#config,
-      );
-      yield* compareReqBody(
         this.#ajvNocoerce,
-        route,
-        httpInteraction,
-        index,
-        this.#config,
-      );
-      yield* compareResHeader(
-        this.#ajvCoerce,
-        route,
-        httpInteraction,
-        index,
-        this.#config,
-      );
-      yield* compareResBody(
-        this.#ajvNocoerce,
-        route,
-        httpInteraction,
+        this.#router,
+        interaction as HttpInteraction,
         index,
         this.#config,
       );

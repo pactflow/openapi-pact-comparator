@@ -6,7 +6,7 @@ import { compareHttpInteraction } from "#compare/oas/index";
 import type { AsyncAPIDocument, Message } from "#documents/asyncapi";
 import { parse as parseAsyncapi } from "#documents/asyncapi";
 import { parse as parseOas } from "#documents/oas";
-import type { AsyncInteraction, HttpInteraction, Pact } from "#documents/pact";
+import type { Pact } from "#documents/pact";
 import { parse as parsePact } from "#documents/pact";
 import type { Result } from "#results/index";
 import { type Config, type ConfigKeys, DEFAULT_CONFIG } from "#utils/config";
@@ -67,29 +67,31 @@ export class Comparator {
     const parsedPact = parsePact(pact);
 
     for (const [index, interaction] of parsedPact.interactions.entries()) {
-      if (interaction._kind === "skip") {
-        continue;
+      switch (interaction._kind) {
+        case "http":
+          yield* compareHttpInteraction(
+            this.#ajvCoerce,
+            this.#ajvNocoerce,
+            this.#router,
+            interaction,
+            index,
+            this.#config,
+          );
+          break;
+        case "async":
+          yield* compareAsyncInteraction(
+            this.#ajvNocoerce,
+            this.#asyncapi,
+            this.#resolvedMessages,
+            interaction,
+            index,
+          );
+          break;
+        case "skip":
+          break;
+        default:
+          interaction satisfies never;
       }
-
-      if (interaction._kind === "async") {
-        yield* compareAsyncInteraction(
-          this.#ajvNocoerce,
-          this.#asyncapi,
-          this.#resolvedMessages,
-          interaction as AsyncInteraction,
-          index,
-        );
-        continue;
-      }
-
-      yield* compareHttpInteraction(
-        this.#ajvCoerce,
-        this.#ajvNocoerce,
-        this.#router,
-        interaction as HttpInteraction,
-        index,
-        this.#config,
-      );
     }
   }
 }

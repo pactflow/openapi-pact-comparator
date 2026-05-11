@@ -5,7 +5,7 @@ import Ajv, { type ErrorObject } from "ajv";
 // but we don't use that here, because we try to be permissive with input
 
 // HTTP-only schema used for AJV validation of synchronous interactions
-export const Interaction = Type.Object({
+const HttpMessage = Type.Object({
   _skip: Type.Optional(Type.Boolean()),
   type: Type.Optional(Type.String()),
   description: Type.Optional(Type.String()),
@@ -42,8 +42,6 @@ export const Interaction = Type.Object({
     status: Type.Number(),
   }),
 });
-
-export type Interaction = Static<typeof Interaction>;
 
 // Async interaction schema used for AJV validation of "Asynchronous/Messages" interactions
 const AsyncMessage = Type.Object({
@@ -133,14 +131,14 @@ export interface SkippedInteraction {
   _kind: "skip";
 }
 
-export type ParsedInteraction =
+export type Interaction =
   | HttpInteraction
   | AsyncInteraction
   | SkippedInteraction;
 
 export interface ParsedPact {
   metadata?: Pact["metadata"];
-  interactions: ParsedInteraction[];
+  interactions: Interaction[];
 }
 
 // Internal shape of a raw pact interaction before classification
@@ -281,7 +279,7 @@ const parseAsyncInteraction = (i: RawInteraction): AsyncInteraction => {
 };
 
 const ajv = new Ajv();
-const validateHttpInteractions = ajv.compile(Type.Array(Interaction));
+const validateHttpInteractions = ajv.compile(Type.Array(HttpMessage));
 const validateAsyncInteractions = ajv.compile(Type.Array(AsyncMessage));
 
 export const parse = (pact: Pact): ParsedPact => {
@@ -312,7 +310,7 @@ export const parse = (pact: Pact): ParsedPact => {
 
   return {
     metadata,
-    interactions: rawInteractions.map((i): ParsedInteraction => {
+    interactions: rawInteractions.map((i): Interaction => {
       if (isHttpInteraction(i)) return httpParser(i);
       if (isAsyncInteraction(i)) return parseAsyncInteraction(i);
       return { _kind: "skip" };

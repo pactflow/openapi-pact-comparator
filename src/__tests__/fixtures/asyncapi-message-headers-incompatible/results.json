@@ -12,7 +12,7 @@
       }
     },
     "specDetails": {
-      "location": "[root].operations.consumeFromEventsQueue.messages.organizationDeleted.headers.additionalProperties",
+      "location": "[root].channels.eventsQueue.messages.organizationDeleted.headers.additionalProperties",
       "value": false
     },
     "type": "error"

@@ -3,7 +3,7 @@ import type Router from "find-my-way";
 import type { OpenAPIV2, OpenAPIV3 } from "openapi-types";
 import { compareAsyncInteraction } from "#compare/asyncapi/index";
 import { compareHttpInteraction } from "#compare/oas/index";
-import type { AsyncAPIDocument, Message } from "#documents/asyncapi";
+import type { AsyncAPIDocument, ResolvedMessage } from "#documents/asyncapi";
 import { parse as parseAsyncapi } from "#documents/asyncapi";
 import { parse as parseOas } from "#documents/oas";
 import type { Pact } from "#documents/pact";
@@ -25,7 +25,7 @@ export class Comparator {
   #oas?: OpenAPIV2.Document | OpenAPIV3.Document;
   #asyncapi?: AsyncAPIDocument;
   #router?: Router.Instance<Router.HTTPVersion.V1>;
-  #resolvedMessages: Map<string, Message | null> = new Map();
+  #resolvedMessages: Map<string, ResolvedMessage | null> = new Map();
 
   constructor(options: ComparatorOptions = {}) {
     this.#config = new Map(DEFAULT_CONFIG);

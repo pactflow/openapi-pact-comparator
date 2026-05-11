@@ -38,8 +38,7 @@ describe("compareMessagePayload", () => {
         baseMessage,
         baseInteraction,
         0,
-        "consumeOp",
-        "myMsg",
+        "[root].channels.eventsQueue.messages.myMsg",
       ),
     );
     expect(results).toHaveLength(0);
@@ -56,15 +55,14 @@ describe("compareMessagePayload", () => {
         baseMessage,
         interaction,
         0,
-        "consumeOp",
-        "myMsg",
+        "[root].channels.eventsQueue.messages.myMsg",
       ),
     );
     expect(results).toHaveLength(1);
     expect(results[0].code).toBe("message.payload.incompatible");
     expect(results[0].type).toBe("error");
     expect(results[0].mockDetails?.location).toBe(
-      "[root].interactions[0].contents.organizationId",
+      "[root].interactions[0].contents.content.organizationId",
     );
   });
 
@@ -76,8 +74,7 @@ describe("compareMessagePayload", () => {
         message,
         baseInteraction,
         0,
-        "consumeOp",
-        "myMsg",
+        "[root].channels.eventsQueue.messages.myMsg",
       ),
     );
     expect(results).toHaveLength(1);
@@ -97,8 +94,7 @@ describe("compareMessagePayload", () => {
         message,
         interaction,
         0,
-        "consumeOp",
-        "myMsg",
+        "[root].channels.eventsQueue.messages.myMsg",
       ),
     );
     expect(results).toHaveLength(0);
@@ -115,8 +111,7 @@ describe("compareMessagePayload", () => {
         baseMessage,
         interaction,
         0,
-        "consumeOp",
-        "myMsg",
+        "[root].channels.eventsQueue.messages.myMsg",
       ),
     );
     expect(results).toHaveLength(0);
@@ -145,8 +140,7 @@ describe("compareMessagePayload", () => {
         baseMessage,
         interaction,
         0,
-        "consumeOp",
-        "myMsg",
+        "[root].channels.eventsQueue.messages.myMsg",
       ),
     );
     expect(results).toHaveLength(0);
@@ -163,8 +157,7 @@ describe("compareMessagePayload", () => {
         baseMessage,
         interaction,
         0,
-        "consumeOp",
-        "myMsg",
+        "[root].channels.eventsQueue.messages.myMsg",
       ),
     );
     expect(results).toHaveLength(0);

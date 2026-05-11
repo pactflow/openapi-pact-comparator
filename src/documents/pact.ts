@@ -284,7 +284,9 @@ const validateAsyncInteractions = ajv.compile(Type.Array(AsyncMessage));
 
 export const parse = (pact: Pact): ParsedPact => {
   const { metadata, interactions = [] } = pact;
-  const rawInteractions = interactions as RawInteraction[];
+  const rawInteractions = (interactions as unknown[]).filter(
+    (i): i is RawInteraction => typeof i === "object" && i !== null,
+  );
 
   const isValid = validateHttpInteractions(
     rawInteractions.filter(isHttpInteraction),

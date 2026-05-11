@@ -60,12 +60,17 @@ export const parse = (doc: AsyncAPIDocument): void => {
   // FIXME: ideally, we validate the full document here
 };
 
+export interface ResolvedMessage {
+  message: Message;
+  path: string;
+}
+
 export const resolveMessage = (
   doc: AsyncAPIDocument,
   operationId: string,
   messageId: string,
-  cache: Map<string, Message | null>,
-): Message | null => {
+  cache: Map<string, ResolvedMessage | null>,
+): ResolvedMessage | null => {
   const cacheKey = JSON.stringify([operationId, messageId]);
   if (cache.has(cacheKey)) return cache.get(cacheKey)!;
 
@@ -75,25 +80,31 @@ export const resolveMessage = (
     return null;
   }
 
-  for (const ref of Array.isArray(operation.messages)
+  for (const [i, ref] of (Array.isArray(operation.messages)
     ? operation.messages
-    : []) {
+    : []
+  ).entries()) {
     if (ref == null || typeof ref !== "object") continue;
     if (isRef(ref)) {
       const message = dereferenceDoc(ref, doc) as Message | undefined;
       if (!message) continue;
       const refKey = ref.$ref.split("/").pop() ?? "";
       if (message.messageId === messageId || refKey === messageId) {
-        cache.set(cacheKey, message);
-        return message;
+        const path =
+          "[root]." + ref.$ref.replace(/^#\//, "").replace(/\//g, ".");
+        const result = { message, path };
+        cache.set(cacheKey, result);
+        return result;
       }
       continue;
     }
 
     const inlineMessage = ref as Message;
     if (inlineMessage.messageId === messageId) {
-      cache.set(cacheKey, inlineMessage);
-      return inlineMessage;
+      const path = `[root].operations.${operationId}.messages[${i}]`;
+      const result = { message: inlineMessage, path };
+      cache.set(cacheKey, result);
+      return result;
     }
   }
 

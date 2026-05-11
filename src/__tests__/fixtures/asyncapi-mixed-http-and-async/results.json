@@ -26,11 +26,11 @@
     "mockDetails": {
       "interactionDescription": "an organization-deleted event",
       "interactionState": "[none]",
-      "location": "[root].interactions[1].contents.organizationId",
+      "location": "[root].interactions[1].contents.content.organizationId",
       "value": 12345
     },
     "specDetails": {
-      "location": "[root].operations.consumeFromEventsQueue.messages.organizationDeleted.payload.properties.organizationId.type",
+      "location": "[root].channels.eventsQueue.messages.organizationDeleted.payload.properties.organizationId.type",
       "value": "string"
     },
     "type": "error"

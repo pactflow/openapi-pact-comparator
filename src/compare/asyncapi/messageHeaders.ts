@@ -17,13 +17,12 @@ export function* compareMessageHeaders(
   message: Message,
   interaction: AsyncInteraction,
   index: number,
-  operationId: string,
-  messageId: string,
+  messagePath: string,
 ): Iterable<Result> {
   if (!message.headers) return;
 
   const metadata = interaction.metadata ?? {};
-  const schemaId = `[root].operations.${operationId}.messages.${messageId}.headers`;
+  const schemaId = `${messagePath}.headers`;
   const validate = getValidateFunction(
     ajv,
     schemaId,

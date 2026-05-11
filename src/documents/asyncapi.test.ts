@@ -92,7 +92,10 @@ describe("resolveMessage", () => {
       cache,
     );
     expect(msg).not.toBeNull();
-    expect(msg?.messageId).toBe("organizationDeleted");
+    expect(msg?.message.messageId).toBe("organizationDeleted");
+    expect(msg?.path).toBe(
+      "[root].channels.eventsQueue.messages.organizationDeleted",
+    );
   });
 
   it("returns null for unknown operationId", () => {
@@ -185,7 +188,10 @@ describe("resolveMessage", () => {
       new Map(),
     );
     expect(msg).not.toBeNull();
-    expect(msg?.messageId).toBe("organizationDeleted");
+    expect(msg?.message.messageId).toBe("organizationDeleted");
+    expect(msg?.path).toBe(
+      "[root].operations.consumeFromEventsQueue.messages[0]",
+    );
   });
 
   it("caches null for unresolved messages", () => {
@@ -225,7 +231,7 @@ describe("resolveMessage", () => {
       new Map(),
     );
     expect(msg).not.toBeNull();
-    expect(msg?.messageId).toBe("organizationDeleted");
+    expect(msg?.message.messageId).toBe("organizationDeleted");
   });
 
   it("safely handles malformed operation message refs where $ref is not a string", () => {
@@ -346,7 +352,7 @@ describe("resolveMessage", () => {
       new Map(),
     );
     expect(msg).not.toBeNull();
-    expect(msg?.messageId).toBe("organizationDeleted");
+    expect(msg?.message.messageId).toBe("organizationDeleted");
   });
 
   it("returns null without throwing when operation.messages is a plain object (non-array)", () => {

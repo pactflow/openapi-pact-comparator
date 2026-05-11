@@ -44,8 +44,7 @@ describe("compareMessageHeaders", () => {
         baseMessage,
         baseInteraction,
         0,
-        "consumeOp",
-        "myMsg",
+        "[root].channels.eventsQueue.messages.myMsg",
       ),
     );
     expect(results).toHaveLength(0);
@@ -62,8 +61,7 @@ describe("compareMessageHeaders", () => {
         baseMessage,
         interaction,
         0,
-        "consumeOp",
-        "myMsg",
+        "[root].channels.eventsQueue.messages.myMsg",
       ),
     );
     expect(results).toHaveLength(1);
@@ -82,8 +80,7 @@ describe("compareMessageHeaders", () => {
         message,
         baseInteraction,
         0,
-        "consumeOp",
-        "myMsg",
+        "[root].channels.eventsQueue.messages.myMsg",
       ),
     );
     expect(results).toHaveLength(0);
@@ -100,8 +97,7 @@ describe("compareMessageHeaders", () => {
         baseMessage,
         interaction,
         0,
-        "consumeOp",
-        "myMsg",
+        "[root].channels.eventsQueue.messages.myMsg",
       ),
     );
     expect(results).toHaveLength(1);

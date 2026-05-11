@@ -23,8 +23,7 @@ export function* compareMessagePayload(
   message: Message,
   interaction: AsyncInteraction,
   index: number,
-  operationId: string,
-  messageId: string,
+  messagePath: string,
 ): Iterable<Result> {
   const { payload, contentType } = interaction;
 
@@ -37,11 +36,11 @@ export function* compareMessagePayload(
         message: "No schema found for message payload",
         mockDetails: {
           ...baseMockDetails(interaction),
-          location: `[root].interactions[${index}].contents`,
+          location: `[root].interactions[${index}].contents.content`,
           value: payload,
         },
         specDetails: {
-          location: `[root].operations.${operationId}.messages`,
+          location: messagePath,
           value: undefined,
         },
         type: "warning",
@@ -50,7 +49,7 @@ export function* compareMessagePayload(
     return;
   }
 
-  const schemaId = `[root].operations.${operationId}.messages.${messageId}.payload`;
+  const schemaId = `${messagePath}.payload`;
   const validate = getValidateFunction(
     ajv,
     schemaId,
@@ -63,7 +62,7 @@ export function* compareMessagePayload(
         message: `Message payload is incompatible with the schema in the spec file: ${formatMessage(error)}`,
         mockDetails: {
           ...baseMockDetails(interaction),
-          location: `[root].interactions[${index}].contents${formatInstancePath(error)}`,
+          location: `[root].interactions[${index}].contents.content${formatInstancePath(error)}`,
           value: error.instancePath
             ? get(payload, splitPath(error.instancePath))
             : payload,

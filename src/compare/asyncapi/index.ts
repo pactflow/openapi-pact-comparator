@@ -1,6 +1,6 @@
 import type Ajv from "ajv/dist/2019";
 
-import type { AsyncAPIDocument, Message } from "#documents/asyncapi";
+import type { AsyncAPIDocument, ResolvedMessage } from "#documents/asyncapi";
 import { resolveMessage } from "#documents/asyncapi";
 import type { AsyncInteraction } from "#documents/pact";
 import type { Result } from "#results/index";
@@ -12,7 +12,7 @@ import { compareMessagePayload } from "./messagePayload";
 export function* compareAsyncInteraction(
   ajv: Ajv,
   asyncapi: AsyncAPIDocument | undefined,
-  cache: Map<string, Message | null>,
+  cache: Map<string, ResolvedMessage | null>,
   interaction: AsyncInteraction,
   index: number,
 ): Iterable<Result> {
@@ -64,8 +64,8 @@ export function* compareAsyncInteraction(
     return;
   }
 
-  const message = resolveMessage(asyncapi, operationId, messageId, cache);
-  if (!message) {
+  const resolved = resolveMessage(asyncapi, operationId, messageId, cache);
+  if (!resolved) {
     yield {
       code: "message.id.unknown",
       message: `Message not defined in AsyncAPI spec: ${messageId}`,
@@ -85,18 +85,16 @@ export function* compareAsyncInteraction(
 
   yield* compareMessagePayload(
     ajv,
-    message,
+    resolved.message,
     interaction,
     index,
-    operationId,
-    messageId,
+    resolved.path,
   );
   yield* compareMessageHeaders(
     ajv,
-    message,
+    resolved.message,
     interaction,
     index,
-    operationId,
-    messageId,
+    resolved.path,
   );
 }

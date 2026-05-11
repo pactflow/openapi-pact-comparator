@@ -1,0 +1,28 @@
+asyncapi: "3.1.0"
+info:
+  title: Platform Service Events
+  version: "1.0.0"
+components:
+  schemas:
+    OrganizationPayload:
+      type: object
+      properties:
+        organizationId:
+          type: string
+      required:
+        - organizationId
+channels:
+  eventsQueue:
+    address: events-queue
+    messages:
+      organizationDeleted:
+        messageId: organizationDeleted
+        payload:
+          $ref: "#/components/schemas/OrganizationPayload"
+operations:
+  consumeFromEventsQueue:
+    action: receive
+    channel:
+      $ref: "#/channels/eventsQueue"
+    messages:
+      - $ref: "#/channels/eventsQueue/messages/organizationDeleted"

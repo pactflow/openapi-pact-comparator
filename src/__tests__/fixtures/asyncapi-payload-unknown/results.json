@@ -1,0 +1,18 @@
+[
+  {
+    "code": "message.payload.unknown",
+    "message": "No schema found for message payload",
+    "mockDetails": {
+      "interactionDescription": "an event with content but no payload schema defined in spec",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].contents.content",
+      "value": {
+        "organizationId": "e4f5a1af-eb7e-4792-b89c-74249d28cec2"
+      }
+    },
+    "specDetails": {
+      "location": "[root].channels.eventsQueue.messages.noPayloadMessage"
+    },
+    "type": "warning"
+  }
+]

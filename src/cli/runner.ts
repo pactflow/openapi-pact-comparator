@@ -80,24 +80,16 @@ export class Runner {
     return this.parseContent(content);
   }
 
-  async run(
-    specPaths: SpecPaths | string,
-    pactPaths: string[],
-  ): Promise<number> {
+  async run(specPaths: SpecPaths, pactPaths: string[]): Promise<number> {
     const docs: ComparatorDocs = {};
 
-    if (typeof specPaths === "string") {
-      // Legacy: run(oasPath, pactPaths)
-      docs.oas = (await this.readAndParse(specPaths)) as OASDocument;
-    } else {
-      if (specPaths.oasPath) {
-        docs.oas = (await this.readAndParse(specPaths.oasPath)) as OASDocument;
-      }
-      if (specPaths.asyncapiPath) {
-        docs.asyncapi = (await this.readAndParse(
-          specPaths.asyncapiPath,
-        )) as AsyncAPIDocument;
-      }
+    if (specPaths.oasPath) {
+      docs.oas = (await this.readAndParse(specPaths.oasPath)) as OASDocument;
+    }
+    if (specPaths.asyncapiPath) {
+      docs.asyncapi = (await this.readAndParse(
+        specPaths.asyncapiPath,
+      )) as AsyncAPIDocument;
     }
 
     const comparator = this.deps.createComparator(docs);

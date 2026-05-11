@@ -35,31 +35,12 @@ export class Comparator {
   #router?: Router.Instance<Router.HTTPVersion.V1>;
   #resolvedMessages: Map<string, Message | null> = new Map();
 
-  constructor(
-    options: ComparatorOptions | OpenAPIV2.Document | OpenAPIV3.Document = {},
-  ) {
+  constructor(options: ComparatorOptions = {}) {
     this.#config = new Map(DEFAULT_CONFIG);
-
-    // Support legacy constructor(oas) and new constructor({ oas?, asyncapi? }).
-    // An object is treated as ComparatorOptions only when it is empty or has
-    // an explicit "oas" or "asyncapi" key.  Any other shape (including a
-    // malformed OAS document that lacks "openapi"/"swagger") is handed to
-    // parseOas so it is validated and throws ParserError as expected.
-    const isExplicitOptions =
-      Object.keys(options).length === 0 ||
-      "oas" in options ||
-      "asyncapi" in options;
-
-    if (!isExplicitOptions) {
-      this.#oas = options as OpenAPIV2.Document | OpenAPIV3.Document;
-      parseOas(this.#oas);
-    } else {
-      const opts = options as ComparatorOptions;
-      this.#oas = opts.oas;
-      this.#asyncapi = opts.asyncapi;
-      if (opts.oas) parseOas(opts.oas);
-      if (opts.asyncapi) parseAsyncapi(opts.asyncapi);
-    }
+    this.#oas = options.oas;
+    this.#asyncapi = options.asyncapi;
+    if (options.oas) parseOas(options.oas);
+    if (options.asyncapi) parseAsyncapi(options.asyncapi);
 
     const ajvOptions = {
       allErrors: true,

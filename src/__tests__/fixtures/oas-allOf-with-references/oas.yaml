@@ -1,0 +1,59 @@
+openapi: 3.0.1
+info:
+  version: 1.0.0
+  title: OAS
+paths:
+  /foo:
+    get:
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FooResponse"
+  /bar:
+    get:
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BarResponse"
+
+components:
+  schemas:
+    LocalizationData:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            user_locale:
+              type: string
+
+    ResponseData:
+      type: object
+      properties:
+        result:
+          type: string
+
+    # ❌ data is a $ref here — triggers the bug
+    FooResponse:
+      allOf:
+        - $ref: "#/components/schemas/LocalizationData"
+        - type: object
+          properties:
+            data:
+              $ref: "#/components/schemas/ResponseData"
+
+    # ✅ data is inline here — works fine
+    BarResponse:
+      allOf:
+        - $ref: "#/components/schemas/LocalizationData"
+        - type: object
+          properties:
+            data:
+              type: object
+              properties:
+                result:
+                  type: string

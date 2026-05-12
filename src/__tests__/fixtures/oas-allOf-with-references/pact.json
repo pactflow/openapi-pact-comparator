@@ -1,0 +1,40 @@
+{
+  "consumer": { "name": "consumer" },
+  "provider": { "name": "provider" },
+  "interactions": [
+    {
+      "description": "GET /foo — data.$ref case",
+      "request": {
+        "method": "GET",
+        "path": "/foo"
+      },
+      "response": {
+        "status": 200,
+        "headers": { "content-type": "application/json" },
+        "body": {
+          "data": {
+            "result": "some_result",
+            "user_locale": "en_US"
+          }
+        }
+      }
+    },
+    {
+      "description": "GET /bar — inline data case",
+      "request": {
+        "method": "GET",
+        "path": "/bar"
+      },
+      "response": {
+        "status": 200,
+        "headers": { "content-type": "application/json" },
+        "body": {
+          "data": {
+            "result": "some_result",
+            "user_locale": "en_US"
+          }
+        }
+      }
+    }
+  ]
+}

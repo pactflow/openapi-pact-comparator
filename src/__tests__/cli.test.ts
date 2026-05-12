@@ -62,8 +62,8 @@ const runCli = (
 describe("CLI integration", () => {
   it("should exit with code 0 when no errors are found", async () => {
     const { exitCode, stdout } = await runCli(
-      path.join("example-petstore-valid", "oas.yaml"),
-      path.join("example-petstore-valid", "pact.json"),
+      path.join("oas", "example-petstore-valid", "oas.yaml"),
+      path.join("oas", "example-petstore-valid", "pact.json"),
     );
 
     expect(exitCode).toBe(0);
@@ -72,8 +72,8 @@ describe("CLI integration", () => {
 
   it("should exit with non-zero code when errors are found", async () => {
     const { exitCode, stdout } = await runCli(
-      path.join("example-petstore-invalid", "oas.yaml"),
-      path.join("example-petstore-invalid", "pact.json"),
+      path.join("oas", "example-petstore-invalid", "oas.yaml"),
+      path.join("oas", "example-petstore-invalid", "pact.json"),
     );
 
     expect(exitCode).toBe(1);
@@ -82,8 +82,8 @@ describe("CLI integration", () => {
   }, 15000);
 
   it("should fetch OAS and Pact from URLs", async () => {
-    const oasUrl = `${baseUrl}/example-petstore-valid/oas.yaml`;
-    const pactUrl = `${baseUrl}/example-petstore-valid/pact.json`;
+    const oasUrl = `${baseUrl}/oas/example-petstore-valid/oas.yaml`;
+    const pactUrl = `${baseUrl}/oas/example-petstore-valid/pact.json`;
 
     const { exitCode, stdout } = await runCli(oasUrl, pactUrl);
 

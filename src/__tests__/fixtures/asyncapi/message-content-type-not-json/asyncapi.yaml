@@ -1,25 +1,25 @@
 asyncapi: "3.1.0"
 info:
-  title: Platform Service Events
+  title: User Service
   version: "1.0.0"
 channels:
-  eventsQueue:
-    address: events-queue
+  userEvents:
+    address: user-events
     messages:
-      binaryEvent:
-        messageId: binaryEvent
+      userAvatarUploaded:
+        messageId: userAvatarUploaded
         contentType: application/octet-stream
         payload:
           type: object
           properties:
-            organizationId:
+            userId:
               type: string
           required:
-            - organizationId
+            - userId
 operations:
-  consumeFromEventsQueue:
+  receiveUserEvents:
     action: receive
     channel:
-      $ref: "#/channels/eventsQueue"
+      $ref: "#/channels/userEvents"
     messages:
-      - $ref: "#/channels/eventsQueue/messages/binaryEvent"
+      - $ref: "#/channels/userEvents/messages/userAvatarUploaded"

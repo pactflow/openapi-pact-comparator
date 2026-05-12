@@ -1,10 +1,10 @@
 asyncapi: "3.1.0"
 info:
-  title: Multi-Message Service
+  title: User Service
   version: "1.0.0"
 channels:
-  eventsQueue:
-    address: events-queue
+  userEvents:
+    address: user-events
     messages:
       userCreated:
         messageId: userCreated
@@ -15,20 +15,20 @@ channels:
               type: string
           required:
             - userId
-      organizationDeleted:
-        messageId: organizationDeleted
+      userDeleted:
+        messageId: userDeleted
         payload:
           type: object
           properties:
-            organizationId:
+            userId:
               type: string
           required:
-            - organizationId
+            - userId
 operations:
-  consumeFromEventsQueue:
+  receiveUserEvents:
     action: receive
     channel:
-      $ref: "#/channels/eventsQueue"
+      $ref: "#/channels/userEvents"
     messages:
-      - $ref: "#/channels/eventsQueue/messages/userCreated"
-      - $ref: "#/channels/eventsQueue/messages/organizationDeleted"
+      - $ref: "#/channels/userEvents/messages/userCreated"
+      - $ref: "#/channels/userEvents/messages/userDeleted"

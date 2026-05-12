@@ -3,13 +3,13 @@
     "code": "message.payload.incompatible",
     "message": "Message payload is incompatible with the schema in the spec file: must be string",
     "mockDetails": {
-      "interactionDescription": "an organization-deleted event with both payload and headers incompatible",
+      "interactionDescription": "a user-created event with both payload and headers incompatible",
       "interactionState": "[none]",
-      "location": "[root].interactions[0].contents.content.organizationId",
+      "location": "[root].interactions[0].contents.content.userId",
       "value": 12345
     },
     "specDetails": {
-      "location": "[root].channels.eventsQueue.messages.organizationDeleted.payload.properties.organizationId.type",
+      "location": "[root].channels.userEvents.messages.userCreated.payload.properties.userId.type",
       "value": "string"
     },
     "type": "error"
@@ -18,16 +18,16 @@
     "code": "message.headers.incompatible",
     "message": "Message headers are incompatible with the schema in the spec file: must NOT have additional properties - x-unexpected",
     "mockDetails": {
-      "interactionDescription": "an organization-deleted event with both payload and headers incompatible",
+      "interactionDescription": "a user-created event with both payload and headers incompatible",
       "interactionState": "[none]",
       "location": "[root].interactions[0].metadata",
       "value": {
-        "detail-type": "organization-deleted",
+        "event-type": "user-created",
         "x-unexpected": "extra"
       }
     },
     "specDetails": {
-      "location": "[root].channels.eventsQueue.messages.organizationDeleted.headers.additionalProperties",
+      "location": "[root].channels.userEvents.messages.userCreated.headers.additionalProperties",
       "value": false
     },
     "type": "error"

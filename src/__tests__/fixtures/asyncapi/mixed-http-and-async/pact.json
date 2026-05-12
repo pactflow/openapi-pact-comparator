@@ -16,18 +16,17 @@
       "comments": {
         "references": {
           "AsyncAPI": {
-            "messageId": "organizationDeleted",
-            "operationId": "consumeFromEventsQueue"
+            "messageId": "userCreated",
+            "operationId": "receiveUserEvents"
           }
         }
       },
       "contents": {
-        "content": { "organizationId": 12345 },
+        "content": { "userId": 12345 },
         "contentType": "application/json",
         "encoded": false
       },
-      "description": "an organization-deleted event",
-      "metadata": { "detail-type": "organization-deleted" },
+      "description": "a user-created event",
       "pending": false,
       "type": "Asynchronous/Messages"
     }

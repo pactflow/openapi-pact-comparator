@@ -6,17 +6,17 @@
       "comments": {
         "references": {
           "AsyncAPI": {
-            "messageId": "organizationDeleted",
-            "operationId": "consumeFromEventsQueue"
+            "messageId": "userDeleted",
+            "operationId": "receiveUserEvents"
           }
         }
       },
       "contents": {
-        "content": { "organizationId": "e4f5a1af-eb7e-4792-b89c-74249d28cec2" },
+        "content": { "userId": "u-abc-123" },
         "contentType": "application/json",
         "encoded": false
       },
-      "description": "an organization-deleted event from a multi-message operation",
+      "description": "a user-deleted event from a multi-message operation",
       "metadata": {},
       "pending": false,
       "type": "Asynchronous/Messages"

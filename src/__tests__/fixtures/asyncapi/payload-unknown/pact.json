@@ -6,13 +6,13 @@
       "comments": {
         "references": {
           "AsyncAPI": {
-            "messageId": "noPayloadMessage",
-            "operationId": "consumeFromEventsQueue"
+            "messageId": "userPing",
+            "operationId": "receiveUserEvents"
           }
         }
       },
       "contents": {
-        "content": { "organizationId": "e4f5a1af-eb7e-4792-b89c-74249d28cec2" },
+        "content": { "userId": "u-abc-123" },
         "contentType": "application/json",
         "encoded": false
       },

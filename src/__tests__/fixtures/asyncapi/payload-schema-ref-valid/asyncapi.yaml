@@ -1,28 +1,28 @@
 asyncapi: "3.1.0"
 info:
-  title: Platform Service Events
+  title: User Service
   version: "1.0.0"
 components:
   schemas:
-    OrganizationPayload:
+    UserPayload:
       type: object
       properties:
-        organizationId:
+        userId:
           type: string
       required:
-        - organizationId
+        - userId
 channels:
-  eventsQueue:
-    address: events-queue
+  userEvents:
+    address: user-events
     messages:
-      organizationDeleted:
-        messageId: organizationDeleted
+      userCreated:
+        messageId: userCreated
         payload:
-          $ref: "#/components/schemas/OrganizationPayload"
+          $ref: "#/components/schemas/UserPayload"
 operations:
-  consumeFromEventsQueue:
+  receiveUserEvents:
     action: receive
     channel:
-      $ref: "#/channels/eventsQueue"
+      $ref: "#/channels/userEvents"
     messages:
-      - $ref: "#/channels/eventsQueue/messages/organizationDeleted"
+      - $ref: "#/channels/userEvents/messages/userCreated"

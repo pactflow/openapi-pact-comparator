@@ -6,19 +6,19 @@
       "comments": {
         "references": {
           "AsyncAPI": {
-            "messageId": "organizationDeleted",
-            "operationId": "consumeFromEventsQueue"
+            "messageId": "userCreated",
+            "operationId": "receiveUserEvents"
           }
         }
       },
       "contents": {
-        "content": { "organizationId": 12345 },
+        "content": { "userId": 12345 },
         "contentType": "application/json",
         "encoded": false
       },
-      "description": "an organization-deleted event with both payload and headers incompatible",
+      "description": "a user-created event with both payload and headers incompatible",
       "metadata": {
-        "detail-type": "organization-deleted",
+        "event-type": "user-created",
         "x-unexpected": "extra"
       },
       "pending": false,

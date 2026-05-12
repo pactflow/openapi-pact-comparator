@@ -1,10 +1,10 @@
 asyncapi: "3.1.0"
 info:
-  title: Platform Service Events
+  title: User Service
   version: "1.0.0"
 channels:
-  eventsQueue:
-    address: events-queue
+  userEvents:
+    address: user-events
     messages:
       userCreated:
         messageId: userCreated
@@ -15,30 +15,33 @@ channels:
               type: string
           required:
             - userId
-      organizationDeleted:
-        messageId: organizationDeleted
+      userDeleted:
+        messageId: userDeleted
         payload:
           type: object
           properties:
-            organizationId:
+            userId:
               type: string
           required:
-            - organizationId
-      orderPlaced:
-        messageId: orderPlaced
+            - userId
+      userUpdated:
+        messageId: userUpdated
         payload:
           type: object
           properties:
-            orderId:
+            userId:
+              type: string
+            email:
               type: string
           required:
-            - orderId
+            - userId
+            - email
 operations:
-  consumeFromEventsQueue:
+  receiveUserEvents:
     action: receive
     channel:
-      $ref: "#/channels/eventsQueue"
+      $ref: "#/channels/userEvents"
     messages:
-      - $ref: "#/channels/eventsQueue/messages/userCreated"
-      - $ref: "#/channels/eventsQueue/messages/organizationDeleted"
-      - $ref: "#/channels/eventsQueue/messages/orderPlaced"
+      - $ref: "#/channels/userEvents/messages/userCreated"
+      - $ref: "#/channels/userEvents/messages/userDeleted"
+      - $ref: "#/channels/userEvents/messages/userUpdated"

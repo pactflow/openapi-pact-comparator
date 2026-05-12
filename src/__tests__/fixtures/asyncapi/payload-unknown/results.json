@@ -7,11 +7,11 @@
       "interactionState": "[none]",
       "location": "[root].interactions[0].contents.content",
       "value": {
-        "organizationId": "e4f5a1af-eb7e-4792-b89c-74249d28cec2"
+        "userId": "u-abc-123"
       }
     },
     "specDetails": {
-      "location": "[root].channels.eventsQueue.messages.noPayloadMessage"
+      "location": "[root].channels.userEvents.messages.userPing"
     },
     "type": "warning"
   }

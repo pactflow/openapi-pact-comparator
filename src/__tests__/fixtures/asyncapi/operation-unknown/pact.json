@@ -6,18 +6,17 @@
       "comments": {
         "references": {
           "AsyncAPI": {
-            "messageId": "organizationDeleted",
+            "messageId": "userCreated",
             "operationId": "nonExistentOp"
           }
         }
       },
       "contents": {
-        "content": { "organizationId": "e4f5a1af-eb7e-4792-b89c-74249d28cec2" },
+        "content": { "userId": "u-abc-123" },
         "contentType": "application/json",
         "encoded": false
       },
-      "description": "an organization-deleted event with unknown operation",
-      "metadata": { "detail-type": "organization-deleted" },
+      "description": "a user-created event with unknown operation",
       "pending": false,
       "type": "Asynchronous/Messages"
     }

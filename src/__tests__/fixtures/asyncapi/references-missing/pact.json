@@ -4,12 +4,12 @@
   "interactions": [
     {
       "contents": {
-        "content": { "organizationId": "e4f5a1af-eb7e-4792-b89c-74249d28cec2" },
+        "content": { "userId": "u-abc-123" },
         "contentType": "application/json",
         "encoded": false
       },
       "description": "an async event with no AsyncAPI references",
-      "metadata": { "detail-type": "organization-deleted" },
+      "metadata": { "event-type": "user-created" },
       "pending": false,
       "type": "Asynchronous/Messages"
     }

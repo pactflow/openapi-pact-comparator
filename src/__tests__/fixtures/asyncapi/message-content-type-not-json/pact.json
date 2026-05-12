@@ -6,17 +6,17 @@
       "comments": {
         "references": {
           "AsyncAPI": {
-            "messageId": "binaryEvent",
-            "operationId": "consumeFromEventsQueue"
+            "messageId": "userAvatarUploaded",
+            "operationId": "receiveUserEvents"
           }
         }
       },
       "contents": {
-        "content": "not-valid-json-content",
+        "content": "binary-data",
         "contentType": "application/octet-stream",
         "encoded": false
       },
-      "description": "a binary event that does not match the payload schema but skips validation",
+      "description": "a user avatar upload event that skips payload validation",
       "pending": false,
       "type": "Asynchronous/Messages"
     }

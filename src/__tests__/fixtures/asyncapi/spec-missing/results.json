@@ -3,10 +3,10 @@
     "code": "message.spec.missing",
     "message": "No AsyncAPI document provided to validate async interaction",
     "mockDetails": {
-      "interactionDescription": "an organization-deleted event with no AsyncAPI spec",
+      "interactionDescription": "a user-created event with no AsyncAPI spec",
       "interactionState": "[none]",
       "location": "[root].interactions[0]",
-      "value": "an organization-deleted event with no AsyncAPI spec"
+      "value": "a user-created event with no AsyncAPI spec"
     },
     "specDetails": {
       "location": "[root]"

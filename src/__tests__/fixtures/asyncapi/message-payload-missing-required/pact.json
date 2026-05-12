@@ -6,8 +6,8 @@
       "comments": {
         "references": {
           "AsyncAPI": {
-            "messageId": "organizationDeleted",
-            "operationId": "consumeFromEventsQueue"
+            "messageId": "userCreated",
+            "operationId": "receiveUserEvents"
           }
         }
       },
@@ -16,7 +16,7 @@
         "contentType": "application/json",
         "encoded": false
       },
-      "description": "an organization-deleted event with missing required payload field",
+      "description": "a user-created event with missing required payload field",
       "pending": false,
       "type": "Asynchronous/Messages"
     }

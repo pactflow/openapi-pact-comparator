@@ -1,33 +1,33 @@
 asyncapi: "3.1.0"
 info:
-  title: Platform Service Events
+  title: User Service
   version: "1.0.0"
 components:
   messages:
-    organizationDeleted:
-      messageId: organizationDeleted
+    userCreated:
+      messageId: userCreated
       payload:
         type: object
         properties:
-          organizationId:
+          userId:
             type: string
         required:
-          - organizationId
+          - userId
       headers:
         type: object
         properties:
-          detail-type:
+          event-type:
             type: string
 channels:
-  eventsQueue:
-    address: events-queue
+  userEvents:
+    address: user-events
     messages:
-      organizationDeleted:
-        $ref: "#/components/messages/organizationDeleted"
+      userCreated:
+        $ref: "#/components/messages/userCreated"
 operations:
-  consumeFromEventsQueue:
+  receiveUserEvents:
     action: receive
     channel:
-      $ref: "#/channels/eventsQueue"
+      $ref: "#/channels/userEvents"
     messages:
-      - $ref: "#/components/messages/organizationDeleted"
+      - $ref: "#/components/messages/userCreated"

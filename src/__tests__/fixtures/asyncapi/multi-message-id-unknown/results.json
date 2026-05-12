@@ -9,13 +9,13 @@
       "value": "nonExistentMessage"
     },
     "specDetails": {
-      "location": "[root].operations.consumeFromEventsQueue.messages",
+      "location": "[root].operations.receiveUserEvents.messages",
       "value": [
         {
-          "$ref": "#/channels/eventsQueue/messages/userCreated"
+          "$ref": "#/channels/userEvents/messages/userCreated"
         },
         {
-          "$ref": "#/channels/eventsQueue/messages/organizationDeleted"
+          "$ref": "#/channels/userEvents/messages/userDeleted"
         }
       ]
     },

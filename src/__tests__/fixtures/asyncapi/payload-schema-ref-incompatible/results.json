@@ -3,13 +3,13 @@
     "code": "message.payload.incompatible",
     "message": "Message payload is incompatible with the schema in the spec file: must be string",
     "mockDetails": {
-      "interactionDescription": "an organization-deleted event with invalid payload against a $ref schema",
+      "interactionDescription": "a user-created event with invalid payload against a $ref schema",
       "interactionState": "[none]",
-      "location": "[root].interactions[0].contents.content.organizationId",
+      "location": "[root].interactions[0].contents.content.userId",
       "value": 12345
     },
     "specDetails": {
-      "location": "[root].channels.eventsQueue.messages.organizationDeleted.payload.properties.organizationId.type",
+      "location": "[root].channels.userEvents.messages.userCreated.payload.properties.userId.type",
       "value": "string"
     },
     "type": "error"

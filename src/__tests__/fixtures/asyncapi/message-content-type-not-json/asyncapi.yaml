@@ -1,0 +1,25 @@
+asyncapi: "3.1.0"
+info:
+  title: Platform Service Events
+  version: "1.0.0"
+channels:
+  eventsQueue:
+    address: events-queue
+    messages:
+      binaryEvent:
+        messageId: binaryEvent
+        contentType: application/octet-stream
+        payload:
+          type: object
+          properties:
+            organizationId:
+              type: string
+          required:
+            - organizationId
+operations:
+  consumeFromEventsQueue:
+    action: receive
+    channel:
+      $ref: "#/channels/eventsQueue"
+    messages:
+      - $ref: "#/channels/eventsQueue/messages/binaryEvent"

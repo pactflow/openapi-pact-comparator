@@ -1,0 +1,43 @@
+{
+  "consumer": { "name": "consumer" },
+  "provider": { "name": "provider" },
+  "interactions": [
+    {
+      "comments": {
+        "references": {
+          "AsyncAPI": {
+            "messageId": "userCreated",
+            "operationId": "consumeFromEventsQueue"
+          }
+        }
+      },
+      "contents": {
+        "content": { "userId": "u-abc-123" },
+        "contentType": "application/json",
+        "encoded": false
+      },
+      "description": "a user-created event",
+      "pending": false,
+      "type": "Asynchronous/Messages"
+    },
+    {
+      "comments": {
+        "references": {
+          "AsyncAPI": {
+            "messageId": "organizationDeleted",
+            "operationId": "consumeFromEventsQueue"
+          }
+        }
+      },
+      "contents": {
+        "content": { "organizationId": "e4f5a1af-eb7e-4792-b89c-74249d28cec2" },
+        "contentType": "application/json",
+        "encoded": false
+      },
+      "description": "an organization-deleted event",
+      "pending": false,
+      "type": "Asynchronous/Messages"
+    }
+  ],
+  "metadata": { "pactSpecification": { "version": "4.0" } }
+}

@@ -1,0 +1,44 @@
+asyncapi: "3.1.0"
+info:
+  title: Platform Service Events
+  version: "1.0.0"
+channels:
+  eventsQueue:
+    address: events-queue
+    messages:
+      userCreated:
+        messageId: userCreated
+        payload:
+          type: object
+          properties:
+            userId:
+              type: string
+          required:
+            - userId
+      organizationDeleted:
+        messageId: organizationDeleted
+        payload:
+          type: object
+          properties:
+            organizationId:
+              type: string
+          required:
+            - organizationId
+      orderPlaced:
+        messageId: orderPlaced
+        payload:
+          type: object
+          properties:
+            orderId:
+              type: string
+          required:
+            - orderId
+operations:
+  consumeFromEventsQueue:
+    action: receive
+    channel:
+      $ref: "#/channels/eventsQueue"
+    messages:
+      - $ref: "#/channels/eventsQueue/messages/userCreated"
+      - $ref: "#/channels/eventsQueue/messages/organizationDeleted"
+      - $ref: "#/channels/eventsQueue/messages/orderPlaced"

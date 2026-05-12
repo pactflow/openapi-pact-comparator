@@ -1,0 +1,35 @@
+[
+  {
+    "code": "message.payload.incompatible",
+    "message": "Message payload is incompatible with the schema in the spec file: must be string",
+    "mockDetails": {
+      "interactionDescription": "an organization-deleted event with both payload and headers incompatible",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].contents.content.organizationId",
+      "value": 12345
+    },
+    "specDetails": {
+      "location": "[root].channels.eventsQueue.messages.organizationDeleted.payload.properties.organizationId.type",
+      "value": "string"
+    },
+    "type": "error"
+  },
+  {
+    "code": "message.headers.incompatible",
+    "message": "Message headers are incompatible with the schema in the spec file: must NOT have additional properties - x-unexpected",
+    "mockDetails": {
+      "interactionDescription": "an organization-deleted event with both payload and headers incompatible",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].metadata",
+      "value": {
+        "detail-type": "organization-deleted",
+        "x-unexpected": "extra"
+      }
+    },
+    "specDetails": {
+      "location": "[root].channels.eventsQueue.messages.organizationDeleted.headers.additionalProperties",
+      "value": false
+    },
+    "type": "error"
+  }
+]

@@ -1,5 +1,11 @@
 # @pactflow/openapi-pact-comparator
 
+## 1.15.0
+
+### Minor Changes
+
+- 19f19cc: Dereference schemas when merging/flattening allOf
+
 ## 1.14.0
 
 ### Minor Changes

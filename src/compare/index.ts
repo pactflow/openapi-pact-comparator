@@ -69,6 +69,7 @@ export class Comparator {
     for (const [index, interaction] of parsedPact.interactions.entries()) {
       switch (interaction._kind) {
         case "http":
+          if (this.#asyncapi && !this.#oas) break;
           yield* compareHttpInteraction(
             this.#ajvCoerce,
             this.#ajvNocoerce,
@@ -79,6 +80,7 @@ export class Comparator {
           );
           break;
         case "async":
+          if (this.#oas && !this.#asyncapi) break;
           yield* compareAsyncInteraction(
             this.#ajvNocoerce,
             this.#asyncapi,

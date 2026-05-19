@@ -1,0 +1,20 @@
+[
+  {
+    "code": "message.headers.incompatible",
+    "message": "Message headers are incompatible with the schema in the spec file: must be equal to one of the allowed values",
+    "mockDetails": {
+      "interactionDescription": "a user-created event with incompatible headers",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].metadata.event-type",
+      "value": "user-created"
+    },
+    "specDetails": {
+      "location": "[root].channels.userEvents.messages.userCreated.headers.properties.event-type.enum",
+      "value": [
+        "user.created",
+        "user.updated"
+      ]
+    },
+    "type": "error"
+  }
+]

@@ -1,0 +1,35 @@
+{
+  "consumer": { "name": "consumer" },
+  "provider": { "name": "provider" },
+  "interactions": [
+    {
+      "description": "a health check",
+      "request": {
+        "method": "GET",
+        "path": "/health"
+      },
+      "response": {
+        "status": 404
+      }
+    },
+    {
+      "comments": {
+        "references": {
+          "AsyncAPI": {
+            "messageId": "userCreated",
+            "operationId": "receiveUserEvents"
+          }
+        }
+      },
+      "contents": {
+        "content": { "userId": 12345 },
+        "contentType": "application/json",
+        "encoded": false
+      },
+      "description": "a user-created event",
+      "pending": false,
+      "type": "Asynchronous/Messages"
+    }
+  ],
+  "metadata": { "pactSpecification": { "version": "4.0" } }
+}

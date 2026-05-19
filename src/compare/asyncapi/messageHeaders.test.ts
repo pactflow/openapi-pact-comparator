@@ -86,10 +86,31 @@ describe("compareMessageHeaders", () => {
     expect(results).toHaveLength(0);
   });
 
-  it("yields message.headers.incompatible when metadata is undefined and schema has required fields", () => {
+  it("yields no results when metadata is undefined (consumer may omit required headers)", () => {
     const interaction: AsyncInteraction = {
       ...baseInteraction,
       metadata: undefined,
+    };
+    const results = Array.from(
+      compareMessageHeaders(
+        makeAjv(),
+        baseMessage,
+        interaction,
+        0,
+        "[root].channels.eventsQueue.messages.myMsg",
+      ),
+    );
+    expect(results).toHaveLength(0);
+  });
+
+  it("yields message.headers.incompatible when metadata has extra properties not defined in schema", () => {
+    const interaction: AsyncInteraction = {
+      ...baseInteraction,
+      metadata: {
+        "detail-type": "organization-deleted",
+        time: "2024-02-06T18:36:26.102Z",
+        "x-unknown": "extra",
+      },
     };
     const results = Array.from(
       compareMessageHeaders(

@@ -1,3 +1,4 @@
+import type { SchemaObject } from "ajv";
 import type Ajv from "ajv/dist/2019";
 import { get } from "lodash-es";
 import type { Message } from "#documents/asyncapi";
@@ -9,6 +10,7 @@ import {
   formatMessage,
   formatSchemaPath,
 } from "#results/index";
+import { transformReceivedSchema } from "#transform/index";
 import { splitPath } from "#utils/schema";
 import { getValidateFunction } from "#utils/validation";
 
@@ -21,12 +23,12 @@ export function* compareMessageHeaders(
 ): Iterable<Result> {
   if (!message.headers) return;
 
-  const metadata = interaction.metadata ?? {};
+  const { metadata } = interaction;
+  if (metadata === undefined) return;
+
   const schemaId = `${messagePath}.headers`;
-  const validate = getValidateFunction(
-    ajv,
-    schemaId,
-    () => message.headers as object,
+  const validate = getValidateFunction(ajv, schemaId, () =>
+    transformReceivedSchema(structuredClone(message.headers) as SchemaObject),
   );
 
   if (!validate(metadata)) {

@@ -1,3 +1,4 @@
+import type { SchemaObject } from "ajv";
 import type Ajv from "ajv/dist/2019";
 import { get } from "lodash-es";
 import type { Message } from "#documents/asyncapi";
@@ -9,6 +10,7 @@ import {
   formatMessage,
   formatSchemaPath,
 } from "#results/index";
+import { transformReceivedSchema } from "#transform/index";
 import { splitPath } from "#utils/schema";
 import { getValidateFunction } from "#utils/validation";
 
@@ -50,13 +52,11 @@ export function* compareMessagePayload(
   }
 
   const schemaId = `${messagePath}.payload`;
-  const validate = getValidateFunction(
-    ajv,
-    schemaId,
-    () => message.payload as object,
+  const validate = getValidateFunction(ajv, schemaId, () =>
+    transformReceivedSchema(structuredClone(message.payload) as SchemaObject),
   );
   if (!validate(payload)) {
-    for (const error of validate.errors!) {
+    for (const error of validate.errors ?? []) {
       yield {
         code: "message.payload.incompatible",
         message: `Message payload is incompatible with the schema in the spec file: ${formatMessage(error)}`,

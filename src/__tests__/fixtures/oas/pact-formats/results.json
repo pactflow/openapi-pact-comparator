@@ -1,16 +1,1 @@
-[
-  {
-    "code": "message.spec.missing",
-    "message": "No AsyncAPI document provided to validate async interaction",
-    "mockDetails": {
-      "interactionDescription": "should be ignored",
-      "interactionState": "[none]",
-      "location": "[root].interactions[0]",
-      "value": "should be ignored"
-    },
-    "specDetails": {
-      "location": "[root]"
-    },
-    "type": "error"
-  }
-]
+[]

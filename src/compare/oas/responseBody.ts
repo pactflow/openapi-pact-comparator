@@ -12,7 +12,7 @@ import {
   formatMessage,
   formatSchemaPath,
 } from "#results/index";
-import { minimumSchema, transformResponseSchema } from "#transform/index";
+import { minimumSchema, transformReceivedSchema } from "#transform/index";
 import type { Config } from "#utils/config";
 import { dereferenceOas, splitPath } from "#utils/schema";
 import { getValidateFunction } from "#utils/validation";
@@ -120,7 +120,7 @@ export function* compareResBody(
     if (value && canValidate(contentType) && schema) {
       const schemaId = `[root].paths.${path}.${method}.responses.${status}.content.${contentType}`;
       const validate = getValidateFunction(ajv, schemaId, () =>
-        transformResponseSchema(
+        transformReceivedSchema(
           minimumSchema(schema, oas),
           config.get("no-transform-non-nullable-response-schema")!,
         ),

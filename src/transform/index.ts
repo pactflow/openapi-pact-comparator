@@ -1,2 +1,2 @@
 export { minimumSchema } from "./minimumSchema";
-export { transformResponseSchema } from "./responseSchema";
+export { transformReceivedSchema } from "./responseSchema";

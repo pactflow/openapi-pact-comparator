@@ -162,4 +162,23 @@ describe("compareMessagePayload", () => {
     );
     expect(results).toHaveLength(0);
   });
+
+  it("yields message.payload.incompatible when payload has extra properties not defined in schema", () => {
+    const interaction: AsyncInteraction = {
+      ...baseInteraction,
+      payload: { organizationId: "abc-123", unknownField: "extra" },
+    };
+    const results = Array.from(
+      compareMessagePayload(
+        makeAjv(),
+        baseMessage,
+        interaction,
+        0,
+        "[root].channels.eventsQueue.messages.myMsg",
+      ),
+    );
+    expect(results).toHaveLength(1);
+    expect(results[0].code).toBe("message.payload.incompatible");
+    expect(results[0].type).toBe("error");
+  });
 });

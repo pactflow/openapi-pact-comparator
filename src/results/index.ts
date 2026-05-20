@@ -6,6 +6,8 @@ type ErrorCode =
   | "message.operation.unknown"
   | "message.payload.incompatible"
   | "message.references.missing"
+  | "message.reply.id.unknown"
+  | "message.reply.missing"
   | "message.spec.missing"
   | "request.accept.incompatible"
   | "request.authorization.missing"

@@ -1,16 +1,14 @@
 [
-  {
-    "code": "message.spec.missing",
-    "message": "No AsyncAPI document provided to validate async interaction",
-    "mockDetails": {
-      "interactionDescription": "a user-created event with no AsyncAPI spec",
-      "interactionState": "[none]",
-      "location": "[root].interactions[0]",
-      "value": "a user-created event with no AsyncAPI spec"
-    },
-    "specDetails": {
-      "location": "[root]"
-    },
-    "type": "error"
-  }
+	{
+		"code": "message.spec.missing",
+		"message": "No AsyncAPI document provided to validate async interaction",
+		"mockDetails": {
+			"interactionDescription": "a user-created event with no AsyncAPI spec",
+			"interactionState": null,
+			"location": "[root].interactions[0]",
+			"value": "a user-created event with no AsyncAPI spec"
+		},
+		"specDetails": { "location": "[root]" },
+		"type": "error"
+	}
 ]

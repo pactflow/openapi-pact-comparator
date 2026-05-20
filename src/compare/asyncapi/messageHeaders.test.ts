@@ -2,26 +2,12 @@ import Ajv from "ajv/dist/2019";
 import addFormats from "ajv-formats";
 import { describe, expect, it } from "vitest";
 import type { Message } from "#documents/asyncapi";
-import type { AsyncInteraction } from "#documents/pact";
 import { compareMessageHeaders } from "./messageHeaders";
 
 const makeAjv = () => {
   const ajv = new Ajv({ allErrors: true, strictSchema: false });
   addFormats(ajv);
   return ajv;
-};
-
-const baseInteraction: AsyncInteraction = {
-  _kind: "async",
-  description: "an event",
-  providerState: undefined,
-  asyncapiReferences: { operationId: "consumeOp", messageId: "myMsg" },
-  payload: { organizationId: "abc-123" },
-  contentType: "application/json",
-  metadata: {
-    "detail-type": "organization-deleted",
-    time: "2024-02-06T18:36:26.102Z",
-  },
 };
 
 const baseMessage: Message = {
@@ -36,34 +22,37 @@ const baseMessage: Message = {
   },
 };
 
+const callResponse = (
+  message: Message,
+  metadata: Record<string, string> | undefined,
+  path = "[root].channels.eventsQueue.messages.myMsg",
+) =>
+  Array.from(
+    compareMessageHeaders(
+      makeAjv(),
+      message,
+      metadata,
+      "an event",
+      undefined,
+      "[root].interactions[0].metadata",
+      path,
+      "response",
+    ),
+  );
+
 describe("compareMessageHeaders", () => {
   it("yields no results when metadata matches schema", () => {
-    const results = Array.from(
-      compareMessageHeaders(
-        makeAjv(),
-        baseMessage,
-        baseInteraction,
-        0,
-        "[root].channels.eventsQueue.messages.myMsg",
-      ),
-    );
+    const results = callResponse(baseMessage, {
+      "detail-type": "organization-deleted",
+      time: "2024-02-06T18:36:26.102Z",
+    });
     expect(results).toHaveLength(0);
   });
 
   it("yields message.headers.incompatible when metadata fails schema", () => {
-    const interaction: AsyncInteraction = {
-      ...baseInteraction,
-      metadata: { "detail-type": 12345 as unknown as string },
-    };
-    const results = Array.from(
-      compareMessageHeaders(
-        makeAjv(),
-        baseMessage,
-        interaction,
-        0,
-        "[root].channels.eventsQueue.messages.myMsg",
-      ),
-    );
+    const results = callResponse(baseMessage, {
+      "detail-type": 12345 as unknown as string,
+    });
     expect(results).toHaveLength(1);
     expect(results[0].code).toBe("message.headers.incompatible");
     expect(results[0].type).toBe("error");
@@ -74,55 +63,76 @@ describe("compareMessageHeaders", () => {
 
   it("yields no results when message has no headers schema", () => {
     const message: Message = { messageId: "myMsg" };
-    const results = Array.from(
-      compareMessageHeaders(
-        makeAjv(),
-        message,
-        baseInteraction,
-        0,
-        "[root].channels.eventsQueue.messages.myMsg",
-      ),
-    );
+    const results = callResponse(message, {
+      "detail-type": "organization-deleted",
+    });
     expect(results).toHaveLength(0);
   });
 
   it("yields no results when metadata is undefined (consumer may omit required headers)", () => {
-    const interaction: AsyncInteraction = {
-      ...baseInteraction,
-      metadata: undefined,
-    };
-    const results = Array.from(
-      compareMessageHeaders(
-        makeAjv(),
-        baseMessage,
-        interaction,
-        0,
-        "[root].channels.eventsQueue.messages.myMsg",
-      ),
-    );
+    const results = callResponse(baseMessage, undefined);
     expect(results).toHaveLength(0);
   });
 
   it("yields message.headers.incompatible when metadata has extra properties not defined in schema", () => {
-    const interaction: AsyncInteraction = {
-      ...baseInteraction,
-      metadata: {
-        "detail-type": "organization-deleted",
-        time: "2024-02-06T18:36:26.102Z",
-        "x-unknown": "extra",
+    const results = callResponse(baseMessage, {
+      "detail-type": "organization-deleted",
+      time: "2024-02-06T18:36:26.102Z",
+      "x-unknown": "extra",
+    });
+    expect(results).toHaveLength(1);
+    expect(results[0].code).toBe("message.headers.incompatible");
+    expect(results[0].type).toBe("error");
+  });
+});
+
+describe("compareMessageHeaders — direction", () => {
+  it("enforces required header fields when direction is request", () => {
+    const message: Message = {
+      messageId: "myMsg",
+      headers: {
+        type: "object",
+        properties: { "correlation-id": { type: "string" } },
+        required: ["correlation-id"],
       },
     };
     const results = Array.from(
       compareMessageHeaders(
         makeAjv(),
-        baseMessage,
-        interaction,
-        0,
+        message,
+        {},
+        null,
+        null,
+        "[root].interactions[0].request.metadata",
         "[root].channels.eventsQueue.messages.myMsg",
+        "request",
       ),
     );
     expect(results).toHaveLength(1);
     expect(results[0].code).toBe("message.headers.incompatible");
-    expect(results[0].type).toBe("error");
+  });
+
+  it("does not enforce required header fields when direction is response", () => {
+    const message: Message = {
+      messageId: "myMsg",
+      headers: {
+        type: "object",
+        properties: { "correlation-id": { type: "string" } },
+        required: ["correlation-id"],
+      },
+    };
+    const results = Array.from(
+      compareMessageHeaders(
+        makeAjv(),
+        message,
+        {},
+        null,
+        null,
+        "[root].interactions[0].metadata",
+        "[root].channels.eventsQueue.messages.myMsg",
+        "response",
+      ),
+    );
+    expect(results).toHaveLength(0);
   });
 });

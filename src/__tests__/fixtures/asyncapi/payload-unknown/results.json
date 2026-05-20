@@ -4,7 +4,7 @@
     "message": "No schema found for message payload",
     "mockDetails": {
       "interactionDescription": "an event with content but no payload schema defined in spec",
-      "interactionState": "[none]",
+      "interactionState": null,
       "location": "[root].interactions[0].contents.content",
       "value": {
         "userId": "u-abc-123"

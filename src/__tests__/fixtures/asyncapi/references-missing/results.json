@@ -1,15 +1,13 @@
 [
-  {
-    "code": "message.references.missing",
-    "message": "Async interaction has no AsyncAPI references in comments.references.AsyncAPI",
-    "mockDetails": {
-      "interactionDescription": "an async event with no AsyncAPI references",
-      "interactionState": "[none]",
-      "location": "[root].interactions[0].comments.references.AsyncAPI"
-    },
-    "specDetails": {
-      "location": "[root]"
-    },
-    "type": "error"
-  }
+	{
+		"code": "message.references.missing",
+		"message": "Async interaction has no AsyncAPI references in comments.references.AsyncAPI",
+		"mockDetails": {
+			"interactionDescription": "an async event with no AsyncAPI references",
+			"interactionState": null,
+			"location": "[root].interactions[0].comments.references.AsyncAPI"
+		},
+		"specDetails": { "location": "[root]" },
+		"type": "error"
+	}
 ]

@@ -4,7 +4,7 @@
     "message": "Message headers are incompatible with the schema in the spec file: must be equal to one of the allowed values",
     "mockDetails": {
       "interactionDescription": "a user-created event with incompatible headers",
-      "interactionState": "[none]",
+      "interactionState": null,
       "location": "[root].interactions[0].metadata.event-type",
       "value": "user-created"
     },

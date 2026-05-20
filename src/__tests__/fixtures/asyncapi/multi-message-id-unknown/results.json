@@ -4,7 +4,7 @@
     "message": "Message not defined in AsyncAPI spec: nonExistentMessage",
     "mockDetails": {
       "interactionDescription": "an event with unknown messageId in a multi-message operation",
-      "interactionState": "[none]",
+      "interactionState": null,
       "location": "[root].interactions[0].comments.references.AsyncAPI.messageId",
       "value": "nonExistentMessage"
     },

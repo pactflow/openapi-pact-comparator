@@ -4,7 +4,7 @@
     "message": "Message headers are incompatible with the schema in the spec file: must NOT have additional properties - x-unknown",
     "mockDetails": {
       "interactionDescription": "a user-created event with extra header not in spec",
-      "interactionState": "[none]",
+      "interactionState": null,
       "location": "[root].interactions[0].metadata",
       "value": {
         "event-type": "user-created",

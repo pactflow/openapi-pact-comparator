@@ -4,7 +4,7 @@
     "message": "Message payload is incompatible with the schema in the spec file: must be string",
     "mockDetails": {
       "interactionDescription": "a user-created event with both payload and headers incompatible",
-      "interactionState": "[none]",
+      "interactionState": null,
       "location": "[root].interactions[0].contents.content.userId",
       "value": 12345
     },
@@ -19,7 +19,7 @@
     "message": "Message headers are incompatible with the schema in the spec file: must NOT have additional properties - x-unexpected",
     "mockDetails": {
       "interactionDescription": "a user-created event with both payload and headers incompatible",
-      "interactionState": "[none]",
+      "interactionState": null,
       "location": "[root].interactions[0].metadata",
       "value": {
         "event-type": "user-created",

@@ -98,6 +98,25 @@ export function* compareAsyncInteraction(
       : undefined,
   };
 
-  yield* compareMessagePayload(ajv, message, interaction, index, resolved.path);
-  yield* compareMessageHeaders(ajv, message, interaction, index, resolved.path);
+  yield* compareMessagePayload(
+    ajv,
+    message,
+    interaction.payload,
+    interaction.contentType,
+    interaction.description ?? null,
+    interaction.providerState ?? null,
+    `[root].interactions[${index}].contents.content`,
+    resolved.path,
+    "response",
+  );
+  yield* compareMessageHeaders(
+    ajv,
+    message,
+    interaction.metadata,
+    interaction.description ?? null,
+    interaction.providerState ?? null,
+    `[root].interactions[${index}].metadata`,
+    resolved.path,
+    "response",
+  );
 }

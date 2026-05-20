@@ -1,16 +1,14 @@
 [
-  {
-    "code": "message.operation.unknown",
-    "message": "Operation not defined in AsyncAPI spec: nonExistentOp",
-    "mockDetails": {
-      "interactionDescription": "a user-created event with unknown operation",
-      "interactionState": "[none]",
-      "location": "[root].interactions[0].comments.references.AsyncAPI.operationId",
-      "value": "nonExistentOp"
-    },
-    "specDetails": {
-      "location": "[root].operations"
-    },
-    "type": "error"
-  }
+	{
+		"code": "message.operation.unknown",
+		"message": "Operation not defined in AsyncAPI spec: nonExistentOp",
+		"mockDetails": {
+			"interactionDescription": "a user-created event with unknown operation",
+			"interactionState": null,
+			"location": "[root].interactions[0].comments.references.AsyncAPI.operationId",
+			"value": "nonExistentOp"
+		},
+		"specDetails": { "location": "[root].operations" },
+		"type": "error"
+	}
 ]

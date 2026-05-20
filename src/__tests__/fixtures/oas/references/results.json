@@ -1,105 +1,101 @@
 [
-  {
-    "code": "request.query.incompatible",
-    "message": "Value is incompatible with the parameter defined in the spec file: must be string",
-    "mockDetails": {
-      "interactionDescription": "should fail with missing parameters",
-      "interactionState": "[none]",
-      "location": "[root].interactions[2].request.query.account"
-    },
-    "specDetails": {
-      "location": "[root].paths./login.post.parameters[0].schema.type",
-      "pathMethod": "post",
-      "pathName": "/login",
-      "value": "string"
-    },
-    "type": "error"
-  },
-  {
-    "code": "request.query.incompatible",
-    "message": "Value is incompatible with the parameter defined in the spec file: must be string",
-    "mockDetails": {
-      "interactionDescription": "should fail with missing parameters",
-      "interactionState": "[none]",
-      "location": "[root].interactions[2].request.query.nested"
-    },
-    "specDetails": {
-      "location": "[root].paths./login.post.parameters[1].schema.type",
-      "pathMethod": "post",
-      "pathName": "/login",
-      "value": "string"
-    },
-    "type": "error"
-  },
-  {
-    "code": "request.query.incompatible",
-    "message": "Value is incompatible with the parameter defined in the spec file: must be string",
-    "mockDetails": {
-      "interactionDescription": "should fail with missing parameters",
-      "interactionState": "[none]",
-      "location": "[root].interactions[2].request.query.bracket"
-    },
-    "specDetails": {
-      "location": "[root].paths./login.post.parameters[2].schema.type",
-      "pathMethod": "post",
-      "pathName": "/login",
-      "value": "string"
-    },
-    "type": "error"
-  },
-  {
-    "code": "request.body.incompatible",
-    "message": "Request body is incompatible with the request body schema in the spec file: must have required property 'username'",
-    "mockDetails": {
-      "interactionDescription": "should fail with bad request body",
-      "interactionState": "[none]",
-      "location": "[root].interactions[3].request.body",
-      "value": {}
-    },
-    "specDetails": {
-      "location": "[root].paths./login.post.requestBody.content.application/json.schema.required",
-      "pathMethod": "post",
-      "pathName": "/login",
-      "value": [
-        "username"
-      ]
-    },
-    "type": "error"
-  },
-  {
-    "code": "response.header.incompatible",
-    "message": "Value is incompatible with the parameter defined in the spec file: must be number",
-    "mockDetails": {
-      "interactionDescription": "should fail with bad response header",
-      "interactionState": "[none]",
-      "location": "[root].interactions[4].response.headers.response-header",
-      "value": "string"
-    },
-    "specDetails": {
-      "location": "[root].paths./login.post.responses.201.headers.response-header.schema.type",
-      "pathMethod": "post",
-      "pathName": "/login",
-      "value": "number"
-    },
-    "type": "error"
-  },
-  {
-    "code": "response.body.incompatible",
-    "message": "Response body is incompatible with the response body schema in the spec file: must NOT have additional properties - username",
-    "mockDetails": {
-      "interactionDescription": "should fail with bad response body",
-      "interactionState": "[none]",
-      "location": "[root].interactions[5].response.body",
-      "value": {
-        "username": "bob"
-      }
-    },
-    "specDetails": {
-      "location": "[root].paths./login.post.responses.201.content.application/json.schema.additionalProperties",
-      "pathMethod": "post",
-      "pathName": "/login",
-      "value": false
-    },
-    "type": "error"
-  }
+	{
+		"code": "request.query.incompatible",
+		"message": "Value is incompatible with the parameter defined in the spec file: must be string",
+		"mockDetails": {
+			"interactionDescription": "should fail with missing parameters",
+			"interactionState": null,
+			"location": "[root].interactions[2].request.query.account"
+		},
+		"specDetails": {
+			"location": "[root].paths./login.post.parameters[0].schema.type",
+			"pathMethod": "post",
+			"pathName": "/login",
+			"value": "string"
+		},
+		"type": "error"
+	},
+	{
+		"code": "request.query.incompatible",
+		"message": "Value is incompatible with the parameter defined in the spec file: must be string",
+		"mockDetails": {
+			"interactionDescription": "should fail with missing parameters",
+			"interactionState": null,
+			"location": "[root].interactions[2].request.query.nested"
+		},
+		"specDetails": {
+			"location": "[root].paths./login.post.parameters[1].schema.type",
+			"pathMethod": "post",
+			"pathName": "/login",
+			"value": "string"
+		},
+		"type": "error"
+	},
+	{
+		"code": "request.query.incompatible",
+		"message": "Value is incompatible with the parameter defined in the spec file: must be string",
+		"mockDetails": {
+			"interactionDescription": "should fail with missing parameters",
+			"interactionState": null,
+			"location": "[root].interactions[2].request.query.bracket"
+		},
+		"specDetails": {
+			"location": "[root].paths./login.post.parameters[2].schema.type",
+			"pathMethod": "post",
+			"pathName": "/login",
+			"value": "string"
+		},
+		"type": "error"
+	},
+	{
+		"code": "request.body.incompatible",
+		"message": "Request body is incompatible with the request body schema in the spec file: must have required property 'username'",
+		"mockDetails": {
+			"interactionDescription": "should fail with bad request body",
+			"interactionState": null,
+			"location": "[root].interactions[3].request.body",
+			"value": {}
+		},
+		"specDetails": {
+			"location": "[root].paths./login.post.requestBody.content.application/json.schema.required",
+			"pathMethod": "post",
+			"pathName": "/login",
+			"value": ["username"]
+		},
+		"type": "error"
+	},
+	{
+		"code": "response.header.incompatible",
+		"message": "Value is incompatible with the parameter defined in the spec file: must be number",
+		"mockDetails": {
+			"interactionDescription": "should fail with bad response header",
+			"interactionState": null,
+			"location": "[root].interactions[4].response.headers.response-header",
+			"value": "string"
+		},
+		"specDetails": {
+			"location": "[root].paths./login.post.responses.201.headers.response-header.schema.type",
+			"pathMethod": "post",
+			"pathName": "/login",
+			"value": "number"
+		},
+		"type": "error"
+	},
+	{
+		"code": "response.body.incompatible",
+		"message": "Response body is incompatible with the response body schema in the spec file: must NOT have additional properties - username",
+		"mockDetails": {
+			"interactionDescription": "should fail with bad response body",
+			"interactionState": null,
+			"location": "[root].interactions[5].response.body",
+			"value": { "username": "bob" }
+		},
+		"specDetails": {
+			"location": "[root].paths./login.post.responses.201.content.application/json.schema.additionalProperties",
+			"pathMethod": "post",
+			"pathName": "/login",
+			"value": false
+		},
+		"type": "error"
+	}
 ]

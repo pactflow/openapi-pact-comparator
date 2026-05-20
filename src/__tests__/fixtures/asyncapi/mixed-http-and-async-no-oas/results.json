@@ -4,7 +4,7 @@
     "message": "Message payload is incompatible with the schema in the spec file: must be string",
     "mockDetails": {
       "interactionDescription": "a user-created event",
-      "interactionState": "[none]",
+      "interactionState": null,
       "location": "[root].interactions[1].contents.content.userId",
       "value": 12345
     },

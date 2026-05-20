@@ -1,0 +1,23 @@
+[
+  {
+    "code": "response.status.unknown",
+    "message": "Response status code not defined in spec file: 404",
+    "mockDetails": {
+      "interactionDescription": "a health check",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].response.status",
+      "value": 404
+    },
+    "specDetails": {
+      "location": "[root].paths./health.get.responses",
+      "pathMethod": "get",
+      "pathName": "/health",
+      "value": {
+        "200": {
+          "description": "OK"
+        }
+      }
+    },
+    "type": "error"
+  }
+]

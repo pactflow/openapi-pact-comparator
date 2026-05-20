@@ -1,0 +1,18 @@
+{
+  "consumer": { "name": "consumer" },
+  "provider": { "name": "provider" },
+  "interactions": [
+    {
+      "contents": {
+        "content": { "userId": "u-abc-123" },
+        "contentType": "application/json",
+        "encoded": false
+      },
+      "description": "an async event with no AsyncAPI references",
+      "metadata": { "event-type": "user-created" },
+      "pending": false,
+      "type": "Asynchronous/Messages"
+    }
+  ],
+  "metadata": { "pactSpecification": { "version": "4.0" } }
+}

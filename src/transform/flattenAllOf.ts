@@ -1,4 +1,4 @@
-import { SchemaObject } from "ajv";
+import type { SchemaObject } from "ajv";
 import { get, merge, set } from "lodash-es";
 import { splitPath } from "#utils/schema";
 

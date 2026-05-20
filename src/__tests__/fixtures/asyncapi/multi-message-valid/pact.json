@@ -1,0 +1,26 @@
+{
+  "consumer": { "name": "consumer" },
+  "provider": { "name": "provider" },
+  "interactions": [
+    {
+      "comments": {
+        "references": {
+          "AsyncAPI": {
+            "messageId": "userDeleted",
+            "operationId": "receiveUserEvents"
+          }
+        }
+      },
+      "contents": {
+        "content": { "userId": "u-abc-123" },
+        "contentType": "application/json",
+        "encoded": false
+      },
+      "description": "a user-deleted event from a multi-message operation",
+      "metadata": {},
+      "pending": false,
+      "type": "Asynchronous/Messages"
+    }
+  ],
+  "metadata": { "pactSpecification": { "version": "4.0" } }
+}

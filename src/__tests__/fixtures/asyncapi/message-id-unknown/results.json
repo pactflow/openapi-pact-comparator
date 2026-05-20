@@ -1,0 +1,21 @@
+[
+  {
+    "code": "message.id.unknown",
+    "message": "Message not defined in AsyncAPI spec: nonExistentMessage",
+    "mockDetails": {
+      "interactionDescription": "a user-created event with unknown message id",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].comments.references.AsyncAPI.messageId",
+      "value": "nonExistentMessage"
+    },
+    "specDetails": {
+      "location": "[root].operations.receiveUserEvents.messages",
+      "value": [
+        {
+          "$ref": "#/channels/userEvents/messages/userCreated"
+        }
+      ]
+    },
+    "type": "error"
+  }
+]

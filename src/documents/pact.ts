@@ -1,9 +1,11 @@
-import { Static, Type } from "@sinclair/typebox";
-import Ajv, { ErrorObject } from "ajv";
+import { type Static, Type } from "@sinclair/typebox";
+import Ajv, { type ErrorObject } from "ajv";
 
 // a full schema can be found at https://github.com/pactflow/pact-schemas
 // but we don't use that here, because we try to be permissive with input
-export const Interaction = Type.Object({
+
+// HTTP-only schema used for AJV validation of synchronous interactions
+const HttpMessage = Type.Object({
   _skip: Type.Optional(Type.Boolean()),
   type: Type.Optional(Type.String()),
   description: Type.Optional(Type.String()),
@@ -41,8 +43,37 @@ export const Interaction = Type.Object({
   }),
 });
 
-export type Interaction = Static<typeof Interaction>;
+// Async interaction schema used for AJV validation of "Asynchronous/Messages" interactions
+const AsyncMessage = Type.Object({
+  type: Type.String(),
+  description: Type.Optional(Type.String()),
+  providerState: Type.Optional(Type.String()),
+  contents: Type.Optional(
+    Type.Object({
+      content: Type.Optional(Type.Unknown()),
+      contentType: Type.Optional(Type.String()),
+      encoded: Type.Optional(Type.Union([Type.String(), Type.Boolean()])),
+    }),
+  ),
+  metadata: Type.Optional(Type.Record(Type.String(), Type.String())),
+  comments: Type.Optional(
+    Type.Object({
+      references: Type.Optional(
+        Type.Object({
+          AsyncAPI: Type.Optional(
+            Type.Object({
+              messageId: Type.String(),
+              operationId: Type.String(),
+            }),
+          ),
+        }),
+      ),
+    }),
+  ),
+});
 
+// Permissive pact schema — interactions may be HTTP or async; validation of
+// each interaction is performed after classification inside parse().
 export const Pact = Type.Object({
   metadata: Type.Optional(
     Type.Object({
@@ -59,13 +90,94 @@ export const Pact = Type.Object({
       ),
     }),
   ),
-  interactions: Type.Array(Interaction),
+  interactions: Type.Array(Type.Unknown()),
 });
 
 export type Pact = Static<typeof Pact>;
 
-const supportedInteractions = (i: Interaction) =>
-  !i.type || i.type.toLowerCase() === "synchronous/http";
+// ---------------------------------------------------------------------------
+// Parsed interaction types (discriminated union on _kind)
+// ---------------------------------------------------------------------------
+
+export interface HttpInteraction {
+  _kind: "http";
+  description?: string;
+  providerState?: string;
+  request: {
+    body?: unknown;
+    headers?: Record<string, string>;
+    method: string;
+    path: string;
+    query?: string | Record<string, string>;
+  };
+  response: {
+    body?: unknown;
+    headers?: Record<string, string>;
+    status: number;
+  };
+}
+
+export interface AsyncInteraction {
+  _kind: "async";
+  description?: string;
+  providerState?: string;
+  asyncapiReferences?: { messageId: string; operationId: string };
+  payload: unknown;
+  contentType?: string;
+  metadata?: Record<string, string>;
+}
+
+export interface SkippedInteraction {
+  _kind: "skip";
+}
+
+export type Interaction =
+  | HttpInteraction
+  | AsyncInteraction
+  | SkippedInteraction;
+
+export interface ParsedPact {
+  metadata?: Pact["metadata"];
+  interactions: Interaction[];
+}
+
+// Internal shape of a raw pact interaction before classification
+interface RawInteraction {
+  type?: string;
+  description?: string;
+  providerState?: string;
+  request?: {
+    body?: unknown;
+    headers?: null | string | Record<string, string | string[]>;
+    method?: string;
+    path?: string;
+    query?: null | string | Record<string, string | string[]>;
+  };
+  response?: {
+    body?: unknown;
+    headers?: null | string | Record<string, string | string[]>;
+    status?: number;
+  };
+  comments?: {
+    references?: {
+      AsyncAPI?: { messageId: string; operationId: string };
+    };
+  };
+  contents?: {
+    content?: unknown;
+    contentType?: string;
+    encoded?: string | boolean;
+  };
+  metadata?: Record<string, string>;
+}
+
+const isHttpInteraction = (i: RawInteraction) =>
+  i.type === undefined ||
+  (typeof i.type === "string" && i.type.toLowerCase() === "synchronous/http");
+
+const isAsyncInteraction = (i: RawInteraction) =>
+  typeof i.type === "string" &&
+  i.type.toLowerCase() === "asynchronous/messages";
 
 const parseAsPactV4Body = (body: unknown) => {
   if (!body) {
@@ -110,58 +222,84 @@ const flattenValues = (
   );
 };
 
-const interactionV1 = (i: Interaction): Interaction => ({
-  ...i,
+const interactionV1 = (i: RawInteraction): HttpInteraction => ({
+  _kind: "http",
+  description: i.description,
+  providerState: i.providerState,
   request: {
     ...i.request,
-    headers: flattenValues(i.request.headers) as Record<string, string>,
+    method: i.request!.method!,
+    path: i.request!.path!,
+    headers: flattenValues(i.request?.headers) as Record<string, string>,
+    query: flattenValues(i.request?.query),
   },
   response: {
     ...i.response,
-    headers: flattenValues(i.response.headers) as Record<string, string>,
+    status: i.response!.status!,
+    headers: flattenValues(i.response?.headers) as Record<string, string>,
   },
 });
 
-const interactionV3 = (i: Interaction): Interaction => ({
-  ...i,
+const interactionV4 = (i: RawInteraction): HttpInteraction => ({
+  _kind: "http",
+  description: i.description,
+  providerState: i.providerState,
   request: {
     ...i.request,
-    headers: flattenValues(i.request.headers) as Record<string, string>,
-    query: flattenValues(i.request.query),
+    method: i.request!.method!,
+    path: i.request!.path!,
+    body: parseAsPactV4Body(i.request?.body),
+    headers: flattenValues(i.request?.headers) as Record<string, string>,
+    query: flattenValues(i.request?.query),
   },
   response: {
     ...i.response,
-    headers: flattenValues(i.response.headers) as Record<string, string>,
+    status: i.response!.status!,
+    body: parseAsPactV4Body(i.response?.body),
+    headers: flattenValues(i.response?.headers) as Record<string, string>,
   },
 });
 
-const interactionV4 = (i: Interaction): Interaction => ({
-  ...i,
-  request: {
-    ...i.request,
-    body: parseAsPactV4Body(i.request.body),
-    headers: flattenValues(i.request.headers) as Record<string, string>,
-    query: flattenValues(i.request.query),
-  },
-  response: {
-    ...i.response,
-    body: parseAsPactV4Body(i.response.body),
-    headers: flattenValues(i.response.headers) as Record<string, string>,
-  },
-});
+const parseAsyncInteraction = (i: RawInteraction): AsyncInteraction => {
+  const asyncapiRef = i.comments?.references?.AsyncAPI;
+  return {
+    _kind: "async",
+    description: i.description,
+    providerState: i.providerState,
+    asyncapiReferences: asyncapiRef
+      ? {
+          messageId: asyncapiRef.messageId,
+          operationId: asyncapiRef.operationId,
+        }
+      : undefined,
+    payload: parseAsPactV4Body(i.contents),
+    contentType: i.contents?.contentType,
+    metadata: i.metadata,
+  };
+};
 
 const ajv = new Ajv();
-const validate = ajv.compile(Pact);
+const validateHttpInteractions = ajv.compile(Type.Array(HttpMessage));
+const validateAsyncInteractions = ajv.compile(Type.Array(AsyncMessage));
 
-export const parse = (pact: Pact): Pact => {
+export const parse = (pact: Pact): ParsedPact => {
   const { metadata, interactions = [] } = pact;
+  const rawInteractions = (interactions as unknown[]).filter(
+    (i): i is RawInteraction => typeof i === "object" && i !== null,
+  );
 
-  const isValid = validate({
-    metadata,
-    interactions: interactions.filter(supportedInteractions),
-  });
+  const isValid = validateHttpInteractions(
+    rawInteractions.filter(isHttpInteraction),
+  );
   if (!isValid) {
-    throw new ParserError(validate.errors!);
+    throw new ParserError(validateHttpInteractions.errors!);
+  }
+
+  const isAsyncValid = validateAsyncInteractions(
+    rawInteractions.filter(isAsyncInteraction),
+  );
+  if (!isAsyncValid) {
+    throw new ParserError(validateAsyncInteractions.errors!);
   }
 
   const version = parseInt(
@@ -170,16 +308,15 @@ export const parse = (pact: Pact): Pact => {
       metadata?.["pact-specification"]?.version ||
       "0",
   );
-  const interactionParser =
-    version >= 4 ? interactionV4 : version >= 3 ? interactionV3 : interactionV1;
+  const httpParser = version >= 4 ? interactionV4 : interactionV1;
 
   return {
     metadata,
-    interactions: interactions.map((i: Interaction) =>
-      supportedInteractions(i)
-        ? interactionParser(i)
-        : ({ _skip: true } as Interaction),
-    ),
+    interactions: rawInteractions.map((i): Interaction => {
+      if (isHttpInteraction(i)) return httpParser(i);
+      if (isAsyncInteraction(i)) return parseAsyncInteraction(i);
+      return { _kind: "skip" };
+    }),
   };
 };
 

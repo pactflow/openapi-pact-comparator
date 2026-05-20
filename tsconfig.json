@@ -1,16 +1,12 @@
 {
+  "extends": "@tsconfig/node22/tsconfig.json",
   "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
     "declaration": true,
-    "esModuleInterop": true,
-    "lib": ["dom", "dom.iterable", "es2021"],
     "module": "esnext",
     "moduleResolution": "bundler",
     "noEmit": true,
     "outDir": "dist",
-    "rootDir": ".",
-    "strict": true,
-    "target": "esnext"
+    "rootDir": "."
   },
   "include": ["src/**/*.ts"],
   "exclude": ["src/**/*.test.ts"]

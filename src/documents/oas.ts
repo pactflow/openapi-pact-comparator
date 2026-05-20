@@ -1,12 +1,12 @@
 import type { OpenAPIV2, OpenAPIV3 } from "openapi-types";
 
 const isSwagger2 = (oas: OpenAPIV2.Document): boolean =>
-  Object.prototype.hasOwnProperty.call(oas, "swagger") &&
+  Object.hasOwn(oas, "swagger") &&
   typeof oas.swagger === "string" &&
   oas.swagger === "2.0";
 
 const isOpenApi3 = (oas: OpenAPIV3.Document): boolean =>
-  Object.prototype.hasOwnProperty.call(oas, "openapi") &&
+  Object.hasOwn(oas, "openapi") &&
   typeof oas.openapi === "string" &&
   oas.openapi.indexOf("3.") === 0;
 

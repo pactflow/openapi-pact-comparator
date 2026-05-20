@@ -1,0 +1,25 @@
+{
+  "consumer": { "name": "consumer" },
+  "provider": { "name": "provider" },
+  "interactions": [
+    {
+      "comments": {
+        "references": {
+          "AsyncAPI": {
+            "messageId": "userPing",
+            "operationId": "receiveUserEvents"
+          }
+        }
+      },
+      "contents": {
+        "content": { "userId": "u-abc-123" },
+        "contentType": "application/json",
+        "encoded": false
+      },
+      "description": "an event with content but no payload schema defined in spec",
+      "pending": false,
+      "type": "Asynchronous/Messages"
+    }
+  ],
+  "metadata": { "pactSpecification": { "version": "4.0" } }
+}

@@ -3,12 +3,12 @@ import type Ajv from "ajv/dist/2019";
 import type Router from "find-my-way";
 import { get } from "lodash-es";
 
-import type { Interaction } from "#documents/pact";
+import type { HttpInteraction } from "#documents/pact";
 import type { Result } from "#results/index";
 import {
   baseMockDetails,
-  formatMessage,
   formatInstancePath,
+  formatMessage,
   formatSchemaPath,
 } from "#results/index";
 import { minimumSchema } from "#transform/index";
@@ -21,7 +21,7 @@ import { patternedStatus } from "./utils/statusCodes";
 export function* compareResHeader(
   ajv: Ajv,
   route: Router.FindResult<Router.HTTPVersion.V1>,
-  interaction: Interaction,
+  interaction: HttpInteraction,
   index: number,
   _config: Config,
 ): Iterable<Result> {

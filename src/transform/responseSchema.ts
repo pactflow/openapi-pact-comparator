@@ -1,12 +1,11 @@
-import { SchemaObject } from "ajv";
+import type { SchemaObject } from "ajv";
 import { traverseWithDereferencing as traverse } from "#utils/schema";
 
-export const transformResponseSchema = (
+export const transformReceivedSchema = (
   schema: SchemaObject,
-  noTransformNonNullableResponseSchema: boolean,
+  // quirks mode: skip additionalProperties=false for non-nullable schemas (legacy OAS compatibility)
+  quirks = false,
 ): SchemaObject => {
-  // a provider must provide a superset of what the consumer asks for
-  // additionalProperties expected in pact response are disallowed
   traverse(schema, (s) => {
     if (
       (typeof s.additionalProperties === "undefined" ||
@@ -16,20 +15,22 @@ export const transformResponseSchema = (
       !s.anyOf &&
       s.type &&
       s.type === "object" &&
-      (noTransformNonNullableResponseSchema ? !s.nullable : true)
+      (quirks ? !s.nullable : true)
     ) {
       s.additionalProperties = false;
     }
   });
 
-  // a consumer may only use a subset of the provider *response* any field
-  // marked as required in OAS, should be considered optional for pact testing
+  stripRequired(schema);
+
+  return schema;
+};
+
+const stripRequired = (schema: SchemaObject): void => {
   traverse(schema, (s) => {
     if (s.oneOf) {
       return; // discriminator is required to be a valid schema
     }
     delete s.required;
   });
-
-  return schema;
 };

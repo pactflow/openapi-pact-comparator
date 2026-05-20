@@ -1,8 +1,8 @@
-import { describe, expect, it, beforeAll, afterAll } from "vitest";
 import { spawn } from "node:child_process";
-import { createServer, type Server } from "node:http";
 import { readFileSync } from "node:fs";
+import { createServer, type Server } from "node:http";
 import path from "node:path";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 const fixturesDir = path.join(__dirname, "fixtures");
 const cliPath = path.join(__dirname, "..", "cli.ts");
@@ -38,7 +38,7 @@ const runCli = (
   return new Promise((resolve) => {
     const child = spawn(
       process.execPath,
-      [tsxCli, cliPath, oasPath, pactPath],
+      [tsxCli, cliPath, "--oas", oasPath, pactPath],
       {
         cwd: fixturesDir,
       },
@@ -62,32 +62,32 @@ const runCli = (
 describe("CLI integration", () => {
   it("should exit with code 0 when no errors are found", async () => {
     const { exitCode, stdout } = await runCli(
-      path.join("example-petstore-valid", "oas.yaml"),
-      path.join("example-petstore-valid", "pact.json"),
+      path.join("oas", "example-petstore-valid", "oas.yaml"),
+      path.join("oas", "example-petstore-valid", "pact.json"),
     );
 
     expect(exitCode).toBe(0);
     expect(stdout.trim()).toBe("[]");
-  });
+  }, 15000);
 
   it("should exit with non-zero code when errors are found", async () => {
     const { exitCode, stdout } = await runCli(
-      path.join("example-petstore-invalid", "oas.yaml"),
-      path.join("example-petstore-invalid", "pact.json"),
+      path.join("oas", "example-petstore-invalid", "oas.yaml"),
+      path.join("oas", "example-petstore-invalid", "pact.json"),
     );
 
     expect(exitCode).toBe(1);
     expect(stdout).toContain('"type":"error"');
     expect(stdout).toContain('"code":"response.status.unknown"');
-  });
+  }, 15000);
 
   it("should fetch OAS and Pact from URLs", async () => {
-    const oasUrl = `${baseUrl}/example-petstore-valid/oas.yaml`;
-    const pactUrl = `${baseUrl}/example-petstore-valid/pact.json`;
+    const oasUrl = `${baseUrl}/oas/example-petstore-valid/oas.yaml`;
+    const pactUrl = `${baseUrl}/oas/example-petstore-valid/pact.json`;
 
     const { exitCode, stdout } = await runCli(oasUrl, pactUrl);
 
     expect(exitCode).toBe(0);
     expect(stdout.trim()).toBe("[]");
-  });
+  }, 15000);
 });

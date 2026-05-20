@@ -1,6 +1,6 @@
-import type { OpenAPIV3 } from "openapi-types";
-import { SchemaObject } from "ajv";
+import type { SchemaObject } from "ajv";
 import { cloneDeep, get, set } from "lodash-es";
+import type { OpenAPIV3 } from "openapi-types";
 import { dereferenceOas, splitPath, traverse } from "#utils/schema";
 import { flattenAllOf } from "./flattenAllOf";
 

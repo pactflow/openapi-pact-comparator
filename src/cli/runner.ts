@@ -1,11 +1,22 @@
-import type { OpenAPIV2, OpenAPIV3 } from "openapi-types";
-import yaml from "js-yaml";
 import fs from "node:fs";
+import yaml from "js-yaml";
+import type { OpenAPIV2, OpenAPIV3 } from "openapi-types";
+import type { AsyncAPIDocument } from "../documents/asyncapi";
 import { Comparator, type Result } from "../index";
 
 type OASDocument = OpenAPIV2.Document | OpenAPIV3.Document;
 
 const MAX_EXIT_CODE = 255;
+
+export interface SpecPaths {
+  oasPath?: string;
+  asyncapiPath?: string;
+}
+
+export interface ComparatorDocs {
+  oas?: OASDocument;
+  asyncapi?: AsyncAPIDocument;
+}
 
 export interface ComparatorLike {
   compare(pact: unknown): AsyncGenerator<Result>;
@@ -15,14 +26,14 @@ export interface RunnerDependencies {
   readFile: (path: string) => Promise<string>;
   fetch: (url: string) => Promise<Response>;
   output: (message: string) => void;
-  createComparator: (oas: OASDocument) => ComparatorLike;
+  createComparator: (docs: ComparatorDocs) => ComparatorLike;
 }
 
 const defaultDependencies: RunnerDependencies = {
   readFile: (path: string) => fs.promises.readFile(path, { encoding: "utf-8" }),
   fetch: (url: string) => fetch(url),
   output: (message: string) => console.log(message),
-  createComparator: (oas: OASDocument) => new Comparator(oas),
+  createComparator: (docs: ComparatorDocs) => new Comparator(docs),
 };
 
 export class Runner {
@@ -69,9 +80,19 @@ export class Runner {
     return this.parseContent(content);
   }
 
-  async run(oasPath: string, pactPaths: string[]): Promise<number> {
-    const oas = (await this.readAndParse(oasPath)) as OASDocument;
-    const comparator = this.deps.createComparator(oas);
+  async run(specPaths: SpecPaths, pactPaths: string[]): Promise<number> {
+    const docs: ComparatorDocs = {};
+
+    if (specPaths.oasPath) {
+      docs.oas = (await this.readAndParse(specPaths.oasPath)) as OASDocument;
+    }
+    if (specPaths.asyncapiPath) {
+      docs.asyncapi = (await this.readAndParse(
+        specPaths.asyncapiPath,
+      )) as AsyncAPIDocument;
+    }
+
+    const comparator = this.deps.createComparator(docs);
 
     let errors = 0;
     for (const pactPath of pactPaths) {

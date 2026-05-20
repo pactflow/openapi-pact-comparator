@@ -1,0 +1,47 @@
+asyncapi: "3.1.0"
+info:
+  title: User Service
+  version: "1.0.0"
+channels:
+  userEvents:
+    address: user-events
+    messages:
+      userCreated:
+        messageId: userCreated
+        payload:
+          type: object
+          properties:
+            userId:
+              type: string
+          required:
+            - userId
+      userDeleted:
+        messageId: userDeleted
+        payload:
+          type: object
+          properties:
+            userId:
+              type: string
+          required:
+            - userId
+      userUpdated:
+        messageId: userUpdated
+        payload:
+          type: object
+          properties:
+            userId:
+              type: string
+            email:
+              type: string
+          required:
+            - userId
+            - email
+operations:
+  receiveUserEvents:
+    action: receive
+    channel:
+      $ref: "#/channels/userEvents"
+    messages:
+      - $ref: "#/channels/userEvents/messages/userCreated"
+      - $ref: "#/channels/userEvents/messages/userDeleted"
+      - $ref: "#/channels/userEvents/messages/userUpdated"

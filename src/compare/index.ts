@@ -1,37 +1,38 @@
+import type Ajv from "ajv/dist/2019";
+import type Router from "find-my-way";
 import type { OpenAPIV2, OpenAPIV3 } from "openapi-types";
-import Ajv from "ajv/dist/2019";
-import Router, { HTTPMethod } from "find-my-way";
-
-import type { Pact } from "#documents/pact";
-import type { Result } from "#results/index";
-
-import { compareReqPath } from "#compare/requestPath";
-import { compareReqQuery } from "#compare/requestQuery";
-import { compareReqBody } from "#compare/requestBody";
-import { compareReqHeader } from "#compare/requestHeader";
-import { compareReqSecurity } from "#compare/requestSecurity";
-import { compareResBody } from "#compare/responseBody";
-import { compareResHeader } from "#compare/responseHeader";
+import { compareAsyncInteraction } from "#compare/asyncapi/index";
+import { compareHttpInteraction } from "#compare/oas/index";
+import type { AsyncAPIDocument, ResolvedMessage } from "#documents/asyncapi";
+import { parse as parseAsyncapi } from "#documents/asyncapi";
 import { parse as parseOas } from "#documents/oas";
+import type { Pact } from "#documents/pact";
 import { parse as parsePact } from "#documents/pact";
-import { baseMockDetails } from "#results/index";
-import { Config, ConfigKeys, DEFAULT_CONFIG } from "#utils/config";
-import { ARRAY_SEPARATOR } from "#utils/queryParams";
+import type { Result } from "#results/index";
+import { type Config, type ConfigKeys, DEFAULT_CONFIG } from "#utils/config";
+import { setupRouter } from "./oas/setup";
+import { setupAjv } from "./setup";
 
-import { setupAjv, setupRouter } from "./setup";
+export interface ComparatorOptions {
+  oas?: OpenAPIV2.Document | OpenAPIV3.Document;
+  asyncapi?: AsyncAPIDocument;
+}
 
 export class Comparator {
   #ajvCoerce: Ajv;
   #ajvNocoerce: Ajv;
   #config: Config;
-  #oas: OpenAPIV2.Document | OpenAPIV3.Document;
+  #oas?: OpenAPIV2.Document | OpenAPIV3.Document;
+  #asyncapi?: AsyncAPIDocument;
   #router?: Router.Instance<Router.HTTPVersion.V1>;
+  #resolvedMessages: Map<string, ResolvedMessage | null> = new Map();
 
-  constructor(oas: OpenAPIV2.Document | OpenAPIV3.Document) {
+  constructor(options: ComparatorOptions = {}) {
     this.#config = new Map(DEFAULT_CONFIG);
-    this.#oas = oas;
-
-    parseOas(oas);
+    this.#oas = options.oas;
+    this.#asyncapi = options.asyncapi;
+    if (options.oas) parseOas(options.oas);
+    if (options.asyncapi) parseAsyncapi(options.asyncapi);
 
     const ajvOptions = {
       allErrors: true,
@@ -52,7 +53,9 @@ export class Comparator {
   }
 
   async *compare(pact: Pact): AsyncGenerator<Result> {
-    if (!this.#router) {
+    this.#resolvedMessages = new Map();
+
+    if (this.#oas && !this.#router) {
       for (const [key, value] of Object.entries(this.#oas.info)) {
         if (key.startsWith("x-opc-config-")) {
           this.#config.set(key.substring(13) as ConfigKeys, value);
@@ -64,113 +67,33 @@ export class Comparator {
     const parsedPact = parsePact(pact);
 
     for (const [index, interaction] of parsedPact.interactions.entries()) {
-      if (interaction._skip) {
-        // non http/synchronous have been zero-ed out
-        continue;
+      switch (interaction._kind) {
+        case "http":
+          if (this.#asyncapi && !this.#oas) break;
+          yield* compareHttpInteraction(
+            this.#ajvCoerce,
+            this.#ajvNocoerce,
+            this.#router,
+            interaction,
+            index,
+            this.#config,
+          );
+          break;
+        case "async":
+          if (this.#oas && !this.#asyncapi) break;
+          yield* compareAsyncInteraction(
+            this.#ajvNocoerce,
+            this.#asyncapi,
+            this.#resolvedMessages,
+            interaction,
+            index,
+          );
+          break;
+        case "skip":
+          break;
+        default:
+          interaction satisfies never;
       }
-
-      const { method, path, query } = interaction.request;
-      let pathWithLeadingSlash = path.startsWith("/") ? path : `/${path}`;
-
-      if (this.#config.get("no-percent-encoding")) {
-        pathWithLeadingSlash = pathWithLeadingSlash.replaceAll("%", "%25");
-      }
-
-      // in pact, query is either a string or an object of only one level deep
-      const stringQuery =
-        typeof query === "string"
-          ? query
-          : Object.keys(query || {})
-              .reduce(
-                (acc, name) =>
-                  Array.isArray(query![name])
-                    ? `${acc}&${name}=${(query![name] || []).join(ARRAY_SEPARATOR)}`
-                    : `${acc}&${name}=${query![name] || ""}`,
-                "",
-              )
-              .substring(1);
-      const route = this.#router.find(
-        method.toUpperCase() as HTTPMethod,
-        [pathWithLeadingSlash, stringQuery].filter(Boolean).join("?"),
-      );
-
-      if (!route || pathWithLeadingSlash.includes("?")) {
-        yield {
-          code: "request.path-or-method.unknown",
-          message: `Path or method not defined in spec file: ${method} ${path}`,
-          mockDetails: {
-            ...baseMockDetails(interaction),
-            location: `[root].interactions[${index}].request.path`,
-            value: interaction.request.path,
-          },
-          specDetails: {
-            location: "[root].paths",
-            pathMethod: null,
-            pathName: null,
-            value: undefined,
-          },
-          type: "error",
-        };
-        continue;
-      }
-
-      const results = Array.from(
-        compareReqPath(
-          this.#ajvCoerce,
-          route,
-          interaction,
-          index,
-          this.#config,
-        ),
-      );
-
-      if (results.length) {
-        yield* results;
-        continue;
-      }
-
-      yield* compareReqSecurity(
-        this.#ajvCoerce,
-        route,
-        interaction,
-        index,
-        this.#config,
-      );
-      yield* compareReqHeader(
-        this.#ajvCoerce,
-        route,
-        interaction,
-        index,
-        this.#config,
-      );
-      yield* compareReqQuery(
-        this.#ajvCoerce,
-        route,
-        interaction,
-        index,
-        this.#config,
-      );
-      yield* compareReqBody(
-        this.#ajvNocoerce,
-        route,
-        interaction,
-        index,
-        this.#config,
-      );
-      yield* compareResHeader(
-        this.#ajvCoerce,
-        route,
-        interaction,
-        index,
-        this.#config,
-      );
-      yield* compareResBody(
-        this.#ajvNocoerce,
-        route,
-        interaction,
-        index,
-        this.#config,
-      );
     }
   }
 }

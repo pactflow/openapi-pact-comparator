@@ -1,16 +1,15 @@
+import querystring from "node:querystring";
 import type { SchemaObject } from "ajv";
 import type Ajv from "ajv/dist/2019";
 import type Router from "find-my-way";
 import { get, omit } from "lodash-es";
 import qs from "qs";
-import querystring from "node:querystring";
-
+import type { HttpInteraction } from "#documents/pact";
 import type { Result } from "#results/index";
-import type { Interaction } from "#documents/pact";
 import {
   baseMockDetails,
-  formatMessage,
   formatInstancePath,
+  formatMessage,
   formatSchemaPath,
 } from "#results/index";
 import { minimumSchema } from "#transform/index";
@@ -30,7 +29,7 @@ const SWAGGER2_SEPARATORS = {
 export function* compareReqQuery(
   ajv: Ajv,
   route: Router.FindResult<Router.HTTPVersion.V1>,
-  interaction: Interaction,
+  interaction: HttpInteraction,
   index: number,
   config: Config,
 ): Iterable<Result> {

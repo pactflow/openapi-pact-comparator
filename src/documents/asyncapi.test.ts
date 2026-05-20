@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { AsyncAPIDocument, Ref } from "./asyncapi";
-import { ParserError, parse, resolveMessage } from "./asyncapi";
+import { ParserError, parse, resolveMessage, resolveReplyMessage } from "./asyncapi";
 
 const baseDoc: AsyncAPIDocument = {
   asyncapi: "3.1.0",
@@ -426,5 +426,128 @@ describe("resolveMessage", () => {
     expect(key1).not.toBe(key2);
     expect(cache.has(key1)).toBe(true);
     expect(cache.has(key2)).toBe(true);
+  });
+});
+
+const docWithReply: AsyncAPIDocument = {
+  asyncapi: "3.1.0",
+  info: { title: "RPC Service", version: "1.0.0" },
+  channels: {
+    requests: {
+      messages: {
+        OrderRequest: { messageId: "OrderRequest", payload: { type: "object" } },
+      },
+    },
+    replies: {
+      messages: {
+        OrderResponse: { messageId: "OrderResponse", payload: { type: "object" } },
+      },
+    },
+  },
+  operations: {
+    sendOrder: {
+      action: "send",
+      channel: { $ref: "#/channels/requests" },
+      messages: [{ $ref: "#/channels/requests/messages/OrderRequest" }],
+      reply: {
+        channel: { $ref: "#/channels/replies" },
+        messages: [{ $ref: "#/channels/replies/messages/OrderResponse" }],
+      },
+    },
+  },
+};
+
+describe("resolveReplyMessage", () => {
+  it("resolves a reply message from operation.reply.messages", () => {
+    const result = resolveReplyMessage(
+      docWithReply,
+      "sendOrder",
+      "OrderResponse",
+      new Map(),
+    );
+    expect(result).not.toBeNull();
+    expect(result?.message.messageId).toBe("OrderResponse");
+  });
+
+  it("returns null when operation has no reply field", () => {
+    const docNoReply: AsyncAPIDocument = {
+      ...docWithReply,
+      operations: {
+        sendOrder: {
+          action: "send",
+          channel: { $ref: "#/channels/requests" },
+          messages: [{ $ref: "#/channels/requests/messages/OrderRequest" }],
+        },
+      },
+    };
+    const result = resolveReplyMessage(
+      docNoReply,
+      "sendOrder",
+      "OrderResponse",
+      new Map(),
+    );
+    expect(result).toBeNull();
+  });
+
+  it("returns null when messageId not found in reply messages", () => {
+    const result = resolveReplyMessage(
+      docWithReply,
+      "sendOrder",
+      "UnknownMessage",
+      new Map(),
+    );
+    expect(result).toBeNull();
+  });
+
+  it("caches results", () => {
+    const cache = new Map();
+    resolveReplyMessage(docWithReply, "sendOrder", "OrderResponse", cache);
+    expect(cache.size).toBe(1);
+    // second call hits cache
+    const result = resolveReplyMessage(
+      docWithReply,
+      "sendOrder",
+      "OrderResponse",
+      cache,
+    );
+    expect(result).not.toBeNull();
+  });
+
+  it("returns null when operation does not exist", () => {
+    const result = resolveReplyMessage(
+      docWithReply,
+      "nonExistentOp",
+      "OrderResponse",
+      new Map(),
+    );
+    expect(result).toBeNull();
+  });
+
+  it("resolves an inline reply message with correct index path", () => {
+    const docInline: AsyncAPIDocument = {
+      asyncapi: "3.1.0",
+      info: { title: "RPC Service", version: "1.0.0" },
+      channels: {},
+      operations: {
+        sendOrder: {
+          action: "send",
+          channel: { $ref: "#/channels/requests" },
+          messages: [],
+          reply: {
+            messages: [
+              { messageId: "OrderResponse", payload: { type: "object" } },
+            ],
+          },
+        },
+      },
+    };
+    const result = resolveReplyMessage(
+      docInline,
+      "sendOrder",
+      "OrderResponse",
+      new Map(),
+    );
+    expect(result).not.toBeNull();
+    expect(result?.path).toBe("[root].operations.sendOrder.reply.messages[0]");
   });
 });

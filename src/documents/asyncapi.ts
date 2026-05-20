@@ -20,10 +20,16 @@ export interface Channel {
   messages?: Record<string, Message | Ref>;
 }
 
+export interface OperationReply {
+  channel?: Ref;
+  messages?: Array<Ref | Message>;
+}
+
 export interface Operation {
   action: "send" | "receive";
   channel: Ref;
   messages?: Array<Ref | Message>;
+  reply?: OperationReply;
 }
 
 export interface Message {
@@ -108,6 +114,52 @@ export const resolveMessage = (
       const result = { message: inlineMessage, path };
       cache.set(cacheKey, result);
       return result;
+    }
+  }
+
+  cache.set(cacheKey, null);
+  return null;
+};
+
+export const resolveReplyMessage = (
+  doc: AsyncAPIDocument,
+  operationId: string,
+  messageId: string,
+  cache: Map<string, ResolvedMessage | null>,
+): ResolvedMessage | null => {
+  const cacheKey = JSON.stringify(["reply", operationId, messageId]);
+  if (cache.has(cacheKey)) return cache.get(cacheKey)!;
+
+  const operation = doc.operations?.[operationId];
+  if (!operation?.reply) {
+    cache.set(cacheKey, null);
+    return null;
+  }
+
+  for (const [i, ref] of (Array.isArray(operation.reply.messages)
+    ? operation.reply.messages
+    : []
+  ).entries()) {
+    if (ref == null || typeof ref !== "object") continue;
+    if (isRef(ref)) {
+      const message = dereferenceDoc(ref, doc) as Message | undefined;
+      if (!message) continue;
+      const refKey = ref.$ref.split("/").pop() ?? "";
+      if (message.messageId === messageId || refKey === messageId) {
+        const path =
+          "[root]." + ref.$ref.replace(/^#\//, "").replace(/\//g, ".");
+        const result = { message, path };
+        cache.set(cacheKey, result);
+        return result;
+      }
+    } else {
+      const msg = ref as Message;
+      if (msg.messageId === messageId) {
+        const path = `[root].operations.${operationId}.reply.messages[${i}]`;
+        const result = { message: msg, path };
+        cache.set(cacheKey, result);
+        return result;
+      }
     }
   }
 

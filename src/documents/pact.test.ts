@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { type Pact, parse } from "./pact";
+import { type Pact, type SyncInteraction, parse } from "./pact";
 
 describe("#parser", () => {
   it("flattens headers", () => {
@@ -47,8 +47,22 @@ describe("#parser", () => {
         {
           type: "Synchronous/Messages",
           description: "sync-message",
-          request,
-          response,
+          request: {
+            contents: {
+              content: {},
+              contentType: "application/json",
+              encoded: false,
+            },
+          },
+          response: [
+            {
+              contents: {
+                content: {},
+                contentType: "application/json",
+                encoded: false,
+              },
+            },
+          ],
         },
       ],
     };
@@ -58,7 +72,7 @@ describe("#parser", () => {
     expect(pact.interactions[0]._kind).toBe("http");
     expect(pact.interactions[1]._kind).toBe("http");
     expect(pact.interactions[2]._kind).toBe("async");
-    expect(pact.interactions[3]._kind).toBe("skip");
+    expect(pact.interactions[3]._kind).toBe("sync");
   });
 
   it("parses asyncapiReferences when present in comments", () => {
@@ -231,5 +245,134 @@ describe("#parser", () => {
     expect(interactions[5].request.body).toEqual("hello world");
     expect(interactions[6].request.body).toEqual("{ not: json }");
     expect(interactions[7].request.body).toEqual("abcdef");
+  });
+});
+
+describe("parse — Synchronous/Messages", () => {
+  const syncPact = {
+    interactions: [
+      {
+        type: "Synchronous/Messages",
+        description: "place an order",
+        providerState: "the service is up",
+        comments: {
+          references: {
+            AsyncAPI: {
+              requestOperationId: "sendOrder",
+              requestMessageId: "OrderRequest",
+              responseOperationId: "receiveOrderResponse",
+              responseMessageId: "OrderResponse",
+            },
+          },
+        },
+        request: {
+          contents: {
+            content: { orderId: "o-123" },
+            contentType: "application/json",
+            encoded: false,
+          },
+          metadata: { "reply-to": "replies.queue" },
+        },
+        response: [
+          {
+            contents: {
+              content: { status: "accepted" },
+              contentType: "application/json",
+              encoded: false,
+            },
+            metadata: { "correlation-id": "c-abc" },
+          },
+        ],
+      },
+    ],
+    metadata: { pactSpecification: { version: "4.0" } },
+  };
+
+  it("parses Synchronous/Messages to _kind: sync", () => {
+    const pact = parse(syncPact as Pact);
+    expect(pact.interactions).toHaveLength(1);
+    const interaction = pact.interactions[0];
+    expect(interaction._kind).toBe("sync");
+  });
+
+  it("parses request payload and metadata", () => {
+    const pact = parse(syncPact as Pact);
+    const interaction = pact.interactions[0] as SyncInteraction;
+    expect(interaction.request.payload).toEqual({ orderId: "o-123" });
+    expect(interaction.request.contentType).toBe("application/json");
+    expect(interaction.request.metadata).toEqual({
+      "reply-to": "replies.queue",
+    });
+  });
+
+  it("parses response array", () => {
+    const pact = parse(syncPact as Pact);
+    const interaction = pact.interactions[0] as SyncInteraction;
+    expect(interaction.responses).toHaveLength(1);
+    expect(interaction.responses[0].payload).toEqual({ status: "accepted" });
+    expect(interaction.responses[0].metadata).toEqual({
+      "correlation-id": "c-abc",
+    });
+  });
+
+  it("parses asyncapiReferences from comments", () => {
+    const pact = parse(syncPact as Pact);
+    const interaction = pact.interactions[0] as SyncInteraction;
+    expect(interaction.asyncapiReferences).toEqual({
+      requestOperationId: "sendOrder",
+      requestMessageId: "OrderRequest",
+      responseOperationId: "receiveOrderResponse",
+      responseMessageId: "OrderResponse",
+    });
+  });
+
+  it("parses asyncapiReferences without responseOperationId (reply-field pattern)", () => {
+    const replyFieldPact = {
+      interactions: [
+        {
+          type: "Synchronous/Messages",
+          comments: {
+            references: {
+              AsyncAPI: {
+                requestOperationId: "sendOrder",
+                requestMessageId: "OrderRequest",
+                responseMessageId: "OrderResponse",
+                // no responseOperationId — use operation.reply
+              },
+            },
+          },
+          request: {
+            contents: {
+              content: {},
+              contentType: "application/json",
+              encoded: false,
+            },
+          },
+          response: [
+            {
+              contents: {
+                content: {},
+                contentType: "application/json",
+                encoded: false,
+              },
+            },
+          ],
+        },
+      ],
+      metadata: { pactSpecification: { version: "4.0" } },
+    };
+    const pact = parse(replyFieldPact as Pact);
+    const interaction = pact.interactions[0] as SyncInteraction;
+    expect(interaction.asyncapiReferences?.responseOperationId).toBeUndefined();
+  });
+
+  it("throws when Synchronous/Messages is missing request field", () => {
+    const barePact = {
+      interactions: [
+        { type: "Synchronous/Messages", description: "should fail" },
+      ],
+      metadata: { pactSpecification: { version: "4.0" } },
+    };
+    expect(() => parse(barePact as Pact)).toThrow();
   });
 });

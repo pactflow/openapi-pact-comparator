@@ -8,7 +8,23 @@
     },
     {
       "type": "Synchronous/Messages",
-      "description": "should be ignored"
+      "description": "should be ignored",
+      "request": {
+        "contents": {
+          "content": {},
+          "contentType": "application/json",
+          "encoded": false
+        }
+      },
+      "response": [
+        {
+          "contents": {
+            "content": {},
+            "contentType": "application/json",
+            "encoded": false
+          }
+        }
+      ]
     },
     {
       "type": "not-a-real-type",

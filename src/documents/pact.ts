@@ -72,6 +72,41 @@ const AsyncMessage = Type.Object({
   ),
 });
 
+const SyncMessageSide = Type.Object({
+  contents: Type.Optional(
+    Type.Object({
+      content: Type.Optional(Type.Unknown()),
+      contentType: Type.Optional(Type.String()),
+      encoded: Type.Optional(Type.Union([Type.String(), Type.Boolean()])),
+    }),
+  ),
+  metadata: Type.Optional(Type.Record(Type.String(), Type.String())),
+});
+
+const SyncMessage = Type.Object({
+  type: Type.String(),
+  description: Type.Optional(Type.String()),
+  providerState: Type.Optional(Type.String()),
+  request: SyncMessageSide,
+  response: Type.Array(SyncMessageSide),
+  comments: Type.Optional(
+    Type.Object({
+      references: Type.Optional(
+        Type.Object({
+          AsyncAPI: Type.Optional(
+            Type.Object({
+              requestOperationId: Type.String(),
+              requestMessageId: Type.String(),
+              responseOperationId: Type.Optional(Type.String()),
+              responseMessageId: Type.String(),
+            }),
+          ),
+        }),
+      ),
+    }),
+  ),
+});
+
 // Permissive pact schema — interactions may be HTTP or async; validation of
 // each interaction is performed after classification inside parse().
 export const Pact = Type.Object({
@@ -127,6 +162,28 @@ export interface AsyncInteraction {
   metadata?: Record<string, string>;
 }
 
+export interface SyncInteraction {
+  _kind: "sync";
+  description?: string;
+  providerState?: string;
+  asyncapiReferences?: {
+    requestOperationId: string;
+    requestMessageId: string;
+    responseOperationId?: string;
+    responseMessageId: string;
+  };
+  request: {
+    payload: unknown;
+    contentType?: string;
+    metadata?: Record<string, string>;
+  };
+  responses: Array<{
+    payload: unknown;
+    contentType?: string;
+    metadata?: Record<string, string>;
+  }>;
+}
+
 export interface SkippedInteraction {
   _kind: "skip";
 }
@@ -134,6 +191,7 @@ export interface SkippedInteraction {
 export type Interaction =
   | HttpInteraction
   | AsyncInteraction
+  | SyncInteraction
   | SkippedInteraction;
 
 export interface ParsedPact {
@@ -171,6 +229,38 @@ interface RawInteraction {
   metadata?: Record<string, string>;
 }
 
+interface RawSyncInteraction {
+  type: string;
+  description?: string;
+  providerState?: string;
+  request: {
+    contents?: {
+      content?: unknown;
+      contentType?: string;
+      encoded?: string | boolean;
+    };
+    metadata?: Record<string, string>;
+  };
+  response: Array<{
+    contents?: {
+      content?: unknown;
+      contentType?: string;
+      encoded?: string | boolean;
+    };
+    metadata?: Record<string, string>;
+  }>;
+  comments?: {
+    references?: {
+      AsyncAPI?: {
+        requestOperationId: string;
+        requestMessageId: string;
+        responseOperationId?: string;
+        responseMessageId: string;
+      };
+    };
+  };
+}
+
 const isHttpInteraction = (i: RawInteraction) =>
   i.type === undefined ||
   (typeof i.type === "string" && i.type.toLowerCase() === "synchronous/http");
@@ -178,6 +268,11 @@ const isHttpInteraction = (i: RawInteraction) =>
 const isAsyncInteraction = (i: RawInteraction) =>
   typeof i.type === "string" &&
   i.type.toLowerCase() === "asynchronous/messages";
+
+const isSyncInteraction = (
+  i: RawInteraction,
+): i is RawInteraction & RawSyncInteraction =>
+  typeof i.type === "string" && i.type.toLowerCase() === "synchronous/messages";
 
 const parseAsPactV4Body = (body: unknown) => {
   if (!body) {
@@ -278,9 +373,39 @@ const parseAsyncInteraction = (i: RawInteraction): AsyncInteraction => {
   };
 };
 
+const parseSyncInteraction = (
+  i: RawInteraction & RawSyncInteraction,
+): SyncInteraction => {
+  const asyncapiRef = i.comments?.references?.AsyncAPI;
+  return {
+    _kind: "sync",
+    description: i.description,
+    providerState: i.providerState,
+    asyncapiReferences: asyncapiRef
+      ? {
+          requestOperationId: asyncapiRef.requestOperationId,
+          requestMessageId: asyncapiRef.requestMessageId,
+          responseOperationId: asyncapiRef.responseOperationId,
+          responseMessageId: asyncapiRef.responseMessageId,
+        }
+      : undefined,
+    request: {
+      payload: parseAsPactV4Body(i.request.contents),
+      contentType: i.request.contents?.contentType,
+      metadata: i.request.metadata,
+    },
+    responses: i.response.map((r) => ({
+      payload: parseAsPactV4Body(r.contents),
+      contentType: r.contents?.contentType,
+      metadata: r.metadata,
+    })),
+  };
+};
+
 const ajv = new Ajv();
 const validateHttpInteractions = ajv.compile(Type.Array(HttpMessage));
 const validateAsyncInteractions = ajv.compile(Type.Array(AsyncMessage));
+const validateSyncInteractions = ajv.compile(Type.Array(SyncMessage));
 
 export const parse = (pact: Pact): ParsedPact => {
   const { metadata, interactions = [] } = pact;
@@ -302,6 +427,13 @@ export const parse = (pact: Pact): ParsedPact => {
     throw new ParserError(validateAsyncInteractions.errors!);
   }
 
+  const isSyncValid = validateSyncInteractions(
+    rawInteractions.filter(isSyncInteraction),
+  );
+  if (!isSyncValid) {
+    throw new ParserError(validateSyncInteractions.errors!);
+  }
+
   const version = parseInt(
     metadata?.pactSpecification?.version ||
       metadata?.pactSpecificationVersion ||
@@ -315,6 +447,7 @@ export const parse = (pact: Pact): ParsedPact => {
     interactions: rawInteractions.map((i): Interaction => {
       if (isHttpInteraction(i)) return httpParser(i);
       if (isAsyncInteraction(i)) return parseAsyncInteraction(i);
+      if (isSyncInteraction(i)) return parseSyncInteraction(i);
       return { _kind: "skip" };
     }),
   };

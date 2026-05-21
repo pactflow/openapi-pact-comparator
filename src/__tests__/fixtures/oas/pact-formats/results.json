@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "code": "interaction.sync.unsupported",
+    "message": "Interaction \"should be ignored\" uses Synchronous/Messages which is not yet supported and has been skipped",
+    "mockDetails": {
+      "interactionDescription": "should be ignored",
+      "interactionState": null,
+      "location": "[1]"
+    },
+    "type": "warning"
+  }
+]

@@ -127,6 +127,11 @@ export interface AsyncInteraction {
   metadata?: Record<string, string>;
 }
 
+export interface SyncInteraction {
+  _kind: "sync";
+  description?: string;
+}
+
 export interface SkippedInteraction {
   _kind: "skip";
 }
@@ -134,6 +139,7 @@ export interface SkippedInteraction {
 export type Interaction =
   | HttpInteraction
   | AsyncInteraction
+  | SyncInteraction
   | SkippedInteraction;
 
 export interface ParsedPact {
@@ -178,6 +184,10 @@ const isHttpInteraction = (i: RawInteraction) =>
 const isAsyncInteraction = (i: RawInteraction) =>
   typeof i.type === "string" &&
   i.type.toLowerCase() === "asynchronous/messages";
+
+const isSyncInteraction = (i: RawInteraction) =>
+  typeof i.type === "string" &&
+  i.type.toLowerCase() === "synchronous/messages";
 
 const parseAsPactV4Body = (body: unknown) => {
   if (!body) {
@@ -315,6 +325,7 @@ export const parse = (pact: Pact): ParsedPact => {
     interactions: rawInteractions.map((i): Interaction => {
       if (isHttpInteraction(i)) return httpParser(i);
       if (isAsyncInteraction(i)) return parseAsyncInteraction(i);
+      if (isSyncInteraction(i)) return { _kind: "sync", description: i.description };
       return { _kind: "skip" };
     }),
   };

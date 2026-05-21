@@ -89,6 +89,19 @@ export class Comparator {
             index,
           );
           break;
+        case "sync":
+          yield {
+            code: "interaction.sync.unsupported",
+            message: `Interaction "${interaction.description ?? index}" uses Synchronous/Messages which is not yet supported and has been skipped`,
+            mockDetails: {
+              interactionDescription: interaction.description,
+              interactionState: null,
+              location: `[${index}]`,
+              value: undefined,
+            },
+            type: "warning",
+          };
+          break;
         case "skip":
           break;
         default:

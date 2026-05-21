@@ -23,6 +23,7 @@ type ErrorCode =
   | "response.status.unknown";
 
 type WarningCode =
+  | "interaction.sync.unsupported"
   | "message.payload.unknown"
   | "pact-broker.no-pacts-found"
   | "request.accept.unknown"

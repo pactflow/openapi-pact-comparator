@@ -58,7 +58,7 @@ describe("#parser", () => {
     expect(pact.interactions[0]._kind).toBe("http");
     expect(pact.interactions[1]._kind).toBe("http");
     expect(pact.interactions[2]._kind).toBe("async");
-    expect(pact.interactions[3]._kind).toBe("skip");
+    expect(pact.interactions[3]._kind).toBe("sync");
   });
 
   it("parses asyncapiReferences when present in comments", () => {

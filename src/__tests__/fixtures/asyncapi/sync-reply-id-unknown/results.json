@@ -1,0 +1,16 @@
+[
+  {
+    "code": "message.reply.id.unknown",
+    "message": "Message not defined in AsyncAPI spec: NonExistentResponse",
+    "mockDetails": {
+      "interactionDescription": "place an order with unknown reply message id",
+      "interactionState": null,
+      "location": "[root].interactions[0].comments.references.AsyncAPI.responseMessageId",
+      "value": "NonExistentResponse"
+    },
+    "specDetails": {
+      "location": "[root].operations.sendOrder.reply.messages"
+    },
+    "type": "error"
+  }
+]

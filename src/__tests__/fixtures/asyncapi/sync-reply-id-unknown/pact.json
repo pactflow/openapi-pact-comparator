@@ -1,0 +1,36 @@
+{
+  "consumer": { "name": "consumer" },
+  "provider": { "name": "provider" },
+  "interactions": [
+    {
+      "type": "Synchronous/Messages",
+      "description": "place an order with unknown reply message id",
+      "comments": {
+        "references": {
+          "AsyncAPI": {
+            "requestOperationId": "sendOrder",
+            "requestMessageId": "OrderRequest",
+            "responseMessageId": "NonExistentResponse"
+          }
+        }
+      },
+      "request": {
+        "contents": {
+          "content": { "orderId": "o-123" },
+          "contentType": "application/json",
+          "encoded": false
+        }
+      },
+      "response": [
+        {
+          "contents": {
+            "content": { "status": "accepted" },
+            "contentType": "application/json",
+            "encoded": false
+          }
+        }
+      ]
+    }
+  ],
+  "metadata": { "pactSpecification": { "version": "4.0" } }
+}

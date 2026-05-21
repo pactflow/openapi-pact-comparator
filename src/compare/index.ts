@@ -2,6 +2,7 @@ import type Ajv from "ajv/dist/2019";
 import type Router from "find-my-way";
 import type { OpenAPIV2, OpenAPIV3 } from "openapi-types";
 import { compareAsyncInteraction } from "#compare/asyncapi/index";
+import { compareSyncInteraction } from "#compare/asyncapi/syncMessage";
 import { compareHttpInteraction } from "#compare/oas/index";
 import type { AsyncAPIDocument, ResolvedMessage } from "#documents/asyncapi";
 import { parse as parseAsyncapi } from "#documents/asyncapi";
@@ -82,6 +83,16 @@ export class Comparator {
         case "async":
           if (this.#oas && !this.#asyncapi) break;
           yield* compareAsyncInteraction(
+            this.#ajvNocoerce,
+            this.#asyncapi,
+            this.#resolvedMessages,
+            interaction,
+            index,
+          );
+          break;
+        case "sync":
+          if (this.#oas && !this.#asyncapi) break;
+          yield* compareSyncInteraction(
             this.#ajvNocoerce,
             this.#asyncapi,
             this.#resolvedMessages,

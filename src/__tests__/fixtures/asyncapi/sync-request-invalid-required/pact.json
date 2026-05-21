@@ -1,0 +1,37 @@
+{
+  "consumer": { "name": "consumer" },
+  "provider": { "name": "provider" },
+  "interactions": [
+    {
+      "type": "Synchronous/Messages",
+      "description": "place an order with missing field",
+      "comments": {
+        "references": {
+          "AsyncAPI": {
+            "requestOperationId": "sendOrder",
+            "requestMessageId": "OrderRequest",
+            "responseOperationId": "receiveOrderResponse",
+            "responseMessageId": "OrderResponse"
+          }
+        }
+      },
+      "request": {
+        "contents": {
+          "content": {},
+          "contentType": "application/json",
+          "encoded": false
+        }
+      },
+      "response": [
+        {
+          "contents": {
+            "content": { "status": "accepted" },
+            "contentType": "application/json",
+            "encoded": false
+          }
+        }
+      ]
+    }
+  ],
+  "metadata": { "pactSpecification": { "version": "4.0" } }
+}

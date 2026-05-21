@@ -1,0 +1,19 @@
+[
+  {
+    "code": "message.payload.incompatible",
+    "message": "Message payload is incompatible with the schema in the spec file: must have required property 'orderId'",
+    "mockDetails": {
+      "interactionDescription": "place an order with missing field",
+      "interactionState": null,
+      "location": "[root].interactions[0].request.contents.content",
+      "value": {}
+    },
+    "specDetails": {
+      "location": "[root].channels.requests.messages.OrderRequest.payload.required",
+      "value": [
+        "orderId"
+      ]
+    },
+    "type": "error"
+  }
+]

@@ -9,7 +9,12 @@
       "value": "NonExistentResponse"
     },
     "specDetails": {
-      "location": "[root].operations.sendOrder.reply.messages"
+      "location": "[root].operations.sendOrder.reply.messages",
+      "value": [
+        {
+          "$ref": "#/channels/replies/messages/OrderResponse"
+        }
+      ]
     },
     "type": "error"
   }

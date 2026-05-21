@@ -195,7 +195,9 @@ export function* compareSyncInteraction(
         },
         specDetails: {
           location: responseSpecLocation,
-          value: undefined,
+          value: responseOperationId
+            ? asyncapi.operations[responseOperationId]?.messages
+            : asyncapi.operations[requestOperationId]?.reply?.messages,
         },
         type: "error",
       };

@@ -62,7 +62,6 @@ const AsyncMessage = Type.Object({
         Type.Object({
           AsyncAPI: Type.Optional(
             Type.Object({
-              messageId: Type.String(),
               operationId: Type.String(),
             }),
           ),
@@ -95,10 +94,7 @@ const SyncMessage = Type.Object({
         Type.Object({
           AsyncAPI: Type.Optional(
             Type.Object({
-              requestOperationId: Type.String(),
-              requestMessageId: Type.String(),
-              responseOperationId: Type.Optional(Type.String()),
-              responseMessageId: Type.String(),
+              operationId: Type.String(),
             }),
           ),
         }),
@@ -156,7 +152,7 @@ export interface AsyncInteraction {
   _kind: "async";
   description?: string;
   providerState?: string;
-  asyncapiReferences?: { messageId: string; operationId: string };
+  asyncapiReferences?: { operationId: string };
   payload: unknown;
   contentType?: string;
   metadata?: Record<string, string>;
@@ -166,12 +162,7 @@ export interface SyncInteraction {
   _kind: "sync";
   description?: string;
   providerState?: string;
-  asyncapiReferences?: {
-    requestOperationId: string;
-    requestMessageId: string;
-    responseOperationId?: string;
-    responseMessageId: string;
-  };
+  asyncapiReferences?: { operationId: string };
   request: {
     payload: unknown;
     contentType?: string;
@@ -218,7 +209,7 @@ interface RawInteraction {
   };
   comments?: {
     references?: {
-      AsyncAPI?: { messageId: string; operationId: string };
+      AsyncAPI?: { operationId: string };
     };
   };
   contents?: {
@@ -251,12 +242,7 @@ interface RawSyncInteraction {
   }>;
   comments?: {
     references?: {
-      AsyncAPI?: {
-        requestOperationId: string;
-        requestMessageId: string;
-        responseOperationId?: string;
-        responseMessageId: string;
-      };
+      AsyncAPI?: { operationId: string };
     };
   };
 }
@@ -362,10 +348,7 @@ const parseAsyncInteraction = (i: RawInteraction): AsyncInteraction => {
     description: i.description,
     providerState: i.providerState,
     asyncapiReferences: asyncapiRef
-      ? {
-          messageId: asyncapiRef.messageId,
-          operationId: asyncapiRef.operationId,
-        }
+      ? { operationId: asyncapiRef.operationId }
       : undefined,
     payload: parseAsPactV4Body(i.contents),
     contentType: i.contents?.contentType,
@@ -382,12 +365,7 @@ const parseSyncInteraction = (
     description: i.description,
     providerState: i.providerState,
     asyncapiReferences: asyncapiRef
-      ? {
-          requestOperationId: asyncapiRef.requestOperationId,
-          requestMessageId: asyncapiRef.requestMessageId,
-          responseOperationId: asyncapiRef.responseOperationId,
-          responseMessageId: asyncapiRef.responseMessageId,
-        }
+      ? { operationId: asyncapiRef.operationId }
       : undefined,
     request: {
       payload: parseAsPactV4Body(i.request.contents),

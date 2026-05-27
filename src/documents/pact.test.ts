@@ -85,7 +85,6 @@ describe("#parser", () => {
           comments: {
             references: {
               AsyncAPI: {
-                messageId: "organizationDeleted",
                 operationId: "consumeFromEventsQueue",
               },
             },
@@ -105,7 +104,6 @@ describe("#parser", () => {
     if (interaction._kind !== "async")
       throw new Error("expected async interaction");
     expect(interaction.asyncapiReferences).toEqual({
-      messageId: "organizationDeleted",
       operationId: "consumeFromEventsQueue",
     });
     expect(interaction.payload).toEqual({ organizationId: "abc-123" });
@@ -258,10 +256,7 @@ describe("parse — Synchronous/Messages", () => {
         comments: {
           references: {
             AsyncAPI: {
-              requestOperationId: "sendOrder",
-              requestMessageId: "OrderRequest",
-              responseOperationId: "receiveOrderResponse",
-              responseMessageId: "OrderResponse",
+              operationId: "sendOrder",
             },
           },
         },
@@ -319,14 +314,11 @@ describe("parse — Synchronous/Messages", () => {
     const pact = parse(syncPact as Pact);
     const interaction = pact.interactions[0] as SyncInteraction;
     expect(interaction.asyncapiReferences).toEqual({
-      requestOperationId: "sendOrder",
-      requestMessageId: "OrderRequest",
-      responseOperationId: "receiveOrderResponse",
-      responseMessageId: "OrderResponse",
+      operationId: "sendOrder",
     });
   });
 
-  it("parses asyncapiReferences without responseOperationId (reply-field pattern)", () => {
+  it("parses asyncapiReferences as operationId only", () => {
     const replyFieldPact = {
       interactions: [
         {
@@ -334,10 +326,7 @@ describe("parse — Synchronous/Messages", () => {
           comments: {
             references: {
               AsyncAPI: {
-                requestOperationId: "sendOrder",
-                requestMessageId: "OrderRequest",
-                responseMessageId: "OrderResponse",
-                // no responseOperationId — use operation.reply
+                operationId: "sendOrder",
               },
             },
           },
@@ -363,7 +352,9 @@ describe("parse — Synchronous/Messages", () => {
     };
     const pact = parse(replyFieldPact as Pact);
     const interaction = pact.interactions[0] as SyncInteraction;
-    expect(interaction.asyncapiReferences?.responseOperationId).toBeUndefined();
+    expect(interaction.asyncapiReferences).toEqual({
+      operationId: "sendOrder",
+    });
   });
 
   it("throws when Synchronous/Messages is missing request field", () => {

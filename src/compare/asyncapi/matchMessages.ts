@@ -37,9 +37,6 @@ export function* tryMatchAllMessages(
         : undefined,
     };
 
-    // Always use "request" direction for matching to enforce required constraints
-    // when finding a candidate match; transformReceivedSchema strips required
-    // from response schemas which would cause false matches.
     const errors: Result[] = [
       ...compareMessagePayload(
         ajv,
@@ -50,7 +47,7 @@ export function* tryMatchAllMessages(
         providerState,
         payloadLocation,
         candidate.path,
-        "request",
+        direction,
       ),
       ...compareMessageHeaders(
         ajv,
@@ -60,7 +57,7 @@ export function* tryMatchAllMessages(
         providerState,
         headersLocation,
         candidate.path,
-        "request",
+        direction,
       ),
     ];
 

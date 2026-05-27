@@ -76,7 +76,7 @@ describe("tryMatchAllMessages", () => {
         "[root].interactions[0].contents.content",
         "[root].interactions[0].metadata",
         "[root].operations.op.messages",
-        "response",
+        "request",
         noMatchMockDetails,
       ),
     ];
@@ -135,7 +135,7 @@ describe("tryMatchAllMessages", () => {
         "[root].interactions[0].contents.content",
         "[root].interactions[0].metadata",
         "[root].operations.op.messages",
-        "response",
+        "request",
         noMatchMockDetails,
       ),
     ];
@@ -160,7 +160,7 @@ describe("tryMatchAllMessages", () => {
         "[root].interactions[0].contents.content",
         "[root].interactions[0].metadata",
         "[root].operations.op.messages",
-        "response",
+        "request",
         noMatchMockDetails,
       ),
     ];

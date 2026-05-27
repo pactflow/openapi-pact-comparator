@@ -26,7 +26,7 @@ export class Comparator {
   #oas?: OpenAPIV2.Document | OpenAPIV3.Document;
   #asyncapi?: AsyncAPIDocument;
   #router?: Router.Instance<Router.HTTPVersion.V1>;
-  #resolvedMessages: Map<string, ResolvedMessage | null> = new Map();
+  #resolvedMessages: Map<string, ResolvedMessage> = new Map();
 
   constructor(options: ComparatorOptions = {}) {
     this.#config = new Map(DEFAULT_CONFIG);

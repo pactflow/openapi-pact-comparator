@@ -1,23 +1,15 @@
 import type Ajv from "ajv/dist/2019";
-
-import type {
-  AsyncAPIDocument,
-  Message,
-  ResolvedMessage,
-} from "#documents/asyncapi";
-import { resolveMessage } from "#documents/asyncapi";
+import type { AsyncAPIDocument, ResolvedMessage } from "#documents/asyncapi";
+import { iterateMessages } from "#documents/asyncapi";
 import type { AsyncInteraction } from "#documents/pact";
 import type { Result } from "#results/index";
 import { baseMockDetails } from "#results/index";
-import { resolveSchemaRefs } from "#utils/schema";
-
-import { compareMessageHeaders } from "./messageHeaders";
-import { compareMessagePayload } from "./messagePayload";
+import { tryMatchAllMessages } from "./matchMessages";
 
 export function* compareAsyncInteraction(
   ajv: Ajv,
   asyncapi: AsyncAPIDocument | undefined,
-  cache: Map<string, ResolvedMessage | null>,
+  cache: Map<string, ResolvedMessage>,
   interaction: AsyncInteraction,
   index: number,
 ): Iterable<Result> {
@@ -52,7 +44,7 @@ export function* compareAsyncInteraction(
     return;
   }
 
-  const { operationId, messageId } = interaction.asyncapiReferences;
+  const { operationId } = interaction.asyncapiReferences;
 
   if (!asyncapi.operations?.[operationId]) {
     yield {
@@ -69,54 +61,23 @@ export function* compareAsyncInteraction(
     return;
   }
 
-  const resolved = resolveMessage(asyncapi, operationId, messageId, cache);
-  if (!resolved) {
-    yield {
-      code: "message.id.unknown",
-      message: `Message not defined in AsyncAPI spec: ${messageId}`,
-      mockDetails: {
-        ...baseMockDetails(interaction),
-        location: `[root].interactions[${index}].comments.references.AsyncAPI.messageId`,
-        value: messageId,
-      },
-      specDetails: {
-        location: `[root].operations.${operationId}.messages`,
-        value: asyncapi.operations[operationId]?.messages,
-      },
-      type: "error",
-    };
-    return;
-  }
-
-  const message: Message = {
-    ...resolved.message,
-    payload: resolved.message.payload
-      ? (resolveSchemaRefs(resolved.message.payload, asyncapi) as object)
-      : undefined,
-    headers: resolved.message.headers
-      ? (resolveSchemaRefs(resolved.message.headers, asyncapi) as object)
-      : undefined,
-  };
-
-  yield* compareMessagePayload(
+  yield* tryMatchAllMessages(
     ajv,
-    message,
+    asyncapi,
+    iterateMessages(asyncapi, operationId, cache),
     interaction.payload,
     interaction.contentType,
-    interaction.description ?? null,
-    interaction.providerState ?? null,
-    `[root].interactions[${index}].contents.content`,
-    resolved.path,
-    "response",
-  );
-  yield* compareMessageHeaders(
-    ajv,
-    message,
     interaction.metadata,
     interaction.description ?? null,
     interaction.providerState ?? null,
+    `[root].interactions[${index}].contents.content`,
     `[root].interactions[${index}].metadata`,
-    resolved.path,
+    `[root].operations.${operationId}.messages`,
     "response",
+    {
+      ...baseMockDetails(interaction),
+      location: `[root].interactions[${index}]`,
+      value: interaction.description,
+    },
   );
 }

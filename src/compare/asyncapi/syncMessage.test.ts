@@ -11,8 +11,7 @@ const makeAjv = () => {
   return ajv;
 };
 
-// Two-operation pattern
-const twoOpDoc: AsyncAPIDocument = {
+const doc: AsyncAPIDocument = {
   asyncapi: "3.1.0",
   info: { title: "Order Service", version: "1.0.0" },
   channels: {
@@ -46,11 +45,15 @@ const twoOpDoc: AsyncAPIDocument = {
       action: "send",
       channel: { $ref: "#/channels/requests" },
       messages: [{ $ref: "#/channels/requests/messages/OrderRequest" }],
+      reply: {
+        channel: { $ref: "#/channels/replies" },
+        messages: [{ $ref: "#/channels/replies/messages/OrderResponse" }],
+      },
     },
-    receiveOrderResponse: {
-      action: "receive",
-      channel: { $ref: "#/channels/replies" },
-      messages: [{ $ref: "#/channels/replies/messages/OrderResponse" }],
+    sendOrderNoReply: {
+      action: "send",
+      channel: { $ref: "#/channels/requests" },
+      messages: [{ $ref: "#/channels/requests/messages/OrderRequest" }],
     },
   },
 };
@@ -58,30 +61,23 @@ const twoOpDoc: AsyncAPIDocument = {
 const validInteraction: SyncInteraction = {
   _kind: "sync",
   description: "place an order",
-  asyncapiReferences: {
-    requestOperationId: "sendOrder",
-    requestMessageId: "OrderRequest",
-    responseOperationId: "receiveOrderResponse",
-    responseMessageId: "OrderResponse",
-  },
-  request: {
-    payload: { orderId: "o-123" },
-    contentType: "application/json",
-  },
+  asyncapiReferences: { operationId: "sendOrder" },
+  request: { payload: { orderId: "o-123" }, contentType: "application/json" },
   responses: [
-    {
-      payload: { status: "accepted" },
-      contentType: "application/json",
-    },
+    { payload: { status: "accepted" }, contentType: "application/json" },
   ],
 };
 
 describe("compareSyncInteraction", () => {
-  it("yields no results for a valid two-operation interaction", () => {
+  it("yields message.matched info for both request and response when valid", () => {
     const results = Array.from(
-      compareSyncInteraction(makeAjv(), twoOpDoc, new Map(), validInteraction, 0),
+      compareSyncInteraction(makeAjv(), doc, new Map(), validInteraction, 0),
     );
-    expect(results).toHaveLength(0);
+    expect(results).toHaveLength(2);
+    expect(results[0].code).toBe("message.matched");
+    expect(results[0].type).toBe("info");
+    expect(results[1].code).toBe("message.matched");
+    expect(results[1].type).toBe("info");
   });
 
   it("yields message.spec.missing when no asyncapi doc provided", () => {
@@ -98,137 +94,149 @@ describe("compareSyncInteraction", () => {
     expect(results[0].code).toBe("message.spec.missing");
   });
 
-  it("yields message.references.missing when interaction has no asyncapiReferences", () => {
-    const interaction: SyncInteraction = { ...validInteraction, asyncapiReferences: undefined };
+  it("yields message.references.missing when asyncapiReferences absent", () => {
+    const interaction: SyncInteraction = {
+      ...validInteraction,
+      asyncapiReferences: undefined,
+    };
     const results = Array.from(
-      compareSyncInteraction(makeAjv(), twoOpDoc, new Map(), interaction, 0),
+      compareSyncInteraction(makeAjv(), doc, new Map(), interaction, 0),
     );
     expect(results).toHaveLength(1);
     expect(results[0].code).toBe("message.references.missing");
   });
 
-  it("yields message.operation.unknown when request operation not found", () => {
+  it("yields message.operation.unknown when operationId not in spec", () => {
     const interaction: SyncInteraction = {
       ...validInteraction,
-      asyncapiReferences: { ...validInteraction.asyncapiReferences!, requestOperationId: "noSuchOp" },
+      asyncapiReferences: { operationId: "noSuchOp" },
     };
     const results = Array.from(
-      compareSyncInteraction(makeAjv(), twoOpDoc, new Map(), interaction, 0),
+      compareSyncInteraction(makeAjv(), doc, new Map(), interaction, 0),
     );
     expect(results).toHaveLength(1);
     expect(results[0].code).toBe("message.operation.unknown");
   });
 
-  it("yields message.id.unknown when request messageId not found", () => {
-    const interaction: SyncInteraction = {
-      ...validInteraction,
-      asyncapiReferences: { ...validInteraction.asyncapiReferences!, requestMessageId: "NoSuchMsg" },
-    };
-    const results = Array.from(
-      compareSyncInteraction(makeAjv(), twoOpDoc, new Map(), interaction, 0),
-    );
-    expect(results).toHaveLength(1);
-    expect(results[0].code).toBe("message.id.unknown");
-  });
-
-  it("yields message.payload.incompatible when request payload violates required field", () => {
+  it("yields message.no.match with causes when request payload is invalid", () => {
     const interaction: SyncInteraction = {
       ...validInteraction,
       request: { ...validInteraction.request, payload: {} }, // missing required orderId
     };
     const results = Array.from(
-      compareSyncInteraction(makeAjv(), twoOpDoc, new Map(), interaction, 0),
+      compareSyncInteraction(makeAjv(), doc, new Map(), interaction, 0),
     );
     expect(results).toHaveLength(1);
-    expect(results[0].code).toBe("message.payload.incompatible");
+    expect(results[0].code).toBe("message.no.match");
+    expect(results[0].causes![0].code).toBe("message.payload.incompatible");
   });
 
-  it("yields message.operation.unknown when response operation not found", () => {
+  it("stops after request failure and does not validate response", () => {
     const interaction: SyncInteraction = {
       ...validInteraction,
-      asyncapiReferences: { ...validInteraction.asyncapiReferences!, responseOperationId: "noSuchOp" },
+      request: { ...validInteraction.request, payload: {} },
     };
     const results = Array.from(
-      compareSyncInteraction(makeAjv(), twoOpDoc, new Map(), interaction, 0),
+      compareSyncInteraction(makeAjv(), doc, new Map(), interaction, 0),
     );
+    // Only one result (the request no-match) — response is never checked
     expect(results).toHaveLength(1);
-    expect(results[0].code).toBe("message.operation.unknown");
+    expect(results[0].code).toBe("message.no.match");
   });
 
-  it("yields message.id.unknown when response messageId not found in response operation", () => {
+  it("yields message.reply.missing when operation has no reply field", () => {
     const interaction: SyncInteraction = {
       ...validInteraction,
-      asyncapiReferences: { ...validInteraction.asyncapiReferences!, responseMessageId: "NoSuchMsg" },
+      asyncapiReferences: { operationId: "sendOrderNoReply" },
     };
     const results = Array.from(
-      compareSyncInteraction(makeAjv(), twoOpDoc, new Map(), interaction, 0),
+      compareSyncInteraction(makeAjv(), doc, new Map(), interaction, 0),
     );
-    expect(results).toHaveLength(1);
-    expect(results[0].code).toBe("message.id.unknown");
+    // First result: message.matched for request; second: message.reply.missing
+    expect(results).toHaveLength(2);
+    expect(results[0].code).toBe("message.matched");
+    expect(results[1].code).toBe("message.reply.missing");
   });
 
-  it("yields no error when response payload omits required spec fields (consumer asserts subset)", () => {
+  it("yields message.no.match with causes when response payload does not match", () => {
     const interaction: SyncInteraction = {
       ...validInteraction,
-      responses: [{ payload: {}, contentType: "application/json" }], // missing required status — OK for response direction
+      responses: [{ payload: { status: 42 }, contentType: "application/json" }], // status must be string
     };
     const results = Array.from(
-      compareSyncInteraction(makeAjv(), twoOpDoc, new Map(), interaction, 0),
+      compareSyncInteraction(makeAjv(), doc, new Map(), interaction, 0),
     );
-    expect(results).toHaveLength(0);
+    // request: message.matched; response: message.no.match
+    expect(results).toHaveLength(2);
+    expect(results[0].code).toBe("message.matched");
+    expect(results[1].code).toBe("message.no.match");
+    expect(results[1].causes![0].code).toBe("message.payload.incompatible");
   });
 
-  it("yields message.reply.missing when operation has no reply and no responseOperationId", () => {
-    const docNoReply: AsyncAPIDocument = {
-      ...twoOpDoc,
-      operations: {
-        sendOrder: twoOpDoc.operations!.sendOrder, // no reply field
+  it("yields no error when response payload omits optional spec fields", () => {
+    const interaction: SyncInteraction = {
+      ...validInteraction,
+      responses: [{ payload: {}, contentType: "application/json" }],
+    };
+    const results = Array.from(
+      compareSyncInteraction(makeAjv(), doc, new Map(), interaction, 0),
+    );
+    // Both request and response match (response direction doesn't enforce required)
+    expect(results.every((r) => r.code === "message.matched")).toBe(true);
+  });
+
+  it("validates each response entry independently", () => {
+    const interaction: SyncInteraction = {
+      ...validInteraction,
+      responses: [
+        { payload: { status: "ok" }, contentType: "application/json" },
+        { payload: { status: 42 }, contentType: "application/json" }, // invalid
+      ],
+    };
+    const results = Array.from(
+      compareSyncInteraction(makeAjv(), doc, new Map(), interaction, 0),
+    );
+    // request: matched; response[0]: matched; response[1]: no.match
+    expect(results).toHaveLength(3);
+    expect(results[0].code).toBe("message.matched"); // request
+    expect(results[1].code).toBe("message.matched"); // response[0]
+    expect(results[2].code).toBe("message.no.match"); // response[1]
+  });
+
+  // Multi-message: operation has two request candidates
+  it("matches second request candidate when first fails", () => {
+    const multiDoc: AsyncAPIDocument = {
+      ...doc,
+      channels: {
+        ...doc.channels,
+        requests: {
+          messages: {
+            OrderRequest: doc.channels!.requests!.messages!.OrderRequest,
+            SimpleRequest: {
+              messageId: "SimpleRequest",
+              payload: { type: "object" }, // accepts anything
+            },
+          },
+        },
       },
-    };
-    const replyFieldInteraction: SyncInteraction = {
-      ...validInteraction,
-      asyncapiReferences: {
-        requestOperationId: "sendOrder",
-        requestMessageId: "OrderRequest",
-        // no responseOperationId — should use operation.reply
-        responseMessageId: "OrderResponse",
-      },
-    };
-    const results = Array.from(
-      compareSyncInteraction(makeAjv(), docNoReply, new Map(), replyFieldInteraction, 0),
-    );
-    expect(results).toHaveLength(1);
-    expect(results[0].code).toBe("message.reply.missing");
-  });
-
-  it("yields message.reply.id.unknown when responseMessageId not found in operation.reply", () => {
-    const docWithReply: AsyncAPIDocument = {
-      ...twoOpDoc,
       operations: {
         sendOrder: {
-          action: "send",
-          channel: { $ref: "#/channels/requests" },
-          messages: [{ $ref: "#/channels/requests/messages/OrderRequest" }],
-          reply: {
-            channel: { $ref: "#/channels/replies" },
-            messages: [{ $ref: "#/channels/replies/messages/OrderResponse" }],
-          },
+          ...doc.operations!.sendOrder,
+          messages: [
+            { $ref: "#/channels/requests/messages/OrderRequest" }, // requires orderId
+            { $ref: "#/channels/requests/messages/SimpleRequest" }, // accepts anything
+          ],
         },
       },
     };
     const interaction: SyncInteraction = {
       ...validInteraction,
-      asyncapiReferences: {
-        requestOperationId: "sendOrder",
-        requestMessageId: "OrderRequest",
-        // no responseOperationId — uses reply field
-        responseMessageId: "NoSuchReplyMsg",
-      },
+      request: { payload: {}, contentType: "application/json" }, // fails OrderRequest, passes SimpleRequest
     };
     const results = Array.from(
-      compareSyncInteraction(makeAjv(), docWithReply, new Map(), interaction, 0),
+      compareSyncInteraction(makeAjv(), multiDoc, new Map(), interaction, 0),
     );
-    expect(results).toHaveLength(1);
-    expect(results[0].code).toBe("message.reply.id.unknown");
+    expect(results[0].code).toBe("message.matched"); // SimpleRequest matched
+    expect(results[0].specDetails?.location).toContain("SimpleRequest");
   });
 });

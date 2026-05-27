@@ -1,126 +1,140 @@
 [
-	{
-		"code": "request.query.unknown",
-		"message": "Query parameter is not defined in the spec file: unknown_key",
-		"mockDetails": {
-			"interactionDescription": "should warn about unknown query parameters",
-			"interactionState": null,
-			"location": "[root].interactions[1].request.query.unknown_key",
-			"value": "unknown_value"
-		},
-		"specDetails": {
-			"location": "[root].paths./string.get",
-			"pathMethod": "get",
-			"pathName": "/string",
-			"value": {
-				"parameters": [
-					{ "in": "query", "name": "name", "required": true, "type": "string" },
-					{ "in": "query", "name": "age", "required": false, "type": "number" }
-				],
-				"responses": { "200": { "description": "OK" } }
-			}
-		},
-		"type": "warning"
-	},
-	{
-		"code": "request.query.incompatible",
-		"message": "Value is incompatible with the parameter defined in the spec file: must be number",
-		"mockDetails": {
-			"interactionDescription": "should error when optional query parameter is incompatible",
-			"interactionState": null,
-			"location": "[root].interactions[2].request.query.age",
-			"value": "abc"
-		},
-		"specDetails": {
-			"location": "[root].paths./string.get.parameters[1].schema.type",
-			"pathMethod": "get",
-			"pathName": "/string",
-			"value": "number"
-		},
-		"type": "error"
-	},
-	{
-		"code": "request.query.incompatible",
-		"message": "Value is incompatible with the parameter defined in the spec file: must be string",
-		"mockDetails": {
-			"interactionDescription": "should error when missing required query parameter",
-			"interactionState": null,
-			"location": "[root].interactions[3].request.query.name"
-		},
-		"specDetails": {
-			"location": "[root].paths./string.get.parameters[0].schema.type",
-			"pathMethod": "get",
-			"pathName": "/string",
-			"value": "string"
-		},
-		"type": "error"
-	},
-	{
-		"code": "request.query.incompatible",
-		"message": "Value is incompatible with the parameter defined in the spec file: must be number",
-		"mockDetails": {
-			"interactionDescription": "should warn about incompatible array types",
-			"interactionState": null,
-			"location": "[root].interactions[4].request.query.ssv.2",
-			"value": "a"
-		},
-		"specDetails": {
-			"location": "[root].paths./array.get.parameters[0].schema.items.type",
-			"pathMethod": "get",
-			"pathName": "/array",
-			"value": "number"
-		},
-		"type": "error"
-	},
-	{
-		"code": "request.query.incompatible",
-		"message": "Value is incompatible with the parameter defined in the spec file: must be number",
-		"mockDetails": {
-			"interactionDescription": "should warn about incompatible array types",
-			"interactionState": null,
-			"location": "[root].interactions[4].request.query.tsv.2",
-			"value": "b"
-		},
-		"specDetails": {
-			"location": "[root].paths./array.get.parameters[1].schema.items.type",
-			"pathMethod": "get",
-			"pathName": "/array",
-			"value": "number"
-		},
-		"type": "error"
-	},
-	{
-		"code": "request.query.incompatible",
-		"message": "Value is incompatible with the parameter defined in the spec file: must be number",
-		"mockDetails": {
-			"interactionDescription": "should warn about incompatible array types",
-			"interactionState": null,
-			"location": "[root].interactions[4].request.query.pipes.2",
-			"value": "c"
-		},
-		"specDetails": {
-			"location": "[root].paths./array.get.parameters[2].schema.items.type",
-			"pathMethod": "get",
-			"pathName": "/array",
-			"value": "number"
-		},
-		"type": "error"
-	},
-	{
-		"code": "request.query.incompatible",
-		"message": "Value is incompatible with the parameter defined in the spec file: must be number",
-		"mockDetails": {
-			"interactionDescription": "should warn about incompatible array types",
-			"interactionState": null,
-			"location": "[root].interactions[4].request.query.multi.2",
-			"value": "d"
-		},
-		"specDetails": {
-			"location": "[root].paths./array.get.parameters[3].schema.items.type",
-			"pathMethod": "get",
-			"pathName": "/array",
-			"value": "number"
-		},
-		"type": "error"
-	}
+  {
+    "code": "request.query.unknown",
+    "message": "Query parameter is not defined in the spec file: unknown_key",
+    "mockDetails": {
+      "interactionDescription": "should warn about unknown query parameters",
+      "interactionState": null,
+      "location": "[root].interactions[1].request.query.unknown_key",
+      "value": "unknown_value"
+    },
+    "specDetails": {
+      "location": "[root].paths./string.get",
+      "pathMethod": "get",
+      "pathName": "/string",
+      "value": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "name",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "age",
+            "required": false,
+            "type": "number"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "type": "warning"
+  },
+  {
+    "code": "request.query.incompatible",
+    "message": "Value is incompatible with the parameter defined in the spec file: must be number",
+    "mockDetails": {
+      "interactionDescription": "should error when optional query parameter is incompatible",
+      "interactionState": null,
+      "location": "[root].interactions[2].request.query.age",
+      "value": "abc"
+    },
+    "specDetails": {
+      "location": "[root].paths./string.get.parameters[1].schema.type",
+      "pathMethod": "get",
+      "pathName": "/string",
+      "value": "number"
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.query.incompatible",
+    "message": "Value is incompatible with the parameter defined in the spec file: must be string",
+    "mockDetails": {
+      "interactionDescription": "should error when missing required query parameter",
+      "interactionState": null,
+      "location": "[root].interactions[3].request.query.name"
+    },
+    "specDetails": {
+      "location": "[root].paths./string.get.parameters[0].schema.type",
+      "pathMethod": "get",
+      "pathName": "/string",
+      "value": "string"
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.query.incompatible",
+    "message": "Value is incompatible with the parameter defined in the spec file: must be number",
+    "mockDetails": {
+      "interactionDescription": "should warn about incompatible array types",
+      "interactionState": null,
+      "location": "[root].interactions[4].request.query.ssv.2",
+      "value": "a"
+    },
+    "specDetails": {
+      "location": "[root].paths./array.get.parameters[0].schema.items.type",
+      "pathMethod": "get",
+      "pathName": "/array",
+      "value": "number"
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.query.incompatible",
+    "message": "Value is incompatible with the parameter defined in the spec file: must be number",
+    "mockDetails": {
+      "interactionDescription": "should warn about incompatible array types",
+      "interactionState": null,
+      "location": "[root].interactions[4].request.query.tsv.2",
+      "value": "b"
+    },
+    "specDetails": {
+      "location": "[root].paths./array.get.parameters[1].schema.items.type",
+      "pathMethod": "get",
+      "pathName": "/array",
+      "value": "number"
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.query.incompatible",
+    "message": "Value is incompatible with the parameter defined in the spec file: must be number",
+    "mockDetails": {
+      "interactionDescription": "should warn about incompatible array types",
+      "interactionState": null,
+      "location": "[root].interactions[4].request.query.pipes.2",
+      "value": "c"
+    },
+    "specDetails": {
+      "location": "[root].paths./array.get.parameters[2].schema.items.type",
+      "pathMethod": "get",
+      "pathName": "/array",
+      "value": "number"
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.query.incompatible",
+    "message": "Value is incompatible with the parameter defined in the spec file: must be number",
+    "mockDetails": {
+      "interactionDescription": "should warn about incompatible array types",
+      "interactionState": null,
+      "location": "[root].interactions[4].request.query.multi.2",
+      "value": "d"
+    },
+    "specDetails": {
+      "location": "[root].paths./array.get.parameters[3].schema.items.type",
+      "pathMethod": "get",
+      "pathName": "/array",
+      "value": "number"
+    },
+    "type": "error"
+  }
 ]

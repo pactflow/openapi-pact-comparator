@@ -1,19 +1,25 @@
 [
-	{
-		"code": "message.matched",
-		"message": "Matched message at [root].channels.userEvents.messages.userAvatarUploaded",
-		"specDetails": {
-			"location": "[root].channels.userEvents.messages.userAvatarUploaded",
-			"value": {
-				"messageId": "userAvatarUploaded",
-				"contentType": "application/octet-stream",
-				"payload": {
-					"type": "object",
-					"properties": { "userId": { "type": "string" } },
-					"required": ["userId"]
-				}
-			}
-		},
-		"type": "info"
-	}
+  {
+    "code": "message.matched",
+    "message": "Matched message at [root].channels.userEvents.messages.userAvatarUploaded",
+    "specDetails": {
+      "location": "[root].channels.userEvents.messages.userAvatarUploaded",
+      "value": {
+        "messageId": "userAvatarUploaded",
+        "contentType": "application/octet-stream",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "userId": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "userId"
+          ]
+        }
+      }
+    },
+    "type": "info"
+  }
 ]

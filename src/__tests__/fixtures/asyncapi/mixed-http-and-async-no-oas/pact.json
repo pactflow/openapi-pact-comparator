@@ -14,7 +14,11 @@
     },
     {
       "comments": {
-        "references": { "AsyncAPI": { "operationId": "receiveUserEvents" } }
+        "references": {
+          "AsyncAPI": {
+            "operationId": "receiveUserEvents"
+          }
+        }
       },
       "contents": {
         "content": { "userId": 12345 },

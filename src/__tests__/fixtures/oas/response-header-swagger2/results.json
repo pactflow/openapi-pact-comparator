@@ -1,61 +1,71 @@
 [
-	{
-		"code": "response.header.undefined",
-		"message": "Standard http response header is not defined in the spec file: age",
-		"mockDetails": {
-			"interactionDescription": "should warn about missing standard response headers",
-			"interactionState": "",
-			"location": "[root].interactions[1].response.headers.age"
-		},
-		"specDetails": {
-			"location": "[root].paths./path.get",
-			"pathMethod": "get",
-			"pathName": "/path",
-			"value": {
-				"produces": ["application/json"],
-				"responses": {
-					"200": {
-						"description": "OK",
-						"headers": { "specified": { "type": "number" } },
-						"schema": {}
-					}
-				}
-			}
-		},
-		"type": "warning"
-	},
-	{
-		"code": "response.header.incompatible",
-		"message": "Value is incompatible with the parameter defined in the spec file: must be number",
-		"mockDetails": {
-			"interactionDescription": "should error on incompatible response headers",
-			"interactionState": "",
-			"location": "[root].interactions[2].response.headers.specified",
-			"value": "abc"
-		},
-		"specDetails": {
-			"location": "[root].paths./path.get.responses.200.headers.specified.schema.type",
-			"pathMethod": "get",
-			"pathName": "/path",
-			"value": "number"
-		},
-		"type": "error"
-	},
-	{
-		"code": "response.header.unknown",
-		"message": "Response header is not defined in the spec file: unspecified",
-		"mockDetails": {
-			"interactionDescription": "should error on unspecified response headers",
-			"interactionState": "",
-			"location": "[root].interactions[3].response.headers.unspecified",
-			"value": "foo"
-		},
-		"specDetails": {
-			"location": "[root].paths./path.get.responses.200.headers",
-			"pathMethod": "get",
-			"pathName": "/path",
-			"value": { "specified": { "type": "number" } }
-		},
-		"type": "error"
-	}
+  {
+    "code": "response.header.undefined",
+    "message": "Standard http response header is not defined in the spec file: age",
+    "mockDetails": {
+      "interactionDescription": "should warn about missing standard response headers",
+      "interactionState": "",
+      "location": "[root].interactions[1].response.headers.age"
+    },
+    "specDetails": {
+      "location": "[root].paths./path.get",
+      "pathMethod": "get",
+      "pathName": "/path",
+      "value": {
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "specified": {
+                "type": "number"
+              }
+            },
+            "schema": {}
+          }
+        }
+      }
+    },
+    "type": "warning"
+  },
+  {
+    "code": "response.header.incompatible",
+    "message": "Value is incompatible with the parameter defined in the spec file: must be number",
+    "mockDetails": {
+      "interactionDescription": "should error on incompatible response headers",
+      "interactionState": "",
+      "location": "[root].interactions[2].response.headers.specified",
+      "value": "abc"
+    },
+    "specDetails": {
+      "location": "[root].paths./path.get.responses.200.headers.specified.schema.type",
+      "pathMethod": "get",
+      "pathName": "/path",
+      "value": "number"
+    },
+    "type": "error"
+  },
+  {
+    "code": "response.header.unknown",
+    "message": "Response header is not defined in the spec file: unspecified",
+    "mockDetails": {
+      "interactionDescription": "should error on unspecified response headers",
+      "interactionState": "",
+      "location": "[root].interactions[3].response.headers.unspecified",
+      "value": "foo"
+    },
+    "specDetails": {
+      "location": "[root].paths./path.get.responses.200.headers",
+      "pathMethod": "get",
+      "pathName": "/path",
+      "value": {
+        "specified": {
+          "type": "number"
+        }
+      }
+    },
+    "type": "error"
+  }
 ]

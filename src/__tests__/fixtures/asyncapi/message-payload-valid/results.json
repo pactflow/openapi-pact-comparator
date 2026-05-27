@@ -1,22 +1,32 @@
 [
-	{
-		"code": "message.matched",
-		"message": "Matched message at [root].channels.userEvents.messages.userCreated",
-		"specDetails": {
-			"location": "[root].channels.userEvents.messages.userCreated",
-			"value": {
-				"messageId": "userCreated",
-				"payload": {
-					"type": "object",
-					"properties": { "userId": { "type": "string" } },
-					"required": ["userId"]
-				},
-				"headers": {
-					"type": "object",
-					"properties": { "event-type": { "type": "string" } }
-				}
-			}
-		},
-		"type": "info"
-	}
+  {
+    "code": "message.matched",
+    "message": "Matched message at [root].channels.userEvents.messages.userCreated",
+    "specDetails": {
+      "location": "[root].channels.userEvents.messages.userCreated",
+      "value": {
+        "messageId": "userCreated",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "userId": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "userId"
+          ]
+        },
+        "headers": {
+          "type": "object",
+          "properties": {
+            "event-type": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "type": "info"
+  }
 ]

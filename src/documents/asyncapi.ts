@@ -166,3 +166,69 @@ export const resolveReplyMessage = (
   cache.set(cacheKey, null);
   return null;
 };
+
+export function* iterateMessages(
+  doc: AsyncAPIDocument,
+  operationId: string,
+  cache: Map<string, ResolvedMessage>,
+): Generator<ResolvedMessage> {
+  const operation = doc.operations?.[operationId];
+  if (!operation) return;
+
+  const messages = Array.isArray(operation.messages) ? operation.messages : [];
+  for (const [i, ref] of messages.entries()) {
+    if (ref == null || typeof ref !== "object") continue;
+    if (isRef(ref)) {
+      const cached = cache.get(ref.$ref);
+      if (cached) {
+        yield cached;
+        continue;
+      }
+      const message = dereferenceDoc(ref, doc) as Message | undefined;
+      if (!message) continue;
+      const path = "[root]." + ref.$ref.replace(/^#\//, "").replace(/\//g, ".");
+      const result: ResolvedMessage = { message, path };
+      cache.set(ref.$ref, result);
+      yield result;
+    } else {
+      yield {
+        message: ref as Message,
+        path: `[root].operations.${operationId}.messages[${i}]`,
+      };
+    }
+  }
+}
+
+export function* iterateReplyMessages(
+  doc: AsyncAPIDocument,
+  operationId: string,
+  cache: Map<string, ResolvedMessage>,
+): Generator<ResolvedMessage> {
+  const operation = doc.operations?.[operationId];
+  if (!operation?.reply) return;
+
+  const messages = Array.isArray(operation.reply.messages)
+    ? operation.reply.messages
+    : [];
+  for (const [i, ref] of messages.entries()) {
+    if (ref == null || typeof ref !== "object") continue;
+    if (isRef(ref)) {
+      const cached = cache.get(ref.$ref);
+      if (cached) {
+        yield cached;
+        continue;
+      }
+      const message = dereferenceDoc(ref, doc) as Message | undefined;
+      if (!message) continue;
+      const path = "[root]." + ref.$ref.replace(/^#\//, "").replace(/\//g, ".");
+      const result: ResolvedMessage = { message, path };
+      cache.set(ref.$ref, result);
+      yield result;
+    } else {
+      yield {
+        message: ref as Message,
+        path: `[root].operations.${operationId}.reply.messages[${i}]`,
+      };
+    }
+  }
+}

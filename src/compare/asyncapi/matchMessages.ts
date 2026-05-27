@@ -37,7 +37,7 @@ export function* tryMatchAllMessages(
         : undefined,
     };
 
-    const errors: Result[] = [
+    const allResults: Result[] = [
       ...compareMessagePayload(
         ajv,
         message,
@@ -61,7 +61,10 @@ export function* tryMatchAllMessages(
       ),
     ];
 
-    if (errors.length === 0) {
+    const blockingErrors = allResults.filter((r) => r.type === "error");
+
+    if (blockingErrors.length === 0) {
+      yield* allResults.filter((r) => r.type !== "error");
       yield {
         code: "message.matched",
         message: `Matched message at ${candidate.path}`,
@@ -71,7 +74,7 @@ export function* tryMatchAllMessages(
       return;
     }
 
-    allCauses.push(...errors);
+    allCauses.push(...blockingErrors);
   }
 
   yield {

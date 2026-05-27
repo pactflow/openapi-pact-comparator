@@ -1,18 +1,34 @@
 [
   {
-    "code": "message.payload.unknown",
-    "message": "No schema found for message payload",
+    "code": "message.no.match",
+    "message": "No message in the operation matched the interaction",
     "mockDetails": {
       "interactionDescription": "an event with content but no payload schema defined in spec",
       "interactionState": null,
-      "location": "[root].interactions[0].contents.content",
-      "value": {
-        "userId": "u-abc-123"
-      }
+      "location": "[root].interactions[0]",
+      "value": "an event with content but no payload schema defined in spec"
     },
     "specDetails": {
-      "location": "[root].channels.userEvents.messages.userPing"
+      "location": "[root].operations.receiveUserEvents.messages"
     },
-    "type": "warning"
+    "type": "error",
+    "causes": [
+      {
+        "code": "message.payload.unknown",
+        "message": "No schema found for message payload",
+        "mockDetails": {
+          "interactionDescription": "an event with content but no payload schema defined in spec",
+          "interactionState": null,
+          "location": "[root].interactions[0].contents.content",
+          "value": {
+            "userId": "u-abc-123"
+          }
+        },
+        "specDetails": {
+          "location": "[root].channels.userEvents.messages.userPing"
+        },
+        "type": "warning"
+      }
+    ]
   }
 ]

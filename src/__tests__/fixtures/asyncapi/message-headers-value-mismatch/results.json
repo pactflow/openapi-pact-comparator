@@ -1,20 +1,33 @@
 [
-  {
-    "code": "message.headers.incompatible",
-    "message": "Message headers are incompatible with the schema in the spec file: must be equal to one of the allowed values",
-    "mockDetails": {
-      "interactionDescription": "a user-created event with incompatible headers",
-      "interactionState": null,
-      "location": "[root].interactions[0].metadata.event-type",
-      "value": "user-created"
-    },
-    "specDetails": {
-      "location": "[root].channels.userEvents.messages.userCreated.headers.properties.event-type.enum",
-      "value": [
-        "user.created",
-        "user.updated"
-      ]
-    },
-    "type": "error"
-  }
+	{
+		"code": "message.no.match",
+		"message": "No message in the operation matched the interaction",
+		"mockDetails": {
+			"interactionDescription": "a user-created event with incompatible headers",
+			"interactionState": null,
+			"location": "[root].interactions[0]",
+			"value": "a user-created event with incompatible headers"
+		},
+		"specDetails": {
+			"location": "[root].operations.receiveUserEvents.messages"
+		},
+		"type": "error",
+		"causes": [
+			{
+				"code": "message.headers.incompatible",
+				"message": "Message headers are incompatible with the schema in the spec file: must be equal to one of the allowed values",
+				"mockDetails": {
+					"interactionDescription": "a user-created event with incompatible headers",
+					"interactionState": null,
+					"location": "[root].interactions[0].metadata.event-type",
+					"value": "user-created"
+				},
+				"specDetails": {
+					"location": "[root].channels.userEvents.messages.userCreated.headers.properties.event-type.enum",
+					"value": ["user.created", "user.updated"]
+				},
+				"type": "error"
+			}
+		]
+	}
 ]

@@ -1,21 +1,33 @@
 [
-  {
-    "code": "message.reply.id.unknown",
-    "message": "Message not defined in AsyncAPI spec: NonExistentResponse",
-    "mockDetails": {
-      "interactionDescription": "place an order with unknown reply message id",
-      "interactionState": null,
-      "location": "[root].interactions[0].comments.references.AsyncAPI.responseMessageId",
-      "value": "NonExistentResponse"
-    },
-    "specDetails": {
-      "location": "[root].operations.sendOrder.reply.messages",
-      "value": [
-        {
-          "$ref": "#/channels/replies/messages/OrderResponse"
-        }
-      ]
-    },
-    "type": "error"
-  }
+	{
+		"code": "message.matched",
+		"message": "Matched message at [root].channels.requests.messages.OrderRequest",
+		"specDetails": {
+			"location": "[root].channels.requests.messages.OrderRequest",
+			"value": {
+				"messageId": "OrderRequest",
+				"payload": {
+					"type": "object",
+					"properties": { "orderId": { "type": "string" } },
+					"required": ["orderId"]
+				}
+			}
+		},
+		"type": "info"
+	},
+	{
+		"code": "message.matched",
+		"message": "Matched message at [root].channels.replies.messages.OrderResponse",
+		"specDetails": {
+			"location": "[root].channels.replies.messages.OrderResponse",
+			"value": {
+				"messageId": "OrderResponse",
+				"payload": {
+					"type": "object",
+					"properties": { "status": { "type": "string" } }
+				}
+			}
+		},
+		"type": "info"
+	}
 ]

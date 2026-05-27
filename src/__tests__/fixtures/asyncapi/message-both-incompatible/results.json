@@ -1,35 +1,48 @@
 [
-  {
-    "code": "message.payload.incompatible",
-    "message": "Message payload is incompatible with the schema in the spec file: must be string",
-    "mockDetails": {
-      "interactionDescription": "a user-created event with both payload and headers incompatible",
-      "interactionState": null,
-      "location": "[root].interactions[0].contents.content.userId",
-      "value": 12345
-    },
-    "specDetails": {
-      "location": "[root].channels.userEvents.messages.userCreated.payload.properties.userId.type",
-      "value": "string"
-    },
-    "type": "error"
-  },
-  {
-    "code": "message.headers.incompatible",
-    "message": "Message headers are incompatible with the schema in the spec file: must NOT have additional properties - x-unexpected",
-    "mockDetails": {
-      "interactionDescription": "a user-created event with both payload and headers incompatible",
-      "interactionState": null,
-      "location": "[root].interactions[0].metadata",
-      "value": {
-        "event-type": "user-created",
-        "x-unexpected": "extra"
-      }
-    },
-    "specDetails": {
-      "location": "[root].channels.userEvents.messages.userCreated.headers.additionalProperties",
-      "value": false
-    },
-    "type": "error"
-  }
+	{
+		"code": "message.no.match",
+		"message": "No message in the operation matched the interaction",
+		"mockDetails": {
+			"interactionDescription": "a user-created event with both payload and headers incompatible",
+			"interactionState": null,
+			"location": "[root].interactions[0]",
+			"value": "a user-created event with both payload and headers incompatible"
+		},
+		"specDetails": {
+			"location": "[root].operations.receiveUserEvents.messages"
+		},
+		"type": "error",
+		"causes": [
+			{
+				"code": "message.payload.incompatible",
+				"message": "Message payload is incompatible with the schema in the spec file: must be string",
+				"mockDetails": {
+					"interactionDescription": "a user-created event with both payload and headers incompatible",
+					"interactionState": null,
+					"location": "[root].interactions[0].contents.content.userId",
+					"value": 12345
+				},
+				"specDetails": {
+					"location": "[root].channels.userEvents.messages.userCreated.payload.properties.userId.type",
+					"value": "string"
+				},
+				"type": "error"
+			},
+			{
+				"code": "message.headers.incompatible",
+				"message": "Message headers are incompatible with the schema in the spec file: must NOT have additional properties - x-unexpected",
+				"mockDetails": {
+					"interactionDescription": "a user-created event with both payload and headers incompatible",
+					"interactionState": null,
+					"location": "[root].interactions[0].metadata",
+					"value": { "event-type": "user-created", "x-unexpected": "extra" }
+				},
+				"specDetails": {
+					"location": "[root].channels.userEvents.messages.userCreated.headers.additionalProperties",
+					"value": false
+				},
+				"type": "error"
+			}
+		]
+	}
 ]

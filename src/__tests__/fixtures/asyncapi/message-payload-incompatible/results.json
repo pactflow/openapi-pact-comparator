@@ -1,17 +1,33 @@
 [
-  {
-    "code": "message.payload.incompatible",
-    "message": "Message payload is incompatible with the schema in the spec file: must be string",
-    "mockDetails": {
-      "interactionDescription": "a user-created event with invalid payload",
-      "interactionState": null,
-      "location": "[root].interactions[0].contents.content.userId",
-      "value": 12345
-    },
-    "specDetails": {
-      "location": "[root].channels.userEvents.messages.userCreated.payload.properties.userId.type",
-      "value": "string"
-    },
-    "type": "error"
-  }
+	{
+		"code": "message.no.match",
+		"message": "No message in the operation matched the interaction",
+		"mockDetails": {
+			"interactionDescription": "a user-created event with invalid payload",
+			"interactionState": null,
+			"location": "[root].interactions[0]",
+			"value": "a user-created event with invalid payload"
+		},
+		"specDetails": {
+			"location": "[root].operations.receiveUserEvents.messages"
+		},
+		"type": "error",
+		"causes": [
+			{
+				"code": "message.payload.incompatible",
+				"message": "Message payload is incompatible with the schema in the spec file: must be string",
+				"mockDetails": {
+					"interactionDescription": "a user-created event with invalid payload",
+					"interactionState": null,
+					"location": "[root].interactions[0].contents.content.userId",
+					"value": 12345
+				},
+				"specDetails": {
+					"location": "[root].channels.userEvents.messages.userCreated.payload.properties.userId.type",
+					"value": "string"
+				},
+				"type": "error"
+			}
+		]
+	}
 ]

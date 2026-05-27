@@ -72,11 +72,10 @@ describe("Comparator.compare routing", () => {
           action: "send",
           channel: { $ref: "#/channels/requests" },
           messages: [{ $ref: "#/channels/requests/messages/OrderRequest" }],
-        },
-        receiveOrderResponse: {
-          action: "receive",
-          channel: { $ref: "#/channels/replies" },
-          messages: [{ $ref: "#/channels/replies/messages/OrderResponse" }],
+          reply: {
+            channel: { $ref: "#/channels/replies" },
+            messages: [{ $ref: "#/channels/replies/messages/OrderResponse" }],
+          },
         },
       },
     };
@@ -91,10 +90,7 @@ describe("Comparator.compare routing", () => {
           comments: {
             references: {
               AsyncAPI: {
-                requestOperationId: "sendOrder",
-                requestMessageId: "OrderRequest",
-                responseOperationId: "receiveOrderResponse",
-                responseMessageId: "OrderResponse",
+                operationId: "sendOrder",
               },
             },
           },
@@ -124,6 +120,8 @@ describe("Comparator.compare routing", () => {
     for await (const r of comparator.compare(pact)) {
       results.push(r);
     }
-    expect(results).toHaveLength(0);
+    expect(results).toHaveLength(2);
+    expect(results[0]).toMatchObject({ code: "message.matched", type: "info" });
+    expect(results[1]).toMatchObject({ code: "message.matched", type: "info" });
   });
 });

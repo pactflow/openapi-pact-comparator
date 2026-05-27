@@ -1,1 +1,37 @@
-[]
+[
+	{
+		"code": "message.matched",
+		"message": "Matched message at [root].channels.requests.messages.OrderRequest",
+		"specDetails": {
+			"location": "[root].channels.requests.messages.OrderRequest",
+			"value": {
+				"messageId": "OrderRequest",
+				"payload": {
+					"type": "object",
+					"properties": { "orderId": { "type": "string" } },
+					"required": ["orderId"]
+				}
+			}
+		},
+		"type": "info"
+	},
+	{
+		"code": "message.reply.missing",
+		"message": "Operation \"sendOrder\" has no reply field in AsyncAPI spec",
+		"mockDetails": {
+			"interactionDescription": "place an order partial response",
+			"interactionState": null,
+			"location": "[root].interactions[0].comments.references.AsyncAPI",
+			"value": "sendOrder"
+		},
+		"specDetails": {
+			"location": "[root].operations.sendOrder",
+			"value": {
+				"action": "send",
+				"channel": { "$ref": "#/channels/requests" },
+				"messages": [{ "$ref": "#/channels/requests/messages/OrderRequest" }]
+			}
+		},
+		"type": "error"
+	}
+]

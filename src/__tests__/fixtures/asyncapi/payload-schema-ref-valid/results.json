@@ -1,1 +1,14 @@
-[]
+[
+	{
+		"code": "message.matched",
+		"message": "Matched message at [root].channels.userEvents.messages.userCreated",
+		"specDetails": {
+			"location": "[root].channels.userEvents.messages.userCreated",
+			"value": {
+				"messageId": "userCreated",
+				"payload": { "$ref": "#/components/schemas/UserPayload" }
+			}
+		},
+		"type": "info"
+	}
+]

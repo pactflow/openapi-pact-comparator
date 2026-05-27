@@ -1,1 +1,34 @@
-[]
+[
+	{
+		"code": "message.matched",
+		"message": "Matched message at [root].channels.requests.messages.OrderRequest",
+		"specDetails": {
+			"location": "[root].channels.requests.messages.OrderRequest",
+			"value": {
+				"messageId": "OrderRequest",
+				"payload": {
+					"type": "object",
+					"properties": { "orderId": { "type": "string" } },
+					"required": ["orderId"]
+				}
+			}
+		},
+		"type": "info"
+	},
+	{
+		"code": "message.matched",
+		"message": "Matched message at [root].channels.replies.messages.OrderResponse",
+		"specDetails": {
+			"location": "[root].channels.replies.messages.OrderResponse",
+			"value": {
+				"messageId": "OrderResponse",
+				"payload": {
+					"type": "object",
+					"properties": { "status": { "type": "string" } },
+					"required": ["status"]
+				}
+			}
+		},
+		"type": "info"
+	}
+]

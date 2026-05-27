@@ -1,12 +1,13 @@
 import type { ErrorObject } from "ajv";
 
+type InfoCode = "message.matched";
+
 type ErrorCode =
   | "message.headers.incompatible"
-  | "message.id.unknown"
+  | "message.no.match"
   | "message.operation.unknown"
   | "message.payload.incompatible"
   | "message.references.missing"
-  | "message.reply.id.unknown"
   | "message.reply.missing"
   | "message.spec.missing"
   | "request.accept.incompatible"
@@ -38,7 +39,7 @@ type WarningCode =
   | "response.status.default";
 
 export interface Result {
-  code: ErrorCode | WarningCode;
+  code: ErrorCode | WarningCode | InfoCode;
   message: string;
   mockDetails?: {
     interactionDescription?: string | null;
@@ -52,7 +53,8 @@ export interface Result {
     pathName?: string | null;
     value: unknown;
   };
-  type: "error" | "warning";
+  type: "error" | "warning" | "info";
+  causes?: Result[];
 }
 
 export const formatMessage = (error: ErrorObject) =>

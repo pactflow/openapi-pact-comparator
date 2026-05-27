@@ -6,13 +6,7 @@
       "type": "Synchronous/Messages",
       "description": "place an order via reply field",
       "comments": {
-        "references": {
-          "AsyncAPI": {
-            "requestOperationId": "sendOrder",
-            "requestMessageId": "OrderRequest",
-            "responseMessageId": "OrderResponse"
-          }
-        }
+        "references": { "AsyncAPI": { "operationId": "sendOrder" } }
       },
       "request": {
         "contents": {

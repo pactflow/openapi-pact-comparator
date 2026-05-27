@@ -14,12 +14,7 @@
     },
     {
       "comments": {
-        "references": {
-          "AsyncAPI": {
-            "messageId": "userCreated",
-            "operationId": "receiveUserEvents"
-          }
-        }
+        "references": { "AsyncAPI": { "operationId": "receiveUserEvents" } }
       },
       "contents": {
         "content": { "userId": 12345 },

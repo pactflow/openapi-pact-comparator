@@ -6,13 +6,7 @@
       "type": "Synchronous/Messages",
       "description": "place an order with unknown reply message id",
       "comments": {
-        "references": {
-          "AsyncAPI": {
-            "requestOperationId": "sendOrder",
-            "requestMessageId": "OrderRequest",
-            "responseMessageId": "NonExistentResponse"
-          }
-        }
+        "references": { "AsyncAPI": { "operationId": "sendOrder" } }
       },
       "request": {
         "contents": {

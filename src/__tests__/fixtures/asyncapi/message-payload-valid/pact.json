@@ -4,12 +4,7 @@
   "interactions": [
     {
       "comments": {
-        "references": {
-          "AsyncAPI": {
-            "messageId": "userCreated",
-            "operationId": "receiveUserEvents"
-          }
-        }
+        "references": { "AsyncAPI": { "operationId": "receiveUserEvents" } }
       },
       "contents": {
         "content": { "userId": "u-abc-123" },

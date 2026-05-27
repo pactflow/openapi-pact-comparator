@@ -6,14 +6,7 @@
       "type": "Synchronous/Messages",
       "description": "place an order with missing field",
       "comments": {
-        "references": {
-          "AsyncAPI": {
-            "requestOperationId": "sendOrder",
-            "requestMessageId": "OrderRequest",
-            "responseOperationId": "receiveOrderResponse",
-            "responseMessageId": "OrderResponse"
-          }
-        }
+        "references": { "AsyncAPI": { "operationId": "sendOrder" } }
       },
       "request": {
         "contents": {

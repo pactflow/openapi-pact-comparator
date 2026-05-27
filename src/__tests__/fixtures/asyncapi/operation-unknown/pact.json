@@ -4,12 +4,7 @@
   "interactions": [
     {
       "comments": {
-        "references": {
-          "AsyncAPI": {
-            "messageId": "userCreated",
-            "operationId": "nonExistentOp"
-          }
-        }
+        "references": { "AsyncAPI": { "operationId": "nonExistentOp" } }
       },
       "contents": {
         "content": { "userId": "u-abc-123" },

@@ -103,7 +103,10 @@ describe("compareMessagePayload", () => {
         compareMessagePayload(
           makeAjv(),
           baseMessage,
-          { payload: { organizationId: "abc-123" }, contentType: 42 as unknown as string },
+          {
+            payload: { organizationId: "abc-123" },
+            contentType: 42 as unknown as string,
+          },
           { description: "an event" },
           "[root].interactions[0].contents.content",
           "[root].channels.eventsQueue.messages.myMsg",
@@ -115,7 +118,10 @@ describe("compareMessagePayload", () => {
       compareMessagePayload(
         makeAjv(),
         baseMessage,
-        { payload: { organizationId: "abc-123" }, contentType: 42 as unknown as string },
+        {
+          payload: { organizationId: "abc-123" },
+          contentType: 42 as unknown as string,
+        },
         { description: "an event" },
         "[root].interactions[0].contents.content",
         "[root].channels.eventsQueue.messages.myMsg",
@@ -187,7 +193,10 @@ describe("compareMessagePayload — direction", () => {
       compareMessagePayload(
         makeAjv(),
         baseMessage,
-        { payload: { organizationId: "abc", extra: "field" }, contentType: "application/json" },
+        {
+          payload: { organizationId: "abc", extra: "field" },
+          contentType: "application/json",
+        },
         {},
         "[root].interactions[0].request.contents.content",
         "[root].channels.eventsQueue.messages.myMsg",
@@ -210,7 +219,10 @@ describe("compareMessagePayload — direction", () => {
       compareMessagePayload(
         makeAjv(),
         strictMessage,
-        { payload: { organizationId: "abc", extra: "field" }, contentType: "application/json" },
+        {
+          payload: { organizationId: "abc", extra: "field" },
+          contentType: "application/json",
+        },
         {},
         "[root].interactions[0].request.contents.content",
         "[root].channels.eventsQueue.messages.myMsg",

@@ -121,8 +121,12 @@ describe("iterateMessages", () => {
       ...iterateMessages(multiMessageDoc, "receiveUserEvents", new Map()),
     ];
     expect(results).toHaveLength(2);
-    expect(results[0].path).toBe("[root].channels.userEvents.messages.UserCreated");
-    expect(results[1].path).toBe("[root].channels.userEvents.messages.UserDeleted");
+    expect(results[0].path).toBe(
+      "[root].channels.userEvents.messages.UserCreated",
+    );
+    expect(results[1].path).toBe(
+      "[root].channels.userEvents.messages.UserDeleted",
+    );
   });
 
   it("resolves $ref paths to the component location", () => {

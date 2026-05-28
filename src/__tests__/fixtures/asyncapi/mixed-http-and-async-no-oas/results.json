@@ -4,7 +4,7 @@
     "message": "No message in the operation matched the interaction",
     "mockDetails": {
       "interactionDescription": "a user-created event",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[1]",
       "value": "a user-created event"
     },
@@ -18,7 +18,7 @@
         "message": "Message payload is incompatible with the schema in the spec file: must be string",
         "mockDetails": {
           "interactionDescription": "a user-created event",
-          "interactionState": null,
+          "interactionState": "[none]",
           "location": "[root].interactions[1].contents.content.userId",
           "value": 12345
         },

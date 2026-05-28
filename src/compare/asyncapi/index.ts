@@ -69,7 +69,7 @@ export function* compareAsyncInteraction(
     interaction.contentType,
     interaction.metadata,
     interaction.description ?? null,
-    interaction.providerState ?? null,
+    interaction.providerState || "[none]",
     `[root].interactions[${index}].contents.content`,
     `[root].interactions[${index}].metadata`,
     `[root].operations.${operationId}.messages`,

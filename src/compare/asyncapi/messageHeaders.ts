@@ -17,7 +17,7 @@ export function* compareMessageHeaders(
   message: Message,
   metadata: Record<string, string> | undefined,
   interactionDescription: string | null,
-  interactionState: string | null,
+  interactionState: string,
   metadataLocation: string,
   messagePath: string,
   direction: "request" | "response",

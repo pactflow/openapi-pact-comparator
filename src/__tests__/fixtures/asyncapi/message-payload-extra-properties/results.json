@@ -4,7 +4,7 @@
     "message": "No message in the operation matched the interaction",
     "mockDetails": {
       "interactionDescription": "a user-created event with extra payload field not in spec",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[0]",
       "value": "a user-created event with extra payload field not in spec"
     },
@@ -18,7 +18,7 @@
         "message": "Message payload is incompatible with the schema in the spec file: must NOT have additional properties - unknownField",
         "mockDetails": {
           "interactionDescription": "a user-created event with extra payload field not in spec",
-          "interactionState": null,
+          "interactionState": "[none]",
           "location": "[root].interactions[0].contents.content",
           "value": {
             "userId": "u-abc-123",

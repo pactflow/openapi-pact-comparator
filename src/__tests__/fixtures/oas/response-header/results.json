@@ -4,7 +4,7 @@
     "message": "Response Content-Type header is defined but the spec does not specify any mime-types to produce",
     "mockDetails": {
       "interactionDescription": "should warn even with 204 status",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[4].response.headers.content-type",
       "value": "text/plain"
     },
@@ -28,7 +28,7 @@
     "message": "Standard http response header is not defined in the spec file: content-length",
     "mockDetails": {
       "interactionDescription": "should warn even with 204 status",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[4].response.headers.content-length"
     },
     "specDetails": {
@@ -51,7 +51,7 @@
     "message": "Standard http response header is not defined in the spec file: age",
     "mockDetails": {
       "interactionDescription": "should warn about missing standard response headers",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[5].response.headers.age"
     },
     "specDetails": {
@@ -90,7 +90,7 @@
     "message": "Value is incompatible with the parameter defined in the spec file: must be number",
     "mockDetails": {
       "interactionDescription": "should error on incompatible response headers",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[6].response.headers.specified",
       "value": "abc"
     },
@@ -107,7 +107,7 @@
     "message": "Response header is not defined in the spec file: unspecified",
     "mockDetails": {
       "interactionDescription": "should error on unspecified response headers",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[7].response.headers.unspecified",
       "value": "foo"
     },
@@ -135,7 +135,7 @@
     "message": "Response status code matched default response in spec file: 200",
     "mockDetails": {
       "interactionDescription": "should use default response",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[8].response.status",
       "value": 200
     },
@@ -175,7 +175,7 @@
     "message": "Response Content-Type header is incompatible with the mime-types the spec defines to produce",
     "mockDetails": {
       "interactionDescription": "should error on unknown response content type, per status code",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[9].response.headers.content-type",
       "value": "text/html"
     },
@@ -194,7 +194,7 @@
     "message": "Response status code not defined in spec file: 400",
     "mockDetails": {
       "interactionDescription": "should not check for response headers issues if OAS doesn't define it",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[10].response.status",
       "value": 400
     },
@@ -232,7 +232,7 @@
     "message": "Response status code not defined in spec file: 400",
     "mockDetails": {
       "interactionDescription": "should not warn about response.content-type.unknown",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[11].response.status",
       "value": 400
     },

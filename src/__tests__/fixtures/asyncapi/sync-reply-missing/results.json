@@ -26,7 +26,7 @@
     "message": "Operation \"sendOrder\" has no reply field in AsyncAPI spec",
     "mockDetails": {
       "interactionDescription": "place an order expecting reply",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[0].comments.references.AsyncAPI",
       "value": "sendOrder"
     },

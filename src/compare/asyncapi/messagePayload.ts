@@ -24,7 +24,7 @@ export function* compareMessagePayload(
   payload: unknown,
   contentType: string | undefined,
   interactionDescription: string | null,
-  interactionState: string | null,
+  interactionState: string,
   contentLocation: string,
   messagePath: string,
   direction: "request" | "response",

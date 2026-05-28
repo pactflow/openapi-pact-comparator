@@ -4,7 +4,7 @@
     "message": "Response body is incompatible with the response body schema in the spec file: must be number",
     "mockDetails": {
       "interactionDescription": "should error with invalid response",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[2].response.body.age",
       "value": "10"
     },
@@ -21,7 +21,7 @@
     "message": "Response body is incompatible with the response body schema in the spec file: must NOT have additional properties - detail",
     "mockDetails": {
       "interactionDescription": "should error with invalid response",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[3].response.body",
       "value": {
         "name": "name",

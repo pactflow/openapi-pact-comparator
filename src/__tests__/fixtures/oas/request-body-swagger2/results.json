@@ -4,7 +4,7 @@
     "message": "Request content type header is not defined but spec specifies mime-types to consume",
     "mockDetails": {
       "interactionDescription": "should pass for 4xx responses even with missing content types",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[4].request.headers.content-type",
       "value": null
     },
@@ -47,7 +47,7 @@
     "message": "Request body is incompatible with the request body schema in the spec file: must be object",
     "mockDetails": {
       "interactionDescription": "should error with missing body",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[5].request.body"
     },
     "specDetails": {
@@ -63,7 +63,7 @@
     "message": "Request body is incompatible with the request body schema in the spec file: must be object",
     "mockDetails": {
       "interactionDescription": "should error on empty body",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[6].request.body",
       "value": ""
     },
@@ -80,7 +80,7 @@
     "message": "Request body is incompatible with the request body schema in the spec file: must have required property 'password'",
     "mockDetails": {
       "interactionDescription": "should error on schema mismatch for json body",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[7].request.body",
       "value": {
         "email": "a@a.com"
@@ -102,7 +102,7 @@
     "message": "Request body is incompatible with the request body schema in the spec file: must have required property 'password'",
     "mockDetails": {
       "interactionDescription": "should error on schema mismatch for form body",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[8].request.body",
       "value": {
         "email": "a@a.com"

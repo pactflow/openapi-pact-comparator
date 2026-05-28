@@ -17,7 +17,7 @@ export function* tryMatchAllMessages(
   contentType: string | undefined,
   metadata: Record<string, string> | undefined,
   description: string | null,
-  providerState: string | null,
+  providerState: string,
   payloadLocation: string,
   headersLocation: string,
   specLocation: string,

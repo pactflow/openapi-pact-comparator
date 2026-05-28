@@ -4,7 +4,7 @@
     "message": "Standard http response header is not defined in the spec file: age",
     "mockDetails": {
       "interactionDescription": "should warn about missing standard response headers",
-      "interactionState": "",
+      "interactionState": "[none]",
       "location": "[root].interactions[1].response.headers.age"
     },
     "specDetails": {
@@ -35,7 +35,7 @@
     "message": "Value is incompatible with the parameter defined in the spec file: must be number",
     "mockDetails": {
       "interactionDescription": "should error on incompatible response headers",
-      "interactionState": "",
+      "interactionState": "[none]",
       "location": "[root].interactions[2].response.headers.specified",
       "value": "abc"
     },
@@ -52,7 +52,7 @@
     "message": "Response header is not defined in the spec file: unspecified",
     "mockDetails": {
       "interactionDescription": "should error on unspecified response headers",
-      "interactionState": "",
+      "interactionState": "[none]",
       "location": "[root].interactions[3].response.headers.unspecified",
       "value": "foo"
     },

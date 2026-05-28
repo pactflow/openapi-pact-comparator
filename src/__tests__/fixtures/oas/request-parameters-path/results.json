@@ -4,7 +4,7 @@
     "message": "Path or method not defined in spec file: GET /integer/",
     "mockDetails": {
       "interactionDescription": "should error with missing parameter",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[8].request.path",
       "value": "/integer/"
     },
@@ -37,7 +37,7 @@
     "message": "Path or method not defined in spec file: GET /integer/abc",
     "mockDetails": {
       "interactionDescription": "should error when path does not match integer spec",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[9].request.path",
       "value": "/integer/abc"
     },
@@ -70,7 +70,7 @@
     "message": "Path or method not defined in spec file: GET /boolean/abc",
     "mockDetails": {
       "interactionDescription": "should error when path does not match boolean spec",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[10].request.path",
       "value": "/boolean/abc"
     },
@@ -103,7 +103,7 @@
     "message": "Path or method not defined in spec file: GET /exploded-object/string=abc,number=abc",
     "mockDetails": {
       "interactionDescription": "should error when path does not match object spec",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[11].request.path",
       "value": "/exploded-object/string=abc,number=abc"
     },
@@ -146,7 +146,7 @@
     "message": "Path or method not defined in spec file: GET /exploded-object/string=abc,number=abc",
     "mockDetails": {
       "interactionDescription": "should error when path does not match object spec",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[12].request.path",
       "value": "/exploded-object/string=abc,number=abc"
     },
@@ -189,7 +189,7 @@
     "message": "Path or method not defined in spec file: GET /does-not-exist",
     "mockDetails": {
       "interactionDescription": "should error when path and method does not exist in spec",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[13].request.path",
       "value": "/does-not-exist"
     },
@@ -205,7 +205,7 @@
     "message": "Path or method not defined in spec file: POST /integer/1",
     "mockDetails": {
       "interactionDescription": "should error when path does not exist in spec",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[14].request.path",
       "value": "/integer/1"
     },
@@ -221,7 +221,7 @@
     "message": "Path or method not defined in spec file: POST /integer/1",
     "mockDetails": {
       "interactionDescription": "should not raise subsequent errors when request.path-or-method.unknown",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[15].request.path",
       "value": "/integer/1"
     },

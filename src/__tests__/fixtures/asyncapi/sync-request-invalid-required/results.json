@@ -4,7 +4,7 @@
     "message": "No message in the operation matched the interaction",
     "mockDetails": {
       "interactionDescription": "place an order with missing field",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[0].comments.references.AsyncAPI.operationId",
       "value": "sendOrder"
     },
@@ -18,7 +18,7 @@
         "message": "Message payload is incompatible with the schema in the spec file: must have required property 'orderId'",
         "mockDetails": {
           "interactionDescription": "place an order with missing field",
-          "interactionState": null,
+          "interactionState": "[none]",
           "location": "[root].interactions[0].request.contents.content",
           "value": {}
         },

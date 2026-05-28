@@ -4,7 +4,7 @@
     "message": "Request Authorization header is missing but is required by the spec file",
     "mockDetails": {
       "interactionDescription": "should error on bad request to a basic auth endpoint",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[1].request.headers",
       "value": {}
     },
@@ -40,7 +40,7 @@
     "message": "Request Authorization header is missing but is required by the spec file",
     "mockDetails": {
       "interactionDescription": "should error on bad request to a bearer auth endpoint",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[5].request.headers",
       "value": {}
     },
@@ -76,7 +76,7 @@
     "message": "Request Authorization header is missing but is required by the spec file",
     "mockDetails": {
       "interactionDescription": "should error on bad request to an apikey auth endpoint (header)",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[9].request.headers"
     },
     "specDetails": {
@@ -113,7 +113,7 @@
     "message": "Request Authorization query is missing but is required by the spec file",
     "mockDetails": {
       "interactionDescription": "should error on bad request to apikey auth endpoint (query)",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[13].request.query"
     },
     "specDetails": {

@@ -4,7 +4,7 @@
     "message": "Query parameter is not defined in the spec file: unknown_key",
     "mockDetails": {
       "interactionDescription": "should warn about unknown query parameters",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[1].request.query.unknown_key",
       "value": "unknown_value"
     },
@@ -41,7 +41,7 @@
     "message": "Value is incompatible with the parameter defined in the spec file: must be number",
     "mockDetails": {
       "interactionDescription": "should error when optional query parameter is incompatible",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[2].request.query.age",
       "value": "abc"
     },
@@ -58,7 +58,7 @@
     "message": "Value is incompatible with the parameter defined in the spec file: must be string",
     "mockDetails": {
       "interactionDescription": "should error when missing required query parameter",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[3].request.query.name"
     },
     "specDetails": {
@@ -74,7 +74,7 @@
     "message": "Value is incompatible with the parameter defined in the spec file: must be number",
     "mockDetails": {
       "interactionDescription": "should warn about incompatible array types",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[4].request.query.ssv.2",
       "value": "a"
     },
@@ -91,7 +91,7 @@
     "message": "Value is incompatible with the parameter defined in the spec file: must be number",
     "mockDetails": {
       "interactionDescription": "should warn about incompatible array types",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[4].request.query.tsv.2",
       "value": "b"
     },
@@ -108,7 +108,7 @@
     "message": "Value is incompatible with the parameter defined in the spec file: must be number",
     "mockDetails": {
       "interactionDescription": "should warn about incompatible array types",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[4].request.query.pipes.2",
       "value": "c"
     },
@@ -125,7 +125,7 @@
     "message": "Value is incompatible with the parameter defined in the spec file: must be number",
     "mockDetails": {
       "interactionDescription": "should warn about incompatible array types",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[4].request.query.multi.2",
       "value": "d"
     },

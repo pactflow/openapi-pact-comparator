@@ -4,7 +4,7 @@
     "message": "Response body is incompatible with the response body schema in the spec file: value of tag \"petType\" must be in oneOf",
     "mockDetails": {
       "interactionDescription": "should error on unknown pet",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[8].response.body",
       "value": {
         "petType": "Spider"
@@ -25,7 +25,7 @@
     "message": "Response body is incompatible with the response body schema in the spec file: must be object",
     "mockDetails": {
       "interactionDescription": "should error with invalid response",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[9].response.body.detail",
       "value": null
     },
@@ -41,7 +41,7 @@
     "message": "Response Content-Type header is defined but the spec does not specify any mime-types to produce",
     "mockDetails": {
       "interactionDescription": "should error with unknown response body",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[10].response.headers.content-type",
       "value": "application/json"
     },
@@ -65,7 +65,7 @@
     "message": "No matching schema found for response body",
     "mockDetails": {
       "interactionDescription": "should error with unknown response body",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[10].response.body",
       "value": {
         "unknown": "schema"

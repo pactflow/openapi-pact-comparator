@@ -4,7 +4,7 @@
     "message": "Request header is not defined in the spec file: x-surprise",
     "mockDetails": {
       "interactionDescription": "should warn when header is not defined in spec",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[4].request.headers.x-surprise",
       "value": "unexpected header"
     },
@@ -116,7 +116,7 @@
     "message": "Value is incompatible with the parameter defined in the spec file: must have required property 'x-required-number'",
     "mockDetails": {
       "interactionDescription": "should error when required header is missing",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[5].request.headers.x-required-number",
       "value": null
     },
@@ -140,7 +140,7 @@
     "message": "Value is incompatible with the parameter defined in the spec file: must be number",
     "mockDetails": {
       "interactionDescription": "should error when required header does not match the spec",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[6].request.headers.x-required-number",
       "value": "abc"
     },
@@ -157,7 +157,7 @@
     "message": "Value is incompatible with the parameter defined in the spec file: must be number",
     "mockDetails": {
       "interactionDescription": "should error when optional header does not match the spec",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[7].request.headers.x-optional-number",
       "value": "abc"
     },
@@ -174,7 +174,7 @@
     "message": "Value is incompatible with the parameter defined in the spec file: must be integer",
     "mockDetails": {
       "interactionDescription": "should error when header does not match the array spec",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[8].request.headers.x-optional-array.2",
       "value": "abc"
     },
@@ -191,7 +191,7 @@
     "message": "Request Accept header is defined but the spec does not specify any mime-types to produce",
     "mockDetails": {
       "interactionDescription": "should warn when spec is missing accept and content-type",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[9].request.headers.accept",
       "value": "application/json"
     },
@@ -215,7 +215,7 @@
     "message": "Response Content-Type header is defined but the spec does not specify any mime-types to produce",
     "mockDetails": {
       "interactionDescription": "should warn when spec is missing accept and content-type",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[9].response.headers.content-type",
       "value": "application/json"
     },
@@ -239,7 +239,7 @@
     "message": "Request Content-Type header is incompatible with the mime-types the spec accepts to consume",
     "mockDetails": {
       "interactionDescription": "should error about incorrect request content type",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[10].request.headers.content-type",
       "value": "unknown"
     },
@@ -258,7 +258,7 @@
     "message": "Value is incompatible with the parameter defined in the spec file: must NOT have more than 3 items",
     "mockDetails": {
       "interactionDescription": "should parse arrays, but not strings",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[11].request.headers.x-optional-array",
       "value": [
         123,
@@ -280,7 +280,7 @@
     "message": "Value is incompatible with the parameter defined in the spec file: must NOT have fewer than 20 characters",
     "mockDetails": {
       "interactionDescription": "should parse arrays, but not strings",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[11].request.headers.x-optional-string",
       "value": "abc,def,xyz"
     },

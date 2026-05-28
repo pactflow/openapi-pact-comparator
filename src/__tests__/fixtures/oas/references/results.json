@@ -4,7 +4,7 @@
     "message": "Value is incompatible with the parameter defined in the spec file: must be string",
     "mockDetails": {
       "interactionDescription": "should fail with missing parameters",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[2].request.query.account"
     },
     "specDetails": {
@@ -20,7 +20,7 @@
     "message": "Value is incompatible with the parameter defined in the spec file: must be string",
     "mockDetails": {
       "interactionDescription": "should fail with missing parameters",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[2].request.query.nested"
     },
     "specDetails": {
@@ -36,7 +36,7 @@
     "message": "Value is incompatible with the parameter defined in the spec file: must be string",
     "mockDetails": {
       "interactionDescription": "should fail with missing parameters",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[2].request.query.bracket"
     },
     "specDetails": {
@@ -52,7 +52,7 @@
     "message": "Request body is incompatible with the request body schema in the spec file: must have required property 'username'",
     "mockDetails": {
       "interactionDescription": "should fail with bad request body",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[3].request.body",
       "value": {}
     },
@@ -71,7 +71,7 @@
     "message": "Value is incompatible with the parameter defined in the spec file: must be number",
     "mockDetails": {
       "interactionDescription": "should fail with bad response header",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[4].response.headers.response-header",
       "value": "string"
     },
@@ -88,7 +88,7 @@
     "message": "Response body is incompatible with the response body schema in the spec file: must NOT have additional properties - username",
     "mockDetails": {
       "interactionDescription": "should fail with bad response body",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[5].response.body",
       "value": {
         "username": "bob"

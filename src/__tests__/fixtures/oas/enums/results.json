@@ -4,7 +4,7 @@
     "message": "Response body is incompatible with the response body schema in the spec file: must be equal to one of the allowed values",
     "mockDetails": {
       "interactionDescription": "should fail with invalid enum",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[1].response.body.foo",
       "value": "X"
     },

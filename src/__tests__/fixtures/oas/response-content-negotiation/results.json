@@ -4,7 +4,7 @@
     "message": "Request Accept header is defined but the spec does not specify any mime-types to produce",
     "mockDetails": {
       "interactionDescription": "should error on unknown request accept",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[2].request.headers.accept",
       "value": "application/xxx"
     },
@@ -28,7 +28,7 @@
     "message": "Request Accept header is incompatible with the mime-types the spec defines to produce",
     "mockDetails": {
       "interactionDescription": "should error on incompatible request accept",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[3].request.headers.accept",
       "value": "application/xxx"
     },

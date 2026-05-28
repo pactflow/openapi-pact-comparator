@@ -4,7 +4,7 @@
     "message": "Request Content-Type header is incompatible with the mime-types the spec accepts to consume",
     "mockDetails": {
       "interactionDescription": "should error when unable to match content-type",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[3].request.headers.content-type",
       "value": "application/x-www-form-urlencoded"
     },
@@ -24,7 +24,7 @@
     "message": "No matching schema found for request body",
     "mockDetails": {
       "interactionDescription": "should error when unable to match content-type",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[3].request.body",
       "value": "name=Rover&genus=Canis"
     },
@@ -52,7 +52,7 @@
     "message": "Request content type header is not defined but spec specifies mime-types to consume",
     "mockDetails": {
       "interactionDescription": "should error on missing content-type",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[4].request.headers.content-type",
       "value": null
     },
@@ -90,7 +90,7 @@
     "message": "Request content-type header is defined but the spec does not specify any mime-types to consume",
     "mockDetails": {
       "interactionDescription": "should error on unknown request content-type",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[5].request.headers.content-type",
       "value": "application/json"
     },
@@ -113,7 +113,7 @@
     "message": "No matching schema found for request body",
     "mockDetails": {
       "interactionDescription": "should error on unknown request content-type",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[5].request.body",
       "value": {
         "name": "Rover",

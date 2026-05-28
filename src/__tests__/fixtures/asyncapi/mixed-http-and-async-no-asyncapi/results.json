@@ -4,7 +4,7 @@
     "message": "Response status code not defined in spec file: 404",
     "mockDetails": {
       "interactionDescription": "a health check",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[0].response.status",
       "value": 404
     },

@@ -4,7 +4,7 @@
     "message": "Value is incompatible with the parameter defined in the spec file: must be number",
     "mockDetails": {
       "interactionDescription": "should pass when missing optional query parameter",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[4].request.query.age",
       "value": ""
     },
@@ -21,7 +21,7 @@
     "message": "Query parameter is not defined in the spec file: unicode",
     "mockDetails": {
       "interactionDescription": "should handle queries with unicode characters",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[5].request.query.unicode",
       "value": "푟Ꝫ띡ⴵ"
     },
@@ -61,7 +61,7 @@
     "message": "Value is incompatible with the parameter defined in the spec file: must be string",
     "mockDetails": {
       "interactionDescription": "should error when missing parameter using common parameters",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[8].request.query.local"
     },
     "specDetails": {
@@ -77,7 +77,7 @@
     "message": "Value is incompatible with the parameter defined in the spec file: must be string",
     "mockDetails": {
       "interactionDescription": "should error when missing parameter using common parameters",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[8].request.query.common"
     },
     "specDetails": {
@@ -93,7 +93,7 @@
     "message": "Value is incompatible with the parameter defined in the spec file: must be number",
     "mockDetails": {
       "interactionDescription": "should error when using common parameters that has been overridden",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[9].request.query.common",
       "value": "string"
     },
@@ -110,7 +110,7 @@
     "message": "Value is incompatible with the parameter defined in the spec file: must be integer",
     "mockDetails": {
       "interactionDescription": "should error when exploded query parameter in object form does not match spec",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[10].request.query.id.2",
       "value": "abc"
     },
@@ -127,7 +127,7 @@
     "message": "Value is incompatible with the parameter defined in the spec file: must be integer",
     "mockDetails": {
       "interactionDescription": "should error when exploded query parameter in string form does not match spec",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[11].request.query.id.2",
       "value": "abc"
     },
@@ -144,7 +144,7 @@
     "message": "Value is incompatible with the parameter defined in the spec file: must be integer",
     "mockDetails": {
       "interactionDescription": "should error when non-exploded query parameter in object form does not match spec",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[12].request.query.id.2",
       "value": "abc"
     },
@@ -161,7 +161,7 @@
     "message": "Value is incompatible with the parameter defined in the spec file: must be integer",
     "mockDetails": {
       "interactionDescription": "should error when non-exploded query parameter in string form does not match spec",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[13].request.query.id.2",
       "value": "abc"
     },
@@ -178,7 +178,7 @@
     "message": "Query parameter is not defined in the spec file: unknown_key",
     "mockDetails": {
       "interactionDescription": "should warn about unknown query parameters",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[14].request.query.unknown_key",
       "value": "unknown_value"
     },
@@ -218,7 +218,7 @@
     "message": "Value is incompatible with the parameter defined in the spec file: must be number",
     "mockDetails": {
       "interactionDescription": "should error when optional query parameter is incompatible",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[15].request.query.age",
       "value": "abc"
     },
@@ -235,7 +235,7 @@
     "message": "Value is incompatible with the parameter defined in the spec file: must be string",
     "mockDetails": {
       "interactionDescription": "should error when missing required query parameter",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[16].request.query.name"
     },
     "specDetails": {
@@ -251,7 +251,7 @@
     "message": "Value is incompatible with the parameter defined in the spec file: must NOT have fewer than 20 characters",
     "mockDetails": {
       "interactionDescription": "should parse arrays, but not with strings",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[17].request.query.string",
       "value": "first,second"
     },

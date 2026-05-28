@@ -4,7 +4,7 @@
     "message": "Operation not defined in AsyncAPI spec: nonExistentOp",
     "mockDetails": {
       "interactionDescription": "a user-created event with unknown operation",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[0].comments.references.AsyncAPI.operationId",
       "value": "nonExistentOp"
     },

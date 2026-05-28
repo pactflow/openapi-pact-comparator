@@ -4,7 +4,7 @@
     "message": "Request body is incompatible with the request body schema in the spec file: must be object",
     "mockDetails": {
       "interactionDescription": "should error with missing body",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[1].request.body"
     },
     "specDetails": {

@@ -4,7 +4,7 @@
     "message": "Request header is not defined in the spec file: x-surprise",
     "mockDetails": {
       "interactionDescription": "should warn when header is not defined in spec",
-      "interactionState": "",
+      "interactionState": "[none]",
       "location": "[root].interactions[3].request.headers.x-surprise",
       "value": "unexpected header"
     },
@@ -47,7 +47,7 @@
     "message": "Value is incompatible with the parameter defined in the spec file: must have required property 'x-required-number'",
     "mockDetails": {
       "interactionDescription": "should error when required header is missing",
-      "interactionState": "",
+      "interactionState": "[none]",
       "location": "[root].interactions[4].request.headers.x-required-number",
       "value": null
     },
@@ -69,7 +69,7 @@
     "message": "Value is incompatible with the parameter defined in the spec file: must be number",
     "mockDetails": {
       "interactionDescription": "should error when required header does not match the spec",
-      "interactionState": "",
+      "interactionState": "[none]",
       "location": "[root].interactions[5].request.headers.x-required-number",
       "value": "abc"
     },
@@ -86,7 +86,7 @@
     "message": "Value is incompatible with the parameter defined in the spec file: must be number",
     "mockDetails": {
       "interactionDescription": "should error when optional header does not match the spec",
-      "interactionState": "",
+      "interactionState": "[none]",
       "location": "[root].interactions[6].request.headers.x-optional-number",
       "value": "abc"
     },

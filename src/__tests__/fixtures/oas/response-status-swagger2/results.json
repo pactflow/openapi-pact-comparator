@@ -4,7 +4,7 @@
     "message": "Response status code not defined in spec file: 302",
     "mockDetails": {
       "interactionDescription": "should error on unspecified status codes",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[2].response.status",
       "value": 302
     },
@@ -28,7 +28,7 @@
     "message": "Response status code matched default response in spec file: 200",
     "mockDetails": {
       "interactionDescription": "should warn when falling back to default response",
-      "interactionState": null,
+      "interactionState": "[none]",
       "location": "[root].interactions[3].response.status",
       "value": 200
     },

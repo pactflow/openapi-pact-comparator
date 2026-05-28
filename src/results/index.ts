@@ -73,5 +73,5 @@ export const baseMockDetails = (interaction: {
   providerState?: string;
 }) => ({
   interactionDescription: interaction.description ?? null,
-  interactionState: interaction.providerState ?? null,
+  interactionState: interaction.providerState || "[none]",
 });

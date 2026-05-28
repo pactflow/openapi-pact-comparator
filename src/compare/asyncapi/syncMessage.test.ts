@@ -18,7 +18,6 @@ const doc: AsyncAPIDocument = {
     requests: {
       messages: {
         OrderRequest: {
-          messageId: "OrderRequest",
           payload: {
             type: "object",
             properties: { orderId: { type: "string" } },
@@ -30,7 +29,6 @@ const doc: AsyncAPIDocument = {
     replies: {
       messages: {
         OrderResponse: {
-          messageId: "OrderResponse",
           payload: {
             type: "object",
             properties: { status: { type: "string" } },
@@ -213,7 +211,6 @@ describe("compareSyncInteraction", () => {
           messages: {
             OrderRequest: doc.channels!.requests!.messages!.OrderRequest,
             SimpleRequest: {
-              messageId: "SimpleRequest",
               payload: { type: "object" }, // accepts anything
             },
           },

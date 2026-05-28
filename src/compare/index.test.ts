@@ -45,7 +45,6 @@ describe("Comparator.compare routing", () => {
         requests: {
           messages: {
             OrderRequest: {
-              messageId: "OrderRequest",
               payload: {
                 type: "object",
                 properties: { orderId: { type: "string" } },
@@ -57,7 +56,6 @@ describe("Comparator.compare routing", () => {
         replies: {
           messages: {
             OrderResponse: {
-              messageId: "OrderResponse",
               payload: {
                 type: "object",
                 properties: { status: { type: "string" } },

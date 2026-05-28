@@ -11,7 +11,6 @@ const makeAjv = () => {
 };
 
 const baseMessage: Message = {
-  messageId: "myMsg",
   payload: {
     type: "object",
     properties: { organizationId: { type: "string" } },
@@ -65,7 +64,7 @@ describe("compareMessagePayload", () => {
   });
 
   it("yields message.payload.unknown warning when no schema defined", () => {
-    const message: Message = { messageId: "myMsg" }; // no payload schema
+    const message: Message = {};
     const results = callResponse(
       message,
       { organizationId: "abc-123" },
@@ -78,7 +77,7 @@ describe("compareMessagePayload", () => {
   });
 
   it("skips validation when payload is undefined and no schema", () => {
-    const message: Message = { messageId: "myMsg" };
+    const message: Message = {};
     const results = callResponse(
       message,
       undefined,
@@ -200,7 +199,6 @@ describe("compareMessagePayload — direction", () => {
 
   it("errors on extra properties when spec has additionalProperties: false and direction is request", () => {
     const strictMessage: Message = {
-      messageId: "myMsg",
       payload: {
         type: "object",
         properties: { organizationId: { type: "string" } },

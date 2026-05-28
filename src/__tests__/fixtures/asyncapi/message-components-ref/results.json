@@ -5,7 +5,6 @@
     "specDetails": {
       "location": "[root].components.messages.userCreated",
       "value": {
-        "messageId": "userCreated",
         "payload": {
           "type": "object",
           "properties": {

@@ -18,7 +18,6 @@ const baseDoc: AsyncAPIDocument = {
     eventsQueue: {
       messages: {
         orgDeleted: {
-          messageId: "orgDeleted",
           payload: {
             type: "object",
             properties: { id: { type: "string" } },

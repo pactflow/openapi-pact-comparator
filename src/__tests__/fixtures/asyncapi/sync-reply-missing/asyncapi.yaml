@@ -7,7 +7,6 @@ channels:
     address: order-requests
     messages:
       OrderRequest:
-        messageId: OrderRequest
         payload:
           type: object
           properties:

@@ -14,7 +14,6 @@ const multiMessageDoc: AsyncAPIDocument = {
     userEvents: {
       messages: {
         UserCreated: {
-          messageId: "UserCreated",
           payload: {
             type: "object",
             properties: { userId: { type: "string" } },
@@ -22,7 +21,6 @@ const multiMessageDoc: AsyncAPIDocument = {
           },
         },
         UserDeleted: {
-          messageId: "UserDeleted",
           payload: {
             type: "object",
             properties: { userId: { type: "string" } },
@@ -32,7 +30,7 @@ const multiMessageDoc: AsyncAPIDocument = {
     },
     replies: {
       messages: {
-        Ack: { messageId: "Ack", payload: { type: "object" } },
+        Ack: { payload: { type: "object" } },
       },
     },
   },
@@ -123,8 +121,8 @@ describe("iterateMessages", () => {
       ...iterateMessages(multiMessageDoc, "receiveUserEvents", new Map()),
     ];
     expect(results).toHaveLength(2);
-    expect(results[0].message).toMatchObject({ messageId: "UserCreated" });
-    expect(results[1].message).toMatchObject({ messageId: "UserDeleted" });
+    expect(results[0].path).toBe("[root].channels.userEvents.messages.UserCreated");
+    expect(results[1].path).toBe("[root].channels.userEvents.messages.UserDeleted");
   });
 
   it("resolves $ref paths to the component location", () => {
@@ -153,7 +151,7 @@ describe("iterateMessages", () => {
     );
     const { value, done } = gen.next();
     expect(done).toBe(false);
-    expect(value?.message.messageId).toBe("UserCreated");
+    expect(value?.path).toBe("[root].channels.userEvents.messages.UserCreated");
     gen.return(undefined); // clean up the generator
   });
 });
@@ -178,7 +176,6 @@ describe("iterateReplyMessages", () => {
       ...iterateReplyMessages(multiMessageDoc, "receiveUserEvents", new Map()),
     ];
     expect(results).toHaveLength(1);
-    expect(results[0].message).toMatchObject({ messageId: "Ack" });
   });
 
   it("resolves $ref paths to the component location", () => {

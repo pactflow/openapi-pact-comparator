@@ -11,7 +11,6 @@ const makeAjv = () => {
 };
 
 const baseMessage: Message = {
-  messageId: "myMsg",
   headers: {
     type: "object",
     properties: {
@@ -61,7 +60,7 @@ describe("compareMessageHeaders", () => {
   });
 
   it("yields no results when message has no headers schema", () => {
-    const message: Message = { messageId: "myMsg" };
+    const message: Message = {};
     const results = callResponse(message, {
       "detail-type": "organization-deleted",
     });
@@ -88,7 +87,6 @@ describe("compareMessageHeaders", () => {
 describe("compareMessageHeaders — direction", () => {
   it("enforces required header fields when direction is request", () => {
     const message: Message = {
-      messageId: "myMsg",
       headers: {
         type: "object",
         properties: { "correlation-id": { type: "string" } },
@@ -112,7 +110,6 @@ describe("compareMessageHeaders — direction", () => {
 
   it("does not enforce required header fields when direction is response", () => {
     const message: Message = {
-      messageId: "myMsg",
       headers: {
         type: "object",
         properties: { "correlation-id": { type: "string" } },

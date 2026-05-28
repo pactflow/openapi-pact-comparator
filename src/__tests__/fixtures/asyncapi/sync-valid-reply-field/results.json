@@ -5,7 +5,6 @@
     "specDetails": {
       "location": "[root].channels.requests.messages.OrderRequest",
       "value": {
-        "messageId": "OrderRequest",
         "payload": {
           "type": "object",
           "properties": {
@@ -27,7 +26,6 @@
     "specDetails": {
       "location": "[root].channels.replies.messages.OrderResponse",
       "value": {
-        "messageId": "OrderResponse",
         "payload": {
           "type": "object",
           "properties": {

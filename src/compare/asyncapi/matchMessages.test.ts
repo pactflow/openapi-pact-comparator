@@ -16,16 +16,15 @@ const asyncapi: AsyncAPIDocument = {
   operations: {},
 };
 
-const candidate = (messageId: string, required: boolean): ResolvedMessage => ({
+const candidate = (name: string, required: boolean): ResolvedMessage => ({
   message: {
-    messageId,
     payload: {
       type: "object",
       properties: { id: { type: "string" } },
       ...(required ? { required: ["id"] } : {}),
     },
   },
-  path: `[root].components.messages.${messageId}`,
+  path: `[root].components.messages.${name}`,
 });
 
 const noMatchMockDetails = {

@@ -33,7 +33,6 @@ export interface Operation {
 }
 
 export interface Message {
-  messageId?: string;
   payload?: object;
   headers?: object;
   contentType?: string;

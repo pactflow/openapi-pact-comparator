@@ -1,43 +1,11 @@
 import { describe, expect, it } from "vitest";
 import type { AsyncAPIDocument, ResolvedMessage } from "./asyncapi";
 import {
-  ParserError,
   iterateMessages,
   iterateReplyMessages,
+  ParserError,
   parse,
 } from "./asyncapi";
-
-const baseDoc: AsyncAPIDocument = {
-  asyncapi: "3.1.0",
-  info: { title: "Test Events", version: "1.0.0" },
-  channels: {
-    eventsQueue: {
-      messages: {
-        organizationDeleted: {
-          messageId: "organizationDeleted",
-          payload: {
-            type: "object",
-            properties: { organizationId: { type: "string" } },
-            required: ["organizationId"],
-          },
-          headers: {
-            type: "object",
-            properties: { "detail-type": { type: "string" } },
-          },
-        },
-      },
-    },
-  },
-  operations: {
-    consumeFromEventsQueue: {
-      action: "receive",
-      channel: { $ref: "#/channels/eventsQueue" },
-      messages: [
-        { $ref: "#/channels/eventsQueue/messages/organizationDeleted" },
-      ],
-    },
-  },
-};
 
 const multiMessageDoc: AsyncAPIDocument = {
   asyncapi: "3.1.0",

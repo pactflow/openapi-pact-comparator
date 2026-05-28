@@ -26,7 +26,7 @@ const convertExclusiveMinMax = (s: SchemaObject) => {
 };
 
 const cleanupDiscriminators = (s: SchemaObject) => {
-  if (s.discriminator?.propertyName) {
+  if (s.discriminator?.propertyName && s.oneOf) {
     s.required = uniq([...(s.required || []), s.discriminator.propertyName]);
   }
 

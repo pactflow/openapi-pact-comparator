@@ -27,6 +27,7 @@ type ErrorCode =
 
 type WarningCode =
   | "message.payload.unknown"
+  | "message.response.missing"
   | "pact-broker.no-pacts-found"
   | "request.accept.unknown"
   | "request.body.unknown"

@@ -89,7 +89,11 @@ export function* compareSyncInteraction(
 
   // --- Response side ---
   const operation = asyncapi.operations[operationId];
-  if (!operation?.reply) {
+  const replyMessages = Array.isArray(operation.reply?.messages)
+    ? operation.reply.messages
+    : [];
+
+  if (!operation.reply || replyMessages.length === 0) {
     yield {
       code: "message.reply.missing",
       message: `Operation "${operationId}" has no reply field in AsyncAPI spec`,
@@ -103,6 +107,25 @@ export function* compareSyncInteraction(
         value: operation,
       },
       type: "error",
+    };
+    return;
+  }
+
+  if (interaction.responses.length === 0) {
+    yield {
+      code: "message.response.missing",
+      message:
+        "Sync interaction defines no responses to validate against the reply",
+      mockDetails: {
+        ...baseMockDetails(interaction),
+        location: `[root].interactions[${index}].response`,
+        value: [],
+      },
+      specDetails: {
+        location: `[root].operations.${operationId}.reply.messages`,
+        value: undefined,
+      },
+      type: "warning",
     };
     return;
   }

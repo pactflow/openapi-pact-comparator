@@ -35,8 +35,6 @@ paths:
                   - $ref: "#/components/schemas/Dog"
                 discriminator:
                   propertyName: petType
-                required:
-                  - petType
   /patterned:
     get:
       responses:

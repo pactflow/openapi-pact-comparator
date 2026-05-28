@@ -1,5 +1,5 @@
 import type { SchemaObject } from "ajv";
-import { cloneDeep, get, set } from "lodash-es";
+import { cloneDeep, uniq, get, set } from "lodash-es";
 import type { OpenAPIV3 } from "openapi-types";
 import { dereferenceOas, splitPath, traverse } from "#utils/schema";
 import { flattenAllOf } from "./flattenAllOf";
@@ -26,6 +26,10 @@ const convertExclusiveMinMax = (s: SchemaObject) => {
 };
 
 const cleanupDiscriminators = (s: SchemaObject) => {
+  if (s.discriminator?.propertyName) {
+    s.required = uniq([...(s.required || []), s.discriminator.propertyName]);
+  }
+
   // no-op from a validation perspective
   if (s.discriminator?.mapping) {
     delete s.discriminator.mapping;

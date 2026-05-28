@@ -4,6 +4,7 @@ import { get } from "lodash-es";
 import type { Message } from "#documents/asyncapi";
 import type { Result } from "#results/index";
 import {
+  baseMockDetails,
   formatInstancePath,
   formatMessage,
   formatSchemaPath,
@@ -15,15 +16,14 @@ import { getValidateFunction } from "#utils/validation";
 export function* compareMessageHeaders(
   ajv: Ajv,
   message: Message,
-  metadata: Record<string, string> | undefined,
-  interactionDescription: string | null,
-  interactionState: string,
+  content: { metadata?: Record<string, string> },
+  interactionContext: { description?: string; providerState?: string },
   metadataLocation: string,
   messagePath: string,
   direction: "request" | "response",
 ): Iterable<Result> {
   if (!message.headers) return;
-  if (metadata === undefined) return;
+  if (content.metadata === undefined) return;
 
   const schemaPath = `${messagePath}.headers`;
   const schemaId = `${schemaPath}#${direction}`;
@@ -33,18 +33,17 @@ export function* compareMessageHeaders(
       ? transformReceivedSchema(rawSchema)
       : rawSchema;
   });
-  if (!validate(metadata)) {
+  if (!validate(content.metadata)) {
     for (const error of validate.errors!) {
       yield {
         code: "message.headers.incompatible",
         message: `Message headers are incompatible with the schema in the spec file: ${formatMessage(error)}`,
         mockDetails: {
-          interactionDescription,
-          interactionState,
+          ...baseMockDetails(interactionContext),
           location: `${metadataLocation}${formatInstancePath(error)}`,
           value: error.instancePath
-            ? get(metadata, splitPath(error.instancePath))
-            : metadata,
+            ? get(content.metadata, splitPath(error.instancePath))
+            : content.metadata,
         },
         specDetails: {
           location: `${schemaPath}.${formatSchemaPath(error)}`,

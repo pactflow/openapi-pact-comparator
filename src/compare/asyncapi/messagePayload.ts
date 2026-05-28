@@ -4,6 +4,7 @@ import { get } from "lodash-es";
 import type { Message } from "#documents/asyncapi";
 import type { Result } from "#results/index";
 import {
+  baseMockDetails,
   formatInstancePath,
   formatMessage,
   formatSchemaPath,
@@ -21,26 +22,23 @@ const canValidate = (contentType: string | undefined): boolean => {
 export function* compareMessagePayload(
   ajv: Ajv,
   message: Message,
-  payload: unknown,
-  contentType: string | undefined,
-  interactionDescription: string | null,
-  interactionState: string,
+  content: { payload: unknown; contentType?: string },
+  interactionContext: { description?: string; providerState?: string },
   contentLocation: string,
   messagePath: string,
   direction: "request" | "response",
 ): Iterable<Result> {
-  if (!canValidate(contentType)) return;
+  if (!canValidate(content.contentType)) return;
 
   if (!message.payload) {
-    if (payload !== undefined) {
+    if (content.payload !== undefined) {
       yield {
         code: "message.payload.unknown",
         message: "No schema found for message payload",
         mockDetails: {
-          interactionDescription,
-          interactionState,
+          ...baseMockDetails(interactionContext),
           location: contentLocation,
-          value: payload,
+          value: content.payload,
         },
         specDetails: {
           location: messagePath,
@@ -60,18 +58,17 @@ export function* compareMessagePayload(
       ? transformReceivedSchema(rawSchema)
       : rawSchema;
   });
-  if (!validate(payload)) {
+  if (!validate(content.payload)) {
     for (const error of validate.errors ?? []) {
       yield {
         code: "message.payload.incompatible",
         message: `Message payload is incompatible with the schema in the spec file: ${formatMessage(error)}`,
         mockDetails: {
-          interactionDescription,
-          interactionState,
+          ...baseMockDetails(interactionContext),
           location: `${contentLocation}${formatInstancePath(error)}`,
           value: error.instancePath
-            ? get(payload, splitPath(error.instancePath))
-            : payload,
+            ? get(content.payload, splitPath(error.instancePath))
+            : content.payload,
         },
         specDetails: {
           location: `${schemaPath}.${formatSchemaPath(error)}`,

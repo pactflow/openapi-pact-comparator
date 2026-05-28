@@ -103,8 +103,6 @@ export function* tryMatchAllMessages(
   noMatchMockDetails: NonNullable<Result["mockDetails"]>,
 ): Generator<Result> {
   const allCauses: Result[] = [];
-  const description = interactionContext.description ?? null;
-  const providerState = interactionContext.providerState || "[none]";
 
   for (const candidate of candidates) {
     const message: Message = {
@@ -121,10 +119,8 @@ export function* tryMatchAllMessages(
       ...compareMessagePayload(
         ajv,
         message,
-        content.payload,
-        content.contentType,
-        description,
-        providerState,
+        content,
+        interactionContext,
         locations.payload,
         candidate.path,
         direction,
@@ -132,9 +128,8 @@ export function* tryMatchAllMessages(
       ...compareMessageHeaders(
         ajv,
         message,
-        content.metadata,
-        description,
-        providerState,
+        content,
+        interactionContext,
         locations.headers,
         candidate.path,
         direction,

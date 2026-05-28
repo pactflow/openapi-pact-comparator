@@ -31,9 +31,8 @@ const callResponse = (
     compareMessageHeaders(
       makeAjv(),
       message,
-      metadata,
-      "an event",
-      undefined,
+      { metadata },
+      { description: "an event" },
       "[root].interactions[0].metadata",
       path,
       "response",
@@ -100,9 +99,8 @@ describe("compareMessageHeaders — direction", () => {
       compareMessageHeaders(
         makeAjv(),
         message,
+        { metadata: {} },
         {},
-        null,
-        null,
         "[root].interactions[0].request.metadata",
         "[root].channels.eventsQueue.messages.myMsg",
         "request",
@@ -125,9 +123,8 @@ describe("compareMessageHeaders — direction", () => {
       compareMessageHeaders(
         makeAjv(),
         message,
+        { metadata: {} },
         {},
-        null,
-        null,
         "[root].interactions[0].metadata",
         "[root].channels.eventsQueue.messages.myMsg",
         "response",

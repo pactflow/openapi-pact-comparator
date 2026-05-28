@@ -4,9 +4,9 @@
   "interactions": [
     {
       "type": "Synchronous/Messages",
-      "description": "place an order with unknown reply message id",
+      "description": "place an order with unknown operation id",
       "comments": {
-        "references": { "AsyncAPI": { "operationId": "sendOrder" } }
+        "references": { "AsyncAPI": { "operationId": "unknownOperation" } }
       },
       "request": {
         "contents": {

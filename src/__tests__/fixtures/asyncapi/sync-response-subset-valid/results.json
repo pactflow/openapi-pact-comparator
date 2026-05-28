@@ -21,28 +21,24 @@
     "type": "info"
   },
   {
-    "code": "message.reply.missing",
-    "message": "Operation \"sendOrder\" has no reply field in AsyncAPI spec",
-    "mockDetails": {
-      "interactionDescription": "place an order partial response",
-      "interactionState": "[none]",
-      "location": "[root].interactions[0].comments.references.AsyncAPI",
-      "value": "sendOrder"
-    },
+    "code": "message.matched",
+    "message": "Matched message at [root].channels.replies.messages.OrderResponse",
     "specDetails": {
-      "location": "[root].operations.sendOrder",
+      "location": "[root].channels.replies.messages.OrderResponse",
       "value": {
-        "action": "send",
-        "channel": {
-          "$ref": "#/channels/requests"
-        },
-        "messages": [
-          {
-            "$ref": "#/channels/requests/messages/OrderRequest"
-          }
-        ]
+        "payload": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "status"
+          ]
+        }
       }
     },
-    "type": "error"
+    "type": "info"
   }
 ]

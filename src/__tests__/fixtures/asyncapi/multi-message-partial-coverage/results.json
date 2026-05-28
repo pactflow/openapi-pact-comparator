@@ -21,24 +21,64 @@
     "type": "info"
   },
   {
-    "code": "message.matched",
-    "message": "Matched message at [root].channels.userEvents.messages.userCreated",
-    "specDetails": {
-      "location": "[root].channels.userEvents.messages.userCreated",
-      "value": {
-        "payload": {
-          "type": "object",
-          "properties": {
-            "userId": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "userId"
-          ]
-        }
-      }
+    "code": "message.no.match",
+    "message": "No message in the operation matched the interaction",
+    "mockDetails": {
+      "interactionDescription": "an event with invalid userId type",
+      "interactionState": "[none]",
+      "location": "[root].interactions[1]",
+      "value": "an event with invalid userId type"
     },
-    "type": "info"
+    "specDetails": {
+      "location": "[root].operations.receiveUserEvents.messages"
+    },
+    "type": "error",
+    "causes": [
+      {
+        "code": "message.payload.incompatible",
+        "message": "Message payload is incompatible with the schema in the spec file: must be string",
+        "mockDetails": {
+          "interactionDescription": "an event with invalid userId type",
+          "interactionState": "[none]",
+          "location": "[root].interactions[1].contents.content.userId",
+          "value": 12345
+        },
+        "specDetails": {
+          "location": "[root].channels.userEvents.messages.userCreated.payload.properties.userId.type",
+          "value": "string"
+        },
+        "type": "error"
+      },
+      {
+        "code": "message.payload.incompatible",
+        "message": "Message payload is incompatible with the schema in the spec file: must be string",
+        "mockDetails": {
+          "interactionDescription": "an event with invalid userId type",
+          "interactionState": "[none]",
+          "location": "[root].interactions[1].contents.content.userId",
+          "value": 12345
+        },
+        "specDetails": {
+          "location": "[root].channels.userEvents.messages.userDeleted.payload.properties.userId.type",
+          "value": "string"
+        },
+        "type": "error"
+      },
+      {
+        "code": "message.payload.incompatible",
+        "message": "Message payload is incompatible with the schema in the spec file: must be string",
+        "mockDetails": {
+          "interactionDescription": "an event with invalid userId type",
+          "interactionState": "[none]",
+          "location": "[root].interactions[1].contents.content.userId",
+          "value": 12345
+        },
+        "specDetails": {
+          "location": "[root].channels.userEvents.messages.userUpdated.payload.properties.userId.type",
+          "value": "string"
+        },
+        "type": "error"
+      }
+    ]
   }
 ]

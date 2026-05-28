@@ -28,11 +28,11 @@
         }
       },
       "contents": {
-        "content": { "userId": "u-abc-123" },
+        "content": { "userId": 12345 },
         "contentType": "application/json",
         "encoded": false
       },
-      "description": "a user-deleted event",
+      "description": "an event with invalid userId type",
       "pending": false,
       "type": "Asynchronous/Messages"
     }

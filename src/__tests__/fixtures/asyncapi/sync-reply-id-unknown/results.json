@@ -1,41 +1,16 @@
 [
   {
-    "code": "message.matched",
-    "message": "Matched message at [root].channels.requests.messages.OrderRequest",
-    "specDetails": {
-      "location": "[root].channels.requests.messages.OrderRequest",
-      "value": {
-        "payload": {
-          "type": "object",
-          "properties": {
-            "orderId": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "orderId"
-          ]
-        }
-      }
+    "code": "message.operation.unknown",
+    "message": "Operation not defined in AsyncAPI spec: unknownOperation",
+    "mockDetails": {
+      "interactionDescription": "place an order with unknown operation id",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].comments.references.AsyncAPI.operationId",
+      "value": "unknownOperation"
     },
-    "type": "info"
-  },
-  {
-    "code": "message.matched",
-    "message": "Matched message at [root].channels.replies.messages.OrderResponse",
     "specDetails": {
-      "location": "[root].channels.replies.messages.OrderResponse",
-      "value": {
-        "payload": {
-          "type": "object",
-          "properties": {
-            "status": {
-              "type": "string"
-            }
-          }
-        }
-      }
+      "location": "[root].operations"
     },
-    "type": "info"
+    "type": "error"
   }
 ]

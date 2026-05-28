@@ -52,7 +52,7 @@ const AsyncMessage = Type.Object({
     Type.Object({
       content: Type.Optional(Type.Unknown()),
       contentType: Type.Optional(Type.String()),
-      encoded: Type.Optional(Type.Union([Type.String(), Type.Boolean()])),
+      encoded: Type.Optional(Type.Union([Type.String(), Type.Literal(false)])),
     }),
   ),
   metadata: Type.Optional(Type.Record(Type.String(), Type.String())),
@@ -76,7 +76,7 @@ const SyncMessageSide = Type.Object({
     Type.Object({
       content: Type.Optional(Type.Unknown()),
       contentType: Type.Optional(Type.String()),
-      encoded: Type.Optional(Type.Union([Type.String(), Type.Boolean()])),
+      encoded: Type.Optional(Type.Union([Type.String(), Type.Literal(false)])),
     }),
   ),
   metadata: Type.Optional(Type.Record(Type.String(), Type.String())),

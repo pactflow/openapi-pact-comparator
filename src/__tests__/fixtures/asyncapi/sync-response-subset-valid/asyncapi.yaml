@@ -32,6 +32,11 @@ operations:
       $ref: "#/channels/requests"
     messages:
       - $ref: "#/channels/requests/messages/OrderRequest"
+    reply:
+      channel:
+        $ref: "#/channels/replies"
+      messages:
+        - $ref: "#/channels/replies/messages/OrderResponse"
   receiveOrderResponse:
     action: receive
     channel:

@@ -53,7 +53,7 @@ export function* compareSyncInteraction(
     ? operation.reply.messages
     : [];
 
-  if (!operation.reply || replyMessages.length === 0) {
+  if (!operation.reply) {
     yield {
       code: "message.reply.missing",
       message: `Operation "${operationId}" has no reply field in AsyncAPI spec`,
@@ -65,6 +65,24 @@ export function* compareSyncInteraction(
       specDetails: {
         location: `[root].operations.${operationId}`,
         value: operation,
+      },
+      type: "error",
+    };
+    return;
+  }
+
+  if (replyMessages.length === 0) {
+    yield {
+      code: "message.reply.missing",
+      message: `Operation "${operationId}" reply defines no messages in AsyncAPI spec`,
+      mockDetails: {
+        ...baseMockDetails(interaction),
+        location: `[root].interactions[${index}].comments.references.AsyncAPI`,
+        value: operationId,
+      },
+      specDetails: {
+        location: `[root].operations.${operationId}.reply.messages`,
+        value: operation.reply.messages,
       },
       type: "error",
     };
@@ -83,7 +101,7 @@ export function* compareSyncInteraction(
       },
       specDetails: {
         location: `[root].operations.${operationId}.reply.messages`,
-        value: undefined,
+        value: replyMessages,
       },
       type: "warning",
     };

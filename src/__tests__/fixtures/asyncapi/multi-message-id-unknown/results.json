@@ -1,24 +1,23 @@
 [
   {
-    "code": "message.id.unknown",
-    "message": "Message not defined in AsyncAPI spec: nonExistentMessage",
-    "mockDetails": {
-      "interactionDescription": "an event with unknown messageId in a multi-message operation",
-      "interactionState": "[none]",
-      "location": "[root].interactions[0].comments.references.AsyncAPI.messageId",
-      "value": "nonExistentMessage"
-    },
+    "code": "message.matched",
+    "message": "Matched message at [root].channels.userEvents.messages.userCreated",
     "specDetails": {
-      "location": "[root].operations.receiveUserEvents.messages",
-      "value": [
-        {
-          "$ref": "#/channels/userEvents/messages/userCreated"
-        },
-        {
-          "$ref": "#/channels/userEvents/messages/userDeleted"
+      "location": "[root].channels.userEvents.messages.userCreated",
+      "value": {
+        "payload": {
+          "type": "object",
+          "properties": {
+            "userId": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "userId"
+          ]
         }
-      ]
+      }
     },
-    "type": "error"
+    "type": "info"
   }
 ]

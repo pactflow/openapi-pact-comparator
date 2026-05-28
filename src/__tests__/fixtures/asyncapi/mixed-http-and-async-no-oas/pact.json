@@ -16,7 +16,6 @@
       "comments": {
         "references": {
           "AsyncAPI": {
-            "messageId": "userCreated",
             "operationId": "receiveUserEvents"
           }
         }

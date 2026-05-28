@@ -1,35 +1,56 @@
 import { describe, expect, it } from "vitest";
-import type { AsyncAPIDocument, Ref } from "./asyncapi";
-import { ParserError, parse, resolveMessage } from "./asyncapi";
+import type { AsyncAPIDocument, ResolvedMessage } from "./asyncapi";
+import {
+  iterateMessages,
+  iterateReplyMessages,
+  ParserError,
+  parse,
+} from "./asyncapi";
 
-const baseDoc: AsyncAPIDocument = {
+const multiMessageDoc: AsyncAPIDocument = {
   asyncapi: "3.1.0",
-  info: { title: "Test Events", version: "1.0.0" },
+  info: { title: "User Service", version: "1.0.0" },
   channels: {
-    eventsQueue: {
+    userEvents: {
       messages: {
-        organizationDeleted: {
-          messageId: "organizationDeleted",
+        UserCreated: {
           payload: {
             type: "object",
-            properties: { organizationId: { type: "string" } },
-            required: ["organizationId"],
+            properties: { userId: { type: "string" } },
+            required: ["userId"],
           },
-          headers: {
+        },
+        UserDeleted: {
+          payload: {
             type: "object",
-            properties: { "detail-type": { type: "string" } },
+            properties: { userId: { type: "string" } },
           },
         },
       },
     },
+    replies: {
+      messages: {
+        Ack: { payload: { type: "object" } },
+      },
+    },
   },
   operations: {
-    consumeFromEventsQueue: {
+    receiveUserEvents: {
       action: "receive",
-      channel: { $ref: "#/channels/eventsQueue" },
+      channel: { $ref: "#/channels/userEvents" },
       messages: [
-        { $ref: "#/channels/eventsQueue/messages/organizationDeleted" },
+        { $ref: "#/channels/userEvents/messages/UserCreated" },
+        { $ref: "#/channels/userEvents/messages/UserDeleted" },
       ],
+      reply: {
+        channel: { $ref: "#/channels/replies" },
+        messages: [{ $ref: "#/channels/replies/messages/Ack" }],
+      },
+    },
+    noMessages: {
+      action: "receive",
+      channel: { $ref: "#/channels/userEvents" },
+      messages: [],
     },
   },
 };
@@ -82,349 +103,100 @@ describe("parse", () => {
   });
 });
 
-describe("resolveMessage", () => {
-  it("resolves a message by messageId field", () => {
-    const cache = new Map();
-    const msg = resolveMessage(
-      baseDoc,
-      "consumeFromEventsQueue",
-      "organizationDeleted",
-      cache,
+describe("iterateMessages", () => {
+  it("yields nothing for an unknown operation", () => {
+    const results = [...iterateMessages(multiMessageDoc, "unknown", new Map())];
+    expect(results).toHaveLength(0);
+  });
+
+  it("yields nothing when operation has no messages", () => {
+    const results = [
+      ...iterateMessages(multiMessageDoc, "noMessages", new Map()),
+    ];
+    expect(results).toHaveLength(0);
+  });
+
+  it("yields all messages in declaration order", () => {
+    const results = [
+      ...iterateMessages(multiMessageDoc, "receiveUserEvents", new Map()),
+    ];
+    expect(results).toHaveLength(2);
+    expect(results[0].path).toBe(
+      "[root].channels.userEvents.messages.UserCreated",
     );
-    expect(msg).not.toBeNull();
-    expect(msg?.message.messageId).toBe("organizationDeleted");
-    expect(msg?.path).toBe(
-      "[root].channels.eventsQueue.messages.organizationDeleted",
+    expect(results[1].path).toBe(
+      "[root].channels.userEvents.messages.UserDeleted",
     );
   });
 
-  it("returns null for unknown operationId", () => {
-    const msg = resolveMessage(
-      baseDoc,
-      "unknownOp",
-      "organizationDeleted",
+  it("resolves $ref paths to the component location", () => {
+    const [first] = [
+      ...iterateMessages(multiMessageDoc, "receiveUserEvents", new Map()),
+    ];
+    expect(first.path).toBe("[root].channels.userEvents.messages.UserCreated");
+  });
+
+  it("caches $ref resolutions and returns the same object reference", () => {
+    const cache = new Map<string, ResolvedMessage>();
+    const first = [
+      ...iterateMessages(multiMessageDoc, "receiveUserEvents", cache),
+    ];
+    const second = [
+      ...iterateMessages(multiMessageDoc, "receiveUserEvents", cache),
+    ];
+    expect(first[0]).toBe(second[0]);
+  });
+
+  it("stops at the first item when caller pulls only one", () => {
+    const gen = iterateMessages(
+      multiMessageDoc,
+      "receiveUserEvents",
       new Map(),
     );
-    expect(msg).toBeNull();
+    const { value, done } = gen.next();
+    expect(done).toBe(false);
+    expect(value?.path).toBe("[root].channels.userEvents.messages.UserCreated");
+    gen.return(undefined); // clean up the generator
+  });
+});
+
+describe("iterateReplyMessages", () => {
+  it("yields nothing for an unknown operation", () => {
+    const results = [
+      ...iterateReplyMessages(multiMessageDoc, "unknown", new Map()),
+    ];
+    expect(results).toHaveLength(0);
   });
 
-  it("returns null for unknown messageId", () => {
-    const msg = resolveMessage(
-      baseDoc,
-      "consumeFromEventsQueue",
-      "unknownMsg",
-      new Map(),
-    );
-    expect(msg).toBeNull();
+  it("yields nothing when operation has no reply", () => {
+    const results = [
+      ...iterateReplyMessages(multiMessageDoc, "noMessages", new Map()),
+    ];
+    expect(results).toHaveLength(0);
   });
 
-  it("caches results so the same key is not re-resolved", () => {
-    const cache = new Map();
-    resolveMessage(
-      baseDoc,
-      "consumeFromEventsQueue",
-      "organizationDeleted",
-      cache,
-    );
-    expect(
-      cache.has(
-        JSON.stringify(["consumeFromEventsQueue", "organizationDeleted"]),
-      ),
-    ).toBe(true);
-    // Mutate doc — cached result should still be returned
-    const docCopy = { ...baseDoc, operations: {} };
-    const msg = resolveMessage(
-      docCopy,
-      "consumeFromEventsQueue",
-      "organizationDeleted",
-      cache,
-    );
-    expect(msg).not.toBeNull();
+  it("yields reply messages", () => {
+    const results = [
+      ...iterateReplyMessages(multiMessageDoc, "receiveUserEvents", new Map()),
+    ];
+    expect(results).toHaveLength(1);
   });
 
-  it("resolves by $ref key when message has no messageId field", () => {
-    const docNoId: AsyncAPIDocument = {
-      ...baseDoc,
-      channels: {
-        eventsQueue: {
-          messages: {
-            organizationDeleted: {
-              // no messageId field
-              payload: { type: "object" },
-            },
-          },
-        },
-      },
-    };
-    const msg = resolveMessage(
-      docNoId,
-      "consumeFromEventsQueue",
-      "organizationDeleted",
-      new Map(),
-    );
-    expect(msg).not.toBeNull();
+  it("resolves $ref paths to the component location", () => {
+    const [first] = [
+      ...iterateReplyMessages(multiMessageDoc, "receiveUserEvents", new Map()),
+    ];
+    expect(first.path).toBe("[root].channels.replies.messages.Ack");
   });
 
-  it("resolves inline message objects by messageId", () => {
-    const docInline: AsyncAPIDocument = {
-      ...baseDoc,
-      operations: {
-        consumeFromEventsQueue: {
-          action: "receive",
-          channel: { $ref: "#/channels/eventsQueue" },
-          messages: [
-            {
-              messageId: "organizationDeleted",
-              payload: { type: "object" },
-            },
-          ],
-        },
-      },
-    };
-    const msg = resolveMessage(
-      docInline,
-      "consumeFromEventsQueue",
-      "organizationDeleted",
-      new Map(),
-    );
-    expect(msg).not.toBeNull();
-    expect(msg?.message.messageId).toBe("organizationDeleted");
-    expect(msg?.path).toBe(
-      "[root].operations.consumeFromEventsQueue.messages[0]",
-    );
-  });
-
-  it("caches null for unresolved messages", () => {
-    const cache = new Map();
-    resolveMessage(baseDoc, "consumeFromEventsQueue", "nope", cache);
-    expect(
-      cache.get(JSON.stringify(["consumeFromEventsQueue", "nope"])),
-    ).toBeNull();
-  });
-
-  it("safely handles malformed operation message refs where $ref is missing", () => {
-    const docMalformed: AsyncAPIDocument = {
-      ...baseDoc,
-      operations: {
-        consumeFromEventsQueue: {
-          action: "receive",
-          channel: { $ref: "#/channels/eventsQueue" },
-          messages: [
-            {} as Ref,
-            { $ref: "#/channels/eventsQueue/messages/organizationDeleted" },
-          ],
-        },
-      },
-    };
-    expect(() =>
-      resolveMessage(
-        docMalformed,
-        "consumeFromEventsQueue",
-        "organizationDeleted",
-        new Map(),
-      ),
-    ).not.toThrow();
-    const msg = resolveMessage(
-      docMalformed,
-      "consumeFromEventsQueue",
-      "organizationDeleted",
-      new Map(),
-    );
-    expect(msg).not.toBeNull();
-    expect(msg?.message.messageId).toBe("organizationDeleted");
-  });
-
-  it("safely handles malformed operation message refs where $ref is not a string", () => {
-    const docMalformed: AsyncAPIDocument = {
-      ...baseDoc,
-      operations: {
-        consumeFromEventsQueue: {
-          action: "receive",
-          channel: { $ref: "#/channels/eventsQueue" },
-          messages: [{ $ref: 42 } as unknown as Ref],
-        },
-      },
-    };
-    expect(() =>
-      resolveMessage(
-        docMalformed,
-        "consumeFromEventsQueue",
-        "organizationDeleted",
-        new Map(),
-      ),
-    ).not.toThrow();
-    const msg = resolveMessage(
-      docMalformed,
-      "consumeFromEventsQueue",
-      "organizationDeleted",
-      new Map(),
-    );
-    expect(msg).toBeNull();
-  });
-
-  it("safely handles null entries in operation.messages", () => {
-    const docNullEntry: AsyncAPIDocument = {
-      ...baseDoc,
-      operations: {
-        consumeFromEventsQueue: {
-          action: "receive",
-          channel: { $ref: "#/channels/eventsQueue" },
-          messages: [null as unknown as Ref],
-        },
-      },
-    };
-    expect(() =>
-      resolveMessage(
-        docNullEntry,
-        "consumeFromEventsQueue",
-        "organizationDeleted",
-        new Map(),
-      ),
-    ).not.toThrow();
-    expect(
-      resolveMessage(
-        docNullEntry,
-        "consumeFromEventsQueue",
-        "organizationDeleted",
-        new Map(),
-      ),
-    ).toBeNull();
-  });
-
-  it("safely handles numeric entries in operation.messages", () => {
-    const docNumericEntry: AsyncAPIDocument = {
-      ...baseDoc,
-      operations: {
-        consumeFromEventsQueue: {
-          action: "receive",
-          channel: { $ref: "#/channels/eventsQueue" },
-          messages: [42 as unknown as Ref],
-        },
-      },
-    };
-    expect(() =>
-      resolveMessage(
-        docNumericEntry,
-        "consumeFromEventsQueue",
-        "organizationDeleted",
-        new Map(),
-      ),
-    ).not.toThrow();
-    expect(
-      resolveMessage(
-        docNumericEntry,
-        "consumeFromEventsQueue",
-        "organizationDeleted",
-        new Map(),
-      ),
-    ).toBeNull();
-  });
-
-  it("resolves valid ref after skipping mixed malformed entries", () => {
-    const docMixed: AsyncAPIDocument = {
-      ...baseDoc,
-      operations: {
-        consumeFromEventsQueue: {
-          action: "receive",
-          channel: { $ref: "#/channels/eventsQueue" },
-          messages: [
-            null as unknown as Ref,
-            42 as unknown as Ref,
-            {} as Ref,
-            { $ref: 99 } as unknown as Ref,
-            { $ref: "#/channels/eventsQueue/messages/organizationDeleted" },
-          ],
-        },
-      },
-    };
-    expect(() =>
-      resolveMessage(
-        docMixed,
-        "consumeFromEventsQueue",
-        "organizationDeleted",
-        new Map(),
-      ),
-    ).not.toThrow();
-    const msg = resolveMessage(
-      docMixed,
-      "consumeFromEventsQueue",
-      "organizationDeleted",
-      new Map(),
-    );
-    expect(msg).not.toBeNull();
-    expect(msg?.message.messageId).toBe("organizationDeleted");
-  });
-
-  it("returns null without throwing when operation.messages is a plain object (non-array)", () => {
-    const docObjectMessages: AsyncAPIDocument = {
-      ...baseDoc,
-      operations: {
-        consumeFromEventsQueue: {
-          action: "receive",
-          channel: { $ref: "#/channels/eventsQueue" },
-          messages: { key: "value" } as unknown as Array<Ref>,
-        },
-      },
-    };
-    expect(() =>
-      resolveMessage(
-        docObjectMessages,
-        "consumeFromEventsQueue",
-        "organizationDeleted",
-        new Map(),
-      ),
-    ).not.toThrow();
-    expect(
-      resolveMessage(
-        docObjectMessages,
-        "consumeFromEventsQueue",
-        "organizationDeleted",
-        new Map(),
-      ),
-    ).toBeNull();
-  });
-
-  it("returns null without throwing when operation.messages is a string (non-array)", () => {
-    const docStringMessages: AsyncAPIDocument = {
-      ...baseDoc,
-      operations: {
-        consumeFromEventsQueue: {
-          action: "receive",
-          channel: { $ref: "#/channels/eventsQueue" },
-          messages: "invalid" as unknown as Array<Ref>,
-        },
-      },
-    };
-    expect(() =>
-      resolveMessage(
-        docStringMessages,
-        "consumeFromEventsQueue",
-        "organizationDeleted",
-        new Map(),
-      ),
-    ).not.toThrow();
-    expect(
-      resolveMessage(
-        docStringMessages,
-        "consumeFromEventsQueue",
-        "organizationDeleted",
-        new Map(),
-      ),
-    ).toBeNull();
-  });
-
-  it("does not collide when operationId and messageId share a common separator", () => {
-    // With a naive `${opId}:${msgId}` key, ("op:A","B") and ("op","A:B") would collide.
-    // JSON.stringify tuple keying must keep them distinct.
-    const cache = new Map();
-    // Populate with a result for ("op:A", "B") — null because op doesn't exist in baseDoc
-    resolveMessage(baseDoc, "op:A", "B", cache);
-    // Populate with a result for ("op", "A:B") — also null
-    resolveMessage(baseDoc, "op", "A:B", cache);
-    const key1 = JSON.stringify(["op:A", "B"]);
-    const key2 = JSON.stringify(["op", "A:B"]);
-    expect(key1).not.toBe(key2);
-    expect(cache.has(key1)).toBe(true);
-    expect(cache.has(key2)).toBe(true);
+  it("caches $ref resolutions", () => {
+    const cache = new Map<string, ResolvedMessage>();
+    const first = [
+      ...iterateReplyMessages(multiMessageDoc, "receiveUserEvents", cache),
+    ];
+    const second = [
+      ...iterateReplyMessages(multiMessageDoc, "receiveUserEvents", cache),
+    ];
+    expect(first[0]).toBe(second[0]);
   });
 });

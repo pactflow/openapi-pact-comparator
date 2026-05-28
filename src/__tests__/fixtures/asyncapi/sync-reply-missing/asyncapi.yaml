@@ -1,0 +1,23 @@
+asyncapi: "3.1.0"
+info:
+  title: Order Service
+  version: "1.0.0"
+channels:
+  requests:
+    address: order-requests
+    messages:
+      OrderRequest:
+        payload:
+          type: object
+          properties:
+            orderId:
+              type: string
+          required:
+            - orderId
+operations:
+  sendOrder:
+    action: send
+    channel:
+      $ref: "#/channels/requests"
+    messages:
+      - $ref: "#/channels/requests/messages/OrderRequest"

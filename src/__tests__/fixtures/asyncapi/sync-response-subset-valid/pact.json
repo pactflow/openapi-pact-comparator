@@ -1,0 +1,30 @@
+{
+  "consumer": { "name": "consumer" },
+  "provider": { "name": "provider" },
+  "interactions": [
+    {
+      "type": "Synchronous/Messages",
+      "description": "place an order partial response",
+      "comments": {
+        "references": { "AsyncAPI": { "operationId": "sendOrder" } }
+      },
+      "request": {
+        "contents": {
+          "content": { "orderId": "o-789" },
+          "contentType": "application/json",
+          "encoded": false
+        }
+      },
+      "response": [
+        {
+          "contents": {
+            "content": {},
+            "contentType": "application/json",
+            "encoded": false
+          }
+        }
+      ]
+    }
+  ],
+  "metadata": { "pactSpecification": { "version": "4.0" } }
+}

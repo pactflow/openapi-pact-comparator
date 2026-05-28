@@ -7,7 +7,7 @@ channels:
     address: user-events
     messages:
       userPing:
-        messageId: userPing
+        contentType: application/json
 operations:
   receiveUserEvents:
     action: receive

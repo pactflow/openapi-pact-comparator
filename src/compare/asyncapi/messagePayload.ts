@@ -2,7 +2,6 @@ import type { SchemaObject } from "ajv";
 import type Ajv from "ajv/dist/2019";
 import { get } from "lodash-es";
 import type { Message } from "#documents/asyncapi";
-import type { AsyncInteraction } from "#documents/pact";
 import type { Result } from "#results/index";
 import {
   baseMockDetails,
@@ -23,23 +22,23 @@ const canValidate = (contentType: string | undefined): boolean => {
 export function* compareMessagePayload(
   ajv: Ajv,
   message: Message,
-  interaction: AsyncInteraction,
-  index: number,
+  content: { payload: unknown; contentType?: string },
+  interactionContext: { description?: string; providerState?: string },
+  contentLocation: string,
   messagePath: string,
+  direction: "request" | "response",
 ): Iterable<Result> {
-  const { payload, contentType } = interaction;
-
-  if (!canValidate(contentType)) return;
+  if (!canValidate(content.contentType)) return;
 
   if (!message.payload) {
-    if (payload !== undefined) {
+    if (content.payload !== undefined) {
       yield {
         code: "message.payload.unknown",
         message: "No schema found for message payload",
         mockDetails: {
-          ...baseMockDetails(interaction),
-          location: `[root].interactions[${index}].contents.content`,
-          value: payload,
+          ...baseMockDetails(interactionContext),
+          location: contentLocation,
+          value: content.payload,
         },
         specDetails: {
           location: messagePath,
@@ -51,24 +50,28 @@ export function* compareMessagePayload(
     return;
   }
 
-  const schemaId = `${messagePath}.payload`;
-  const validate = getValidateFunction(ajv, schemaId, () =>
-    transformReceivedSchema(structuredClone(message.payload) as SchemaObject),
-  );
-  if (!validate(payload)) {
+  const schemaPath = `${messagePath}.payload`;
+  const schemaId = `${schemaPath}#${direction}`;
+  const validate = getValidateFunction(ajv, schemaId, () => {
+    const rawSchema = structuredClone(message.payload) as SchemaObject;
+    return direction === "response"
+      ? transformReceivedSchema(rawSchema)
+      : rawSchema;
+  });
+  if (!validate(content.payload)) {
     for (const error of validate.errors ?? []) {
       yield {
         code: "message.payload.incompatible",
         message: `Message payload is incompatible with the schema in the spec file: ${formatMessage(error)}`,
         mockDetails: {
-          ...baseMockDetails(interaction),
-          location: `[root].interactions[${index}].contents.content${formatInstancePath(error)}`,
+          ...baseMockDetails(interactionContext),
+          location: `${contentLocation}${formatInstancePath(error)}`,
           value: error.instancePath
-            ? get(payload, splitPath(error.instancePath))
-            : payload,
+            ? get(content.payload, splitPath(error.instancePath))
+            : content.payload,
         },
         specDetails: {
-          location: `${schemaId}.${formatSchemaPath(error)}`,
+          location: `${schemaPath}.${formatSchemaPath(error)}`,
           value: get(validate.schema, splitPath(error.schemaPath)),
         },
         type: "error",

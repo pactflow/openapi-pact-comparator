@@ -7,7 +7,6 @@ channels:
     address: user-events
     messages:
       userCreated:
-        messageId: userCreated
         payload:
           type: object
           properties:

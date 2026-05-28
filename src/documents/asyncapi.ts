@@ -20,14 +20,19 @@ export interface Channel {
   messages?: Record<string, Message | Ref>;
 }
 
+export interface OperationReply {
+  channel?: Ref;
+  messages?: Array<Ref | Message>;
+}
+
 export interface Operation {
   action: "send" | "receive";
   channel: Ref;
   messages?: Array<Ref | Message>;
+  reply?: OperationReply;
 }
 
 export interface Message {
-  messageId?: string;
   payload?: object;
   headers?: object;
   contentType?: string;
@@ -68,49 +73,64 @@ export interface ResolvedMessage {
   path: string;
 }
 
-export const resolveMessage = (
+function* iterateMessageList(
+  messages: Array<Ref | Message>,
+  inlinePathBase: string,
+  cache: Map<string, ResolvedMessage>,
   doc: AsyncAPIDocument,
-  operationId: string,
-  messageId: string,
-  cache: Map<string, ResolvedMessage | null>,
-): ResolvedMessage | null => {
-  const cacheKey = JSON.stringify([operationId, messageId]);
-  if (cache.has(cacheKey)) return cache.get(cacheKey)!;
-
-  const operation = doc.operations?.[operationId];
-  if (!operation) {
-    cache.set(cacheKey, null);
-    return null;
-  }
-
-  for (const [i, ref] of (Array.isArray(operation.messages)
-    ? operation.messages
-    : []
-  ).entries()) {
+): Generator<ResolvedMessage> {
+  for (const [i, ref] of messages.entries()) {
     if (ref == null || typeof ref !== "object") continue;
     if (isRef(ref)) {
+      const cached = cache.get(ref.$ref);
+      if (cached) {
+        yield cached;
+        continue;
+      }
       const message = dereferenceDoc(ref, doc) as Message | undefined;
       if (!message) continue;
-      const refKey = ref.$ref.split("/").pop() ?? "";
-      if (message.messageId === messageId || refKey === messageId) {
-        const path =
-          "[root]." + ref.$ref.replace(/^#\//, "").replace(/\//g, ".");
-        const result = { message, path };
-        cache.set(cacheKey, result);
-        return result;
-      }
-      continue;
-    }
-
-    const inlineMessage = ref as Message;
-    if (inlineMessage.messageId === messageId) {
-      const path = `[root].operations.${operationId}.messages[${i}]`;
-      const result = { message: inlineMessage, path };
-      cache.set(cacheKey, result);
-      return result;
+      const path = "[root]." + ref.$ref.replace(/^#\//, "").replace(/\//g, ".");
+      const result: ResolvedMessage = { message, path };
+      cache.set(ref.$ref, result);
+      yield result;
+    } else {
+      yield { message: ref as Message, path: `${inlinePathBase}[${i}]` };
     }
   }
+}
 
-  cache.set(cacheKey, null);
-  return null;
-};
+export function* iterateMessages(
+  doc: AsyncAPIDocument,
+  operationId: string,
+  cache: Map<string, ResolvedMessage>,
+): Generator<ResolvedMessage> {
+  const operation = doc.operations?.[operationId];
+  if (!operation) return;
+
+  const messages = Array.isArray(operation.messages) ? operation.messages : [];
+  yield* iterateMessageList(
+    messages,
+    `[root].operations.${operationId}.messages`,
+    cache,
+    doc,
+  );
+}
+
+export function* iterateReplyMessages(
+  doc: AsyncAPIDocument,
+  operationId: string,
+  cache: Map<string, ResolvedMessage>,
+): Generator<ResolvedMessage> {
+  const operation = doc.operations?.[operationId];
+  if (!operation?.reply) return;
+
+  const messages = Array.isArray(operation.reply.messages)
+    ? operation.reply.messages
+    : [];
+  yield* iterateMessageList(
+    messages,
+    `[root].operations.${operationId}.reply.messages`,
+    cache,
+    doc,
+  );
+}

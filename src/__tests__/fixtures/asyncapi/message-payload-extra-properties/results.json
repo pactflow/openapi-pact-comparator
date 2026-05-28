@@ -1,20 +1,36 @@
 [
   {
-    "code": "message.payload.incompatible",
-    "message": "Message payload is incompatible with the schema in the spec file: must NOT have additional properties - unknownField",
+    "code": "message.no.match",
+    "message": "No message in the operation matched the interaction",
     "mockDetails": {
       "interactionDescription": "a user-created event with extra payload field not in spec",
       "interactionState": "[none]",
-      "location": "[root].interactions[0].contents.content",
-      "value": {
-        "userId": "u-abc-123",
-        "unknownField": "extra"
-      }
+      "location": "[root].interactions[0]",
+      "value": "a user-created event with extra payload field not in spec"
     },
     "specDetails": {
-      "location": "[root].channels.userEvents.messages.userCreated.payload.additionalProperties",
-      "value": false
+      "location": "[root].operations.receiveUserEvents.messages"
     },
-    "type": "error"
+    "type": "error",
+    "causes": [
+      {
+        "code": "message.payload.incompatible",
+        "message": "Message payload is incompatible with the schema in the spec file: must NOT have additional properties - unknownField",
+        "mockDetails": {
+          "interactionDescription": "a user-created event with extra payload field not in spec",
+          "interactionState": "[none]",
+          "location": "[root].interactions[0].contents.content",
+          "value": {
+            "userId": "u-abc-123",
+            "unknownField": "extra"
+          }
+        },
+        "specDetails": {
+          "location": "[root].channels.userEvents.messages.userCreated.payload.additionalProperties",
+          "value": false
+        },
+        "type": "error"
+      }
+    ]
   }
 ]

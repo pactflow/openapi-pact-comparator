@@ -16,7 +16,6 @@ channels:
     address: user-events
     messages:
       userCreated:
-        messageId: userCreated
         payload:
           $ref: "#/components/schemas/UserPayload"
 operations:

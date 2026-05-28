@@ -6,7 +6,6 @@
       "comments": {
         "references": {
           "AsyncAPI": {
-            "messageId": "userPing",
             "operationId": "receiveUserEvents"
           }
         }

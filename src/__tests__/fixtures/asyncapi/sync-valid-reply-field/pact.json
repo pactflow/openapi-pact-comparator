@@ -1,0 +1,30 @@
+{
+  "consumer": { "name": "consumer" },
+  "provider": { "name": "provider" },
+  "interactions": [
+    {
+      "type": "Synchronous/Messages",
+      "description": "place an order via reply field",
+      "comments": {
+        "references": { "AsyncAPI": { "operationId": "sendOrder" } }
+      },
+      "request": {
+        "contents": {
+          "content": { "orderId": "o-456" },
+          "contentType": "application/json",
+          "encoded": false
+        }
+      },
+      "response": [
+        {
+          "contents": {
+            "content": { "status": "accepted" },
+            "contentType": "application/json",
+            "encoded": false
+          }
+        }
+      ]
+    }
+  ],
+  "metadata": { "pactSpecification": { "version": "4.0" } }
+}

@@ -1,0 +1,16 @@
+[
+  {
+    "code": "message.operation.unknown",
+    "message": "Operation not defined in AsyncAPI spec: unknownOperation",
+    "mockDetails": {
+      "interactionDescription": "place an order with unknown operation id",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].comments.references.AsyncAPI.operationId",
+      "value": "unknownOperation"
+    },
+    "specDetails": {
+      "location": "[root].operations"
+    },
+    "type": "error"
+  }
+]

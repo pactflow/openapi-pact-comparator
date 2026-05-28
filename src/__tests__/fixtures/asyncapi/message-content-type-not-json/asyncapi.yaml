@@ -7,7 +7,6 @@ channels:
     address: user-events
     messages:
       userAvatarUploaded:
-        messageId: userAvatarUploaded
         contentType: application/octet-stream
         payload:
           type: object

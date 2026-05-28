@@ -14,5 +14,16 @@
       "location": "[root].channels.userEvents.messages.userPing"
     },
     "type": "warning"
+  },
+  {
+    "code": "message.matched",
+    "message": "Matched message at [root].channels.userEvents.messages.userPing",
+    "specDetails": {
+      "location": "[root].channels.userEvents.messages.userPing",
+      "value": {
+        "contentType": "application/json"
+      }
+    },
+    "type": "info"
   }
 ]

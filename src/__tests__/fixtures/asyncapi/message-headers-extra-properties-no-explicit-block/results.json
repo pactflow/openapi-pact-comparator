@@ -1,20 +1,36 @@
 [
   {
-    "code": "message.headers.incompatible",
-    "message": "Message headers are incompatible with the schema in the spec file: must NOT have additional properties - x-unknown",
+    "code": "message.no.match",
+    "message": "No message in the operation matched the interaction",
     "mockDetails": {
       "interactionDescription": "a user-created event with extra header not in spec",
       "interactionState": "[none]",
-      "location": "[root].interactions[0].metadata",
-      "value": {
-        "event-type": "user-created",
-        "x-unknown": "extra"
-      }
+      "location": "[root].interactions[0]",
+      "value": "a user-created event with extra header not in spec"
     },
     "specDetails": {
-      "location": "[root].channels.userEvents.messages.userCreated.headers.additionalProperties",
-      "value": false
+      "location": "[root].operations.receiveUserEvents.messages"
     },
-    "type": "error"
+    "type": "error",
+    "causes": [
+      {
+        "code": "message.headers.incompatible",
+        "message": "Message headers are incompatible with the schema in the spec file: must NOT have additional properties - x-unknown",
+        "mockDetails": {
+          "interactionDescription": "a user-created event with extra header not in spec",
+          "interactionState": "[none]",
+          "location": "[root].interactions[0].metadata",
+          "value": {
+            "event-type": "user-created",
+            "x-unknown": "extra"
+          }
+        },
+        "specDetails": {
+          "location": "[root].channels.userEvents.messages.userCreated.headers.additionalProperties",
+          "value": false
+        },
+        "type": "error"
+      }
+    ]
   }
 ]

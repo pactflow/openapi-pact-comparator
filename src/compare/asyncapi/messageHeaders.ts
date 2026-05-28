@@ -2,7 +2,6 @@ import type { SchemaObject } from "ajv";
 import type Ajv from "ajv/dist/2019";
 import { get } from "lodash-es";
 import type { Message } from "#documents/asyncapi";
-import type { AsyncInteraction } from "#documents/pact";
 import type { Result } from "#results/index";
 import {
   baseMockDetails,
@@ -17,34 +16,37 @@ import { getValidateFunction } from "#utils/validation";
 export function* compareMessageHeaders(
   ajv: Ajv,
   message: Message,
-  interaction: AsyncInteraction,
-  index: number,
+  content: { metadata?: Record<string, string> },
+  interactionContext: { description?: string; providerState?: string },
+  metadataLocation: string,
   messagePath: string,
+  direction: "request" | "response",
 ): Iterable<Result> {
   if (!message.headers) return;
+  if (content.metadata === undefined) return;
 
-  const { metadata } = interaction;
-  if (metadata === undefined) return;
-
-  const schemaId = `${messagePath}.headers`;
-  const validate = getValidateFunction(ajv, schemaId, () =>
-    transformReceivedSchema(structuredClone(message.headers) as SchemaObject),
-  );
-
-  if (!validate(metadata)) {
+  const schemaPath = `${messagePath}.headers`;
+  const schemaId = `${schemaPath}#${direction}`;
+  const validate = getValidateFunction(ajv, schemaId, () => {
+    const rawSchema = structuredClone(message.headers) as SchemaObject;
+    return direction === "response"
+      ? transformReceivedSchema(rawSchema)
+      : rawSchema;
+  });
+  if (!validate(content.metadata)) {
     for (const error of validate.errors!) {
       yield {
         code: "message.headers.incompatible",
         message: `Message headers are incompatible with the schema in the spec file: ${formatMessage(error)}`,
         mockDetails: {
-          ...baseMockDetails(interaction),
-          location: `[root].interactions[${index}].metadata${formatInstancePath(error)}`,
+          ...baseMockDetails(interactionContext),
+          location: `${metadataLocation}${formatInstancePath(error)}`,
           value: error.instancePath
-            ? get(metadata, splitPath(error.instancePath))
-            : metadata,
+            ? get(content.metadata, splitPath(error.instancePath))
+            : content.metadata,
         },
         specDetails: {
-          location: `${schemaId}.${formatSchemaPath(error)}`,
+          location: `${schemaPath}.${formatSchemaPath(error)}`,
           value: get(validate.schema, splitPath(error.schemaPath)),
         },
         type: "error",

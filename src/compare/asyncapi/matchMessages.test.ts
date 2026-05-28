@@ -35,6 +35,14 @@ const noMatchMockDetails = {
   value: "test",
 } as const;
 
+const locations = {
+  payload: "[root].interactions[0].contents.content",
+  headers: "[root].interactions[0].metadata",
+  spec: "[root].operations.op.messages",
+};
+
+const interactionContext = { description: "desc" };
+
 describe("tryMatchAllMessages", () => {
   it("yields message.matched info when the single candidate matches", () => {
     const results = [
@@ -42,14 +50,9 @@ describe("tryMatchAllMessages", () => {
         makeAjv(),
         asyncapi,
         [candidate("Msg", false)],
-        { id: "abc" },
-        "application/json",
-        undefined,
-        "desc",
-        null,
-        "[root].interactions[0].contents.content",
-        "[root].interactions[0].metadata",
-        "[root].operations.op.messages",
+        { payload: { id: "abc" }, contentType: "application/json" },
+        interactionContext,
+        locations,
         "response",
         noMatchMockDetails,
       ),
@@ -68,14 +71,9 @@ describe("tryMatchAllMessages", () => {
         makeAjv(),
         asyncapi,
         [candidate("Msg", true)], // required: true → {} is invalid
-        {},
-        "application/json",
-        undefined,
-        "desc",
-        null,
-        "[root].interactions[0].contents.content",
-        "[root].interactions[0].metadata",
-        "[root].operations.op.messages",
+        { payload: {}, contentType: "application/json" },
+        interactionContext,
+        locations,
         "request",
         noMatchMockDetails,
       ),
@@ -104,14 +102,9 @@ describe("tryMatchAllMessages", () => {
         makeAjv(),
         asyncapi,
         lazyCandidates(),
-        { id: "abc" },
-        "application/json",
-        undefined,
-        "desc",
-        null,
-        "[root].interactions[0].contents.content",
-        "[root].interactions[0].metadata",
-        "[root].operations.op.messages",
+        { payload: { id: "abc" }, contentType: "application/json" },
+        interactionContext,
+        locations,
         "response",
         noMatchMockDetails,
       ),
@@ -127,14 +120,9 @@ describe("tryMatchAllMessages", () => {
         makeAjv(),
         asyncapi,
         [candidate("First", true), candidate("Second", false)], // First requires id, Second doesn't
-        {}, // fails First (missing id), passes Second
-        "application/json",
-        undefined,
-        "desc",
-        null,
-        "[root].interactions[0].contents.content",
-        "[root].interactions[0].metadata",
-        "[root].operations.op.messages",
+        { payload: {}, contentType: "application/json" }, // fails First (missing id), passes Second
+        interactionContext,
+        locations,
         "request",
         noMatchMockDetails,
       ),
@@ -152,14 +140,9 @@ describe("tryMatchAllMessages", () => {
         makeAjv(),
         asyncapi,
         [candidate("First", true), candidate("Second", true)], // both require id
-        {}, // fails both
-        "application/json",
-        undefined,
-        "desc",
-        null,
-        "[root].interactions[0].contents.content",
-        "[root].interactions[0].metadata",
-        "[root].operations.op.messages",
+        { payload: {}, contentType: "application/json" }, // fails both
+        interactionContext,
+        locations,
         "request",
         noMatchMockDetails,
       ),
@@ -175,14 +158,9 @@ describe("tryMatchAllMessages", () => {
         makeAjv(),
         asyncapi,
         [], // no candidates
-        { id: "abc" },
-        "application/json",
-        undefined,
-        "desc",
-        null,
-        "[root].interactions[0].contents.content",
-        "[root].interactions[0].metadata",
-        "[root].operations.op.messages",
+        { payload: { id: "abc" }, contentType: "application/json" },
+        interactionContext,
+        locations,
         "response",
         noMatchMockDetails,
       ),

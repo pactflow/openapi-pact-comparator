@@ -54,11 +54,12 @@ export function* compareMessagePayload(
 
   const schemaPath = `${messagePath}.payload`;
   const schemaId = `${schemaPath}#${direction}`;
-  const rawSchema = structuredClone(message.payload) as SchemaObject;
-  const schema =
-    direction === "response" ? transformReceivedSchema(rawSchema) : rawSchema;
-
-  const validate = getValidateFunction(ajv, schemaId, () => schema);
+  const validate = getValidateFunction(ajv, schemaId, () => {
+    const rawSchema = structuredClone(message.payload) as SchemaObject;
+    return direction === "response"
+      ? transformReceivedSchema(rawSchema)
+      : rawSchema;
+  });
   if (!validate(payload)) {
     for (const error of validate.errors ?? []) {
       yield {

@@ -4,7 +4,7 @@ import { iterateMessages, iterateReplyMessages } from "#documents/asyncapi";
 import type { SyncInteraction } from "#documents/pact";
 import type { Result } from "#results/index";
 import { baseMockDetails } from "#results/index";
-import { tryMatchAllMessages } from "./matchMessages";
+import { checkAsyncapiPreamble, tryMatchAllMessages } from "./matchMessages";
 
 export function* compareSyncInteraction(
   ajv: Ajv,
@@ -13,82 +13,42 @@ export function* compareSyncInteraction(
   interaction: SyncInteraction,
   index: number,
 ): Iterable<Result> {
-  if (!asyncapi) {
-    yield {
-      code: "message.spec.missing",
-      message: "No AsyncAPI document provided to validate sync interaction",
-      mockDetails: {
-        ...baseMockDetails(interaction),
-        location: `[root].interactions[${index}]`,
-        value: interaction.description,
-      },
-      specDetails: { location: "[root]", value: undefined },
-      type: "error",
-    };
+  const preamble = checkAsyncapiPreamble(asyncapi, interaction, index, "sync");
+  if (!preamble.ok) {
+    yield preamble.result;
     return;
   }
+  const { asyncapi: doc, operationId } = preamble;
 
-  if (!interaction.asyncapiReferences) {
-    yield {
-      code: "message.references.missing",
-      message:
-        "Sync interaction has no AsyncAPI references in comments.references.AsyncAPI",
-      mockDetails: {
-        ...baseMockDetails(interaction),
-        location: `[root].interactions[${index}].comments.references.AsyncAPI`,
-        value: undefined,
-      },
-      specDetails: { location: "[root]", value: undefined },
-      type: "error",
-    };
-    return;
-  }
-
-  const { operationId } = interaction.asyncapiReferences;
-
-  if (!asyncapi.operations?.[operationId]) {
-    yield {
-      code: "message.operation.unknown",
-      message: `Operation not defined in AsyncAPI spec: ${operationId}`,
-      mockDetails: {
-        ...baseMockDetails(interaction),
-        location: `[root].interactions[${index}].comments.references.AsyncAPI.operationId`,
-        value: operationId,
-      },
-      specDetails: { location: "[root].operations", value: undefined },
-      type: "error",
-    };
-    return;
-  }
+  const noMatchMockDetails = {
+    ...baseMockDetails(interaction),
+    location: `[root].interactions[${index}].comments.references.AsyncAPI.operationId`,
+    value: operationId,
+  };
 
   // --- Request side ---
   let requestMatched = false;
   for (const result of tryMatchAllMessages(
     ajv,
-    asyncapi,
-    iterateMessages(asyncapi, operationId, cache),
-    interaction.request.payload,
-    interaction.request.contentType,
-    interaction.request.metadata,
-    interaction.description ?? null,
-    interaction.providerState || "[none]",
-    `[root].interactions[${index}].request.contents.content`,
-    `[root].interactions[${index}].request.metadata`,
-    `[root].operations.${operationId}.messages`,
-    "request",
+    doc,
+    iterateMessages(doc, operationId, cache),
+    interaction.request,
+    interaction,
     {
-      ...baseMockDetails(interaction),
-      location: `[root].interactions[${index}].comments.references.AsyncAPI.operationId`,
-      value: operationId,
+      payload: `[root].interactions[${index}].request.contents.content`,
+      headers: `[root].interactions[${index}].request.metadata`,
+      spec: `[root].operations.${operationId}.messages`,
     },
+    "request",
+    noMatchMockDetails,
   )) {
     yield result;
-    if (result.type === "info") requestMatched = true;
+    if (result.code === "message.matched") requestMatched = true;
   }
   if (!requestMatched) return;
 
   // --- Response side ---
-  const operation = asyncapi.operations[operationId];
+  const operation = doc.operations![operationId];
   const replyMessages = Array.isArray(operation.reply?.messages)
     ? operation.reply.messages
     : [];
@@ -133,22 +93,17 @@ export function* compareSyncInteraction(
   for (const [j, response] of interaction.responses.entries()) {
     yield* tryMatchAllMessages(
       ajv,
-      asyncapi,
-      iterateReplyMessages(asyncapi, operationId, cache),
-      response.payload,
-      response.contentType,
-      response.metadata,
-      interaction.description ?? null,
-      interaction.providerState || "[none]",
-      `[root].interactions[${index}].response[${j}].contents.content`,
-      `[root].interactions[${index}].response[${j}].metadata`,
-      `[root].operations.${operationId}.reply.messages`,
-      "response",
+      doc,
+      iterateReplyMessages(doc, operationId, cache),
+      response,
+      interaction,
       {
-        ...baseMockDetails(interaction),
-        location: `[root].interactions[${index}].comments.references.AsyncAPI.operationId`,
-        value: operationId,
+        payload: `[root].interactions[${index}].response[${j}].contents.content`,
+        headers: `[root].interactions[${index}].response[${j}].metadata`,
+        spec: `[root].operations.${operationId}.reply.messages`,
       },
+      "response",
+      noMatchMockDetails,
     );
   }
 }

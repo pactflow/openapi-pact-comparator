@@ -27,11 +27,12 @@ export function* compareMessageHeaders(
 
   const schemaPath = `${messagePath}.headers`;
   const schemaId = `${schemaPath}#${direction}`;
-  const rawSchema = structuredClone(message.headers) as SchemaObject;
-  const schema =
-    direction === "response" ? transformReceivedSchema(rawSchema) : rawSchema;
-
-  const validate = getValidateFunction(ajv, schemaId, () => schema);
+  const validate = getValidateFunction(ajv, schemaId, () => {
+    const rawSchema = structuredClone(message.headers) as SchemaObject;
+    return direction === "response"
+      ? transformReceivedSchema(rawSchema)
+      : rawSchema;
+  });
   if (!validate(metadata)) {
     for (const error of validate.errors!) {
       yield {

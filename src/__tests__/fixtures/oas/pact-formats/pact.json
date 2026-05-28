@@ -8,7 +8,9 @@
     },
     {
       "type": "Synchronous/Messages",
-      "description": "should be ignored"
+      "description": "should be ignored",
+      "request": {},
+      "response": []
     },
     {
       "type": "not-a-real-type",

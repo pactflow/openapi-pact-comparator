@@ -74,15 +74,12 @@ export interface ResolvedMessage {
   path: string;
 }
 
-export function* iterateMessages(
-  doc: AsyncAPIDocument,
-  operationId: string,
+function* iterateMessageList(
+  messages: Array<Ref | Message>,
+  inlinePathBase: string,
   cache: Map<string, ResolvedMessage>,
+  doc: AsyncAPIDocument,
 ): Generator<ResolvedMessage> {
-  const operation = doc.operations?.[operationId];
-  if (!operation) return;
-
-  const messages = Array.isArray(operation.messages) ? operation.messages : [];
   for (const [i, ref] of messages.entries()) {
     if (ref == null || typeof ref !== "object") continue;
     if (isRef(ref)) {
@@ -98,12 +95,26 @@ export function* iterateMessages(
       cache.set(ref.$ref, result);
       yield result;
     } else {
-      yield {
-        message: ref as Message,
-        path: `[root].operations.${operationId}.messages[${i}]`,
-      };
+      yield { message: ref as Message, path: `${inlinePathBase}[${i}]` };
     }
   }
+}
+
+export function* iterateMessages(
+  doc: AsyncAPIDocument,
+  operationId: string,
+  cache: Map<string, ResolvedMessage>,
+): Generator<ResolvedMessage> {
+  const operation = doc.operations?.[operationId];
+  if (!operation) return;
+
+  const messages = Array.isArray(operation.messages) ? operation.messages : [];
+  yield* iterateMessageList(
+    messages,
+    `[root].operations.${operationId}.messages`,
+    cache,
+    doc,
+  );
 }
 
 export function* iterateReplyMessages(
@@ -117,25 +128,10 @@ export function* iterateReplyMessages(
   const messages = Array.isArray(operation.reply.messages)
     ? operation.reply.messages
     : [];
-  for (const [i, ref] of messages.entries()) {
-    if (ref == null || typeof ref !== "object") continue;
-    if (isRef(ref)) {
-      const cached = cache.get(ref.$ref);
-      if (cached) {
-        yield cached;
-        continue;
-      }
-      const message = dereferenceDoc(ref, doc) as Message | undefined;
-      if (!message) continue;
-      const path = "[root]." + ref.$ref.replace(/^#\//, "").replace(/\//g, ".");
-      const result: ResolvedMessage = { message, path };
-      cache.set(ref.$ref, result);
-      yield result;
-    } else {
-      yield {
-        message: ref as Message,
-        path: `[root].operations.${operationId}.reply.messages[${i}]`,
-      };
-    }
-  }
+  yield* iterateMessageList(
+    messages,
+    `[root].operations.${operationId}.reply.messages`,
+    cache,
+    doc,
+  );
 }

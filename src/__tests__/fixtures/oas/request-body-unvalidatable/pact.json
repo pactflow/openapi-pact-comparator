@@ -1,0 +1,33 @@
+{
+  "consumer": { "name": "consumer" },
+  "provider": { "name": "provider" },
+  "interactions": [
+    {
+      "description": "should warn when request body has unsupported content type",
+      "request": {
+        "method": "POST",
+        "path": "/upload",
+        "headers": {
+          "Content-Type": "application/xml"
+        },
+        "body": "<user><name>Alice</name></user>"
+      },
+      "response": {
+        "status": 201
+      }
+    },
+    {
+      "description": "should not warn when request body is absent with unsupported content type",
+      "request": {
+        "method": "POST",
+        "path": "/upload-optional",
+        "headers": {
+          "Content-Type": "application/xml"
+        }
+      },
+      "response": {
+        "status": 201
+      }
+    }
+  ]
+}

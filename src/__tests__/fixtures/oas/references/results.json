@@ -1,5 +1,21 @@
 [
   {
+    "code": "response.body.unvalidatable",
+    "message": "Body with content type 'text/plain' is not supported by the spec comparator",
+    "mockDetails": {
+      "interactionDescription": "should pass when text body matches spec",
+      "interactionState": "[none]",
+      "location": "[root].interactions[1].response.body",
+      "value": "OK"
+    },
+    "specDetails": {
+      "location": "[root].paths./ping.get.responses.200.content",
+      "pathMethod": "get",
+      "pathName": "/ping"
+    },
+    "type": "warning"
+  },
+  {
     "code": "request.query.incompatible",
     "message": "Value is incompatible with the parameter defined in the spec file: must be string",
     "mockDetails": {

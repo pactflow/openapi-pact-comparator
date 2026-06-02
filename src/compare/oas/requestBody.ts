@@ -20,6 +20,10 @@ import type { Config } from "#utils/config";
 import { isValidRequest } from "#utils/interaction";
 import { dereferenceOas, splitPath } from "#utils/schema";
 import { getValidateFunction } from "#utils/validation";
+import {
+  VALIDATABLE_CONTENT_TYPES,
+  bodyValidationStatus,
+} from "#compare/utils/body";
 import { findMatchingType, getByContentType } from "./utils/content";
 
 const parseBody = (
@@ -59,20 +63,6 @@ const parseBody = (
   }
 
   return body;
-};
-
-const canValidate = (
-  contentType: string,
-  disableMultipartFormdata: boolean,
-): boolean => {
-  return !!findMatchingType(
-    contentType,
-    [
-      "application/json",
-      "application/x-www-form-urlencoded",
-      disableMultipartFormdata ? "" : "multipart/form-data",
-    ].filter(Boolean),
-  );
 };
 
 const DEFAULT_CONTENT_TYPE = "application/json";
@@ -117,9 +107,40 @@ export function* compareReqBody(
     return;
   }
 
+  const bodyStatus = bodyValidationStatus(
+    contentType,
+    body,
+    VALIDATABLE_CONTENT_TYPES.filter(
+      (t) =>
+        t !== "multipart/form-data" ||
+        !config.get("disable-multipart-formdata"),
+    ),
+  );
+
+  if (bodyStatus === "skip") return;
+
+  if (bodyStatus === "warn" && isValidRequest(interaction)) {
+    yield {
+      code: "request.body.unvalidatable",
+      message: `Body with content type '${contentType}' is not supported by the spec comparator`,
+      mockDetails: {
+        ...baseMockDetails(interaction),
+        location: `[root].interactions[${index}].request.body`,
+        value: body,
+      },
+      specDetails: {
+        location: `[root].paths.${path}.${method}.requestBody.content`,
+        pathMethod: method,
+        pathName: path,
+        value: get(operation, "requestBody.content"),
+      },
+      type: "warning",
+    };
+    return;
+  }
+
   if (
     schema &&
-    canValidate(contentType, config.get("disable-multipart-formdata")!) &&
     isValidRequest(interaction) &&
     (config.get("no-validate-request-body-unless-application-json")
       ? !!findMatchingType("application/json", availableRequestContentTypes)

@@ -87,13 +87,20 @@ describe("compareMessagePayload", () => {
     expect(results).toHaveLength(0);
   });
 
-  it("skips validation for non-JSON content types", () => {
+  it("yields message.payload.unvalidatable warning for non-JSON content type with payload present", () => {
     const results = callResponse(
       baseMessage,
       { organizationId: "abc-123" },
       "application/avro",
-      "[root].channels.eventsQueue.messages.myMsg",
     );
+    expect(results).toHaveLength(1);
+    expect(results[0].code).toBe("message.payload.unvalidatable");
+    expect(results[0].type).toBe("warning");
+    expect(results[0].message).toContain("application/avro");
+  });
+
+  it("yields no results for non-JSON content type when payload is absent", () => {
+    const results = callResponse(baseMessage, undefined, "application/avro");
     expect(results).toHaveLength(0);
   });
 

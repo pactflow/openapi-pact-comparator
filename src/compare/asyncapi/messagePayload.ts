@@ -11,13 +11,8 @@ import {
 } from "#results/index";
 import { transformReceivedSchema } from "#transform/index";
 import { splitPath } from "#utils/schema";
+import { bodyValidationStatus } from "#compare/utils/body";
 import { getValidateFunction } from "#utils/validation";
-
-const canValidate = (contentType: string | undefined): boolean => {
-  if (typeof contentType !== "string") return false;
-  const normalized = contentType.split(";", 1)[0].trim().toLowerCase();
-  return normalized === "application/json" || normalized.endsWith("+json");
-};
 
 export function* compareMessagePayload(
   ajv: Ajv,
@@ -28,7 +23,27 @@ export function* compareMessagePayload(
   messagePath: string,
   direction: "request" | "response",
 ): Iterable<Result> {
-  if (!canValidate(content.contentType)) return;
+  const status = bodyValidationStatus(content.contentType, content.payload);
+
+  if (status === "warn") {
+    yield {
+      code: "message.payload.unvalidatable",
+      message: `Body with content type '${content.contentType}' is not supported by the spec comparator`,
+      mockDetails: {
+        ...baseMockDetails(interactionContext),
+        location: contentLocation,
+        value: content.payload,
+      },
+      specDetails: {
+        location: messagePath,
+        value: undefined,
+      },
+      type: "warning",
+    };
+    return;
+  }
+
+  if (status === "skip") return;
 
   if (!message.payload) {
     if (content.payload !== undefined) {

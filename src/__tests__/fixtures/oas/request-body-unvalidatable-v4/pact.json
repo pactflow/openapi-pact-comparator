@@ -1,0 +1,90 @@
+{
+  "consumer": { "name": "consumer" },
+  "provider": { "name": "provider" },
+  "metadata": {
+    "pactSpecification": { "version": "4.0" }
+  },
+  "interactions": [
+    {
+      "type": "Synchronous/HTTP",
+      "description": "should warn: XML body with matching rules",
+      "request": {
+        "method": "POST",
+        "path": "/upload-xml",
+        "headers": { "Content-Type": ["application/xml"] },
+        "body": {
+          "content": "<user><name>Alice</name></user>",
+          "contentType": "application/xml",
+          "encoded": false
+        },
+        "matchingRules": {
+          "body": {
+            "$.user.name.#text": {
+              "combine": "AND",
+              "matchers": [{ "match": "type" }]
+            }
+          }
+        }
+      },
+      "response": { "status": 201 }
+    },
+    {
+      "type": "Synchronous/HTTP",
+      "description": "should warn: XML body with no matching rules (exact match)",
+      "request": {
+        "method": "POST",
+        "path": "/upload-xml",
+        "headers": { "Content-Type": ["application/xml"] },
+        "body": {
+          "content": "<user><name>Alice</name></user>",
+          "contentType": "application/xml",
+          "encoded": false
+        }
+      },
+      "response": { "status": 201 }
+    },
+    {
+      "type": "Synchronous/HTTP",
+      "description": "should skip: XML content-type header only, no body",
+      "request": {
+        "method": "POST",
+        "path": "/upload-xml-optional",
+        "headers": { "Content-Type": ["application/xml"] }
+      },
+      "response": { "status": 201 }
+    },
+    {
+      "type": "Synchronous/HTTP",
+      "description": "should warn: binary (base64) body with matching rules",
+      "request": {
+        "method": "POST",
+        "path": "/upload-binary",
+        "headers": { "Content-Type": ["application/protobuf"] },
+        "body": {
+          "content": "aGVsbG8=",
+          "contentType": "application/protobuf",
+          "encoded": "base64"
+        },
+        "matchingRules": {
+          "body": {
+            "$.name": {
+              "combine": "AND",
+              "matchers": [{ "match": "type" }]
+            }
+          }
+        }
+      },
+      "response": { "status": 201 }
+    },
+    {
+      "type": "Synchronous/HTTP",
+      "description": "should skip: binary content-type header only, no body",
+      "request": {
+        "method": "POST",
+        "path": "/upload-binary-optional",
+        "headers": { "Content-Type": ["application/protobuf"] }
+      },
+      "response": { "status": 201 }
+    }
+  ]
+}

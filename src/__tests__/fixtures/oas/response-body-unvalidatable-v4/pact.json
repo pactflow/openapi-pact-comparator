@@ -1,0 +1,40 @@
+{
+  "consumer": { "name": "consumer" },
+  "provider": { "name": "provider" },
+  "metadata": {
+    "pactSpecification": { "version": "4.0" }
+  },
+  "interactions": [
+    {
+      "type": "Synchronous/HTTP",
+      "description": "should warn: binary response body with unsupported content type",
+      "request": {
+        "method": "GET",
+        "path": "/image",
+        "headers": { "Accept": ["image/png"] }
+      },
+      "response": {
+        "status": 200,
+        "headers": { "Content-Type": ["image/png"] },
+        "body": {
+          "content": "aGVsbG8=",
+          "contentType": "image/png",
+          "encoded": "base64"
+        }
+      }
+    },
+    {
+      "type": "Synchronous/HTTP",
+      "description": "should skip: content-type header only, no response body",
+      "request": {
+        "method": "GET",
+        "path": "/image-optional",
+        "headers": { "Accept": ["image/png"] }
+      },
+      "response": {
+        "status": 200,
+        "headers": { "Content-Type": ["image/png"] }
+      }
+    }
+  ]
+}

@@ -30,11 +30,6 @@ const cleanupDiscriminators = (s: SchemaObject) => {
     s.required = uniq([...(s.required || []), s.discriminator.propertyName]);
   }
 
-  // no-op from a validation perspective
-  if (s.discriminator?.mapping) {
-    delete s.discriminator.mapping;
-  }
-
   if (s.discriminator && !s.oneOf) {
     delete s.discriminator;
   }

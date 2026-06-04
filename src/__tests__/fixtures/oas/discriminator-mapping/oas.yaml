@@ -1,0 +1,51 @@
+openapi: 3.0.3
+info:
+  title: Animal API
+  version: 1.0.0
+paths:
+  /animal:
+    get:
+      responses:
+        "200":
+          description: An animal
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [first, second]
+                properties:
+                  any-animal:
+                    $ref: "#/components/schemas/Animal"
+                  a-cat:
+                    $ref: "#/components/schemas/Cat"
+components:
+  schemas:
+    Animal:
+      oneOf:
+        - $ref: "#/components/schemas/Cat"
+        - $ref: "#/components/schemas/Dog"
+      discriminator:
+        propertyName: type
+        mapping:
+          cat: "#/components/schemas/Cat"
+          dog: "#/components/schemas/Dog"
+    Cat:
+      type: object
+      required: [type, name, indoor]
+      properties:
+        type:
+          type: string
+        name:
+          type: string
+        indoor:
+          type: boolean
+    Dog:
+      type: object
+      required: [type, name, breed]
+      properties:
+        type:
+          type: string
+        name:
+          type: string
+        breed:
+          type: string

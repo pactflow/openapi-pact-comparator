@@ -12,7 +12,7 @@ paths:
             application/json:
               schema:
                 type: object
-                required: [first, second]
+                required: [any-animal, a-cat]
                 properties:
                   any-animal:
                     $ref: "#/components/schemas/Animal"

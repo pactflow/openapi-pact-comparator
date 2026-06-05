@@ -18,3 +18,54 @@ index 6d03e0d..8e19a97 100644
                      .assign(coerced, (0, codegen_1._) `+${data}`);
                  return;
              case "boolean":
+diff --git a/node_modules/ajv/dist/vocabularies/discriminator/index.js b/node_modules/ajv/dist/vocabularies/discriminator/index.js
+index e113aed..8b7f5de 100644
+--- a/node_modules/ajv/dist/vocabularies/discriminator/index.js
++++ b/node_modules/ajv/dist/vocabularies/discriminator/index.js
+@@ -25,8 +25,6 @@ const def = {
+         const tagName = schema.propertyName;
+         if (typeof tagName != "string")
+             throw new Error("discriminator: requires propertyName");
+-        if (schema.mapping)
+-            throw new Error("discriminator: mapping is not supported");
+         if (!oneOf)
+             throw new Error("discriminator: requires oneOf keyword");
+         const valid = gen.let("valid", false);
+@@ -55,6 +53,37 @@ const def = {
+             const oneOfMapping = {};
+             const topRequired = hasRequired(parentSchema);
+             let tagRequired = true;
++            if (schema.mapping) {
++                const refToIndex = {};
++                for (let i = 0; i < oneOf.length; i++) {
++                    const sch = oneOf[i];
++                    if (sch === null || sch === void 0 ? void 0 : sch.$ref) {
++                        refToIndex[sch.$ref] = i;
++                    }
++                }
++                for (const [tagValue, ref] of Object.entries(schema.mapping)) {
++                    const i = refToIndex[ref];
++                    if (i === undefined) {
++                        throw new Error(`discriminator: mapping "${tagValue}" does not correspond to any oneOf entry`);
++                    }
++                    addMapping(tagValue, i);
++                }
++                for (let i = 0; i < oneOf.length; i++) {
++                    let sch = oneOf[i];
++                    if ((sch === null || sch === void 0 ? void 0 : sch.$ref) && !(0, util_1.schemaHasRulesButRef)(sch, it.self.RULES)) {
++                        const ref = sch.$ref;
++                        sch = compile_1.resolveRef.call(it.self, it.schemaEnv.root, it.baseId, ref);
++                        if (sch instanceof compile_1.SchemaEnv)
++                            sch = sch.schema;
++                        if (sch === undefined)
++                            throw new ref_error_1.default(it.opts.uriResolver, it.baseId, ref);
++                    }
++                    tagRequired = tagRequired && (topRequired || hasRequired(sch));
++                }
++                if (!tagRequired)
++                    throw new Error(`discriminator: "${tagName}" must be required`);
++                return oneOfMapping;
++            }
+             for (let i = 0; i < oneOf.length; i++) {
+                 let sch = oneOf[i];
+                 if ((sch === null || sch === void 0 ? void 0 : sch.$ref) && !(0, util_1.schemaHasRulesButRef)(sch, it.self.RULES)) {

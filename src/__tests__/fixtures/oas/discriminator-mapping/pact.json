@@ -1,0 +1,61 @@
+{
+  "consumer": {
+    "name": "test-consumer"
+  },
+  "provider": {
+    "name": "test-provider"
+  },
+  "interactions": [
+    {
+      "description": "any-animal is a 'cat', and 'a-cat' can be anything",
+      "request": {
+        "method": "GET",
+        "path": "/animal"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "any-animal": {
+            "type": "cat",
+            "name": "whiskers"
+          },
+          "a-cat": {
+            "type": "special-cat",
+            "name": "whiskers"
+          }
+        }
+      }
+    },
+    {
+      "description": "any-animal is unknown, should fail comparison",
+      "request": {
+        "method": "GET",
+        "path": "/animal"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "any-animal": {
+            "type": "unknown-animal",
+            "name": "whiskers"
+          },
+          "a-cat": {
+            "type": "special-cat",
+            "name": "whiskers"
+          }
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "pactSpecification": {
+      "version": "2.0.0"
+    }
+  }
+}

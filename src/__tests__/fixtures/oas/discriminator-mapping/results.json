@@ -1,0 +1,21 @@
+[
+  {
+    "code": "response.body.incompatible",
+    "message": "Response body is incompatible with the response body schema in the spec file: value of tag \"type\" must be in oneOf",
+    "mockDetails": {
+      "interactionDescription": "any-animal is unknown, should fail comparison",
+      "interactionState": "[none]",
+      "location": "[root].interactions[1].response.body.any-animal",
+      "value": {
+        "type": "unknown-animal",
+        "name": "whiskers"
+      }
+    },
+    "specDetails": {
+      "location": "[root].paths./animal.get.responses.200.content.application/json.schema.discriminator",
+      "pathMethod": "get",
+      "pathName": "/animal"
+    },
+    "type": "error"
+  }
+]

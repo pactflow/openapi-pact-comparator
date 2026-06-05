@@ -1,5 +1,11 @@
 # @pactflow/openapi-pact-comparator
 
+## 2.0.1
+
+### Patch Changes
+
+- 31d1513: Coerce whitespace strings correctly
+
 ## 2.0.0
 
 ### Major Changes

@@ -1,5 +1,15 @@
 # @pactflow/openapi-pact-comparator
 
+## 2.2.0
+
+### Minor Changes
+
+- a301698: Emit `request.body.unvalidatable`, `response.body.unvalidatable`, and `message.payload.unvalidatable` warnings when a Pact interaction includes a body with a content type that OPC cannot introspect (e.g. `application/xml`, `image/png`, `application/protobuf`). Previously these bodies were silently skipped, making it impossible to distinguish "validated and passed" from "not validated at all". When no body is present, behaviour is unchanged.
+
+### Patch Changes
+
+- 2ff20e2: Fix broken installation; patch-package should only happens in dev
+
 ## 2.1.0
 
 ### Minor Changes

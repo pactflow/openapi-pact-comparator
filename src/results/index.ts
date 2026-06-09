@@ -27,14 +27,17 @@ type ErrorCode =
 
 type WarningCode =
   | "message.payload.unknown"
+  | "message.payload.unvalidatable"
   | "message.response.missing"
   | "pact-broker.no-pacts-found"
   | "request.accept.unknown"
   | "request.body.unknown"
+  | "request.body.unvalidatable"
   | "request.content-type.missing"
   | "request.content-type.unknown"
   | "request.header.unknown"
   | "request.query.unknown"
+  | "response.body.unvalidatable"
   | "response.content-type.unknown"
   | "response.header.undefined"
   | "response.status.default";

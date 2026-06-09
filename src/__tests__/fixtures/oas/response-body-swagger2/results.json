@@ -1,5 +1,21 @@
 [
   {
+    "code": "response.body.unvalidatable",
+    "message": "Body with content type 'image/png' is not supported by the spec comparator",
+    "mockDetails": {
+      "interactionDescription": "should pass with binary content",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].response.body",
+      "value": "some base64 encoded body (this is the format pact uses, which various across spec versions)"
+    },
+    "specDetails": {
+      "location": "[root].paths./binary.get.responses.200.content",
+      "pathMethod": "get",
+      "pathName": "/binary"
+    },
+    "type": "warning"
+  },
+  {
     "code": "response.body.incompatible",
     "message": "Response body is incompatible with the response body schema in the spec file: must be number",
     "mockDetails": {

@@ -1,5 +1,76 @@
 [
   {
+    "code": "response.body.unvalidatable",
+    "message": "Body with content type 'image/png' is not supported by the spec comparator",
+    "mockDetails": {
+      "interactionDescription": "should pass with binary content",
+      "interactionState": "[none]",
+      "location": "[root].interactions[1].response.body",
+      "value": "some base64 encoded body (this is the format pact uses, which various across spec versions)"
+    },
+    "specDetails": {
+      "location": "[root].paths./binary.get.responses.200.content",
+      "pathMethod": "get",
+      "pathName": "/binary",
+      "value": {
+        "image/png": {
+          "schema": {
+            "type": "string",
+            "format": "binary"
+          }
+        }
+      }
+    },
+    "type": "warning"
+  },
+  {
+    "code": "response.body.unvalidatable",
+    "message": "Body with content type 'text/html' is not supported by the spec comparator",
+    "mockDetails": {
+      "interactionDescription": "should pass when unable to validate content-type",
+      "interactionState": "[none]",
+      "location": "[root].interactions[4].response.body",
+      "value": "boom"
+    },
+    "specDetails": {
+      "location": "[root].paths./throws-error.get.responses.500.content",
+      "pathMethod": "get",
+      "pathName": "/throws-error",
+      "value": {
+        "text/html": {
+          "schema": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "type": "warning"
+  },
+  {
+    "code": "response.body.unvalidatable",
+    "message": "Body with content type 'image/png' is not supported by the spec comparator",
+    "mockDetails": {
+      "interactionDescription": "should pass with patterned fields",
+      "interactionState": "[none]",
+      "location": "[root].interactions[6].response.body",
+      "value": "some base64 encoded body (this is the format pact uses, which various across spec versions)"
+    },
+    "specDetails": {
+      "location": "[root].paths./patterned.get.responses.200.content",
+      "pathMethod": "get",
+      "pathName": "/patterned",
+      "value": {
+        "image/png": {
+          "schema": {
+            "type": "string",
+            "format": "binary"
+          }
+        }
+      }
+    },
+    "type": "warning"
+  },
+  {
     "code": "response.body.incompatible",
     "message": "Response body is incompatible with the response body schema in the spec file: value of tag \"petType\" must be in oneOf",
     "mockDetails": {

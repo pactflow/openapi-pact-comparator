@@ -95,9 +95,29 @@ export function* compareHttpInteraction(
   }
 
   yield* compareReqSecurity(ajvCoerce, route, interaction, index, config);
-  yield* compareReqHeader(ajvCoerce, route, interaction, index, config);
+
+  const reqHeaderResults = Array.from(
+    compareReqHeader(ajvCoerce, route, interaction, index, config),
+  );
+  yield* reqHeaderResults;
   yield* compareReqQuery(ajvCoerce, route, interaction, index, config);
-  yield* compareReqBody(ajvNocoerce, route, interaction, index, config);
-  yield* compareResHeader(ajvCoerce, route, interaction, index, config);
-  yield* compareResBody(ajvNocoerce, route, interaction, index, config);
+  if (
+    !reqHeaderResults.some(
+      (r) => r.code === "request.content-type.incompatible",
+    )
+  ) {
+    yield* compareReqBody(ajvNocoerce, route, interaction, index, config);
+  }
+
+  const resHeaderResults = Array.from(
+    compareResHeader(ajvCoerce, route, interaction, index, config),
+  );
+  yield* resHeaderResults;
+  if (
+    !resHeaderResults.some(
+      (r) => r.code === "response.content-type.incompatible",
+    )
+  ) {
+    yield* compareResBody(ajvNocoerce, route, interaction, index, config);
+  }
 }

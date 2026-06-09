@@ -1,5 +1,19 @@
 [
   {
+    "code": "message.payload.unvalidatable",
+    "message": "Body with content type 'application/octet-stream' is not supported by the spec comparator",
+    "mockDetails": {
+      "interactionDescription": "a user avatar upload event that skips payload validation",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].contents.content",
+      "value": "binary-data"
+    },
+    "specDetails": {
+      "location": "[root].channels.userEvents.messages.userAvatarUploaded"
+    },
+    "type": "warning"
+  },
+  {
     "code": "message.matched",
     "message": "Matched message at [root].channels.userEvents.messages.userAvatarUploaded",
     "specDetails": {

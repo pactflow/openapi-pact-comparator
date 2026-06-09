@@ -16,12 +16,9 @@ import { minimumSchema, transformReceivedSchema } from "#transform/index";
 import type { Config } from "#utils/config";
 import { dereferenceOas, splitPath } from "#utils/schema";
 import { getValidateFunction } from "#utils/validation";
+import { bodyValidationStatus } from "#compare/utils/body";
 import { findMatchingType, getByContentType } from "./utils/content";
 import { patternedStatus } from "./utils/statusCodes";
-
-const canValidate = (contentType = ""): boolean => {
-  return !!findMatchingType(contentType, ["application/json"]);
-};
 
 const DEFAULT_CONTENT_TYPE = "application/json";
 
@@ -98,14 +95,16 @@ export function* compareResBody(
       };
     }
 
-    if (value && canValidate(contentType) && !schema) {
+    const bodyStatus = bodyValidationStatus(contentType, value);
+
+    if (bodyStatus === "warn") {
       yield {
-        code: "response.body.unknown",
-        message: "No matching schema found for response body",
+        code: "response.body.unvalidatable",
+        message: `Body with content type '${contentType}' is not supported by the spec comparator`,
         mockDetails: {
           ...baseMockDetails(interaction),
           location: `[root].interactions[${index}].response.body`,
-          value: value,
+          value,
         },
         specDetails: {
           location: `[root].paths.${path}.${method}.responses.${status}.content`,
@@ -113,38 +112,57 @@ export function* compareResBody(
           pathName: path,
           value: response.content,
         },
-        type: "error",
+        type: "warning",
       };
-    }
+    } else if (bodyStatus === "validate") {
+      if (value && !schema) {
+        yield {
+          code: "response.body.unknown",
+          message: "No matching schema found for response body",
+          mockDetails: {
+            ...baseMockDetails(interaction),
+            location: `[root].interactions[${index}].response.body`,
+            value: value,
+          },
+          specDetails: {
+            location: `[root].paths.${path}.${method}.responses.${status}.content`,
+            pathMethod: method,
+            pathName: path,
+            value: response.content,
+          },
+          type: "error",
+        };
+      }
 
-    if (value && canValidate(contentType) && schema) {
-      const schemaId = `[root].paths.${path}.${method}.responses.${status}.content.${contentType}`;
-      const validate = getValidateFunction(ajv, schemaId, () =>
-        transformReceivedSchema(
-          minimumSchema(schema, oas),
-          config.get("no-transform-non-nullable-response-schema")!,
-        ),
-      );
-      if (!validate(value)) {
-        for (const error of validate.errors!) {
-          yield {
-            code: "response.body.incompatible",
-            message: `Response body is incompatible with the response body schema in the spec file: ${formatMessage(error)}`,
-            mockDetails: {
-              ...baseMockDetails(interaction),
-              location: `[root].interactions[${index}].response.body${formatInstancePath(error)}`,
-              value: error.instancePath
-                ? get(value, splitPath(error.instancePath))
-                : value,
-            },
-            specDetails: {
-              location: `${schemaId}.schema.${formatSchemaPath(error)}`,
-              pathMethod: method,
-              pathName: path,
-              value: get(validate!.schema, splitPath(error.schemaPath)),
-            },
-            type: "error",
-          };
+      if (value && schema) {
+        const schemaId = `[root].paths.${path}.${method}.responses.${status}.content.${contentType}`;
+        const validate = getValidateFunction(ajv, schemaId, () =>
+          transformReceivedSchema(
+            minimumSchema(schema, oas),
+            config.get("no-transform-non-nullable-response-schema")!,
+          ),
+        );
+        if (!validate(value)) {
+          for (const error of validate.errors!) {
+            yield {
+              code: "response.body.incompatible",
+              message: `Response body is incompatible with the response body schema in the spec file: ${formatMessage(error)}`,
+              mockDetails: {
+                ...baseMockDetails(interaction),
+                location: `[root].interactions[${index}].response.body${formatInstancePath(error)}`,
+                value: error.instancePath
+                  ? get(value, splitPath(error.instancePath))
+                  : value,
+              },
+              specDetails: {
+                location: `${schemaId}.schema.${formatSchemaPath(error)}`,
+                pathMethod: method,
+                pathName: path,
+                value: get(validate!.schema, splitPath(error.schemaPath)),
+              },
+              type: "error",
+            };
+          }
         }
       }
     }

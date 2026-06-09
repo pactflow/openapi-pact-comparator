@@ -1,0 +1,25 @@
+[
+  {
+    "code": "request.body.unvalidatable",
+    "message": "Body with content type 'application/xml' is not supported by the spec comparator",
+    "mockDetails": {
+      "interactionDescription": "should warn when request body has unsupported content type",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].request.body",
+      "value": "<user><name>Alice</name></user>"
+    },
+    "specDetails": {
+      "location": "[root].paths./upload.post.requestBody.content",
+      "pathMethod": "post",
+      "pathName": "/upload",
+      "value": {
+        "application/xml": {
+          "schema": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "type": "warning"
+  }
+]

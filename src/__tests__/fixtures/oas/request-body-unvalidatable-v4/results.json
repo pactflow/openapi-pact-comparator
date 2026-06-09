@@ -1,0 +1,72 @@
+[
+  {
+    "code": "request.body.unvalidatable",
+    "message": "Body with content type 'application/xml' is not supported by the spec comparator",
+    "mockDetails": {
+      "interactionDescription": "should warn: XML body with matching rules",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].request.body",
+      "value": "<user><name>Alice</name></user>"
+    },
+    "specDetails": {
+      "location": "[root].paths./upload-xml.post.requestBody.content",
+      "pathMethod": "post",
+      "pathName": "/upload-xml",
+      "value": {
+        "application/xml": {
+          "schema": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "type": "warning"
+  },
+  {
+    "code": "request.body.unvalidatable",
+    "message": "Body with content type 'application/xml' is not supported by the spec comparator",
+    "mockDetails": {
+      "interactionDescription": "should warn: XML body with no matching rules (exact match)",
+      "interactionState": "[none]",
+      "location": "[root].interactions[1].request.body",
+      "value": "<user><name>Alice</name></user>"
+    },
+    "specDetails": {
+      "location": "[root].paths./upload-xml.post.requestBody.content",
+      "pathMethod": "post",
+      "pathName": "/upload-xml",
+      "value": {
+        "application/xml": {
+          "schema": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "type": "warning"
+  },
+  {
+    "code": "request.body.unvalidatable",
+    "message": "Body with content type 'application/protobuf' is not supported by the spec comparator",
+    "mockDetails": {
+      "interactionDescription": "should warn: binary (base64) body with matching rules",
+      "interactionState": "[none]",
+      "location": "[root].interactions[3].request.body",
+      "value": "hello"
+    },
+    "specDetails": {
+      "location": "[root].paths./upload-binary.post.requestBody.content",
+      "pathMethod": "post",
+      "pathName": "/upload-binary",
+      "value": {
+        "application/protobuf": {
+          "schema": {
+            "type": "string",
+            "format": "binary"
+          }
+        }
+      }
+    },
+    "type": "warning"
+  }
+]

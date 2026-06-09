@@ -1,0 +1,26 @@
+[
+  {
+    "code": "response.body.unvalidatable",
+    "message": "Body with content type 'image/png' is not supported by the spec comparator",
+    "mockDetails": {
+      "interactionDescription": "should warn: binary response body with unsupported content type",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].response.body",
+      "value": "hello"
+    },
+    "specDetails": {
+      "location": "[root].paths./image.get.responses.200.content",
+      "pathMethod": "get",
+      "pathName": "/image",
+      "value": {
+        "image/png": {
+          "schema": {
+            "type": "string",
+            "format": "binary"
+          }
+        }
+      }
+    },
+    "type": "warning"
+  }
+]

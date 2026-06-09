@@ -1,0 +1,26 @@
+openapi: 3.1.0
+info:
+  title: XML Upload API
+  version: 1.0.0
+paths:
+  /upload:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/xml:
+            schema:
+              type: object
+      responses:
+        "201":
+          description: Created
+  /upload-optional:
+    post:
+      requestBody:
+        content:
+          application/xml:
+            schema:
+              type: object
+      responses:
+        "201":
+          description: Created

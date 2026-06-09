@@ -1,0 +1,49 @@
+openapi: 3.1.0
+info:
+  title: Upload API
+  version: 1.0.0
+paths:
+  /upload-xml:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/xml:
+            schema:
+              type: object
+      responses:
+        "201":
+          description: Created
+  /upload-xml-optional:
+    post:
+      requestBody:
+        content:
+          application/xml:
+            schema:
+              type: object
+      responses:
+        "201":
+          description: Created
+  /upload-binary:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/protobuf:
+            schema:
+              type: string
+              format: binary
+      responses:
+        "201":
+          description: Created
+  /upload-binary-optional:
+    post:
+      requestBody:
+        content:
+          application/protobuf:
+            schema:
+              type: string
+              format: binary
+      responses:
+        "201":
+          description: Created

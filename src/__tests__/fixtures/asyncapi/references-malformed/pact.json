@@ -1,0 +1,23 @@
+{
+  "consumer": { "name": "consumer" },
+  "provider": { "name": "provider" },
+  "interactions": [
+    {
+      "contents": {
+        "content": { "userId": "u-abc-123" },
+        "contentType": "application/json",
+        "encoded": false
+      },
+      "description": "an async event with a malformed AsyncAPI reference",
+      "metadata": { "event-type": "user-created" },
+      "pending": false,
+      "type": "Asynchronous/Messages",
+      "comments": {
+        "references": {
+          "AsyncAPI": { "operation": "receiveUserEvents" }
+        }
+      }
+    }
+  ],
+  "metadata": { "pactSpecification": { "version": "4.0" } }
+}

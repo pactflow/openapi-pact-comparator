@@ -13,7 +13,7 @@ import { compareMessagePayload } from "./messagePayload";
 type InteractionContext = {
   description?: string;
   providerState?: string;
-  asyncapiReferences?: { operationId: string };
+  asyncapiReferences?: { operationId?: string };
 };
 
 export function checkAsyncapiPreamble(
@@ -41,12 +41,14 @@ export function checkAsyncapiPreamble(
     };
   }
 
+  const interactionKindTitleCase = `${interactionKind.charAt(0).toUpperCase()}${interactionKind.slice(1)}`;
+
   if (!interaction.asyncapiReferences) {
     return {
       ok: false,
       result: {
         code: "message.references.missing",
-        message: `${interactionKind.charAt(0).toUpperCase()}${interactionKind.slice(1)} interaction has no AsyncAPI references in comments.references.AsyncAPI`,
+        message: `${interactionKindTitleCase} interaction has no AsyncAPI references in comments.references.AsyncAPI`,
         mockDetails: {
           ...baseMockDetails(interaction),
           location: `[root].interactions[${index}].comments.references.AsyncAPI`,
@@ -59,6 +61,23 @@ export function checkAsyncapiPreamble(
   }
 
   const { operationId } = interaction.asyncapiReferences;
+
+  if (!operationId) {
+    return {
+      ok: false,
+      result: {
+        code: "message.references.missing",
+        message: `${interactionKindTitleCase} interaction has a malformed AsyncAPI reference in comments.references.AsyncAPI: expected an "operationId" property`,
+        mockDetails: {
+          ...baseMockDetails(interaction),
+          location: `[root].interactions[${index}].comments.references.AsyncAPI`,
+          value: interaction.asyncapiReferences,
+        },
+        specDetails: { location: "[root]", value: undefined },
+        type: "error",
+      },
+    };
+  }
 
   if (!asyncapi.operations?.[operationId]) {
     return {

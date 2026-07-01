@@ -1,0 +1,72 @@
+{
+  "consumer": { "name": "consumer" },
+  "provider": { "name": "provider" },
+  "interactions": [
+    {
+      "description": "should pass when card payment satisfies the then branch",
+      "request": {
+        "method": "POST",
+        "path": "/payment"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "method": "card",
+          "cardNumber": "4111111111111111"
+        }
+      }
+    },
+    {
+      "description": "should pass when paypal payment satisfies the else branch",
+      "request": {
+        "method": "POST",
+        "path": "/payment"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "method": "paypal",
+          "paypalEmail": "someone@example.com"
+        }
+      }
+    },
+    {
+      "description": "should fail when card payment is missing cardNumber required by the then branch",
+      "request": {
+        "method": "POST",
+        "path": "/payment"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "method": "card"
+        }
+      }
+    },
+    {
+      "description": "should fail when paypal payment is missing paypalEmail required by the else branch",
+      "request": {
+        "method": "POST",
+        "path": "/payment"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "method": "paypal"
+        }
+      }
+    }
+  ]
+}

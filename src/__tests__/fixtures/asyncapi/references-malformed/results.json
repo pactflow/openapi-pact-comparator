@@ -1,0 +1,18 @@
+[
+  {
+    "code": "message.references.missing",
+    "message": "Async interaction has a malformed AsyncAPI reference in comments.references.AsyncAPI: expected an \"operationId\" property",
+    "mockDetails": {
+      "interactionDescription": "an async event with a malformed AsyncAPI reference",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].comments.references.AsyncAPI",
+      "value": {
+        "operation": "receiveUserEvents"
+      }
+    },
+    "specDetails": {
+      "location": "[root]"
+    },
+    "type": "error"
+  }
+]

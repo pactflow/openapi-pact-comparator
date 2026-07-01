@@ -60,11 +60,7 @@ const AsyncMessage = Type.Object({
     Type.Object({
       references: Type.Optional(
         Type.Object({
-          AsyncAPI: Type.Optional(
-            Type.Object({
-              operationId: Type.String(),
-            }),
-          ),
+          AsyncAPI: Type.Optional(Type.Unknown()),
         }),
       ),
     }),
@@ -92,11 +88,7 @@ const SyncMessage = Type.Object({
     Type.Object({
       references: Type.Optional(
         Type.Object({
-          AsyncAPI: Type.Optional(
-            Type.Object({
-              operationId: Type.String(),
-            }),
-          ),
+          AsyncAPI: Type.Optional(Type.Unknown()),
         }),
       ),
     }),
@@ -152,7 +144,7 @@ export interface AsyncInteraction {
   _kind: "async";
   description?: string;
   providerState?: string;
-  asyncapiReferences?: { operationId: string };
+  asyncapiReferences?: { operationId?: string };
   payload: unknown;
   contentType?: string;
   metadata?: Record<string, string>;
@@ -162,7 +154,7 @@ export interface SyncInteraction {
   _kind: "sync";
   description?: string;
   providerState?: string;
-  asyncapiReferences?: { operationId: string };
+  asyncapiReferences?: { operationId?: string };
   request: {
     payload: unknown;
     contentType?: string;
@@ -206,7 +198,7 @@ interface RawInteraction {
   };
   comments?: {
     references?: {
-      AsyncAPI?: { operationId: string };
+      AsyncAPI?: { operationId?: string };
     };
   };
   contents?: {
@@ -239,7 +231,7 @@ interface RawSyncInteraction {
   }>;
   comments?: {
     references?: {
-      AsyncAPI?: { operationId: string };
+      AsyncAPI?: { operationId?: string };
     };
   };
 }
@@ -338,15 +330,21 @@ const interactionV4 = (i: RawInteraction): HttpInteraction => ({
   },
 });
 
+const asAsyncapiReferences = (
+  asyncapiRef: unknown,
+): { operationId?: string } | undefined => {
+  if (!asyncapiRef) return undefined;
+  if (typeof asyncapiRef !== "object") return {};
+  return { ...asyncapiRef };
+};
+
 const parseAsyncInteraction = (i: RawInteraction): AsyncInteraction => {
-  const asyncapiRef = i.comments?.references?.AsyncAPI;
+  const asyncapiRef = asAsyncapiReferences(i.comments?.references?.AsyncAPI);
   return {
     _kind: "async",
     description: i.description,
     providerState: i.providerState,
-    asyncapiReferences: asyncapiRef
-      ? { operationId: asyncapiRef.operationId }
-      : undefined,
+    asyncapiReferences: asyncapiRef,
     payload: parseAsPactV4Body(i.contents),
     contentType: i.contents?.contentType,
     metadata: i.metadata,
@@ -356,14 +354,12 @@ const parseAsyncInteraction = (i: RawInteraction): AsyncInteraction => {
 const parseSyncInteraction = (
   i: RawInteraction & RawSyncInteraction,
 ): SyncInteraction => {
-  const asyncapiRef = i.comments?.references?.AsyncAPI;
+  const asyncapiRef = asAsyncapiReferences(i.comments?.references?.AsyncAPI);
   return {
     _kind: "sync",
     description: i.description,
     providerState: i.providerState,
-    asyncapiReferences: asyncapiRef
-      ? { operationId: asyncapiRef.operationId }
-      : undefined,
+    asyncapiReferences: asyncapiRef,
     request: {
       payload: parseAsPactV4Body(i.request.contents),
       contentType: i.request.contents?.contentType,

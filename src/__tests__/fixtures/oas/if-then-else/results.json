@@ -1,0 +1,94 @@
+[
+  {
+    "code": "response.body.incompatible",
+    "message": "Response body is incompatible with the response body schema in the spec file: must have required property 'cardNumber'",
+    "mockDetails": {
+      "interactionDescription": "should fail when card payment is missing cardNumber required by the then branch",
+      "interactionState": "[none]",
+      "location": "[root].interactions[2].response.body",
+      "value": {
+        "method": "card"
+      }
+    },
+    "specDetails": {
+      "location": "[root].paths./payment.post.responses.200.content.application/json.schema.then.required",
+      "pathMethod": "post",
+      "pathName": "/payment",
+      "value": [
+        "cardNumber"
+      ]
+    },
+    "type": "error"
+  },
+  {
+    "code": "response.body.incompatible",
+    "message": "Response body is incompatible with the response body schema in the spec file: must match \"then\" schema",
+    "mockDetails": {
+      "interactionDescription": "should fail when card payment is missing cardNumber required by the then branch",
+      "interactionState": "[none]",
+      "location": "[root].interactions[2].response.body",
+      "value": {
+        "method": "card"
+      }
+    },
+    "specDetails": {
+      "location": "[root].paths./payment.post.responses.200.content.application/json.schema.if",
+      "pathMethod": "post",
+      "pathName": "/payment",
+      "value": {
+        "properties": {
+          "method": {
+            "const": "card"
+          }
+        }
+      }
+    },
+    "type": "error"
+  },
+  {
+    "code": "response.body.incompatible",
+    "message": "Response body is incompatible with the response body schema in the spec file: must have required property 'paypalEmail'",
+    "mockDetails": {
+      "interactionDescription": "should fail when paypal payment is missing paypalEmail required by the else branch",
+      "interactionState": "[none]",
+      "location": "[root].interactions[3].response.body",
+      "value": {
+        "method": "paypal"
+      }
+    },
+    "specDetails": {
+      "location": "[root].paths./payment.post.responses.200.content.application/json.schema.else.required",
+      "pathMethod": "post",
+      "pathName": "/payment",
+      "value": [
+        "paypalEmail"
+      ]
+    },
+    "type": "error"
+  },
+  {
+    "code": "response.body.incompatible",
+    "message": "Response body is incompatible with the response body schema in the spec file: must match \"else\" schema",
+    "mockDetails": {
+      "interactionDescription": "should fail when paypal payment is missing paypalEmail required by the else branch",
+      "interactionState": "[none]",
+      "location": "[root].interactions[3].response.body",
+      "value": {
+        "method": "paypal"
+      }
+    },
+    "specDetails": {
+      "location": "[root].paths./payment.post.responses.200.content.application/json.schema.if",
+      "pathMethod": "post",
+      "pathName": "/payment",
+      "value": {
+        "properties": {
+          "method": {
+            "const": "card"
+          }
+        }
+      }
+    },
+    "type": "error"
+  }
+]

@@ -3,7 +3,7 @@
 // the operations/channels/messages subset of the spec. A full parser library
 // would add a heavy dependency while providing validation we deliberately defer
 // (see the FIXME in `parse()`), so we define only what we need here.
-import { dereferenceDoc } from "#utils/schema";
+import { dereferenceDoc, lastRefInChain } from "#utils/schema";
 
 export interface AsyncAPIDocument {
   asyncapi: string;
@@ -89,7 +89,8 @@ function* iterateMessageList(
       }
       const message = dereferenceDoc(ref, doc) as Message | undefined;
       if (!message) continue;
-      const path = "[root]." + ref.$ref.replace(/^#\//, "").replace(/\//g, ".");
+      const finalRef = lastRefInChain(ref, doc) ?? ref.$ref;
+      const path = "[root]." + finalRef.replace(/^#\//, "").replace(/\//g, ".");
       const result: ResolvedMessage = { message, path };
       cache.set(ref.$ref, result);
       yield result;

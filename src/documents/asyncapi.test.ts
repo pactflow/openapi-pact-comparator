@@ -156,7 +156,7 @@ describe("iterateMessages", () => {
           messages: {
             musicEventPublished: {
               $ref: "#/components/messages/MusicEventPublished",
-            } as unknown as import("./asyncapi").Message,
+            } as import("./asyncapi").Ref,
           },
         },
       },

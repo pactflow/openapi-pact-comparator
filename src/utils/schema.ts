@@ -49,11 +49,30 @@ export const dereferenceOas = (
   oas: OpenAPIV3.Document,
 ) => (schema.$ref ? get(oas, splitPath(schema.$ref)) : schema);
 
-export const dereferenceDoc = (
+const followRefChain = (
   schema: { $ref?: string },
   doc: object,
-): unknown =>
-  schema.$ref ? get(doc, splitPath(schema.$ref as string)) : schema;
+  seen: Set<string> = new Set(),
+): { value: unknown; ref: string | undefined } => {
+  if (!schema.$ref) return { value: schema, ref: undefined };
+  if (seen.has(schema.$ref)) return { value: undefined, ref: undefined };
+  const resolved = get(doc, splitPath(schema.$ref));
+  if (resolved !== null && typeof resolved === "object" && "$ref" in resolved) {
+    const next = followRefChain(
+      resolved as { $ref?: string },
+      doc,
+      new Set([...seen, schema.$ref]),
+    );
+    return next.value !== undefined ? { value: next.value, ref: next.ref ?? schema.$ref } : next;
+  }
+  return { value: resolved, ref: schema.$ref };
+};
+
+export const dereferenceDoc = (schema: { $ref?: string }, doc: object): unknown =>
+  followRefChain(schema, doc).value;
+
+export const lastRefInChain = (schema: { $ref?: string }, doc: object): string | undefined =>
+  followRefChain(schema, doc).ref;
 
 export const traverse = (
   schema: SchemaObject,

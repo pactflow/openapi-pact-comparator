@@ -1,0 +1,27 @@
+asyncapi: "3.1.0"
+info:
+  title: User Service
+  version: "1.0.0"
+components:
+  messages:
+    userCreated:
+      payload:
+        type: object
+        properties:
+          userId:
+            type: string
+        required:
+          - userId
+channels:
+  userEvents:
+    address: user-events
+    messages:
+      userCreated:
+        $ref: "#/components/messages/userCreated"
+operations:
+  receiveUserEvents:
+    action: receive
+    channel:
+      $ref: "#/channels/userEvents"
+    messages:
+      - $ref: "#/channels/userEvents/messages/userCreated"

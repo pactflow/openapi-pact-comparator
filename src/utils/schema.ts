@@ -63,16 +63,22 @@ const followRefChain = (
       doc,
       new Set([...seen, schema.$ref]),
     );
-    return next.value !== undefined ? { value: next.value, ref: next.ref ?? schema.$ref } : next;
+    return next.value !== undefined
+      ? { value: next.value, ref: next.ref ?? schema.$ref }
+      : next;
   }
   return { value: resolved, ref: schema.$ref };
 };
 
-export const dereferenceDoc = (schema: { $ref?: string }, doc: object): unknown =>
-  followRefChain(schema, doc).value;
+export const dereferenceDoc = (
+  schema: { $ref?: string },
+  doc: object,
+): unknown => followRefChain(schema, doc).value;
 
-export const lastRefInChain = (schema: { $ref?: string }, doc: object): string | undefined =>
-  followRefChain(schema, doc).ref;
+export const lastRefInChain = (
+  schema: { $ref?: string },
+  doc: object,
+): string | undefined => followRefChain(schema, doc).ref;
 
 export const traverse = (
   schema: SchemaObject,

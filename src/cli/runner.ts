@@ -1,5 +1,5 @@
 import fs from "node:fs";
-import yaml from "js-yaml";
+import { load } from "js-yaml";
 import type { OpenAPIV2, OpenAPIV3 } from "openapi-types";
 import type { AsyncAPIDocument } from "../documents/asyncapi";
 import { Comparator, type Result } from "../index";
@@ -68,7 +68,7 @@ export class Runner {
       return JSON.parse(content);
     } catch (error) {
       try {
-        return yaml.load(content);
+        return load(content);
       } catch (_err) {
         throw error;
       }

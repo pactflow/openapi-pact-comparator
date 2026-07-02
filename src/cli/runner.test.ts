@@ -1,4 +1,4 @@
-import yaml from "js-yaml";
+import { dump } from "js-yaml";
 import { beforeEach, describe, expect, it, type Mock, vi } from "vitest";
 import { Comparator } from "../compare";
 import type { Result } from "../index";
@@ -88,7 +88,7 @@ describe("Runner", () => {
         openapi: "3.0.0",
         info: { title: "Test API", version: "1.0" },
       };
-      const yamlContent = yaml.dump(oasDocument);
+      const yamlContent = dump(oasDocument);
       givenReadFileReturns(yamlContent, defaultPactContent);
 
       await whenRunIsCalled({ oasPath: "oas.yaml" }, ["pact.json"]);

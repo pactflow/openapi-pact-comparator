@@ -1,7 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 import fs from "fs";
-import yaml from "js-yaml";
+import { load } from "js-yaml";
 import path from "path";
 import { describe, expect, it } from "vitest";
 import { Comparator } from "../../src/compare";
@@ -10,7 +10,7 @@ const parse = (spec: string) => {
   try {
     return JSON.parse(spec);
   } catch {
-    return yaml.load(spec);
+    return load(spec);
   }
 };
 

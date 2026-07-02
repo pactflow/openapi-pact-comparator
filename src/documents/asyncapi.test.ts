@@ -147,6 +147,47 @@ describe("iterateMessages", () => {
     expect(first[0]).toBe(second[0]);
   });
 
+  it("follows a two-hop $ref chain (operation → channel alias → components/messages)", () => {
+    const twoHopDoc: AsyncAPIDocument = {
+      asyncapi: "3.1.0",
+      info: { title: "T", version: "1" },
+      channels: {
+        musicEvents: {
+          messages: {
+            musicEventPublished: {
+              $ref: "#/components/messages/MusicEventPublished",
+            } as unknown as import("./asyncapi").Message,
+          },
+        },
+      },
+      operations: {
+        publishMusicEvent: {
+          action: "send",
+          channel: { $ref: "#/channels/musicEvents" },
+          messages: [
+            { $ref: "#/channels/musicEvents/messages/musicEventPublished" },
+          ],
+        },
+      },
+      components: {
+        messages: {
+          MusicEventPublished: {
+            payload: { type: "object", properties: { id: { type: "string" } } },
+          },
+        },
+      },
+    };
+
+    const results = [
+      ...iterateMessages(twoHopDoc, "publishMusicEvent", new Map()),
+    ];
+    expect(results).toHaveLength(1);
+    expect(results[0].path).toBe(
+      "[root].components.messages.MusicEventPublished",
+    );
+    expect(results[0].message.payload).toBeDefined();
+  });
+
   it("stops at the first item when caller pulls only one", () => {
     const gen = iterateMessages(
       multiMessageDoc,

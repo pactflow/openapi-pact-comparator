@@ -87,9 +87,18 @@ function* iterateMessageList(
         yield cached;
         continue;
       }
-      const message = dereferenceDoc(ref, doc) as Message | undefined;
+      let resolved: Ref | Message | undefined = dereferenceDoc(ref, doc) as Ref | Message | undefined;
+      let currentRef = ref.$ref;
+      const seen = new Set<string>([currentRef]);
+      while (resolved && isRef(resolved)) {
+        if (seen.has(resolved.$ref)) break; // cycle guard
+        seen.add(resolved.$ref);
+        currentRef = resolved.$ref;
+        resolved = dereferenceDoc(resolved, doc) as Ref | Message | undefined;
+      }
+      const message = resolved as Message | undefined;
       if (!message) continue;
-      const path = "[root]." + ref.$ref.replace(/^#\//, "").replace(/\//g, ".");
+      const path = "[root]." + currentRef.replace(/^#\//, "").replace(/\//g, ".");
       const result: ResolvedMessage = { message, path };
       cache.set(ref.$ref, result);
       yield result;

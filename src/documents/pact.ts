@@ -172,10 +172,7 @@ export interface SkippedInteraction {
 }
 
 export type Interaction =
-  | HttpInteraction
-  | AsyncInteraction
-  | SyncInteraction
-  | SkippedInteraction;
+  HttpInteraction | AsyncInteraction | SyncInteraction | SkippedInteraction;
 
 export interface ParsedPact {
   metadata?: Pact["metadata"];

@@ -1,0 +1,250 @@
+asyncapi: 3.1.0
+
+info:
+  title: Music Performance Event Sharing API
+  version: 1.0.0
+  description: |
+    Event-driven API for a **Music Performance Event sharing** system.
+
+    Users submit information about live music performances. Each submission is
+    **published** to a RabbitMQ topic exchange (`music.events`) using a routing
+    key derived from the event's **location** and **genre**:
+
+    ```
+    events.<city>.<genre>      e.g. events.london.jazz
+    ```
+
+    Subscribers express interest by binding a queue with a routing-key pattern,
+    using AMQP topic wildcards (`*` = exactly one word, `#` = zero or more):
+
+    | Pattern                | Matches                                  |
+    | ---------------------- | ---------------------------------------- |
+    | `events.london.#`      | every genre in London                    |
+    | `events.*.jazz`        | jazz in any city                         |
+    | `events.london.jazz`   | London jazz only                         |
+    | `events.#`             | everything                               |
+
+    This document is the **single source of truth** for the message contract.
+    Both the Ruby and the TypeScript services load it at runtime and validate
+    every message they publish and receive against the `MusicEvent` schema below.
+  contact:
+    name: PactFlow Examples
+    url: https://pactflow.io
+  license:
+    name: MIT
+
+defaultContentType: application/json
+
+servers:
+  rabbitmq:
+    host: localhost:5672
+    protocol: amqp
+    description: Local RabbitMQ broker (see docker-compose.yml).
+    bindings:
+      amqp:
+        bindingVersion: 0.3.0
+
+channels:
+  musicEvents:
+    address: events.{city}.{genre}
+    title: Music event topic
+    description: |
+      A music performance event, routed by city and genre on the `music.events`
+      topic exchange. The `{city}` and `{genre}` address parameters form the
+      AMQP routing key.
+    parameters:
+      city:
+        $ref: '#/components/parameters/city'
+      genre:
+        $ref: '#/components/parameters/genre'
+    messages:
+      musicEventPublished:
+        $ref: '#/components/messages/MusicEventPublished'
+    bindings:
+      amqp:
+        is: routingKey
+        exchange:
+          name: music.events
+          type: topic
+          durable: true
+          autoDelete: false
+          vhost: /
+        bindingVersion: 0.3.0
+
+operations:
+  publishMusicEvent:
+    action: send
+    title: Publish a music event
+    summary: A user submits a music performance event, which is published to the exchange.
+    channel:
+      $ref: '#/channels/musicEvents'
+    bindings:
+      amqp:
+        deliveryMode: 2
+        mandatory: false
+        bindingVersion: 0.3.0
+    messages:
+      - $ref: '#/channels/musicEvents/messages/musicEventPublished'
+
+  receiveMusicEvent:
+    action: receive
+    title: Receive a music event
+    summary: A subscriber consumes music events matching its location/genre interest.
+    channel:
+      $ref: '#/channels/musicEvents'
+    bindings:
+      amqp:
+        ack: true
+        bindingVersion: 0.3.0
+    messages:
+      - $ref: '#/channels/musicEvents/messages/musicEventPublished'
+
+components:
+  parameters:
+    city:
+      description: City slug used in the routing key (lowercase, non-alphanumeric replaced with `-`), e.g. `london`.
+    genre:
+      description: Genre slug used in the routing key, one of the supported genres.
+      enum:
+        - jazz
+        - rock
+        - classical
+        - electronic
+        - hiphop
+        - techno
+        - folk
+        - pop
+
+  messages:
+    MusicEventPublished:
+      name: musicEventPublished
+      title: Music Event Published
+      summary: A live music performance event submitted by a user.
+      contentType: application/json
+      bindings:
+        amqp:
+          contentEncoding: utf-8
+          messageType: music.event.published
+          bindingVersion: 0.3.0
+      payload:
+        $ref: '#/components/schemas/MusicEvent'
+      examples:
+        - name: londonJazz
+          summary: A jazz performance in London
+          payload:
+            id: 3f1a8c2e-9b7d-4e6a-bc11-2f0d4a9e7c01
+            title: Midnight Quartet — Live
+            artist: The Blue Notes
+            genre: jazz
+            location:
+              city: london
+              venue: Ronnie Scott's
+              country: GB
+            startsAt: '2026-07-12T20:00:00Z'
+            endsAt: '2026-07-12T23:00:00Z'
+            price:
+              amount: 2500
+              currency: GBP
+            submittedBy: user_42
+            submittedAt: '2026-06-30T09:00:00Z'
+
+  schemas:
+    MusicEvent:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - title
+        - artist
+        - genre
+        - location
+        - startsAt
+        - submittedBy
+        - submittedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique event identifier.
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+          description: Title of the performance.
+        artist:
+          type: string
+          minLength: 1
+          maxLength: 200
+          description: Performing artist or band.
+        genre:
+          type: string
+          description: Musical genre. Drives the second segment of the routing key.
+          enum:
+            - jazz
+            - rock
+            - classical
+            - electronic
+            - hiphop
+            - techno
+            - folk
+            - pop
+        location:
+          $ref: '#/components/schemas/Location'
+        startsAt:
+          type: string
+          format: date-time
+          description: Performance start time (ISO 8601).
+        endsAt:
+          type: string
+          format: date-time
+          description: Performance end time (ISO 8601). Optional.
+        price:
+          $ref: '#/components/schemas/Price'
+        submittedBy:
+          type: string
+          minLength: 1
+          description: Identifier of the user who submitted the event.
+        submittedAt:
+          type: string
+          format: date-time
+          description: When the event was submitted (ISO 8601).
+
+    Location:
+      type: object
+      additionalProperties: false
+      required:
+        - city
+        - country
+      properties:
+        city:
+          type: string
+          minLength: 1
+          description: City name. Slugified to form the first segment of the routing key.
+        venue:
+          type: string
+          description: Name of the venue. Optional.
+        country:
+          type: string
+          minLength: 2
+          maxLength: 2
+          description: ISO 3166-1 alpha-2 country code.
+
+    Price:
+      type: object
+      additionalProperties: false
+      description: Ticket price. Omit entirely for free events.
+      required:
+        - amount
+        - currency
+      properties:
+        amount:
+          type: integer
+          minimum: 0
+          description: Price in the smallest currency unit (e.g. pence, cents).
+        currency:
+          type: string
+          description: ISO 4217 currency code.
+          enum:
+            - GBP
+            - EUR
+            - USD

@@ -1,0 +1,51 @@
+[
+  {
+    "code": "message.matched",
+    "message": "Matched message at [root].components.messages.MusicEventPublished",
+    "specDetails": {
+      "location": "[root].components.messages.MusicEventPublished",
+      "value": {
+        "name": "musicEventPublished",
+        "title": "Music Event Published",
+        "summary": "A live music performance event submitted by a user.",
+        "contentType": "application/json",
+        "bindings": {
+          "amqp": {
+            "contentEncoding": "utf-8",
+            "messageType": "music.event.published",
+            "bindingVersion": "0.3.0"
+          }
+        },
+        "payload": {
+          "$ref": "#/components/schemas/MusicEvent"
+        },
+        "examples": [
+          {
+            "name": "londonJazz",
+            "summary": "A jazz performance in London",
+            "payload": {
+              "id": "3f1a8c2e-9b7d-4e6a-bc11-2f0d4a9e7c01",
+              "title": "Midnight Quartet — Live",
+              "artist": "The Blue Notes",
+              "genre": "jazz",
+              "location": {
+                "city": "london",
+                "venue": "Ronnie Scott's",
+                "country": "GB"
+              },
+              "startsAt": "2026-07-12T20:00:00Z",
+              "endsAt": "2026-07-12T23:00:00Z",
+              "price": {
+                "amount": 2500,
+                "currency": "GBP"
+              },
+              "submittedBy": "user_42",
+              "submittedAt": "2026-06-30T09:00:00Z"
+            }
+          }
+        ]
+      }
+    },
+    "type": "info"
+  }
+]

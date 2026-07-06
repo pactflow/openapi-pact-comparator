@@ -1,5 +1,15 @@
 # @pactflow/openapi-pact-comparator
 
+## 2.3.0
+
+### Minor Changes
+
+- 23703db: Support multi-hop ref-resolution for both OAS and AsyncAPI documents.
+
+### Patch Changes
+
+- 5acb989: Improve the error message if it encounters a malformed `comments.references.AsyncAPI` reference (e.g. a typo like `operation` instead of `operationId`) by explicitly stating what was expected.
+
 ## 2.2.0
 
 ### Minor Changes

@@ -55,7 +55,9 @@ export function setupRouter(
         [
           ...(operation.parameters || []),
           ...(oas.paths[oasPath].parameters || []),
-        ].map((p) => dereferenceOas(p, oas as OpenAPIV3.Document)),
+        ].map((p) =>
+          dereferenceOas(p, oas as OpenAPIV3.Document),
+        ) as OpenAPIV3.ParameterObject[],
         (a, b) => `${a.name}${a.in}` === `${b.name}${b.in}`,
       );
       if (parameters.length) {

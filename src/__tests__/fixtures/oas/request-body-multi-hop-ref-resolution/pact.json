@@ -1,0 +1,36 @@
+{
+  "consumer": { "name": "consumer" },
+  "provider": { "name": "provider" },
+  "interactions": [
+    {
+      "description": "should pass when request body matches spec",
+      "request": {
+        "method": "POST",
+        "path": "/users",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "username": "bob"
+        }
+      },
+      "response": {
+        "status": 201
+      }
+    },
+    {
+      "description": "should fail when request body is missing required field",
+      "request": {
+        "method": "POST",
+        "path": "/users",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {}
+      },
+      "response": {
+        "status": 201
+      }
+    }
+  ]
+}

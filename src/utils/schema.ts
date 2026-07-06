@@ -44,11 +44,6 @@ export const splitPath = (path: string) => {
   return path;
 };
 
-export const dereferenceOas = (
-  schema: SchemaObject,
-  oas: OpenAPIV3.Document,
-) => (schema.$ref ? get(oas, splitPath(schema.$ref)) : schema);
-
 const followRefChain = (
   schema: { $ref?: string },
   doc: object,
@@ -69,6 +64,11 @@ const followRefChain = (
   }
   return { value: resolved, ref: schema.$ref };
 };
+
+export const dereferenceOas = <T extends object>(
+  schema: T,
+  oas: OpenAPIV3.Document,
+): T => (followRefChain(schema as { $ref?: string }, oas).value ?? schema) as T;
 
 export const dereferenceDoc = (
   schema: { $ref?: string },

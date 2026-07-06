@@ -41,7 +41,10 @@ export function* compareReqHeader(
       (acc: string[], [_status, response]) => {
         return [
           ...acc,
-          ...Object.keys(dereferenceOas(response || {}, oas)?.content || {}),
+          ...Object.keys(
+            (dereferenceOas(response || {}, oas) as OpenAPIV3.ResponseObject)
+              ?.content || {},
+          ),
         ];
       },
       [],

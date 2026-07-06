@@ -1,0 +1,21 @@
+[
+  {
+    "code": "request.body.incompatible",
+    "message": "Request body is incompatible with the request body schema in the spec file: must have required property 'username'",
+    "mockDetails": {
+      "interactionDescription": "should fail when request body is missing required field",
+      "interactionState": "[none]",
+      "location": "[root].interactions[1].request.body",
+      "value": {}
+    },
+    "specDetails": {
+      "location": "[root].paths./users.post.requestBody.content.application/json.schema.required",
+      "pathMethod": "post",
+      "pathName": "/users",
+      "value": [
+        "username"
+      ]
+    },
+    "type": "error"
+  }
+]

@@ -55,7 +55,7 @@
     "@rollup/plugin-node-resolve": "16.0.3",
     "@rollup/plugin-typescript": "12.3.0",
     "@sinclair/typebox": "0.34.52",
-    "@tsconfig/node22": "22.0.5",
+    "@tsconfig/node22": "22.0.6",
     "@types/js-yaml": "4.0.9",
     "@types/lodash-es": "4.17.12",
     "@types/node": "24.13.3",

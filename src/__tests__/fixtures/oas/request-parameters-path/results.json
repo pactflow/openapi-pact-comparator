@@ -11,24 +11,7 @@
     "specDetails": {
       "location": "[root].paths",
       "pathMethod": null,
-      "pathName": null,
-      "value": {
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "description"
-          }
-        }
-      }
+      "pathName": null
     },
     "type": "error"
   },

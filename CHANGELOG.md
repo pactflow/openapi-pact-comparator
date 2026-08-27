@@ -1,5 +1,11 @@
 # @pactflow/openapi-pact-comparator
 
+## 2.3.1
+
+### Patch Changes
+
+- 0e87687: introduce stricter path parameter type enforcement (find-my-way 9.7.0)
+
 ## 2.3.0
 
 ### Minor Changes

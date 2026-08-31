@@ -74,7 +74,7 @@
     "patch-package": "8.0.1",
     "prettier": "3.9.6",
     "qs": "6.15.3",
-    "rollup": "4.63.0",
+    "rollup": "4.63.1",
     "tslib": "2.8.1",
     "tsx": "4.23.12",
     "typescript": "6.0.3",

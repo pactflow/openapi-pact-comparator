@@ -549,3 +549,56 @@ describe("graphql classification", () => {
     expect(interactions[0]._kind).toBe("http");
   });
 });
+
+const SUBSCRIPTION =
+  "subscription InventoryChanged($variantId: ID!) { inventoryChanged(variantId: $variantId) { quantity } }";
+
+describe("graphql message classification", () => {
+  it("classifies an async message carrying graphql plugin config", () => {
+    const { interactions } = parse({
+      metadata: { pactSpecification: { version: "4.0" } },
+      interactions: [
+        {
+          type: "Asynchronous/Messages",
+          description: "an inventory change message",
+          pluginConfiguration: {
+            graphql: {
+              query_document: SUBSCRIPTION,
+              operation_name: "InventoryChanged",
+              variables_json: '{"variantId":"var-1"}',
+            },
+          },
+          contents: {
+            encoded: false,
+            content: {
+              subscription: "InventoryChanged",
+              variables: { variantId: "var-1" },
+              data: { inventoryChanged: { quantity: 42 } },
+            },
+          },
+        },
+      ],
+    } as Pact) as {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      interactions: any[];
+    };
+
+    const i = interactions[0];
+    expect(i._kind).toBe("graphql-message");
+    expect(i.operation.document).toBe(SUBSCRIPTION);
+    expect(i.payload).toEqual({ data: { inventoryChanged: { quantity: 42 } } });
+  });
+
+  it("leaves a plain async message alone", () => {
+    const { interactions } = parse({
+      metadata: { pactSpecification: { version: "4.0" } },
+      interactions: [
+        {
+          type: "Asynchronous/Messages",
+          contents: { encoded: false, content: { a: 1 } },
+        },
+      ],
+    } as Pact);
+    expect(interactions[0]._kind).toBe("async");
+  });
+});

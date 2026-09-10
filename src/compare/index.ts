@@ -6,6 +6,7 @@ import { compareAsyncInteraction } from "#compare/asyncapi/index";
 import { compareSyncInteraction } from "#compare/asyncapi/syncMessage";
 import { compareGraphqlHttpInteraction } from "#compare/graphql/index";
 import type { ProvenanceState } from "#compare/graphql/schemaProvenance";
+import { compareGraphqlMessageInteraction } from "#compare/graphql/subscriptionMessage";
 import { compareHttpInteraction } from "#compare/oas/index";
 import type { AsyncAPIDocument, ResolvedMessage } from "#documents/asyncapi";
 import { parse as parseAsyncapi } from "#documents/asyncapi";
@@ -120,6 +121,15 @@ export class Comparator {
             this.#ajvNocoerce,
             this.#asyncapi,
             this.#resolvedMessages,
+            interaction,
+            index,
+          );
+          break;
+        case "graphql-message":
+          if (!this.#graphql) break;
+          yield* compareGraphqlMessageInteraction(
+            this.#ajvNocoerce,
+            this.#graphql,
             interaction,
             index,
           );

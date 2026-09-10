@@ -1,0 +1,10 @@
+[
+  {
+    "code": "graphql.operation.matched",
+    "message": "Matched GraphQL subscription InventoryChanged",
+    "specDetails": {
+      "location": "[root].Subscription"
+    },
+    "type": "info"
+  }
+]

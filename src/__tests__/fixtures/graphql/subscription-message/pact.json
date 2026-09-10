@@ -1,0 +1,26 @@
+{
+  "consumer": { "name": "product-consumer" },
+  "provider": { "name": "product-provider" },
+  "metadata": { "pactSpecification": { "version": "4.0" } },
+  "interactions": [
+    {
+      "type": "Asynchronous/Messages",
+      "description": "an inventory change message",
+      "pluginConfiguration": {
+        "graphql": {
+          "query_document": "subscription InventoryChanged($variantId: ID!) { inventoryChanged(variantId: $variantId) { quantity } }",
+          "operation_name": "InventoryChanged",
+          "variables_json": "{\"variantId\":\"var-1\"}"
+        }
+      },
+      "contents": {
+        "encoded": false,
+        "content": {
+          "subscription": "InventoryChanged",
+          "variables": { "variantId": "var-1" },
+          "data": { "inventoryChanged": { "quantity": 42 } }
+        }
+      }
+    }
+  ]
+}

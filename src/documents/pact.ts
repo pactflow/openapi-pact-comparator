@@ -197,9 +197,20 @@ export interface SkippedInteraction {
   _kind: "skip";
 }
 
+export interface GraphqlMessageInteraction {
+  _kind: "graphql-message";
+  description?: string;
+  providerState?: string;
+  operation: GraphqlOperation;
+  /** Normalised to a GraphQL response envelope: `{ data: … }`. */
+  payload: unknown;
+  plugin?: GraphqlPluginConfig;
+}
+
 export type Interaction =
   | HttpInteraction
   | GraphqlHttpInteraction
+  | GraphqlMessageInteraction
   | AsyncInteraction
   | SyncInteraction
   | SkippedInteraction;
@@ -531,6 +542,45 @@ const asGraphqlHttpInteraction = (
   };
 };
 
+const asGraphqlMessageInteraction = (
+  i: RawInteraction,
+): GraphqlMessageInteraction | undefined => {
+  const pluginConfig = i.pluginConfiguration?.graphql;
+  const document = pluginConfig?.query_document;
+  // There is no non-plugin convention for GraphQL subscription messages, so
+  // no heuristic applies here (requirements section 4).
+  if (!document) return undefined;
+
+  const contents = parseAsPactV4Body(i.contents) as
+    | {
+        subscription?: string;
+        variables?: Record<string, unknown>;
+        data?: unknown;
+      }
+    | undefined;
+
+  const inlineSchemaSdl = decodeBase64(pluginConfig?.inline_schema?.base64_sdl);
+  const schemaHash = pluginConfig?.schema_ref?.hash;
+
+  return {
+    _kind: "graphql-message",
+    description: i.description,
+    providerState: i.providerState,
+    operation: {
+      source: "plugin",
+      document,
+      operationName: pluginConfig?.operation_name ?? contents?.subscription,
+      variables: parseJsonObject(pluginConfig?.variables_json),
+      inconsistent: false,
+    },
+    payload: contents ? { data: contents.data } : undefined,
+    plugin:
+      inlineSchemaSdl || schemaHash
+        ? { inlineSchemaSdl, schemaHash }
+        : undefined,
+  };
+};
+
 const ajv = new Ajv();
 const validateHttpInteractions = ajv.compile(Type.Array(HttpMessage));
 const validateAsyncInteractions = ajv.compile(Type.Array(AsyncMessage));
@@ -578,7 +628,9 @@ export const parse = (pact: Pact): ParsedPact => {
         const parsed = httpParser(i);
         return asGraphqlHttpInteraction(parsed, i) ?? parsed;
       }
-      if (isAsyncInteraction(i)) return parseAsyncInteraction(i);
+      if (isAsyncInteraction(i)) {
+        return asGraphqlMessageInteraction(i) ?? parseAsyncInteraction(i);
+      }
       if (isSyncInteraction(i)) return parseSyncInteraction(i);
       return { _kind: "skip" };
     }),

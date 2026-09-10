@@ -1,0 +1,12 @@
+type Inventory {
+  variantId: ID!
+  quantity: Int!
+}
+
+type Query {
+  product(id: ID!): String
+}
+
+type Subscription {
+  inventoryChanged(variantId: ID!): Inventory!
+}

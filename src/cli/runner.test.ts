@@ -424,4 +424,33 @@ describe("Runner", () => {
       await expect(runner.run({}, ["pact.json"])).resolves.toBe(0);
     });
   });
+
+  it("reads a graphql schema as raw text, not as YAML or JSON", async () => {
+    const SDL =
+      "type Query { product(id: ID!): Product }\ntype Product { id: ID! }";
+    let received: unknown;
+
+    const runner = new Runner({
+      readFile: async (p: string) =>
+        p === "schema.graphql"
+          ? SDL
+          : JSON.stringify({
+              metadata: { pactSpecification: { version: "4.0" } },
+              interactions: [],
+            }),
+      output: () => {},
+      createComparator: (docs) => {
+        received = docs.graphql;
+        return {
+          // eslint-disable-next-line require-yield
+          async *compare() {
+            await Promise.resolve();
+          },
+        };
+      },
+    });
+
+    await runner.run({ graphqlPath: "schema.graphql" }, ["pact.json"]);
+    expect(received).toBe(SDL);
+  });
 });

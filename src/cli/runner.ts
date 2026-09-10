@@ -11,11 +11,13 @@ const MAX_EXIT_CODE = 255;
 export interface SpecPaths {
   oasPath?: string;
   asyncapiPath?: string;
+  graphqlPath?: string;
 }
 
 export interface ComparatorDocs {
   oas?: OASDocument;
   asyncapi?: AsyncAPIDocument;
+  graphql?: string;
 }
 
 export interface ComparatorLike {
@@ -90,6 +92,10 @@ export class Runner {
       docs.asyncapi = (await this.readAndParse(
         specPaths.asyncapiPath,
       )) as AsyncAPIDocument;
+    }
+    if (specPaths.graphqlPath) {
+      // SDL is neither JSON nor YAML, so it is read verbatim.
+      docs.graphql = await this.readContent(specPaths.graphqlPath);
     }
 
     const comparator = this.deps.createComparator(docs);

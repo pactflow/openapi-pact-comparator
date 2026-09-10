@@ -1,8 +1,9 @@
 import type { ErrorObject } from "ajv";
 
-type InfoCode = "message.matched";
+type InfoCode = "graphql.operation.matched" | "message.matched";
 
 type ErrorCode =
+  | "message.graphql.payload.incompatible"
   | "message.headers.incompatible"
   | "message.no.match"
   | "message.operation.unknown"
@@ -14,6 +15,13 @@ type ErrorCode =
   | "request.authorization.missing"
   | "request.body.incompatible"
   | "request.content-type.incompatible"
+  | "request.graphql.argument.missing"
+  | "request.graphql.argument.unknown"
+  | "request.graphql.document.invalid"
+  | "request.graphql.field.unknown"
+  | "request.graphql.incompatible"
+  | "request.graphql.operation.unknown"
+  | "request.graphql.variables.incompatible"
   | "request.header.incompatible"
   | "request.path-or-method.unknown"
   | "request.query.incompatible"
@@ -21,11 +29,13 @@ type ErrorCode =
   | "response.body.incompatible"
   | "response.body.unknown"
   | "response.content-type.incompatible"
+  | "response.graphql.body.incompatible"
   | "response.header.incompatible"
   | "response.header.unknown"
   | "response.status.unknown";
 
 type WarningCode =
+  | "graphql.schema.mismatch"
   | "message.payload.unknown"
   | "message.payload.unvalidatable"
   | "message.response.missing"
@@ -35,10 +45,15 @@ type WarningCode =
   | "request.body.unvalidatable"
   | "request.content-type.missing"
   | "request.content-type.unknown"
+  | "request.graphql.inconsistent"
   | "request.header.unknown"
   | "request.query.unknown"
   | "response.body.unvalidatable"
   | "response.content-type.unknown"
+  | "response.graphql.data.null"
+  | "response.graphql.errors.unvalidatable"
+  | "response.graphql.scalar.unvalidatable"
+  | "response.graphql.status.unexpected"
   | "response.header.undefined"
   | "response.status.default";
 

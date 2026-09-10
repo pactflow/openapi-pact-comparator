@@ -136,3 +136,113 @@ describe("projectOperation", () => {
     ).toThrow(/operation/i);
   });
 });
+
+const polySchema = parseSchema(`
+  interface Node { id: ID! }
+  type Product implements Node { id: ID!, name: String! }
+  type Category implements Node { id: ID!, slug: String! }
+  union SearchResult = Product | Category
+  type Query {
+    node(id: ID!): Node
+    search(text: String!): [SearchResult!]!
+  }
+`);
+
+const projectPoly = (source: string, operationName?: string) =>
+  projectOperation(polySchema, parseDocument(source), operationName);
+
+interface Branch {
+  type?: string;
+  properties: Record<string, unknown>;
+}
+
+describe("projectOperation with abstract types", () => {
+  it("expands an interface into one branch per possible type", () => {
+    const { schema: s } = projectPoly(
+      "{ node(id: 1) { id ... on Product { name } ... on Category { slug } } }",
+    );
+    const node = s.properties.data.properties.node;
+    expect(node.anyOf).toHaveLength(3); // Product, Category, null
+    const branches = node.anyOf.filter((b: Branch) => b.type === "object");
+    expect(
+      branches.map((b: Branch) => Object.keys(b.properties).sort()),
+    ).toEqual([
+      ["id", "name"],
+      ["id", "slug"],
+    ]);
+  });
+
+  it("keeps interface-level fields required in every branch", () => {
+    const { schema: s } = projectPoly(
+      "{ node(id: 1) { id ... on Product { name } } }",
+    );
+    const branches = s.properties.data.properties.node.anyOf.filter(
+      (b: Branch) => b.type === "object",
+    );
+    for (const branch of branches) expect(branch.required).toContain("id");
+  });
+
+  it("collapses to a single branch when no type conditions are used", () => {
+    const { schema: s } = projectPoly("{ node(id: 1) { id } }");
+    const node = s.properties.data.properties.node;
+    expect(node.anyOf).toBeUndefined();
+    expect(node.type).toEqual(["object", "null"]);
+    expect(Object.keys(node.properties)).toEqual(["id"]);
+  });
+
+  it("expands a union", () => {
+    const { schema: s } = projectPoly(
+      '{ search(text: "x") { ... on Product { name } ... on Category { slug } } }',
+    );
+    const items = s.properties.data.properties.search.items;
+    expect(items.anyOf).toHaveLength(2);
+  });
+
+  it("resolves named fragment spreads", () => {
+    const { schema: s } = projectPoly(
+      `{ node(id: 1) { id ...P } }
+       fragment P on Product { name }`,
+    );
+    const branches = s.properties.data.properties.node.anyOf.filter(
+      (b: Branch) => b.type === "object",
+    );
+    const product = branches.find((b: Branch) => "name" in b.properties);
+    expect(Object.keys(product.properties).sort()).toEqual(["id", "name"]);
+  });
+
+  it("resolves an inline fragment with no type condition", () => {
+    const { schema: s } = projectPoly("{ node(id: 1) { ... { id } } }");
+    expect(Object.keys(s.properties.data.properties.node.properties)).toEqual([
+      "id",
+    ]);
+  });
+
+  it("constrains __typename to the possible type names in each branch", () => {
+    const { schema: s } = projectPoly("{ node(id: 1) { __typename id } }");
+    expect(s.properties.data.properties.node.properties.__typename).toEqual({
+      enum: ["Product", "Category"],
+    });
+  });
+
+  it("constrains __typename on a concrete object type to that one name", () => {
+    const { schema: s } = projectPoly(
+      "{ node(id: 1) { ... on Product { __typename name } } }",
+    );
+    const branches = s.properties.data.properties.node.anyOf.filter(
+      (b: Branch) => b.type === "object",
+    );
+    const product = branches.find((b: Branch) => "name" in b.properties);
+    expect(product.properties.__typename).toEqual({ enum: ["Product"] });
+  });
+
+  it("does not loop on a fragment that spreads itself", () => {
+    // validate() rejects fragment cycles, but the projection must not hang
+    // if a future caller skips validation.
+    expect(() =>
+      projectPoly(
+        `{ node(id: 1) { ...P } }
+         fragment P on Product { name ...P }`,
+      ),
+    ).not.toThrow();
+  });
+});

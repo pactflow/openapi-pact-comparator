@@ -367,3 +367,185 @@ describe("parse — Synchronous/Messages", () => {
     expect(() => parse(barePact as Pact)).toThrow();
   });
 });
+
+const v4 = (interaction: unknown) => ({
+  metadata: { pactSpecification: { version: "4.0" } },
+  interactions: [interaction],
+});
+
+const GRAPHQL_QUERY = "query GetProduct($id: ID!) { product(id: $id) { id } }";
+
+describe("graphql classification", () => {
+  it("classifies an interaction carrying plugin configuration", () => {
+    const { interactions } = parse(
+      v4({
+        type: "Synchronous/HTTP",
+        description: "a GraphQL product request",
+        pluginConfiguration: {
+          graphql: {
+            query_document: GRAPHQL_QUERY,
+            operation_name: "GetProduct",
+            variables_json: '{"id":"10"}',
+            inline_schema: {
+              base64_sdl: Buffer.from("type Query { a: String }").toString(
+                "base64",
+              ),
+            },
+            schema_ref: { hash: "abc123" },
+          },
+        },
+        request: {
+          method: "POST",
+          path: "/graphql",
+          body: {
+            contentType: "application/graphql",
+            encoded: false,
+            content: {
+              query: GRAPHQL_QUERY,
+              variables: { id: "10" },
+              operationName: "GetProduct",
+            },
+          },
+        },
+        response: {
+          status: 200,
+          body: {
+            encoded: false,
+            content: { data: { product: { id: "10" } } },
+          },
+        },
+      }),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ) as any;
+
+    const i = interactions[0];
+    expect(i._kind).toBe("graphql-http");
+    expect(i.operation.source).toBe("plugin");
+    expect(i.operation.document).toBe(GRAPHQL_QUERY);
+    expect(i.operation.operationName).toBe("GetProduct");
+    expect(i.operation.variables).toEqual({ id: "10" });
+    expect(i.operation.inconsistent).toBe(false);
+    expect(i.plugin.schemaHash).toBe("abc123");
+    expect(i.plugin.inlineSchemaSdl).toBe("type Query { a: String }");
+  });
+
+  it("classifies a plain POST whose body is a graphql envelope", () => {
+    const { interactions } = parse(
+      v4({
+        type: "Synchronous/HTTP",
+        request: {
+          method: "POST",
+          path: "/graphql",
+          body: {
+            encoded: false,
+            content: { query: GRAPHQL_QUERY, variables: { id: "10" } },
+          },
+        },
+        response: {
+          status: 200,
+          body: { encoded: false, content: { data: {} } },
+        },
+      }),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ) as any;
+
+    expect(interactions[0]._kind).toBe("graphql-http");
+    expect(interactions[0].operation.source).toBe("body");
+  });
+
+  it("does not misclassify a REST endpoint that takes a query string field", () => {
+    const { interactions } = parse(
+      v4({
+        type: "Synchronous/HTTP",
+        request: {
+          method: "POST",
+          path: "/search",
+          body: {
+            encoded: false,
+            content: { query: "SELECT * FROM products" },
+          },
+        },
+        response: { status: 200, body: { encoded: false, content: {} } },
+      }),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ) as any;
+
+    expect(interactions[0]._kind).toBe("http");
+  });
+
+  it("does not misclassify a body carrying extra non-graphql keys", () => {
+    const { interactions } = parse(
+      v4({
+        type: "Synchronous/HTTP",
+        request: {
+          method: "POST",
+          path: "/search",
+          body: {
+            encoded: false,
+            content: { query: GRAPHQL_QUERY, tenantId: "acme" },
+          },
+        },
+        response: { status: 200, body: { encoded: false, content: {} } },
+      }),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ) as any;
+
+    expect(interactions[0]._kind).toBe("http");
+  });
+
+  it("does not classify a GET as graphql", () => {
+    const { interactions } = parse(
+      v4({
+        type: "Synchronous/HTTP",
+        request: { method: "GET", path: "/graphql" },
+        response: { status: 200, body: { encoded: false, content: {} } },
+      }),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ) as any;
+
+    expect(interactions[0]._kind).toBe("http");
+  });
+
+  it("flags disagreement between plugin config and request body (4.1)", () => {
+    const { interactions } = parse(
+      v4({
+        type: "Synchronous/HTTP",
+        pluginConfiguration: {
+          graphql: {
+            query_document: GRAPHQL_QUERY,
+            variables_json: '{"id":"10"}',
+          },
+        },
+        request: {
+          method: "POST",
+          path: "/graphql",
+          body: {
+            encoded: false,
+            content: { query: "{ somethingElse }", variables: { id: "99" } },
+          },
+        },
+        response: {
+          status: 200,
+          body: { encoded: false, content: { data: {} } },
+        },
+      }),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ) as any;
+
+    expect(interactions[0].operation.inconsistent).toBe(true);
+    expect(interactions[0].operation.document).toBe(GRAPHQL_QUERY);
+  });
+
+  it("leaves REST interactions untouched", () => {
+    const { interactions } = parse(
+      v4({
+        type: "Synchronous/HTTP",
+        request: { method: "GET", path: "/products" },
+        response: { status: 200, body: { encoded: false, content: [] } },
+      }),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ) as any;
+
+    expect(interactions[0]._kind).toBe("http");
+  });
+});

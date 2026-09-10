@@ -100,6 +100,8 @@ export class Comparator {
             index,
           );
           break;
+        case "graphql-http":
+          break;
         case "skip":
           break;
         default:

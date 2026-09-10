@@ -1,5 +1,6 @@
 import { type Static, Type } from "@sinclair/typebox";
 import Ajv, { type ErrorObject } from "ajv";
+import { looksLikeGraphqlDocument } from "#documents/graphql";
 
 // a full schema can be found at https://github.com/pactflow/pact-schemas
 // but we don't use that here, because we try to be permissive with input
@@ -140,6 +141,31 @@ export interface HttpInteraction {
   };
 }
 
+export interface GraphqlOperation {
+  /** Which part of the pact the operation was read from. */
+  source: "plugin" | "body";
+  document: string;
+  operationName?: string;
+  variables: Record<string, unknown>;
+  /** Plugin configuration and request body disagree (requirements 4.1). */
+  inconsistent: boolean;
+}
+
+export interface GraphqlPluginConfig {
+  inlineSchemaSdl?: string;
+  schemaHash?: string;
+}
+
+export interface GraphqlHttpInteraction {
+  _kind: "graphql-http";
+  description?: string;
+  providerState?: string;
+  operation: GraphqlOperation;
+  request: HttpInteraction["request"];
+  response: HttpInteraction["response"];
+  plugin?: GraphqlPluginConfig;
+}
+
 export interface AsyncInteraction {
   _kind: "async";
   description?: string;
@@ -172,7 +198,11 @@ export interface SkippedInteraction {
 }
 
 export type Interaction =
-  HttpInteraction | AsyncInteraction | SyncInteraction | SkippedInteraction;
+  | HttpInteraction
+  | GraphqlHttpInteraction
+  | AsyncInteraction
+  | SyncInteraction
+  | SkippedInteraction;
 
 export interface ParsedPact {
   metadata?: Pact["metadata"];
@@ -207,6 +237,15 @@ interface RawInteraction {
     encoded?: string | boolean;
   };
   metadata?: Record<string, string>;
+  pluginConfiguration?: {
+    graphql?: {
+      query_document?: string;
+      operation_name?: string;
+      variables_json?: string;
+      inline_schema?: { base64_sdl?: string };
+      schema_ref?: { hash?: string };
+    };
+  };
 }
 
 interface RawSyncInteraction {
@@ -373,6 +412,125 @@ const parseSyncInteraction = (
   };
 };
 
+const GRAPHQL_BODY_KEYS = new Set([
+  "query",
+  "variables",
+  "operationName",
+  "extensions",
+]);
+
+interface GraphqlEnvelope {
+  query: string;
+  variables?: Record<string, unknown>;
+  operationName?: string;
+}
+
+/** The request body read as a GraphQL over HTTP envelope, if it is one. */
+const asGraphqlEnvelope = (body: unknown): GraphqlEnvelope | undefined => {
+  if (!body || typeof body !== "object" || Array.isArray(body))
+    return undefined;
+  const record = body as Record<string, unknown>;
+  if (Object.keys(record).some((k) => !GRAPHQL_BODY_KEYS.has(k)))
+    return undefined;
+  if (typeof record.query !== "string") return undefined;
+  return {
+    query: record.query,
+    variables: (record.variables as Record<string, unknown>) ?? undefined,
+    operationName:
+      typeof record.operationName === "string"
+        ? record.operationName
+        : undefined,
+  };
+};
+
+const parseJsonObject = (value?: string): Record<string, unknown> => {
+  if (!value) return {};
+  try {
+    const parsed = JSON.parse(value);
+    return parsed && typeof parsed === "object" && !Array.isArray(parsed)
+      ? (parsed as Record<string, unknown>)
+      : {};
+  } catch {
+    return {};
+  }
+};
+
+const decodeBase64 = (value?: string): string | undefined => {
+  if (!value) return undefined;
+  try {
+    return Buffer.from(value, "base64").toString("utf-8");
+  } catch {
+    return undefined;
+  }
+};
+
+/**
+ * Requirements section 4: an interaction is GraphQL when it carries plugin
+ * configuration, declares an `application/graphql` content type, or is a POST
+ * whose body is a GraphQL envelope containing a parseable operation.
+ */
+const asGraphqlHttpInteraction = (
+  parsed: HttpInteraction,
+  raw: RawInteraction,
+): GraphqlHttpInteraction | undefined => {
+  const pluginConfig = raw.pluginConfiguration?.graphql;
+  const envelope = asGraphqlEnvelope(parsed.request.body);
+
+  const contentType =
+    parsed.request.headers?.["content-type"] ??
+    parsed.request.headers?.["Content-Type"] ??
+    (raw.request?.body as { contentType?: string } | undefined)?.contentType;
+
+  const declaredGraphql =
+    typeof contentType === "string" &&
+    contentType.toLowerCase().startsWith("application/graphql");
+
+  const heuristicGraphql =
+    parsed.request.method.toUpperCase() === "POST" &&
+    envelope !== undefined &&
+    looksLikeGraphqlDocument(envelope.query);
+
+  if (!pluginConfig && !declaredGraphql && !heuristicGraphql) return undefined;
+
+  const pluginDocument = pluginConfig?.query_document;
+  const pluginVariables = parseJsonObject(pluginConfig?.variables_json);
+
+  const document = pluginDocument ?? envelope?.query;
+  if (!document) return undefined;
+
+  const source: "plugin" | "body" = pluginDocument ? "plugin" : "body";
+  const variables = pluginDocument
+    ? pluginVariables
+    : (envelope?.variables ?? {});
+  const operationName = pluginDocument
+    ? pluginConfig?.operation_name
+    : envelope?.operationName;
+
+  const inconsistent = Boolean(
+    pluginDocument &&
+    envelope &&
+    (envelope.query !== pluginDocument ||
+      JSON.stringify(envelope.variables ?? {}) !==
+        JSON.stringify(pluginVariables)),
+  );
+
+  const inlineSchemaSdl = decodeBase64(pluginConfig?.inline_schema?.base64_sdl);
+  const schemaHash = pluginConfig?.schema_ref?.hash;
+
+  return {
+    _kind: "graphql-http",
+    description: parsed.description,
+    providerState: parsed.providerState,
+    operation: { source, document, operationName, variables, inconsistent },
+    request: parsed.request,
+    response: parsed.response,
+    plugin:
+      inlineSchemaSdl || schemaHash
+        ? { inlineSchemaSdl, schemaHash }
+        : undefined,
+  };
+};
+
 const ajv = new Ajv();
 const validateHttpInteractions = ajv.compile(Type.Array(HttpMessage));
 const validateAsyncInteractions = ajv.compile(Type.Array(AsyncMessage));
@@ -416,7 +574,10 @@ export const parse = (pact: Pact): ParsedPact => {
   return {
     metadata,
     interactions: rawInteractions.map((i): Interaction => {
-      if (isHttpInteraction(i)) return httpParser(i);
+      if (isHttpInteraction(i)) {
+        const parsed = httpParser(i);
+        return asGraphqlHttpInteraction(parsed, i) ?? parsed;
+      }
       if (isAsyncInteraction(i)) return parseAsyncInteraction(i);
       if (isSyncInteraction(i)) return parseSyncInteraction(i);
       return { _kind: "skip" };

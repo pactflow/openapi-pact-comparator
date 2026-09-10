@@ -58,6 +58,42 @@ for (const pact of pacts) {
 }
 ```
 
+## GraphQL
+
+A GraphQL schema can be used as the provider contract. Pass the SDL as text:
+
+```js
+import { readFileSync } from "node:fs";
+import { Comparator } from "@pactflow/openapi-pact-comparator";
+
+const comparator = new Comparator({
+  graphql: readFileSync("schema.graphql", "utf-8"),
+});
+
+for await (const result of comparator.compare(pact)) {
+  console.log(result);
+}
+```
+
+or from the CLI:
+
+```
+opc --graphql schema.graphql pact.json
+```
+
+An interaction is compared as GraphQL when it carries a `pluginConfiguration.graphql`
+block (written by [pact-graphql-plugin](https://github.com/mefellows/pact-graphql-plugin)),
+declares an `application/graphql` content type, or is a `POST` whose body is a
+GraphQL envelope. Hand-rolled GraphQL pacts therefore work without the plugin.
+
+Compatibility means the consumer's operation is valid against the provider's
+schema, and its recorded response contains nothing the provider could not
+return. The consumer may select fewer fields than the schema offers, and may
+omit any field from its recorded response — including one the schema declares
+non-null. See
+[the requirements document](docs/superpowers/specs/2026-09-10-graphql-bdct-requirements.md)
+for the full rules.
+
 ## Quirks mode
 
 To retain compatibility with

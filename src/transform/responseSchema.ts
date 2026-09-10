@@ -26,7 +26,7 @@ export const transformReceivedSchema = (
   return schema;
 };
 
-const stripRequired = (schema: SchemaObject): void => {
+export const stripRequired = (schema: SchemaObject): void => {
   traverse(schema, (s) => {
     if (s.oneOf) {
       return; // discriminator is required to be a valid schema

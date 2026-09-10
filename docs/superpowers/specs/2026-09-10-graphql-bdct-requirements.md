@@ -66,18 +66,18 @@ An interaction's request is compatible when its operation is **valid against
 the provider schema** under the GraphQL specification's own validation rules.
 Concretely:
 
-| # | Rule | Verdict when violated |
-|---|---|---|
-| R1 | The document must be syntactically valid GraphQL. | error |
-| R2 | The named operation must exist in the document; if `operationName` is absent, the document must contain exactly one operation. | error |
-| R3 | Every root field must exist on the schema's `Query`, `Mutation`, or `Subscription` type, as matches the operation type. | error |
-| R4 | Every selected field must exist on its parent type. | error |
-| R5 | Every argument supplied must exist on the field it is passed to. | error |
-| R6 | Every argument the provider declares as required — non-null with no default — must be supplied. | error |
-| R7 | Argument and variable values must be type-compatible with their declarations, including enum membership and input-object field requirements. | error |
-| R8 | Every required variable must be given a value; supplied variables must coerce to their declared types. | error |
-| R9 | Fragments and inline fragments must target types that exist and can apply at their spread location. | error |
-| R10 | Selecting **fewer** fields than the provider offers is always compatible. | pass |
+| #   | Rule                                                                                                                                         | Verdict when violated |
+| --- | -------------------------------------------------------------------------------------------------------------------------------------------- | --------------------- |
+| R1  | The document must be syntactically valid GraphQL.                                                                                            | error                 |
+| R2  | The named operation must exist in the document; if `operationName` is absent, the document must contain exactly one operation.               | error                 |
+| R3  | Every root field must exist on the schema's `Query`, `Mutation`, or `Subscription` type, as matches the operation type.                      | error                 |
+| R4  | Every selected field must exist on its parent type.                                                                                          | error                 |
+| R5  | Every argument supplied must exist on the field it is passed to.                                                                             | error                 |
+| R6  | Every argument the provider declares as required — non-null with no default — must be supplied.                                              | error                 |
+| R7  | Argument and variable values must be type-compatible with their declarations, including enum membership and input-object field requirements. | error                 |
+| R8  | Every required variable must be given a value; supplied variables must coerce to their declared types.                                       | error                 |
+| R9  | Fragments and inline fragments must target types that exist and can apply at their spread location.                                          | error                 |
+| R10 | Selecting **fewer** fields than the provider offers is always compatible.                                                                    | pass                  |
 
 Rules R1–R9 are the GraphQL specification's validation rules, not a
 comparator-specific invention. R10 is the substance of the subset rule and is
@@ -92,16 +92,16 @@ about which HTTP path or method serves an operation, so neither is checked.
 A recorded response is compatible when nothing in it is provider-impossible.
 The projection of the operation's selection set defines what is possible.
 
-| # | Rule | Verdict when violated |
-|---|---|---|
-| P1 | Every key in `data` must correspond to a field the operation selected, keyed by alias where one is used. | error |
-| P2 | Every recorded scalar value must satisfy its field's type. | error |
-| P3 | Every recorded enum value must be a member of that enum. | error |
-| P4 | A field declared non-null must not be recorded as `null` when no `errors` key is present, because the provider cannot produce that. | error |
-| P5 | A value for an abstract type (interface or union) must match at least one of its possible concrete types, as narrowed by any `__typename` recorded. | error |
-| P6 | The response envelope must contain only `data`, `errors`, and `extensions`. | error |
-| P7 | Omitting a field the operation selected is compatible — the consumer is not asserting on it. | pass |
-| P8 | Omitting a field the provider declares non-null is compatible, for the same reason. | pass |
+| #   | Rule                                                                                                                                                | Verdict when violated |
+| --- | --------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------- |
+| P1  | Every key in `data` must correspond to a field the operation selected, keyed by alias where one is used.                                            | error                 |
+| P2  | Every recorded scalar value must satisfy its field's type.                                                                                          | error                 |
+| P3  | Every recorded enum value must be a member of that enum.                                                                                            | error                 |
+| P4  | A field declared non-null must not be recorded as `null` when no `errors` key is present, because the provider cannot produce that.                 | error                 |
+| P5  | A value for an abstract type (interface or union) must match at least one of its possible concrete types, as narrowed by any `__typename` recorded. | error                 |
+| P6  | The response envelope must contain only `data`, `errors`, and `extensions`.                                                                         | error                 |
+| P7  | Omitting a field the operation selected is compatible — the consumer is not asserting on it.                                                        | pass                  |
+| P8  | Omitting a field the provider declares non-null is compatible, for the same reason.                                                                 | pass                  |
 
 P7 and P8 are the response-side subset rule and are the reason a naive
 "validate the body against the schema" approach is wrong: the projection must
@@ -114,12 +114,12 @@ Some recorded values are neither compatible nor incompatible, because the
 schema does not describe them. These produce **warnings**, never errors, and
 suppress the checks that depend on them:
 
-| # | Case | Behaviour |
-|---|---|---|
-| U1 | The response contains an `errors` key. | warn; skip all `data` checks — error payloads are not described by the schema |
-| U2 | `data` is `null`. | warn; skip remaining `data` checks |
-| U3 | A field's type is a custom scalar. | warn; accept any value for that field |
-| U4 | The HTTP status is 400 or above. | warn; skip all body checks — this is a transport failure, not a schema statement |
+| #   | Case                                   | Behaviour                                                                        |
+| --- | -------------------------------------- | -------------------------------------------------------------------------------- |
+| U1  | The response contains an `errors` key. | warn; skip all `data` checks — error payloads are not described by the schema    |
+| U2  | `data` is `null`.                      | warn; skip remaining `data` checks                                               |
+| U3  | A field's type is a custom scalar.     | warn; accept any value for that field                                            |
+| U4  | The HTTP status is 400 or above.       | warn; skip all body checks — this is a transport failure, not a schema statement |
 
 ## 4. Which interactions are GraphQL
 
@@ -177,11 +177,11 @@ unrelated mutation — which is precisely the coupling BDCT exists to remove.
 
 Its legitimate uses are:
 
-| # | Rule |
-|---|---|
-| S1 | When the embedded schema's digest differs from the provider contract's, emit one warning per Pact file, never per interaction. |
-| S2 | When a request-side rule (R3–R9) is violated and an embedded schema is available, attach the specific delta as a cause — for example, "`Product.type` exists in the schema this consumer was built against and is absent from the provider contract" — in place of a bare "unknown field". |
-| S3 | Neither S1 nor S2 may change a pass into a failure. |
+| #   | Rule                                                                                                                                                                                                                                                                                       |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| S1  | When the embedded schema's digest differs from the provider contract's, emit one warning per Pact file, never per interaction.                                                                                                                                                             |
+| S2  | When a request-side rule (R3–R9) is violated and an embedded schema is available, attach the specific delta as a cause — for example, "`Product.type` exists in the schema this consumer was built against and is absent from the provider contract" — in place of a bare "unknown field". |
+| S3  | Neither S1 nor S2 may change a pass into a failure.                                                                                                                                                                                                                                        |
 
 ## 7. Verdict summary
 
@@ -197,7 +197,9 @@ one can be derived, the location in the provider schema it conflicts with.
 Given the provider schema:
 
 ```graphql
-type Query { product(id: ID!): Product }
+type Query {
+  product(id: ID!): Product
+}
 
 type Product {
   id: ID!
@@ -206,17 +208,22 @@ type Product {
   description: String
 }
 
-enum ProductStatus { ACTIVE DRAFT OUT_OF_STOCK ARCHIVED }
+enum ProductStatus {
+  ACTIVE
+  DRAFT
+  OUT_OF_STOCK
+  ARCHIVED
+}
 ```
 
-| Consumer interaction | Verdict | Rule |
-|---|---|---|
-| `{ product(id: $id) { id name } }`, response `{"data":{"product":{"id":"10","name":"x"}}}` | pass | R10 — asking for fewer fields is the point |
-| `{ product(id: $id) { id name } }`, response `{"data":{"product":{"id":"10"}}}` | pass | P7 — the consumer asserts on less than it asked for |
-| `{ product { id } }` | fail | R6 — `id` is a required argument |
-| `{ product(id: $id) { id stockLevel } }` | fail | R4 — `stockLevel` is not a field of `Product` |
-| `{ product(id: $id) { id } }`, response `{"data":{"product":{"id":"10","name":"x"}}}` | fail | P1 — `name` was never selected, so the provider would not return it |
-| `{ product(id: $id) { status } }`, response `{"data":{"product":{"status":"PENDING"}}}` | fail | P3 — not a member of `ProductStatus` |
-| `{ product(id: $id) { id } }`, response `{"data":{"product":{"id":null}}}` | fail | P4 — `id` is non-null and no `errors` key is present |
-| `{ product(id: $id) { description } }`, response `{"data":{"product":{"description":null}}}` | pass | `description` is nullable |
-| any operation, response `{"errors":[{"message":"boom"}]}` | pass with warning | U1 |
+| Consumer interaction                                                                         | Verdict           | Rule                                                                |
+| -------------------------------------------------------------------------------------------- | ----------------- | ------------------------------------------------------------------- |
+| `{ product(id: $id) { id name } }`, response `{"data":{"product":{"id":"10","name":"x"}}}`   | pass              | R10 — asking for fewer fields is the point                          |
+| `{ product(id: $id) { id name } }`, response `{"data":{"product":{"id":"10"}}}`              | pass              | P7 — the consumer asserts on less than it asked for                 |
+| `{ product { id } }`                                                                         | fail              | R6 — `id` is a required argument                                    |
+| `{ product(id: $id) { id stockLevel } }`                                                     | fail              | R4 — `stockLevel` is not a field of `Product`                       |
+| `{ product(id: $id) { id } }`, response `{"data":{"product":{"id":"10","name":"x"}}}`        | fail              | P1 — `name` was never selected, so the provider would not return it |
+| `{ product(id: $id) { status } }`, response `{"data":{"product":{"status":"PENDING"}}}`      | fail              | P3 — not a member of `ProductStatus`                                |
+| `{ product(id: $id) { id } }`, response `{"data":{"product":{"id":null}}}`                   | fail              | P4 — `id` is non-null and no `errors` key is present                |
+| `{ product(id: $id) { description } }`, response `{"data":{"product":{"description":null}}}` | pass              | `description` is nullable                                           |
+| any operation, response `{"errors":[{"message":"boom"}]}`                                    | pass with warning | U1                                                                  |

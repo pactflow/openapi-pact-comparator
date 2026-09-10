@@ -19,25 +19,49 @@ GraphQL interaction is **not** a new interaction type — it is an ordinary V4
 {
   "type": "Synchronous/HTTP",
   "request": {
-    "method": "POST", "path": "/graphql",
-    "body": { "contentType": "application/graphql", "content": {
-      "operationName": "GetProduct",
-      "query": "query GetProduct($id: ID!) { product(id: $id) { id name status } }",
-      "variables": { "id": "10" } } }
+    "method": "POST",
+    "path": "/graphql",
+    "body": {
+      "contentType": "application/graphql",
+      "content": {
+        "operationName": "GetProduct",
+        "query": "query GetProduct($id: ID!) { product(id: $id) { id name status } }",
+        "variables": { "id": "10" },
+      },
+    },
   },
   "response": {
-    "body": { "contentType": "application/json",
-              "content": { "data": { "product": { "id": "10", "name": "…", "status": "ACTIVE" } } } },
-    "matchingRules": { "body": { "$.data.product.status": {
-      "matchers": [{ "match": "regex", "regex": "^(ACTIVE|ARCHIVED|DRAFT|OUT_OF_STOCK)$" }] } } },
-    "status": 200
+    "body": {
+      "contentType": "application/json",
+      "content": {
+        "data": { "product": { "id": "10", "name": "…", "status": "ACTIVE" } },
+      },
+    },
+    "matchingRules": {
+      "body": {
+        "$.data.product.status": {
+          "matchers": [
+            {
+              "match": "regex",
+              "regex": "^(ACTIVE|ARCHIVED|DRAFT|OUT_OF_STOCK)$",
+            },
+          ],
+        },
+      },
+    },
+    "status": 200,
   },
-  "pluginConfiguration": { "graphql": {
-    "query_document": "…", "operation_name": "GetProduct", "variables_json": "{\"id\":\"10\"}",
-    "query_matching": "semantic", "transport": "json_body",
-    "inline_schema": { "base64_sdl": "<provider SDL, base64>" },
-    "schema_ref": { "hash": "fa7e57bd…", "encoding": "utf-8" }
-  }}
+  "pluginConfiguration": {
+    "graphql": {
+      "query_document": "…",
+      "operation_name": "GetProduct",
+      "variables_json": "{\"id\":\"10\"}",
+      "query_matching": "semantic",
+      "transport": "json_body",
+      "inline_schema": { "base64_sdl": "<provider SDL, base64>" },
+      "schema_ref": { "hash": "fa7e57bd…", "encoding": "utf-8" },
+    },
+  },
 }
 ```
 
@@ -70,7 +94,7 @@ document but never sees runtime values.
 
 **The response rule is a projection plus this repo's existing transform.**
 Because a GraphQL response mirrors its selection set, the expected shape can be
-*derived* exactly rather than described. That derived shape is plain JSON
+_derived_ exactly rather than described. That derived shape is plain JSON
 Schema, so the existing AJV pipeline compares it, and `stripRequired` from
 `transform/responseSchema.ts` — written for the identical OpenAPI rule that a
 consumer may omit fields it does not care about — supplies P7 and P8 unchanged.
@@ -84,7 +108,7 @@ else is wiring.
 export interface ComparatorOptions {
   oas?: OpenAPIV2.Document | OpenAPIV3.Document;
   asyncapi?: AsyncAPIDocument;
-  graphql?: string;              // raw SDL text
+  graphql?: string; // raw SDL text
 }
 ```
 
@@ -122,20 +146,20 @@ internals.
 `projectSelectionSet(schema, document, operationName)` walks the selection set
 from the operation's root type and returns a JSON Schema.
 
-| GraphQL | JSON Schema |
-|---|---|
-| field with alias | property keyed by `alias ?? name` |
-| `String` / `Int` / `Float` / `Boolean` | `{type:"string"｜"integer"｜"number"｜"boolean"}` |
-| `ID` | `{type:["string","integer"]}` |
-| enum | `{enum:[…values]}` |
-| custom scalar | `true`, plus a `response.graphql.scalar.unvalidatable` warning |
-| object / interface | `{type:"object", properties, required, additionalProperties:false}` |
-| `T!` | not nullable |
-| `T` | `type: [x, "null"]` |
-| `[T]` | `{type:"array", items:…}` |
-| interface or union with fragments | `anyOf` over possible types, discriminated by `__typename` where selected |
-| `__typename` | `{enum:[…possible type names]}` |
-| `@skip` / `@include` | the field becomes optional — the outcome is unknowable at comparison time |
+| GraphQL                                | JSON Schema                                                               |
+| -------------------------------------- | ------------------------------------------------------------------------- |
+| field with alias                       | property keyed by `alias ?? name`                                         |
+| `String` / `Int` / `Float` / `Boolean` | `{type:"string"｜"integer"｜"number"｜"boolean"}`                         |
+| `ID`                                   | `{type:["string","integer"]}`                                             |
+| enum                                   | `{enum:[…values]}`                                                        |
+| custom scalar                          | `true`, plus a `response.graphql.scalar.unvalidatable` warning            |
+| object / interface                     | `{type:"object", properties, required, additionalProperties:false}`       |
+| `T!`                                   | not nullable                                                              |
+| `T`                                    | `type: [x, "null"]`                                                       |
+| `[T]`                                  | `{type:"array", items:…}`                                                 |
+| interface or union with fragments      | `anyOf` over possible types, discriminated by `__typename` where selected |
+| `__typename`                           | `{enum:[…possible type names]}`                                           |
+| `@skip` / `@include`                   | the field becomes optional — the outcome is unknowable at comparison time |
 
 The whole is wrapped in the envelope
 `{type:"object", properties:{data:<projection｜null>, errors:true, extensions:true}, additionalProperties:false}`,
@@ -258,7 +282,7 @@ tests running from source do not catch.
 
 Mitigation, and the first step of the implementation plan: add the dependency
 and smoke-test `buildSchema` plus `validate` from the built `dist/index.cjs`
-*and* `dist/index.mjs` before any feature code is written. Cheap now, expensive
+_and_ `dist/index.mjs` before any feature code is written. Cheap now, expensive
 to discover after the feature is built.
 
 **Projection surface area.** Abstract types, fragments, aliases, and nullability

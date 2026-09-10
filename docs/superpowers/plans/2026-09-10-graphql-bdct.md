@@ -4,11 +4,12 @@
 
 **Goal:** Compare a GraphQL provider contract (SDL) against a consumer Pact file, so PactFlow's bi-directional contract testing supports GraphQL alongside OpenAPI and AsyncAPI.
 
-**Architecture:** A GraphQL interaction is an ordinary V4 `Synchronous/HTTP` Pact interaction, so it is reclassified out of `http` during pact parsing into a new `graphql-http` kind (and `graphql-message` for subscriptions). The request-side subset check delegates to `graphql.validate()` — the GraphQL specification's own validation rules are exactly the subset rule. The response-side check *projects* the operation's selection set through the provider schema into a JSON Schema, then reuses this repo's existing AJV pipeline and `stripRequired` transform to allow the consumer to omit fields it did not assert on.
+**Architecture:** A GraphQL interaction is an ordinary V4 `Synchronous/HTTP` Pact interaction, so it is reclassified out of `http` during pact parsing into a new `graphql-http` kind (and `graphql-message` for subscriptions). The request-side subset check delegates to `graphql.validate()` — the GraphQL specification's own validation rules are exactly the subset rule. The response-side check _projects_ the operation's selection set through the provider schema into a JSON Schema, then reuses this repo's existing AJV pipeline and `stripRequired` transform to allow the consumer to omit fields it did not assert on.
 
 **Tech Stack:** TypeScript (ESM, Node ≥22), `graphql` (graphql-js) for parsing/validation/type system, AJV 2019 for response comparison, Vitest with `toMatchFileSnapshot` fixtures, rollup for bundling.
 
 **Spec:**
+
 - `docs/superpowers/specs/2026-09-10-graphql-bdct-requirements.md` (normative business rules — rule IDs R1–R10, P1–P8, U1–U4, S1–S3 are cited throughout this plan)
 - `docs/superpowers/specs/2026-09-10-graphql-bdct-design.md` (architecture)
 
@@ -32,11 +33,13 @@ Read both before starting. Tasks cite rule IDs rather than restating the rules.
 The design flags this as the top risk: graphql-js has dual ESM/CJS packaging that produces `instanceof` failures ("Cannot use GraphQLSchema from another module") in bundled output that source-run unit tests never catch. Prove the bundle works before writing any feature code.
 
 **Files:**
+
 - Modify: `package.json` (devDependencies)
 - Create: `src/documents/graphql.ts`
 - Create: `scripts/smoke-graphql-bundle.mjs`
 
 **Interfaces:**
+
 - Consumes: nothing
 - Produces: `parse(sdl: string): GraphQLSchema` and `ParserError` from `#documents/graphql`
 
@@ -95,7 +98,12 @@ Expected: FAIL — cannot resolve `./graphql`.
 Create `src/documents/graphql.ts`:
 
 ```ts
-import { GraphQLError, type GraphQLSchema, buildSchema, validateSchema } from "graphql";
+import {
+  GraphQLError,
+  type GraphQLSchema,
+  buildSchema,
+  validateSchema,
+} from "graphql";
 
 export class ParserError extends Error {
   errors: readonly GraphQLError[];
@@ -155,7 +163,9 @@ const check = (label, parseGraphqlSchema) => {
   const schema = parseGraphqlSchema(SDL);
   const queryType = schema.getQueryType();
   if (!queryType || queryType.name !== "Query") {
-    throw new Error(`${label}: expected a Query root type, got ${queryType?.name}`);
+    throw new Error(
+      `${label}: expected a Query root type, got ${queryType?.name}`,
+    );
   }
   console.log(`${label}: ok`);
 };
@@ -195,13 +205,15 @@ git commit -m "feat: add graphql dependency with SDL parsing and bundle smoke te
 
 ### Task 2: Schema fingerprinting for provenance
 
-S1 compares the consumer's embedded schema against the provider contract. Hashing raw SDL text is fragile — whitespace and field ordering differ between a schema printed by a server and one stored in git. Hash the *normalised* printed schema instead.
+S1 compares the consumer's embedded schema against the provider contract. Hashing raw SDL text is fragile — whitespace and field ordering differ between a schema printed by a server and one stored in git. Hash the _normalised_ printed schema instead.
 
 **Files:**
+
 - Modify: `src/documents/graphql.ts`
 - Modify: `src/documents/graphql.test.ts`
 
 **Interfaces:**
+
 - Consumes: `parse` from Task 1
 - Produces: `fingerprint(sdl: string): string`, `looksLikeGraphqlDocument(source: string): boolean`
 
@@ -214,14 +226,18 @@ import { fingerprint, looksLikeGraphqlDocument } from "./graphql";
 
 describe("fingerprint", () => {
   it("is stable across formatting differences", () => {
-    const a = "type Query { product(id: ID!): Product }\ntype Product { id: ID! }";
-    const b = "type   Product {\n  id: ID!\n}\n\ntype Query {\n  product(id: ID!): Product\n}\n";
+    const a =
+      "type Query { product(id: ID!): Product }\ntype Product { id: ID! }";
+    const b =
+      "type   Product {\n  id: ID!\n}\n\ntype Query {\n  product(id: ID!): Product\n}\n";
     expect(fingerprint(a)).toBe(fingerprint(b));
   });
 
   it("differs when the schema differs", () => {
-    const a = "type Query { product(id: ID!): Product }\ntype Product { id: ID! }";
-    const b = "type Query { product(id: ID!): Product }\ntype Product { id: ID!, name: String }";
+    const a =
+      "type Query { product(id: ID!): Product }\ntype Product { id: ID! }";
+    const b =
+      "type Query { product(id: ID!): Product }\ntype Product { id: ID!, name: String }";
     expect(fingerprint(a)).not.toBe(fingerprint(b));
   });
 
@@ -232,11 +248,15 @@ describe("fingerprint", () => {
 
 describe("looksLikeGraphqlDocument", () => {
   it("accepts a query document", () => {
-    expect(looksLikeGraphqlDocument("query Q($id: ID!) { product(id: $id) { id } }")).toBe(true);
+    expect(
+      looksLikeGraphqlDocument("query Q($id: ID!) { product(id: $id) { id } }"),
+    ).toBe(true);
   });
 
   it("rejects a SQL-ish string", () => {
-    expect(looksLikeGraphqlDocument("SELECT * FROM products WHERE id = 1")).toBe(false);
+    expect(
+      looksLikeGraphqlDocument("SELECT * FROM products WHERE id = 1"),
+    ).toBe(false);
   });
 
   it("rejects an empty string", () => {
@@ -317,16 +337,27 @@ git commit -m "feat: add graphql schema fingerprinting and document detection"
 The core of the response-side rule. This task covers the non-polymorphic cases; Task 4 adds fragments and abstract types.
 
 **Files:**
+
 - Create: `src/documents/graphqlProjection.ts`
 - Create: `src/documents/graphqlProjection.test.ts`
 
 **Interfaces:**
+
 - Consumes: `parse` from `#documents/graphql`
 - Produces:
+
   ```ts
-  interface Projection { schema: SchemaObject; unvalidatableScalars: string[]; }
-  function projectOperation(schema: GraphQLSchema, document: DocumentNode, operationName?: string): Projection
+  interface Projection {
+    schema: SchemaObject;
+    unvalidatableScalars: string[];
+  }
+  function projectOperation(
+    schema: GraphQLSchema,
+    document: DocumentNode,
+    operationName?: string,
+  ): Projection;
   ```
+
   `projectOperation` returns the schema for the **whole response envelope** (`{data, errors, extensions}`), with `required` still present — Task 5 strips it. `unvalidatableScalars` lists dotted response paths whose type is a custom scalar (U3).
 
 - [ ] **Step 1: Write the failing tests**
@@ -390,9 +421,9 @@ describe("projectOperation", () => {
 
   it("makes nullable fields nullable", () => {
     const { schema: s } = project("{ product(id: 1) { description } }");
-    expect(
-      s.properties.data.properties.product.properties.description,
-    ).toEqual({ type: ["string", "null"] });
+    expect(s.properties.data.properties.product.properties.description).toEqual(
+      { type: ["string", "null"] },
+    );
   });
 
   it("projects lists", () => {
@@ -430,7 +461,9 @@ describe("projectOperation", () => {
     const { schema: s, unvalidatableScalars } = project(
       "{ product(id: 1) { createdAt } }",
     );
-    expect(s.properties.data.properties.product.properties.createdAt).toBe(true);
+    expect(s.properties.data.properties.product.properties.createdAt).toBe(
+      true,
+    );
     expect(unvalidatableScalars).toEqual(["data.product.createdAt"]);
   });
 
@@ -740,10 +773,12 @@ git commit -m "feat: project graphql selection sets into json schema"
 Completes the projection with polymorphism (P5). A response for an abstract type must match at least one possible concrete type, narrowed by `__typename` where recorded.
 
 **Files:**
+
 - Modify: `src/documents/graphqlProjection.ts`
 - Modify: `src/documents/graphqlProjection.test.ts`
 
 **Interfaces:**
+
 - Consumes: everything from Task 3
 - Produces: no signature change — `projectComposite` gains abstract-type handling internally
 
@@ -800,7 +835,7 @@ describe("projectOperation with abstract types", () => {
 
   it("expands a union", () => {
     const { schema: s } = projectPoly(
-      "{ search(text: \"x\") { ... on Product { name } ... on Category { slug } } }",
+      '{ search(text: "x") { ... on Product { name } ... on Category { slug } } }',
     );
     const items = s.properties.data.properties.search.items;
     expect(items.anyOf).toHaveLength(2);
@@ -820,15 +855,13 @@ describe("projectOperation with abstract types", () => {
 
   it("resolves an inline fragment with no type condition", () => {
     const { schema: s } = projectPoly("{ node(id: 1) { ... { id } } }");
-    expect(
-      Object.keys(s.properties.data.properties.node.properties),
-    ).toEqual(["id"]);
+    expect(Object.keys(s.properties.data.properties.node.properties)).toEqual([
+      "id",
+    ]);
   });
 
   it("constrains __typename to the possible type names in each branch", () => {
-    const { schema: s } = projectPoly(
-      "{ node(id: 1) { __typename id } }",
-    );
+    const { schema: s } = projectPoly("{ node(id: 1) { __typename id } }");
     expect(s.properties.data.properties.node.properties.__typename).toEqual({
       enum: ["Product", "Category"],
     });
@@ -886,7 +919,8 @@ const possibleTypes = (
   ctx: Context,
 ): readonly GraphQLObjectType[] => {
   if (isObjectType(parentType)) return [parentType];
-  if (isAbstractType(parentType)) return ctx.schema.getPossibleTypes(parentType);
+  if (isAbstractType(parentType))
+    return ctx.schema.getPossibleTypes(parentType);
   return [];
 };
 
@@ -1078,11 +1112,13 @@ git commit -m "feat: project graphql fragments, interfaces and unions"
 P7 and P8 say the consumer may omit any field. This repo already implements that rule for OpenAPI in `transform/responseSchema.ts` via `stripRequired`, which is currently private. Export it and build the GraphQL response schema on top.
 
 **Files:**
+
 - Modify: `src/transform/responseSchema.ts` (export `stripRequired`)
 - Create: `src/transform/graphqlResponseSchema.ts`
 - Create: `src/transform/graphqlResponseSchema.test.ts`
 
 **Interfaces:**
+
 - Consumes: `projectOperation` from `#documents/graphqlProjection`
 - Produces: `graphqlResponseSchema(schema: GraphQLSchema, document: DocumentNode, operationName?: string): Projection` — same shape as `Projection`, with all `required` arrays removed
 
@@ -1134,7 +1170,9 @@ describe("graphqlResponseSchema", () => {
 
   it("keeps additionalProperties false so unselected fields still fail (P1)", () => {
     const s = build("{ product(id: 1) { id } }");
-    expect(s.properties.data.properties.product.additionalProperties).toBe(false);
+    expect(s.properties.data.properties.product.additionalProperties).toBe(
+      false,
+    );
   });
 
   it("still surfaces unvalidatable scalars", () => {
@@ -1204,9 +1242,11 @@ git commit -m "feat: build graphql response schemas with subset relaxation"
 TypeScript rejects any `Result` whose `code` is not in the union, so the codes must land before the comparison modules.
 
 **Files:**
+
 - Modify: `src/results/index.ts`
 
 **Interfaces:**
+
 - Produces: the code strings used by Tasks 8–13
 
 - [ ] **Step 1: Add the codes**
@@ -1261,12 +1301,15 @@ git commit -m "feat: add graphql result codes"
 ### Task 7: Classify GraphQL HTTP interactions in the pact parser
 
 **Files:**
+
 - Modify: `src/documents/pact.ts`
 - Modify: `src/documents/pact.test.ts`
 
 **Interfaces:**
+
 - Consumes: `looksLikeGraphqlDocument` from `#documents/graphql`
 - Produces:
+
   ```ts
   interface GraphqlOperation {
     source: "plugin" | "body";
@@ -1289,6 +1332,7 @@ git commit -m "feat: add graphql result codes"
     plugin?: GraphqlPluginConfig;
   }
   ```
+
   added to the exported `Interaction` union.
 
 - [ ] **Step 1: Write the failing tests**
@@ -1316,16 +1360,34 @@ describe("graphql classification", () => {
             query_document: GRAPHQL_QUERY,
             operation_name: "GetProduct",
             variables_json: '{"id":"10"}',
-            inline_schema: { base64_sdl: Buffer.from("type Query { a: String }").toString("base64") },
+            inline_schema: {
+              base64_sdl: Buffer.from("type Query { a: String }").toString(
+                "base64",
+              ),
+            },
             schema_ref: { hash: "abc123" },
           },
         },
         request: {
           method: "POST",
           path: "/graphql",
-          body: { contentType: "application/graphql", encoded: false, content: { query: GRAPHQL_QUERY, variables: { id: "10" }, operationName: "GetProduct" } },
+          body: {
+            contentType: "application/graphql",
+            encoded: false,
+            content: {
+              query: GRAPHQL_QUERY,
+              variables: { id: "10" },
+              operationName: "GetProduct",
+            },
+          },
         },
-        response: { status: 200, body: { encoded: false, content: { data: { product: { id: "10" } } } } },
+        response: {
+          status: 200,
+          body: {
+            encoded: false,
+            content: { data: { product: { id: "10" } } },
+          },
+        },
       }),
     ) as any;
 
@@ -1347,9 +1409,15 @@ describe("graphql classification", () => {
         request: {
           method: "POST",
           path: "/graphql",
-          body: { encoded: false, content: { query: GRAPHQL_QUERY, variables: { id: "10" } } },
+          body: {
+            encoded: false,
+            content: { query: GRAPHQL_QUERY, variables: { id: "10" } },
+          },
         },
-        response: { status: 200, body: { encoded: false, content: { data: {} } } },
+        response: {
+          status: 200,
+          body: { encoded: false, content: { data: {} } },
+        },
       }),
     ) as any;
 
@@ -1364,7 +1432,10 @@ describe("graphql classification", () => {
         request: {
           method: "POST",
           path: "/search",
-          body: { encoded: false, content: { query: "SELECT * FROM products" } },
+          body: {
+            encoded: false,
+            content: { query: "SELECT * FROM products" },
+          },
         },
         response: { status: 200, body: { encoded: false, content: {} } },
       }),
@@ -1380,7 +1451,10 @@ describe("graphql classification", () => {
         request: {
           method: "POST",
           path: "/search",
-          body: { encoded: false, content: { query: GRAPHQL_QUERY, tenantId: "acme" } },
+          body: {
+            encoded: false,
+            content: { query: GRAPHQL_QUERY, tenantId: "acme" },
+          },
         },
         response: { status: 200, body: { encoded: false, content: {} } },
       }),
@@ -1406,14 +1480,23 @@ describe("graphql classification", () => {
       v4({
         type: "Synchronous/HTTP",
         pluginConfiguration: {
-          graphql: { query_document: GRAPHQL_QUERY, variables_json: '{"id":"10"}' },
+          graphql: {
+            query_document: GRAPHQL_QUERY,
+            variables_json: '{"id":"10"}',
+          },
         },
         request: {
           method: "POST",
           path: "/graphql",
-          body: { encoded: false, content: { query: "{ somethingElse }", variables: { id: "99" } } },
+          body: {
+            encoded: false,
+            content: { query: "{ somethingElse }", variables: { id: "99" } },
+          },
         },
-        response: { status: 200, body: { encoded: false, content: { data: {} } } },
+        response: {
+          status: 200,
+          body: { encoded: false, content: { data: {} } },
+        },
       }),
     ) as any;
 
@@ -1522,15 +1605,19 @@ interface GraphqlEnvelope {
 
 /** The request body read as a GraphQL over HTTP envelope, if it is one. */
 const asGraphqlEnvelope = (body: unknown): GraphqlEnvelope | undefined => {
-  if (!body || typeof body !== "object" || Array.isArray(body)) return undefined;
+  if (!body || typeof body !== "object" || Array.isArray(body))
+    return undefined;
   const record = body as Record<string, unknown>;
-  if (Object.keys(record).some((k) => !GRAPHQL_BODY_KEYS.has(k))) return undefined;
+  if (Object.keys(record).some((k) => !GRAPHQL_BODY_KEYS.has(k)))
+    return undefined;
   if (typeof record.query !== "string") return undefined;
   return {
     query: record.query,
     variables: (record.variables as Record<string, unknown>) ?? undefined,
     operationName:
-      typeof record.operationName === "string" ? record.operationName : undefined,
+      typeof record.operationName === "string"
+        ? record.operationName
+        : undefined,
   };
 };
 
@@ -1590,17 +1677,19 @@ const asGraphqlHttpInteraction = (
   if (!document) return undefined;
 
   const source: "plugin" | "body" = pluginDocument ? "plugin" : "body";
-  const variables = pluginDocument ? pluginVariables : (envelope?.variables ?? {});
+  const variables = pluginDocument
+    ? pluginVariables
+    : (envelope?.variables ?? {});
   const operationName = pluginDocument
     ? pluginConfig?.operation_name
     : envelope?.operationName;
 
   const inconsistent = Boolean(
     pluginDocument &&
-      envelope &&
-      (envelope.query !== pluginDocument ||
-        JSON.stringify(envelope.variables ?? {}) !==
-          JSON.stringify(pluginVariables)),
+    envelope &&
+    (envelope.query !== pluginDocument ||
+      JSON.stringify(envelope.variables ?? {}) !==
+        JSON.stringify(pluginVariables)),
   );
 
   const inlineSchemaSdl = decodeBase64(pluginConfig?.inline_schema?.base64_sdl);
@@ -1614,7 +1703,9 @@ const asGraphqlHttpInteraction = (
     request: parsed.request,
     response: parsed.response,
     plugin:
-      inlineSchemaSdl || schemaHash ? { inlineSchemaSdl, schemaHash } : undefined,
+      inlineSchemaSdl || schemaHash
+        ? { inlineSchemaSdl, schemaHash }
+        : undefined,
   };
 };
 ```
@@ -1633,7 +1724,7 @@ Finally, in `parse()`, reclassify after the HTTP parser runs:
     }),
 ```
 
-Reclassifying *after* `httpParser` means the body has already been decoded per pact specification version, so v3 and v4 pacts classify identically with no version-specific branch.
+Reclassifying _after_ `httpParser` means the body has already been decoded per pact specification version, so v3 and v4 pacts classify identically with no version-specific branch.
 
 - [ ] **Step 4: Run to verify they pass**
 
@@ -1666,23 +1757,27 @@ git commit -m "feat: classify graphql http interactions in the pact parser"
 ### Task 8: Request-side comparison (R1–R9)
 
 **Files:**
+
 - Create: `src/compare/graphql/requestOperation.ts`
 - Create: `src/compare/graphql/requestOperation.test.ts`
 
 **Interfaces:**
+
 - Consumes: `GraphqlHttpInteraction` from `#documents/pact`, `selectOperation`/`ProjectionError` from `#documents/graphqlProjection`
 - Produces:
+
   ```ts
   interface RequestCheck {
     results: Result[];
-    document?: DocumentNode;   // present only when the request is compatible
+    document?: DocumentNode; // present only when the request is compatible
   }
   function compareRequestOperation(
     schema: GraphQLSchema,
     interaction: GraphqlHttpInteraction,
     index: number,
-  ): RequestCheck
+  ): RequestCheck;
   ```
+
   A `document` is returned only when no error result was produced, so the caller knows whether the response check can proceed.
 
 - [ ] **Step 1: Write the failing tests**
@@ -1709,15 +1804,23 @@ const interaction = (
   _kind: "graphql-http",
   description: "an interaction",
   providerState: "a state",
-  operation: { source: "body", document, operationName, variables, inconsistent: false },
+  operation: {
+    source: "body",
+    document,
+    operationName,
+    variables,
+    inconsistent: false,
+  },
   request: { method: "POST", path: "/graphql" },
   response: { status: 200 },
 });
 
 const codes = (document: string, variables?: Record<string, unknown>) =>
-  compareRequestOperation(schema, interaction(document, variables), 0).results.map(
-    (r) => r.code,
-  );
+  compareRequestOperation(
+    schema,
+    interaction(document, variables),
+    0,
+  ).results.map((r) => r.code);
 
 describe("compareRequestOperation", () => {
   it("passes an operation that selects fewer fields (R10)", () => {
@@ -1763,7 +1866,7 @@ describe("compareRequestOperation", () => {
   });
 
   it("reports an unknown argument (R5)", () => {
-    expect(codes("{ product(id: 1, colour: \"red\") { id } }")).toEqual([
+    expect(codes('{ product(id: 1, colour: "red") { id } }')).toEqual([
       "request.graphql.argument.unknown",
     ]);
   });
@@ -1782,16 +1885,19 @@ describe("compareRequestOperation", () => {
 
   it("reports a variable of the wrong type (R8)", () => {
     expect(
-      codes("query Q($status: ProductStatus!) { products(status: $status) { id } }", {
-        status: "PENDING",
-      }),
+      codes(
+        "query Q($status: ProductStatus!) { products(status: $status) { id } }",
+        {
+          status: "PENDING",
+        },
+      ),
     ).toEqual(["request.graphql.variables.incompatible"]);
   });
 
   it("reports a fragment on an unknown type (R9)", () => {
-    expect(
-      codes("{ product(id: 1) { ... on Nope { id } } }"),
-    ).toEqual(["request.graphql.incompatible"]);
+    expect(codes("{ product(id: 1) { ... on Nope { id } } }")).toEqual([
+      "request.graphql.incompatible",
+    ]);
   });
 
   it("warns when plugin config and body disagree (4.1)", () => {
@@ -1799,7 +1905,9 @@ describe("compareRequestOperation", () => {
     i.operation.inconsistent = true;
     i.operation.source = "plugin";
     const results = compareRequestOperation(schema, i, 0).results;
-    expect(results.map((r) => r.code)).toEqual(["request.graphql.inconsistent"]);
+    expect(results.map((r) => r.code)).toEqual([
+      "request.graphql.inconsistent",
+    ]);
     expect(results[0].type).toBe("warning");
   });
 
@@ -1859,11 +1967,13 @@ const codeForValidationError = (
   error: GraphQLError,
 ): Extract<Result["code"], `request.graphql.${string}`> => {
   const message = error.message;
-  if (/^Unknown argument /.test(message)) return "request.graphql.argument.unknown";
+  if (/^Unknown argument /.test(message))
+    return "request.graphql.argument.unknown";
   if (/^Field .* argument .* of type .* is required/.test(message)) {
     return "request.graphql.argument.missing";
   }
-  if (/^Cannot query field /.test(message)) return "request.graphql.field.unknown";
+  if (/^Cannot query field /.test(message))
+    return "request.graphql.field.unknown";
   if (/^Unknown type /.test(message)) return "request.graphql.incompatible";
   return "request.graphql.incompatible";
 };
@@ -2025,12 +2135,15 @@ git commit -m "feat: compare graphql requests against the provider schema"
 ### Task 9: Response-side comparison (P1–P8, U1–U4)
 
 **Files:**
+
 - Create: `src/compare/graphql/responseBody.ts`
 - Create: `src/compare/graphql/responseBody.test.ts`
 
 **Interfaces:**
+
 - Consumes: `graphqlResponseSchema` from `#transform/graphqlResponseSchema`
 - Produces:
+
   ```ts
   function compareResponseBody(
     ajv: Ajv,
@@ -2038,7 +2151,7 @@ git commit -m "feat: compare graphql requests against the provider schema"
     document: DocumentNode,
     interaction: GraphqlHttpInteraction,
     index: number,
-  ): Result[]
+  ): Result[];
   ```
 
 - [ ] **Step 1: Write the failing tests**
@@ -2053,7 +2166,12 @@ import type { GraphqlHttpInteraction } from "#documents/pact";
 import { setupAjv } from "#compare/setup";
 import { compareResponseBody } from "./responseBody";
 
-const ajv = setupAjv({ allErrors: true, coerceTypes: false, strictSchema: false, logger: false });
+const ajv = setupAjv({
+  allErrors: true,
+  coerceTypes: false,
+  strictSchema: false,
+  logger: false,
+});
 
 const schema = parseSchema(`
   scalar DateTime
@@ -2068,7 +2186,12 @@ const interaction = (body: unknown, status = 200): GraphqlHttpInteraction => ({
   _kind: "graphql-http",
   description: "an interaction",
   providerState: "a state",
-  operation: { source: "body", document: QUERY, variables: {}, inconsistent: false },
+  operation: {
+    source: "body",
+    document: QUERY,
+    variables: {},
+    inconsistent: false,
+  },
   request: { method: "POST", path: "/graphql" },
   response: { status, body },
 });
@@ -2099,14 +2222,16 @@ describe("compareResponseBody", () => {
 
   it("rejects a field the operation never selected (P1)", () => {
     const results = run({ data: { product: { id: "10", description: "d" } } });
-    expect(results.map((r) => r.code)).toEqual(["response.graphql.body.incompatible"]);
+    expect(results.map((r) => r.code)).toEqual([
+      "response.graphql.body.incompatible",
+    ]);
     expect(results[0].type).toBe("error");
   });
 
   it("rejects a scalar of the wrong type (P2)", () => {
-    expect(run({ data: { product: { name: 42 } } }).map((r) => r.code)).toEqual([
-      "response.graphql.body.incompatible",
-    ]);
+    expect(run({ data: { product: { name: 42 } } }).map((r) => r.code)).toEqual(
+      ["response.graphql.body.incompatible"],
+    );
   });
 
   it("rejects a value outside the enum (P3)", () => {
@@ -2116,9 +2241,9 @@ describe("compareResponseBody", () => {
   });
 
   it("rejects null on a non-null field when no errors key is present (P4)", () => {
-    expect(run({ data: { product: { id: null } } }).map((r) => r.code)).toEqual([
-      "response.graphql.body.incompatible",
-    ]);
+    expect(run({ data: { product: { id: null } } }).map((r) => r.code)).toEqual(
+      ["response.graphql.body.incompatible"],
+    );
   });
 
   it("accepts null on a nullable field", () => {
@@ -2138,7 +2263,9 @@ describe("compareResponseBody", () => {
 
   it("warns and skips data checks when errors are present (U1)", () => {
     const results = run({ errors: [{ message: "boom" }], data: null });
-    expect(results.map((r) => r.code)).toEqual(["response.graphql.errors.unvalidatable"]);
+    expect(results.map((r) => r.code)).toEqual([
+      "response.graphql.errors.unvalidatable",
+    ]);
     expect(results[0].type).toBe("warning");
   });
 
@@ -2162,7 +2289,9 @@ describe("compareResponseBody", () => {
 
   it("warns and skips body checks on a transport failure (U4)", () => {
     const results = run({ anything: true }, 500);
-    expect(results.map((r) => r.code)).toEqual(["response.graphql.status.unexpected"]);
+    expect(results.map((r) => r.code)).toEqual([
+      "response.graphql.status.unexpected",
+    ]);
     expect(results[0].type).toBe("warning");
   });
 
@@ -2261,10 +2390,8 @@ export const compareResponseBody = (
     ];
   }
 
-  const { schema: responseSchema, unvalidatableScalars } = graphqlResponseSchema(
-    schema,
-    document,
-  );
+  const { schema: responseSchema, unvalidatableScalars } =
+    graphqlResponseSchema(schema, document);
 
   // U3
   for (const path of unvalidatableScalars) {
@@ -2338,14 +2465,17 @@ git commit -m "feat: compare graphql response bodies against projected schemas"
 Makes the feature reachable end to end for queries and mutations.
 
 **Files:**
+
 - Create: `src/compare/graphql/index.ts`
 - Modify: `src/compare/index.ts`
 - Modify: `src/index.ts`
 - Create: `src/compare/graphql/index.test.ts`
 
 **Interfaces:**
+
 - Consumes: `compareRequestOperation` (Task 8), `compareResponseBody` (Task 9)
 - Produces:
+
   ```ts
   function* compareGraphqlHttpInteraction(
     ajv: Ajv,
@@ -2354,6 +2484,7 @@ Makes the feature reachable end to end for queries and mutations.
     index: number,
   ): Iterable<Result>
   ```
+
   and `ComparatorOptions.graphql?: string`
 
 - [ ] **Step 1: Write the failing test**
@@ -2390,7 +2521,10 @@ const pact = (overrides: Record<string, unknown> = {}) => ({
       },
       response: {
         status: 200,
-        body: { encoded: false, content: { data: { product: { id: "10", name: "n" } } } },
+        body: {
+          encoded: false,
+          content: { data: { product: { id: "10", name: "n" } } },
+        },
       },
       ...overrides,
     },
@@ -2399,7 +2533,8 @@ const pact = (overrides: Record<string, unknown> = {}) => ({
 
 const collect = async (options: object, doc: unknown) => {
   const results = [];
-  for await (const r of new Comparator(options).compare(doc as never)) results.push(r);
+  for await (const r of new Comparator(options).compare(doc as never))
+    results.push(r);
   return results;
 };
 
@@ -2415,7 +2550,9 @@ describe("Comparator with a graphql provider contract", () => {
     (bad.interactions[0] as any).request.body.content.query =
       "query GetProduct($id: ID!) { product(id: $id) { id stockLevel } }";
     const results = await collect({ graphql: SDL }, bad);
-    expect(results.map((r) => r.code)).toEqual(["request.graphql.field.unknown"]);
+    expect(results.map((r) => r.code)).toEqual([
+      "request.graphql.field.unknown",
+    ]);
   });
 
   it("skips the response check when the request is incompatible", async () => {
@@ -2517,7 +2654,7 @@ Add fields and constructor handling:
 and in the constructor, alongside the existing parse calls:
 
 ```ts
-    if (options.graphql) this.#graphql = parseGraphqlSchema(options.graphql);
+if (options.graphql) this.#graphql = parseGraphqlSchema(options.graphql);
 ```
 
 Replace the temporary `case "graphql-http": break;` from Task 7 with:
@@ -2566,10 +2703,12 @@ git commit -m "feat: route graphql interactions through the comparator"
 ### Task 11: Fixture harness and end-to-end fixtures
 
 **Files:**
+
 - Modify: `src/__tests__/index.test.ts`
 - Create: `src/__tests__/fixtures/graphql/<case>/{schema.graphql,pact.json}` (11 cases)
 
 **Interfaces:**
+
 - Consumes: the full comparator from Task 10
 - Produces: generated `results.json` snapshots
 
@@ -2578,17 +2717,17 @@ git commit -m "feat: route graphql interactions through the comparator"
 In `src/__tests__/index.test.ts`, inside `makeRunner`, add alongside the existing spec loading:
 
 ```ts
-  const graphqlFile = path.join(dir, "schema.graphql");
+const graphqlFile = path.join(dir, "schema.graphql");
 
-  const graphql = fs.existsSync(graphqlFile)
-    ? await fs.promises.readFile(graphqlFile, "utf-8")
-    : undefined;
+const graphql = fs.existsSync(graphqlFile)
+  ? await fs.promises.readFile(graphqlFile, "utf-8")
+  : undefined;
 ```
 
 and pass it through:
 
 ```ts
-  const comparator = new Comparator({ oas, asyncapi, graphql });
+const comparator = new Comparator({ oas, asyncapi, graphql });
 ```
 
 Note `schema.graphql` is read as **raw text**, not through `parse()` — SDL is neither JSON nor YAML.
@@ -2651,25 +2790,25 @@ Each `pact.json` uses this envelope, varying only the interaction:
   "consumer": { "name": "product-consumer" },
   "provider": { "name": "product-provider" },
   "metadata": { "pactSpecification": { "version": "4.0" } },
-  "interactions": [ /* see each case */ ]
+  "interactions": [/* see each case */]
 }
 ```
 
 Create these eleven directories under `src/__tests__/fixtures/graphql/`, each with the schema above and a `pact.json` whose single interaction is as described:
 
-| Directory | Interaction | Expected outcome |
-|---|---|---|
-| `valid-subset` | `POST /graphql`, body `{"query":"query GetProduct($id: ID!) { product(id: $id) { id name } }","variables":{"id":"10"}}`, response 200 `{"data":{"product":{"id":"10","name":"n"}}}` | `graphql.operation.matched` (R10) |
-| `response-omits-selected-field` | same query, response `{"data":{"product":{"id":"10"}}}` | `graphql.operation.matched` (P7) |
-| `request-unknown-field` | query `{ product(id: "1") { id stockLevel } }` | `request.graphql.field.unknown` (R4) |
-| `request-missing-argument` | query `{ product { id } }` | `request.graphql.argument.missing` (R6) |
-| `request-variable-type-mismatch` | query `query Q($status: ProductStatus!) { products(status: $status) { id } }`, variables `{"status":"PENDING"}` | `request.graphql.variables.incompatible` (R8) |
-| `response-extra-field` | query `{ product(id: "1") { id } }`, response `{"data":{"product":{"id":"1","name":"n"}}}` | `response.graphql.body.incompatible` (P1) |
-| `response-invalid-enum` | query `{ product(id: "1") { status } }`, response `{"data":{"product":{"status":"PENDING"}}}` | `response.graphql.body.incompatible` (P3) |
-| `response-null-non-null-field` | query `{ product(id: "1") { id } }`, response `{"data":{"product":{"id":null}}}` | `response.graphql.body.incompatible` (P4) |
-| `response-with-errors` | query `{ product(id: "1") { id } }`, response `{"errors":[{"message":"boom"}],"data":null}` | `response.graphql.errors.unvalidatable` warning (U1) |
-| `response-custom-scalar` | query `{ product(id: "1") { createdAt } }`, response `{"data":{"product":{"createdAt":"2026-01-01T00:00:00Z"}}}` | `response.graphql.scalar.unvalidatable` warning (U3) |
-| `union-with-fragments` | query `{ search(text: "x") { ... on Product { name } ... on Category { slug } } }`, response `{"data":{"search":[{"name":"n"},{"slug":"s"}]}}` | `graphql.operation.matched` (P5) |
+| Directory                        | Interaction                                                                                                                                                                         | Expected outcome                                     |
+| -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| `valid-subset`                   | `POST /graphql`, body `{"query":"query GetProduct($id: ID!) { product(id: $id) { id name } }","variables":{"id":"10"}}`, response 200 `{"data":{"product":{"id":"10","name":"n"}}}` | `graphql.operation.matched` (R10)                    |
+| `response-omits-selected-field`  | same query, response `{"data":{"product":{"id":"10"}}}`                                                                                                                             | `graphql.operation.matched` (P7)                     |
+| `request-unknown-field`          | query `{ product(id: "1") { id stockLevel } }`                                                                                                                                      | `request.graphql.field.unknown` (R4)                 |
+| `request-missing-argument`       | query `{ product { id } }`                                                                                                                                                          | `request.graphql.argument.missing` (R6)              |
+| `request-variable-type-mismatch` | query `query Q($status: ProductStatus!) { products(status: $status) { id } }`, variables `{"status":"PENDING"}`                                                                     | `request.graphql.variables.incompatible` (R8)        |
+| `response-extra-field`           | query `{ product(id: "1") { id } }`, response `{"data":{"product":{"id":"1","name":"n"}}}`                                                                                          | `response.graphql.body.incompatible` (P1)            |
+| `response-invalid-enum`          | query `{ product(id: "1") { status } }`, response `{"data":{"product":{"status":"PENDING"}}}`                                                                                       | `response.graphql.body.incompatible` (P3)            |
+| `response-null-non-null-field`   | query `{ product(id: "1") { id } }`, response `{"data":{"product":{"id":null}}}`                                                                                                    | `response.graphql.body.incompatible` (P4)            |
+| `response-with-errors`           | query `{ product(id: "1") { id } }`, response `{"errors":[{"message":"boom"}],"data":null}`                                                                                         | `response.graphql.errors.unvalidatable` warning (U1) |
+| `response-custom-scalar`         | query `{ product(id: "1") { createdAt } }`, response `{"data":{"product":{"createdAt":"2026-01-01T00:00:00Z"}}}`                                                                    | `response.graphql.scalar.unvalidatable` warning (U3) |
+| `union-with-fragments`           | query `{ search(text: "x") { ... on Product { name } ... on Category { slug } } }`, response `{"data":{"search":[{"name":"n"},{"slug":"s"}]}}`                                      | `graphql.operation.matched` (P5)                     |
 
 Concretely, `valid-subset/pact.json`:
 
@@ -2703,7 +2842,9 @@ Concretely, `valid-subset/pact.json`:
         "body": {
           "contentType": "application/json",
           "encoded": false,
-          "content": { "data": { "product": { "id": "10", "name": "product name" } } }
+          "content": {
+            "data": { "product": { "id": "10", "name": "product name" } }
+          }
         }
       }
     }
@@ -2740,14 +2881,17 @@ git commit -m "test: add end-to-end graphql comparison fixtures"
 ### Task 12: Schema provenance diagnostics (S1–S3)
 
 **Files:**
+
 - Create: `src/compare/graphql/schemaProvenance.ts`
 - Create: `src/compare/graphql/schemaProvenance.test.ts`
 - Modify: `src/compare/index.ts`
 - Modify: `src/compare/graphql/index.ts`
 
 **Interfaces:**
+
 - Consumes: `fingerprint` from `#documents/graphql`
 - Produces:
+
   ```ts
   interface ProvenanceState { reported: boolean; providerFingerprint?: string; }
   function* checkSchemaProvenance(
@@ -2757,6 +2901,7 @@ git commit -m "test: add end-to-end graphql comparison fixtures"
     index: number,
   ): Iterable<Result>
   ```
+
   The state object is created once per `compare()` call so S1 fires once per pact, not once per interaction.
 
 - [ ] **Step 1: Write the failing tests**
@@ -2768,21 +2913,31 @@ import { describe, expect, it } from "vitest";
 import type { GraphqlHttpInteraction } from "#documents/pact";
 import { checkSchemaProvenance } from "./schemaProvenance";
 
-const PROVIDER_SDL = "type Query { product(id: ID!): Product }\ntype Product { id: ID! }";
-const CONSUMER_SDL = "type Query { product(id: ID!): Product }\ntype Product { id: ID!, type: String }";
+const PROVIDER_SDL =
+  "type Query { product(id: ID!): Product }\ntype Product { id: ID! }";
+const CONSUMER_SDL =
+  "type Query { product(id: ID!): Product }\ntype Product { id: ID!, type: String }";
 
-const interaction = (plugin?: GraphqlHttpInteraction["plugin"]): GraphqlHttpInteraction => ({
+const interaction = (
+  plugin?: GraphqlHttpInteraction["plugin"],
+): GraphqlHttpInteraction => ({
   _kind: "graphql-http",
   description: "an interaction",
-  operation: { source: "plugin", document: "{ product(id: 1) { id } }", variables: {}, inconsistent: false },
+  operation: {
+    source: "plugin",
+    document: "{ product(id: 1) { id } }",
+    variables: {},
+    inconsistent: false,
+  },
   request: { method: "POST", path: "/graphql" },
   response: { status: 200 },
   plugin,
 });
 
-const run = (plugin?: GraphqlHttpInteraction["plugin"], state = { reported: false }) => [
-  ...checkSchemaProvenance(state, PROVIDER_SDL, interaction(plugin), 0),
-];
+const run = (
+  plugin?: GraphqlHttpInteraction["plugin"],
+  state = { reported: false },
+) => [...checkSchemaProvenance(state, PROVIDER_SDL, interaction(plugin), 0)];
 
 describe("checkSchemaProvenance", () => {
   it("says nothing when there is no embedded schema", () => {
@@ -2911,16 +3066,16 @@ In `src/compare/index.ts`, store the SDL and reset provenance per pact:
 in the constructor:
 
 ```ts
-    if (options.graphql) {
-      this.#graphql = parseGraphqlSchema(options.graphql);
-      this.#graphqlSdl = options.graphql;
-    }
+if (options.graphql) {
+  this.#graphql = parseGraphqlSchema(options.graphql);
+  this.#graphqlSdl = options.graphql;
+}
 ```
 
 at the top of `compare()`, beside the existing `this.#resolvedMessages = new Map();`:
 
 ```ts
-    const provenance: ProvenanceState = { reported: false };
+const provenance: ProvenanceState = { reported: false };
 ```
 
 and in the case:
@@ -2959,23 +3114,27 @@ git commit -m "feat: report graphql schema provenance as a non-gating diagnostic
 
 ### Task 12b: Explain request failures using the embedded schema (S2)
 
-When a request-side check fails and the consumer embedded the schema it was built against, say *what changed* instead of just "unknown field". This never changes a verdict (S3) — it attaches a `cause` to an existing error.
+When a request-side check fails and the consumer embedded the schema it was built against, say _what changed_ instead of just "unknown field". This never changes a verdict (S3) — it attaches a `cause` to an existing error.
 
 **Files:**
+
 - Modify: `src/compare/graphql/schemaProvenance.ts`
 - Modify: `src/compare/graphql/schemaProvenance.test.ts`
 - Modify: `src/compare/graphql/index.ts`
 
 **Interfaces:**
+
 - Consumes: `parse` from `#documents/graphql`
 - Produces:
+
   ```ts
   function explainWithEmbeddedSchema(
     results: Result[],
     embeddedSdl: string | undefined,
     providerSchema: GraphQLSchema,
-  ): Result[]
+  ): Result[];
   ```
+
   Returns the same results, with a `causes` entry added to those it can explain.
 
 - [ ] **Step 1: Write the failing tests**
@@ -2987,8 +3146,11 @@ import { parse as parseSchema } from "#documents/graphql";
 import { explainWithEmbeddedSchema } from "./schemaProvenance";
 import type { Result } from "#results/index";
 
-const provider = parseSchema("type Query { product(id: ID!): Product }\ntype Product { id: ID! }");
-const embedded = "type Query { product(id: ID!): Product }\ntype Product { id: ID!, type: String }";
+const provider = parseSchema(
+  "type Query { product(id: ID!): Product }\ntype Product { id: ID! }",
+);
+const embedded =
+  "type Query { product(id: ID!): Product }\ntype Product { id: ID!, type: String }";
 
 const unknownField = (): Result => ({
   code: "request.graphql.field.unknown",
@@ -2998,30 +3160,44 @@ const unknownField = (): Result => ({
 
 describe("explainWithEmbeddedSchema", () => {
   it("explains a field the consumer's schema had and the provider does not (S2)", () => {
-    const [result] = explainWithEmbeddedSchema([unknownField()], embedded, provider);
+    const [result] = explainWithEmbeddedSchema(
+      [unknownField()],
+      embedded,
+      provider,
+    );
     expect(result.causes).toHaveLength(1);
     expect(result.causes?.[0].message).toContain("Product.type");
     expect(result.causes?.[0].type).toBe("warning");
   });
 
   it("adds nothing when there is no embedded schema", () => {
-    expect(explainWithEmbeddedSchema([unknownField()], undefined, provider)[0].causes)
-      .toBeUndefined();
+    expect(
+      explainWithEmbeddedSchema([unknownField()], undefined, provider)[0]
+        .causes,
+    ).toBeUndefined();
   });
 
   it("adds nothing when the embedded schema also lacks the field", () => {
-    const same = "type Query { product(id: ID!): Product }\ntype Product { id: ID! }";
-    expect(explainWithEmbeddedSchema([unknownField()], same, provider)[0].causes)
-      .toBeUndefined();
+    const same =
+      "type Query { product(id: ID!): Product }\ntype Product { id: ID! }";
+    expect(
+      explainWithEmbeddedSchema([unknownField()], same, provider)[0].causes,
+    ).toBeUndefined();
   });
 
   it("adds nothing when the embedded schema cannot be parsed (S3)", () => {
-    expect(explainWithEmbeddedSchema([unknownField()], "type Query {", provider)[0].causes)
-      .toBeUndefined();
+    expect(
+      explainWithEmbeddedSchema([unknownField()], "type Query {", provider)[0]
+        .causes,
+    ).toBeUndefined();
   });
 
   it("never turns a warning into an error (S3)", () => {
-    const warning: Result = { code: "graphql.schema.mismatch", message: "m", type: "warning" };
+    const warning: Result = {
+      code: "graphql.schema.mismatch",
+      message: "m",
+      type: "warning",
+    };
     const [result] = explainWithEmbeddedSchema([warning], embedded, provider);
     expect(result.type).toBe("warning");
   });
@@ -3032,7 +3208,9 @@ describe("explainWithEmbeddedSchema", () => {
       message: "something unparseable",
       type: "error",
     };
-    expect(explainWithEmbeddedSchema([other], embedded, provider)[0].causes).toBeUndefined();
+    expect(
+      explainWithEmbeddedSchema([other], embedded, provider)[0].causes,
+    ).toBeUndefined();
   });
 });
 ```
@@ -3114,8 +3292,9 @@ import { explainWithEmbeddedSchema } from "./schemaProvenance";
 ```
 
 ```ts
-  const request = compareRequestOperation(schema, interaction, index);
-  yield* explainWithEmbeddedSchema(
+const request = compareRequestOperation(schema, interaction, index);
+yield *
+  explainWithEmbeddedSchema(
     request.results,
     interaction.plugin?.inlineSchemaSdl,
     schema,
@@ -3143,6 +3322,7 @@ git commit -m "feat: explain graphql request failures using the consumer's embed
 ### Task 13: Subscriptions as messages
 
 **Files:**
+
 - Modify: `src/documents/pact.ts`
 - Create: `src/compare/graphql/subscriptionMessage.ts`
 - Create: `src/compare/graphql/subscriptionMessage.test.ts`
@@ -3150,8 +3330,10 @@ git commit -m "feat: explain graphql request failures using the consumer's embed
 - Create: `src/__tests__/fixtures/graphql/subscription-message/`
 
 **Interfaces:**
+
 - Consumes: `graphqlResponseSchema`, the classification helpers from Task 7
 - Produces:
+
   ```ts
   interface GraphqlMessageInteraction {
     _kind: "graphql-message";
@@ -3171,7 +3353,8 @@ git commit -m "feat: explain graphql request failures using the consumer's embed
 Append to `src/documents/pact.test.ts`:
 
 ```ts
-const SUBSCRIPTION = "subscription InventoryChanged($variantId: ID!) { inventoryChanged(variantId: $variantId) { quantity } }";
+const SUBSCRIPTION =
+  "subscription InventoryChanged($variantId: ID!) { inventoryChanged(variantId: $variantId) { quantity } }";
 
 describe("graphql message classification", () => {
   it("classifies an async message carrying graphql plugin config", () => {
@@ -3210,7 +3393,10 @@ describe("graphql message classification", () => {
     const { interactions } = parse({
       metadata: { pactSpecification: { version: "4.0" } },
       interactions: [
-        { type: "Asynchronous/Messages", contents: { encoded: false, content: { a: 1 } } },
+        {
+          type: "Asynchronous/Messages",
+          contents: { encoded: false, content: { a: 1 } },
+        },
       ],
     }) as any;
     expect(interactions[0]._kind).toBe("async");
@@ -3254,7 +3440,11 @@ const asGraphqlMessageInteraction = (
   if (!document) return undefined;
 
   const contents = parseAsPactV4Body(i.contents) as
-    | { subscription?: string; variables?: Record<string, unknown>; data?: unknown }
+    | {
+        subscription?: string;
+        variables?: Record<string, unknown>;
+        data?: unknown;
+      }
     | undefined;
 
   const inlineSchemaSdl = decodeBase64(pluginConfig?.inline_schema?.base64_sdl);
@@ -3273,7 +3463,9 @@ const asGraphqlMessageInteraction = (
     },
     payload: contents ? { data: contents.data } : undefined,
     plugin:
-      inlineSchemaSdl || schemaHash ? { inlineSchemaSdl, schemaHash } : undefined,
+      inlineSchemaSdl || schemaHash
+        ? { inlineSchemaSdl, schemaHash }
+        : undefined,
   };
 };
 ```
@@ -3281,9 +3473,9 @@ const asGraphqlMessageInteraction = (
 and in `parse()`:
 
 ```ts
-      if (isAsyncInteraction(i)) {
-        return asGraphqlMessageInteraction(i) ?? parseAsyncInteraction(i);
-      }
+if (isAsyncInteraction(i)) {
+  return asGraphqlMessageInteraction(i) ?? parseAsyncInteraction(i);
+}
 ```
 
 - [ ] **Step 4: Run to verify classification passes**
@@ -3302,7 +3494,12 @@ import { parse as parseSchema } from "#documents/graphql";
 import type { GraphqlMessageInteraction } from "#documents/pact";
 import { compareGraphqlMessageInteraction } from "./subscriptionMessage";
 
-const ajv = setupAjv({ allErrors: true, coerceTypes: false, strictSchema: false, logger: false });
+const ajv = setupAjv({
+  allErrors: true,
+  coerceTypes: false,
+  strictSchema: false,
+  logger: false,
+});
 
 const schema = parseSchema(`
   type Inventory { quantity: Int!, updatedAt: String! }
@@ -3310,12 +3507,19 @@ const schema = parseSchema(`
   type Subscription { inventoryChanged(variantId: ID!): Inventory! }
 `);
 
-const DOC = "subscription S($variantId: ID!) { inventoryChanged(variantId: $variantId) { quantity } }";
+const DOC =
+  "subscription S($variantId: ID!) { inventoryChanged(variantId: $variantId) { quantity } }";
 
 const interaction = (payload: unknown): GraphqlMessageInteraction => ({
   _kind: "graphql-message",
   description: "an inventory message",
-  operation: { source: "plugin", document: DOC, operationName: "S", variables: { variantId: "v1" }, inconsistent: false },
+  operation: {
+    source: "plugin",
+    document: DOC,
+    operationName: "S",
+    variables: { variantId: "v1" },
+    inconsistent: false,
+  },
   payload,
 });
 
@@ -3325,9 +3529,9 @@ const run = (payload: unknown) => [
 
 describe("compareGraphqlMessageInteraction", () => {
   it("matches a compatible subscription payload", () => {
-    expect(run({ data: { inventoryChanged: { quantity: 42 } } }).map((r) => r.code)).toEqual([
-      "graphql.operation.matched",
-    ]);
+    expect(
+      run({ data: { inventoryChanged: { quantity: 42 } } }).map((r) => r.code),
+    ).toEqual(["graphql.operation.matched"]);
   });
 
   it("allows an omitted field (P7)", () => {
@@ -3338,22 +3542,28 @@ describe("compareGraphqlMessageInteraction", () => {
 
   it("rejects a field that was never selected (P1)", () => {
     expect(
-      run({ data: { inventoryChanged: { quantity: 1, updatedAt: "x" } } }).map((r) => r.code),
+      run({ data: { inventoryChanged: { quantity: 1, updatedAt: "x" } } }).map(
+        (r) => r.code,
+      ),
     ).toEqual(["message.graphql.payload.incompatible"]);
   });
 
   it("rejects a scalar of the wrong type (P2)", () => {
-    expect(run({ data: { inventoryChanged: { quantity: "lots" } } }).map((r) => r.code)).toEqual([
-      "message.graphql.payload.incompatible",
-    ]);
+    expect(
+      run({ data: { inventoryChanged: { quantity: "lots" } } }).map(
+        (r) => r.code,
+      ),
+    ).toEqual(["message.graphql.payload.incompatible"]);
   });
 
   it("rejects a subscription field the schema does not have (R4)", () => {
     const i = interaction({ data: {} });
     i.operation.document = "subscription S { nope { id } }";
-    expect([...compareGraphqlMessageInteraction(ajv, schema, i, 0)].map((r) => r.code)).toEqual([
-      "request.graphql.field.unknown",
-    ]);
+    expect(
+      [...compareGraphqlMessageInteraction(ajv, schema, i, 0)].map(
+        (r) => r.code,
+      ),
+    ).toEqual(["request.graphql.field.unknown"]);
   });
 });
 ```
@@ -3430,11 +3640,12 @@ export function* compareGraphqlMessageInteraction(
 
   if (interaction.payload === undefined) return;
 
-  const { schema: responseSchema, unvalidatableScalars } = graphqlResponseSchema(
-    schema,
-    document,
-    interaction.operation.operationName,
-  );
+  const { schema: responseSchema, unvalidatableScalars } =
+    graphqlResponseSchema(
+      schema,
+      document,
+      interaction.operation.operationName,
+    );
 
   for (const path of unvalidatableScalars) {
     yield {
@@ -3518,11 +3729,13 @@ git commit -m "feat: compare graphql subscription messages against the schema"
 ### Task 14: CLI support
 
 **Files:**
+
 - Modify: `src/cli/runner.ts`
 - Modify: `src/cli.ts`
 - Modify: `src/cli/runner.test.ts`
 
 **Interfaces:**
+
 - Consumes: `ComparatorOptions.graphql`
 - Produces: `SpecPaths.graphqlPath`, `ComparatorDocs.graphql`, and the `--graphql` flag
 
@@ -3532,14 +3745,18 @@ Append to `src/cli/runner.test.ts`:
 
 ```ts
 it("reads a graphql schema as raw text, not as YAML or JSON", async () => {
-  const SDL = "type Query { product(id: ID!): Product }\ntype Product { id: ID! }";
+  const SDL =
+    "type Query { product(id: ID!): Product }\ntype Product { id: ID! }";
   let received: unknown;
 
   const runner = new Runner({
     readFile: async (p: string) =>
       p === "schema.graphql"
         ? SDL
-        : JSON.stringify({ metadata: { pactSpecification: { version: "4.0" } }, interactions: [] }),
+        : JSON.stringify({
+            metadata: { pactSpecification: { version: "4.0" } },
+            interactions: [],
+          }),
     output: () => {},
     createComparator: (docs) => {
       received = docs.graphql;
@@ -3578,10 +3795,10 @@ export interface ComparatorDocs {
 In `run()`, alongside the existing loaders:
 
 ```ts
-    if (specPaths.graphqlPath) {
-      // SDL is neither JSON nor YAML, so it is read verbatim.
-      docs.graphql = await this.readContent(specPaths.graphqlPath);
-    }
+if (specPaths.graphqlPath) {
+  // SDL is neither JSON nor YAML, so it is read verbatim.
+  docs.graphql = await this.readContent(specPaths.graphqlPath);
+}
 ```
 
 `readContent` is currently `private`; it already handles both file paths and URLs, so no change is needed beyond calling it.
@@ -3597,21 +3814,21 @@ In `src/cli.ts`:
 Update the guard and the description:
 
 ```ts
-      if (!options.oas && !options.asyncapi && !options.graphql) {
-        console.error(
-          "Error: at least one of --oas, --asyncapi or --graphql must be provided",
-        );
-        process.exit(1);
-      }
-      const runner = new Runner();
-      const exitCode = await runner.run(
-        {
-          oasPath: options.oas,
-          asyncapiPath: options.asyncapi,
-          graphqlPath: options.graphql,
-        },
-        pactPaths,
-      );
+if (!options.oas && !options.asyncapi && !options.graphql) {
+  console.error(
+    "Error: at least one of --oas, --asyncapi or --graphql must be provided",
+  );
+  process.exit(1);
+}
+const runner = new Runner();
+const exitCode = await runner.run(
+  {
+    oasPath: options.oas,
+    asyncapiPath: options.asyncapi,
+    graphqlPath: options.graphql,
+  },
+  pactPaths,
+);
 ```
 
 Also update the `.description()` text from "Compares an OpenAPI or AsyncAPI spec" to "Compares an OpenAPI, AsyncAPI or GraphQL spec", and widen the `options` parameter type to `{ oas?: string; asyncapi?: string; graphql?: string }`.
@@ -3633,6 +3850,7 @@ git commit -m "feat: add --graphql flag to the cli"
 ### Task 15: Documentation and release
 
 **Files:**
+
 - Modify: `README.md`
 - Create: `.changeset/graphql-bdct.md`
 

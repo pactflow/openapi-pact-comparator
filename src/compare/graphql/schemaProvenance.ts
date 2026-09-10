@@ -1,4 +1,5 @@
-import { fingerprint } from "#documents/graphql";
+import { type GraphQLSchema, isObjectType } from "graphql";
+import { fingerprint, parse as parseSchemaSdl } from "#documents/graphql";
 import type { GraphqlHttpInteraction } from "#documents/pact";
 import type { Result } from "#results/index";
 import { baseMockDetails } from "#results/index";
@@ -45,3 +46,52 @@ export function* checkSchemaProvenance(
     type: "warning",
   };
 }
+
+/**
+ * S2: when a request-side error names a field and a type, and the consumer's
+ * embedded schema had that field while the provider's does not, say so. This
+ * only ever adds a `causes` entry to an existing result (S3).
+ */
+export const explainWithEmbeddedSchema = (
+  results: Result[],
+  embeddedSdl: string | undefined,
+  providerSchema: GraphQLSchema,
+): Result[] => {
+  if (!embeddedSdl) return results;
+
+  let embedded: GraphQLSchema;
+  try {
+    embedded = parseSchemaSdl(embeddedSdl);
+  } catch {
+    return results; // diagnostic input may never break a comparison
+  }
+
+  return results.map((result) => {
+    const match = /Cannot query field "([^"]+)" on type "([^"]+)"/.exec(
+      result.message,
+    );
+    if (!match) return result;
+
+    const [, fieldName, typeName] = match;
+
+    const embeddedType = embedded.getType(typeName);
+    const providerType = providerSchema.getType(typeName);
+    if (!isObjectType(embeddedType)) return result;
+    if (!(fieldName in embeddedType.getFields())) return result;
+    if (isObjectType(providerType) && fieldName in providerType.getFields()) {
+      return result;
+    }
+
+    return {
+      ...result,
+      causes: [
+        ...(result.causes ?? []),
+        {
+          code: "graphql.schema.mismatch" as const,
+          message: `${typeName}.${fieldName} exists in the schema this consumer was built against and is absent from the provider contract`,
+          type: "warning" as const,
+        },
+      ],
+    };
+  });
+};

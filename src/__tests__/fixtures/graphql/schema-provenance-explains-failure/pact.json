@@ -1,0 +1,39 @@
+{
+  "consumer": { "name": "product-consumer" },
+  "provider": { "name": "product-provider" },
+  "metadata": { "pactSpecification": { "version": "4.0" } },
+  "interactions": [
+    {
+      "type": "Synchronous/HTTP",
+      "description": "a GraphQL product request selecting a field that only exists in the consumer's embedded schema",
+      "pluginConfiguration": {
+        "graphql": {
+          "inline_schema": {
+            "base64_sdl": "c2NhbGFyIERhdGVUaW1lCgplbnVtIFByb2R1Y3RTdGF0dXMgewogIEFDVElWRQogIERSQUZUCiAgT1VUX09GX1NUT0NLCiAgQVJDSElWRUQKfQoKaW50ZXJmYWNlIE5vZGUgewogIGlkOiBJRCEKfQoKdHlwZSBQcm9kdWN0IGltcGxlbWVudHMgTm9kZSB7CiAgdHlwZTogU3RyaW5nCiAgaWQ6IElEIQogIHNrdTogU3RyaW5nIQogIG5hbWU6IFN0cmluZyEKICBkZXNjcmlwdGlvbjogU3RyaW5nCiAgc3RhdHVzOiBQcm9kdWN0U3RhdHVzIQogIHRhZ3M6IFtTdHJpbmchXSEKICBjcmVhdGVkQXQ6IERhdGVUaW1lIQp9Cgp0eXBlIENhdGVnb3J5IGltcGxlbWVudHMgTm9kZSB7CiAgaWQ6IElEIQogIHNsdWc6IFN0cmluZyEKfQoKdW5pb24gU2VhcmNoUmVzdWx0ID0gUHJvZHVjdCB8IENhdGVnb3J5Cgp0eXBlIFF1ZXJ5IHsKICBwcm9kdWN0KGlkOiBJRCEpOiBQcm9kdWN0CiAgcHJvZHVjdHMoc3RhdHVzOiBQcm9kdWN0U3RhdHVzKTogW1Byb2R1Y3QhXSEKICBzZWFyY2godGV4dDogU3RyaW5nISk6IFtTZWFyY2hSZXN1bHQhXSEKICBub2RlKGlkOiBJRCEpOiBOb2RlCn0KCnR5cGUgTXV0YXRpb24gewogIGFyY2hpdmVQcm9kdWN0KGlkOiBJRCEpOiBQcm9kdWN0IQp9Cg=="
+          }
+        }
+      },
+      "request": {
+        "method": "POST",
+        "path": "/graphql",
+        "headers": { "content-type": ["application/graphql"] },
+        "body": {
+          "contentType": "application/graphql",
+          "encoded": false,
+          "content": {
+            "query": "{ product(id: \"1\") { id type } }"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": { "content-type": ["application/json"] },
+        "body": {
+          "contentType": "application/json",
+          "encoded": false,
+          "content": { "data": { "product": { "id": "1", "type": "widget" } } }
+        }
+      }
+    }
+  ]
+}

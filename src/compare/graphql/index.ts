@@ -7,6 +7,7 @@ import { compareResponseBody } from "./responseBody";
 import {
   type ProvenanceState,
   checkSchemaProvenance,
+  explainWithEmbeddedSchema,
 } from "./schemaProvenance";
 
 export function* compareGraphqlHttpInteraction(
@@ -20,7 +21,11 @@ export function* compareGraphqlHttpInteraction(
   yield* checkSchemaProvenance(provenance, providerSdl, interaction, index);
 
   const request = compareRequestOperation(schema, interaction, index);
-  yield* request.results;
+  yield* explainWithEmbeddedSchema(
+    request.results,
+    interaction.plugin?.inlineSchemaSdl,
+    schema,
+  );
 
   // A request that cannot be satisfied makes the response meaningless: the
   // projection would be derived from an operation the provider cannot serve.

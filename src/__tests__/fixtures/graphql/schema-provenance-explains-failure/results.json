@@ -1,0 +1,38 @@
+[
+  {
+    "code": "graphql.schema.mismatch",
+    "message": "This consumer was built against a different version of the provider's GraphQL schema. This is not itself a compatibility failure, but it explains any that follow.",
+    "mockDetails": {
+      "interactionDescription": "a GraphQL product request selecting a field that only exists in the consumer's embedded schema",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].pluginConfiguration.graphql.inline_schema",
+      "value": "cdb95b10b5d2915103fc1b4ecc629600cc961037dcd341b8fdefb5328f9f5bd1"
+    },
+    "specDetails": {
+      "location": "[root]",
+      "value": "154f8b85810c68ad6076abacadddf785b51f38be5c101d73b56e04c53d16e84e"
+    },
+    "type": "warning"
+  },
+  {
+    "code": "request.graphql.field.unknown",
+    "message": "Cannot query field \"type\" on type \"Product\". (line 1, column 25)",
+    "mockDetails": {
+      "interactionDescription": "a GraphQL product request selecting a field that only exists in the consumer's embedded schema",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].request.body.content.query",
+      "value": "{ product(id: \"1\") { id type } }"
+    },
+    "specDetails": {
+      "location": "[root].Product"
+    },
+    "type": "error",
+    "causes": [
+      {
+        "code": "graphql.schema.mismatch",
+        "message": "Product.type exists in the schema this consumer was built against and is absent from the provider contract",
+        "type": "warning"
+      }
+    ]
+  }
+]

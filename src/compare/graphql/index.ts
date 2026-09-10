@@ -4,13 +4,21 @@ import type { GraphqlHttpInteraction } from "#documents/pact";
 import type { Result } from "#results/index";
 import { compareRequestOperation } from "./requestOperation";
 import { compareResponseBody } from "./responseBody";
+import {
+  type ProvenanceState,
+  checkSchemaProvenance,
+} from "./schemaProvenance";
 
 export function* compareGraphqlHttpInteraction(
   ajv: Ajv,
   schema: GraphQLSchema,
+  providerSdl: string,
+  provenance: ProvenanceState,
   interaction: GraphqlHttpInteraction,
   index: number,
 ): Iterable<Result> {
+  yield* checkSchemaProvenance(provenance, providerSdl, interaction, index);
+
   const request = compareRequestOperation(schema, interaction, index);
   yield* request.results;
 

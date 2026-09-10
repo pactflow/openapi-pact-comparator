@@ -5,6 +5,7 @@ import type { OpenAPIV2, OpenAPIV3 } from "openapi-types";
 import { compareAsyncInteraction } from "#compare/asyncapi/index";
 import { compareSyncInteraction } from "#compare/asyncapi/syncMessage";
 import { compareGraphqlHttpInteraction } from "#compare/graphql/index";
+import type { ProvenanceState } from "#compare/graphql/schemaProvenance";
 import { compareHttpInteraction } from "#compare/oas/index";
 import type { AsyncAPIDocument, ResolvedMessage } from "#documents/asyncapi";
 import { parse as parseAsyncapi } from "#documents/asyncapi";
@@ -31,6 +32,7 @@ export class Comparator {
   #oas?: OpenAPIV2.Document | OpenAPIV3.Document;
   #asyncapi?: AsyncAPIDocument;
   #graphql?: GraphQLSchema;
+  #graphqlSdl?: string;
   #router?: Router.Instance<Router.HTTPVersion.V1>;
   #resolvedMessages: Map<string, ResolvedMessage> = new Map();
 
@@ -40,7 +42,10 @@ export class Comparator {
     this.#asyncapi = options.asyncapi;
     if (options.oas) parseOas(options.oas);
     if (options.asyncapi) parseAsyncapi(options.asyncapi);
-    if (options.graphql) this.#graphql = parseGraphqlSchema(options.graphql);
+    if (options.graphql) {
+      this.#graphql = parseGraphqlSchema(options.graphql);
+      this.#graphqlSdl = options.graphql;
+    }
 
     const ajvOptions = {
       allErrors: true,
@@ -73,6 +78,7 @@ export class Comparator {
     }
 
     const parsedPact = parsePact(pact);
+    const provenance: ProvenanceState = { reported: false };
 
     for (const [index, interaction] of parsedPact.interactions.entries()) {
       switch (interaction._kind) {
@@ -88,10 +94,12 @@ export class Comparator {
           );
           break;
         case "graphql-http":
-          if (!this.#graphql) break;
+          if (!this.#graphql || !this.#graphqlSdl) break;
           yield* compareGraphqlHttpInteraction(
             this.#ajvNocoerce,
             this.#graphql,
+            this.#graphqlSdl,
+            provenance,
             interaction,
             index,
           );

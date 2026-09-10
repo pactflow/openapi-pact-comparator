@@ -1,0 +1,25 @@
+[
+  {
+    "code": "graphql.schema.mismatch",
+    "message": "This consumer was built against a different version of the provider's GraphQL schema. This is not itself a compatibility failure, but it explains any that follow.",
+    "mockDetails": {
+      "interactionDescription": "a GraphQL product request",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].pluginConfiguration.graphql.inline_schema",
+      "value": "6cee5e74a5c1fcbeb297f32db491428db69786237ce8348aaf7426639474d685"
+    },
+    "specDetails": {
+      "location": "[root]",
+      "value": "154f8b85810c68ad6076abacadddf785b51f38be5c101d73b56e04c53d16e84e"
+    },
+    "type": "warning"
+  },
+  {
+    "code": "graphql.operation.matched",
+    "message": "Matched GraphQL operation GetProduct",
+    "specDetails": {
+      "location": "[root]"
+    },
+    "type": "info"
+  }
+]

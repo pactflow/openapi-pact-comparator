@@ -1,0 +1,23 @@
+[
+  {
+    "code": "response.graphql.scalar.unvalidatable",
+    "message": "Custom scalar at data.product.createdAt cannot be validated; any value is accepted",
+    "mockDetails": {
+      "interactionDescription": "a GraphQL product request selecting a custom scalar field",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].response.body.content.data.product.createdAt"
+    },
+    "specDetails": {
+      "location": "[root]"
+    },
+    "type": "warning"
+  },
+  {
+    "code": "graphql.operation.matched",
+    "message": "Matched GraphQL operation (anonymous)",
+    "specDetails": {
+      "location": "[root]"
+    },
+    "type": "info"
+  }
+]

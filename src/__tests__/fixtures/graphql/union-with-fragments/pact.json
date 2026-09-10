@@ -1,0 +1,34 @@
+{
+  "consumer": { "name": "product-consumer" },
+  "provider": { "name": "product-provider" },
+  "metadata": { "pactSpecification": { "version": "4.0" } },
+  "interactions": [
+    {
+      "type": "Synchronous/HTTP",
+      "description": "a GraphQL search request over a union",
+      "request": {
+        "method": "POST",
+        "path": "/graphql",
+        "headers": { "content-type": ["application/graphql"] },
+        "body": {
+          "contentType": "application/graphql",
+          "encoded": false,
+          "content": {
+            "query": "{ search(text: \"x\") { ... on Product { name } ... on Category { slug } } }"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": { "content-type": ["application/json"] },
+        "body": {
+          "contentType": "application/json",
+          "encoded": false,
+          "content": {
+            "data": { "search": [{ "name": "n" }, { "slug": "s" }] }
+          }
+        }
+      }
+    }
+  ]
+}

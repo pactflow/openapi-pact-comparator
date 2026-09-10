@@ -1,0 +1,23 @@
+[
+  {
+    "code": "response.graphql.body.incompatible",
+    "message": "Response body is incompatible with the GraphQL schema: must NOT have additional properties - name",
+    "mockDetails": {
+      "interactionDescription": "a GraphQL product request whose response has an unselected field",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].response.body.content.data.product",
+      "value": {
+        "data": {
+          "product": {
+            "id": "1",
+            "name": "n"
+          }
+        }
+      }
+    },
+    "specDetails": {
+      "location": "[root].Query"
+    },
+    "type": "error"
+  }
+]

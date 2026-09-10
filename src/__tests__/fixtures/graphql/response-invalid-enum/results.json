@@ -1,0 +1,22 @@
+[
+  {
+    "code": "response.graphql.body.incompatible",
+    "message": "Response body is incompatible with the GraphQL schema: must be equal to one of the allowed values",
+    "mockDetails": {
+      "interactionDescription": "a GraphQL product request whose response has an invalid enum value",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].response.body.content.data.product.status",
+      "value": {
+        "data": {
+          "product": {
+            "status": "PENDING"
+          }
+        }
+      }
+    },
+    "specDetails": {
+      "location": "[root].Query"
+    },
+    "type": "error"
+  }
+]

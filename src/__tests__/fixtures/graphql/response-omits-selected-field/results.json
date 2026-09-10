@@ -1,0 +1,10 @@
+[
+  {
+    "code": "graphql.operation.matched",
+    "message": "Matched GraphQL operation GetProduct",
+    "specDetails": {
+      "location": "[root]"
+    },
+    "type": "info"
+  }
+]

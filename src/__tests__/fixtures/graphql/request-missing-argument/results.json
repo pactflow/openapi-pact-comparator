@@ -1,0 +1,16 @@
+[
+  {
+    "code": "request.graphql.argument.missing",
+    "message": "Field \"product\" argument \"id\" of type \"ID!\" is required, but it was not provided. (line 1, column 3)",
+    "mockDetails": {
+      "interactionDescription": "a GraphQL product request missing the required id argument",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].request.body.content.query",
+      "value": "{ product { id } }"
+    },
+    "specDetails": {
+      "location": "[root]"
+    },
+    "type": "error"
+  }
+]

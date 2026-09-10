@@ -1,0 +1,16 @@
+[
+  {
+    "code": "request.graphql.field.unknown",
+    "message": "Cannot query field \"stockLevel\" on type \"Product\". (line 1, column 25)",
+    "mockDetails": {
+      "interactionDescription": "a GraphQL product request for a field that does not exist",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].request.body.content.query",
+      "value": "{ product(id: \"1\") { id stockLevel } }"
+    },
+    "specDetails": {
+      "location": "[root].Product"
+    },
+    "type": "error"
+  }
+]

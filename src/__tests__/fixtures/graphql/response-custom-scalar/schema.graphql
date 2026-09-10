@@ -1,0 +1,40 @@
+scalar DateTime
+
+enum ProductStatus {
+  ACTIVE
+  DRAFT
+  OUT_OF_STOCK
+  ARCHIVED
+}
+
+interface Node {
+  id: ID!
+}
+
+type Product implements Node {
+  id: ID!
+  sku: String!
+  name: String!
+  description: String
+  status: ProductStatus!
+  tags: [String!]!
+  createdAt: DateTime!
+}
+
+type Category implements Node {
+  id: ID!
+  slug: String!
+}
+
+union SearchResult = Product | Category
+
+type Query {
+  product(id: ID!): Product
+  products(status: ProductStatus): [Product!]!
+  search(text: String!): [SearchResult!]!
+  node(id: ID!): Node
+}
+
+type Mutation {
+  archiveProduct(id: ID!): Product!
+}

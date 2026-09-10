@@ -22,6 +22,7 @@ const makeRunner = (dir: string) => async () => {
   );
   const oasFile = path.join(dir, "oas.yaml");
   const asyncapiFile = path.join(dir, "asyncapi.yaml");
+  const graphqlFile = path.join(dir, "schema.graphql");
   const resultFile = path.join(dir, "results.json");
 
   const oas = fs.existsSync(oasFile)
@@ -30,8 +31,12 @@ const makeRunner = (dir: string) => async () => {
   const asyncapi = fs.existsSync(asyncapiFile)
     ? parse(await fs.promises.readFile(asyncapiFile, "utf-8"))
     : undefined;
+  // SDL is neither JSON nor YAML, so it is read as raw text.
+  const graphql = fs.existsSync(graphqlFile)
+    ? await fs.promises.readFile(graphqlFile, "utf-8")
+    : undefined;
 
-  const comparator = new Comparator({ oas, asyncapi });
+  const comparator = new Comparator({ oas, asyncapi, graphql });
   const results = [];
   for await (const result of comparator.compare(pact)) {
     results.push(result);

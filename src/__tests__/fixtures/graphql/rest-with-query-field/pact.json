@@ -1,0 +1,23 @@
+{
+  "consumer": { "name": "product-consumer" },
+  "provider": { "name": "product-provider" },
+  "metadata": { "pactSpecification": { "version": "4.0" } },
+  "interactions": [
+    {
+      "type": "Synchronous/HTTP",
+      "description": "a REST search endpoint that happens to take a query field",
+      "request": {
+        "method": "POST",
+        "path": "/search",
+        "body": {
+          "encoded": false,
+          "content": { "query": "SELECT * FROM products" }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": { "encoded": false, "content": {} }
+      }
+    }
+  ]
+}

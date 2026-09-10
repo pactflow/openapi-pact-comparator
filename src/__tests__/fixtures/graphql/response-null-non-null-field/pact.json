@@ -1,0 +1,32 @@
+{
+  "consumer": { "name": "product-consumer" },
+  "provider": { "name": "product-provider" },
+  "metadata": { "pactSpecification": { "version": "4.0" } },
+  "interactions": [
+    {
+      "type": "Synchronous/HTTP",
+      "description": "a GraphQL product request whose response has null on a non-null field",
+      "request": {
+        "method": "POST",
+        "path": "/graphql",
+        "headers": { "content-type": ["application/graphql"] },
+        "body": {
+          "contentType": "application/graphql",
+          "encoded": false,
+          "content": {
+            "query": "{ product(id: \"1\") { id } }"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": { "content-type": ["application/json"] },
+        "body": {
+          "contentType": "application/json",
+          "encoded": false,
+          "content": { "data": { "product": { "id": null } } }
+        }
+      }
+    }
+  ]
+}

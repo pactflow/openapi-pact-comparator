@@ -1,0 +1,34 @@
+{
+  "consumer": { "name": "product-consumer" },
+  "provider": { "name": "product-provider" },
+  "metadata": { "pactSpecification": { "version": "4.0" } },
+  "interactions": [
+    {
+      "type": "Synchronous/HTTP",
+      "description": "a GraphQL product request selecting a custom scalar field",
+      "request": {
+        "method": "POST",
+        "path": "/graphql",
+        "headers": { "content-type": ["application/graphql"] },
+        "body": {
+          "contentType": "application/graphql",
+          "encoded": false,
+          "content": {
+            "query": "{ product(id: \"1\") { createdAt } }"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": { "content-type": ["application/json"] },
+        "body": {
+          "contentType": "application/json",
+          "encoded": false,
+          "content": {
+            "data": { "product": { "createdAt": "2026-01-01T00:00:00Z" } }
+          }
+        }
+      }
+    }
+  ]
+}

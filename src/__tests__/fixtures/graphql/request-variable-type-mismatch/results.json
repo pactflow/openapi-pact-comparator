@@ -1,0 +1,16 @@
+[
+  {
+    "code": "request.graphql.variables.incompatible",
+    "message": "Variable \"$status\" is incompatible with its declared type: Value \"PENDING\" does not exist in \"ProductStatus\" enum.",
+    "mockDetails": {
+      "interactionDescription": "a GraphQL products request with a variable value outside the enum",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].request.body.content.variables.status",
+      "value": "PENDING"
+    },
+    "specDetails": {
+      "location": "[root]"
+    },
+    "type": "error"
+  }
+]

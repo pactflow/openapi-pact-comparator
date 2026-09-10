@@ -1,0 +1,37 @@
+{
+  "consumer": { "name": "product-consumer" },
+  "provider": { "name": "product-provider" },
+  "metadata": { "pactSpecification": { "version": "4.0" } },
+  "interactions": [
+    {
+      "type": "Synchronous/HTTP",
+      "description": "a GraphQL product request",
+      "providerStates": [{ "name": "a product with ID 10 exists" }],
+      "request": {
+        "method": "POST",
+        "path": "/graphql",
+        "headers": { "content-type": ["application/graphql"] },
+        "body": {
+          "contentType": "application/graphql",
+          "encoded": false,
+          "content": {
+            "operationName": "GetProduct",
+            "query": "query GetProduct($id: ID!) { product(id: $id) { id name } }",
+            "variables": { "id": "10" }
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": { "content-type": ["application/json"] },
+        "body": {
+          "contentType": "application/json",
+          "encoded": false,
+          "content": {
+            "data": { "product": { "id": "10", "name": "product name" } }
+          }
+        }
+      }
+    }
+  ]
+}

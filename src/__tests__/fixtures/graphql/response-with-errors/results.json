@@ -1,0 +1,28 @@
+[
+  {
+    "code": "response.graphql.errors.unvalidatable",
+    "message": "Response contains a GraphQL errors key; error payloads are not described by the schema, so data was not checked",
+    "mockDetails": {
+      "interactionDescription": "a GraphQL product request whose response carries a GraphQL errors key",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].response.body.content.errors",
+      "value": [
+        {
+          "message": "boom"
+        }
+      ]
+    },
+    "specDetails": {
+      "location": "[root]"
+    },
+    "type": "warning"
+  },
+  {
+    "code": "graphql.operation.matched",
+    "message": "Matched GraphQL operation (anonymous)",
+    "specDetails": {
+      "location": "[root]"
+    },
+    "type": "info"
+  }
+]

@@ -1,11 +1,14 @@
 import type Ajv from "ajv/dist/2019";
 import type Router from "find-my-way";
+import type { GraphQLSchema } from "graphql";
 import type { OpenAPIV2, OpenAPIV3 } from "openapi-types";
 import { compareAsyncInteraction } from "#compare/asyncapi/index";
 import { compareSyncInteraction } from "#compare/asyncapi/syncMessage";
+import { compareGraphqlHttpInteraction } from "#compare/graphql/index";
 import { compareHttpInteraction } from "#compare/oas/index";
 import type { AsyncAPIDocument, ResolvedMessage } from "#documents/asyncapi";
 import { parse as parseAsyncapi } from "#documents/asyncapi";
+import { parse as parseGraphqlSchema } from "#documents/graphql";
 import { parse as parseOas } from "#documents/oas";
 import type { Pact } from "#documents/pact";
 import { parse as parsePact } from "#documents/pact";
@@ -17,6 +20,8 @@ import { setupAjv } from "./setup";
 export interface ComparatorOptions {
   oas?: OpenAPIV2.Document | OpenAPIV3.Document;
   asyncapi?: AsyncAPIDocument;
+  /** Provider contract as GraphQL SDL text. */
+  graphql?: string;
 }
 
 export class Comparator {
@@ -25,6 +30,7 @@ export class Comparator {
   #config: Config;
   #oas?: OpenAPIV2.Document | OpenAPIV3.Document;
   #asyncapi?: AsyncAPIDocument;
+  #graphql?: GraphQLSchema;
   #router?: Router.Instance<Router.HTTPVersion.V1>;
   #resolvedMessages: Map<string, ResolvedMessage> = new Map();
 
@@ -34,6 +40,7 @@ export class Comparator {
     this.#asyncapi = options.asyncapi;
     if (options.oas) parseOas(options.oas);
     if (options.asyncapi) parseAsyncapi(options.asyncapi);
+    if (options.graphql) this.#graphql = parseGraphqlSchema(options.graphql);
 
     const ajvOptions = {
       allErrors: true,
@@ -70,7 +77,7 @@ export class Comparator {
     for (const [index, interaction] of parsedPact.interactions.entries()) {
       switch (interaction._kind) {
         case "http":
-          if (this.#asyncapi && !this.#oas) break;
+          if (!this.#oas) break;
           yield* compareHttpInteraction(
             this.#ajvCoerce,
             this.#ajvNocoerce,
@@ -78,6 +85,15 @@ export class Comparator {
             interaction,
             index,
             this.#config,
+          );
+          break;
+        case "graphql-http":
+          if (!this.#graphql) break;
+          yield* compareGraphqlHttpInteraction(
+            this.#ajvNocoerce,
+            this.#graphql,
+            interaction,
+            index,
           );
           break;
         case "async":
@@ -99,8 +115,6 @@ export class Comparator {
             interaction,
             index,
           );
-          break;
-        case "graphql-http":
           break;
         case "skip":
           break;

@@ -130,3 +130,42 @@ describe("compareMessageHeaders — direction", () => {
     expect(results).toHaveLength(0);
   });
 });
+
+describe("compareMessageHeaders — multi-format schema", () => {
+  const wrap = (schemaFormat: string, schema: unknown): Message => ({
+    headers: { schemaFormat, schema } as object,
+  });
+
+  it("validates against the wrapped schema for AsyncAPI formats", () => {
+    const results = callResponse(
+      wrap("application/vnd.aai.asyncapi;version=3.0.0", baseMessage.headers),
+      { "detail-type": 1 as unknown as string },
+    );
+    expect(results).toHaveLength(1);
+    expect(results[0].code).toBe("message.headers.incompatible");
+    expect(results[0].specDetails?.location).toBe(
+      "[root].channels.eventsQueue.messages.myMsg.headers.schema.properties.detail-type.type",
+    );
+  });
+
+  it("yields message.headers.unvalidatable warning for unsupported schema formats", () => {
+    const results = callResponse(
+      wrap("application/vnd.apache.avro;version=1.9.0", { type: "record" }),
+      { "detail-type": "x" },
+    );
+    expect(results).toHaveLength(1);
+    expect(results[0].code).toBe("message.headers.unvalidatable");
+    expect(results[0].type).toBe("warning");
+    expect(results[0].specDetails?.location).toBe(
+      "[root].channels.eventsQueue.messages.myMsg.headers.schemaFormat",
+    );
+  });
+
+  it("yields no results when the wrapper has no schema", () => {
+    const results = callResponse(
+      wrap("application/vnd.aai.asyncapi;version=3.0.0", undefined),
+      { "detail-type": "x" },
+    );
+    expect(results).toHaveLength(0);
+  });
+});

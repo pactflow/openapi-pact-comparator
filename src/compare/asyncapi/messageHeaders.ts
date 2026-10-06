@@ -2,6 +2,7 @@ import type { SchemaObject } from "ajv";
 import type Ajv from "ajv/dist/2019";
 import { get } from "lodash-es";
 import type { Message } from "#documents/asyncapi";
+import { unwrapMultiFormatSchema } from "#documents/asyncapi";
 import type { Result } from "#results/index";
 import {
   baseMockDetails,
@@ -25,10 +26,32 @@ export function* compareMessageHeaders(
   if (!message.headers) return;
   if (content.metadata === undefined) return;
 
-  const schemaPath = `${messagePath}.headers`;
+  const unwrapped = unwrapMultiFormatSchema(message.headers);
+  if (unwrapped.status === "unsupported") {
+    yield {
+      code: "message.headers.unvalidatable",
+      message: `Schema with format '${unwrapped.schemaFormat}' is not supported by the spec comparator`,
+      mockDetails: {
+        ...baseMockDetails(interactionContext),
+        location: metadataLocation,
+        value: content.metadata,
+      },
+      specDetails: {
+        location: `${messagePath}.headers.schemaFormat`,
+        value: unwrapped.schemaFormat,
+      },
+      type: "warning",
+    };
+    return;
+  }
+
+  const headersSchema = unwrapped.schema;
+  if (!headersSchema) return;
+
+  const schemaPath = `${messagePath}.headers${unwrapped.path}`;
   const schemaId = `${schemaPath}#${direction}`;
   const validate = getValidateFunction(ajv, schemaId, () => {
-    const rawSchema = structuredClone(message.headers) as SchemaObject;
+    const rawSchema = structuredClone(headersSchema) as SchemaObject;
     return direction === "response"
       ? transformReceivedSchema(rawSchema)
       : rawSchema;

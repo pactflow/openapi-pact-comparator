@@ -1,0 +1,19 @@
+[
+  {
+    "code": "message.matched",
+    "message": "Matched message at [root].components.messages.StockUpdated",
+    "specDetails": {
+      "location": "[root].components.messages.StockUpdated",
+      "value": {
+        "contentType": "application/json",
+        "payload": {
+          "schemaFormat": "application/vnd.aai.asyncapi+json;version=3.0.0",
+          "schema": {
+            "$ref": "#/components/schemas/StockUpdated"
+          }
+        }
+      }
+    },
+    "type": "info"
+  }
+]

@@ -26,6 +26,7 @@ type ErrorCode =
   | "response.status.unknown";
 
 type WarningCode =
+  | "message.headers.unvalidatable"
   | "message.payload.unknown"
   | "message.payload.unvalidatable"
   | "message.response.missing"

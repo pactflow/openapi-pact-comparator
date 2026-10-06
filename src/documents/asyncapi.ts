@@ -68,6 +68,45 @@ export const parse = (doc: AsyncAPIDocument): void => {
   // FIXME: ideally, we validate the full document here
 };
 
+// Multi Format Schema Object formats that are (supersets of) JSON Schema and
+// can be validated directly. The version parameter is deliberately ignored.
+const JSON_SCHEMA_FORMATS = [
+  "application/vnd.aai.asyncapi",
+  "application/vnd.aai.asyncapi+json",
+  "application/vnd.aai.asyncapi+yaml",
+  "application/schema+json",
+  "application/schema+yaml",
+];
+
+export type UnwrappedSchema =
+  | { status: "schema"; schema: object | undefined; path: string }
+  | { status: "unsupported"; schemaFormat: string };
+
+// A payload or headers value may be a Multi Format Schema Object
+// (`{ schemaFormat, schema }`) rather than a Schema Object. Ajv ignores the
+// unknown keywords and would accept anything, so it must be unwrapped first.
+// `path` is the suffix to append to the spec location of the original value.
+export const unwrapMultiFormatSchema = (value: object): UnwrappedSchema => {
+  const { schemaFormat, schema } = value as {
+    schemaFormat?: unknown;
+    schema?: unknown;
+  };
+  if (typeof schemaFormat !== "string") {
+    return { status: "schema", schema: value, path: "" };
+  }
+
+  const mediaType = schemaFormat.split(";")[0].trim().toLowerCase();
+  if (!JSON_SCHEMA_FORMATS.includes(mediaType)) {
+    return { status: "unsupported", schemaFormat };
+  }
+
+  return {
+    status: "schema",
+    schema: schema !== null && typeof schema === "object" ? schema : undefined,
+    path: ".schema",
+  };
+};
+
 export interface ResolvedMessage {
   message: Message;
   path: string;

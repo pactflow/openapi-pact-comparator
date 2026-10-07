@@ -1,0 +1,186 @@
+openapi: 3.0.0
+info:
+  title: OAS
+  version: 1.0.0
+
+paths:
+  /empty-body-min-properties:
+    get:
+      responses:
+        "200":
+          description: description
+          content:
+            "application/json":
+              schema:
+                type: object
+                minProperties: 1
+                properties:
+                  a:
+                    type: string
+  /nested-min-properties:
+    get:
+      responses:
+        "200":
+          description: description
+          content:
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  nested:
+                    type: object
+                    minProperties: 2
+                    properties:
+                      a:
+                        type: string
+                      b:
+                        type: string
+  /allof-ref-min-properties:
+    get:
+      responses:
+        "200":
+          description: description
+          content:
+            "application/json":
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/MinTwoProperties"
+  /anyof-ref-min-properties:
+    get:
+      responses:
+        "200":
+          description: description
+          content:
+            "application/json":
+              schema:
+                anyOf:
+                  - $ref: "#/components/schemas/MinTwoProperties"
+                  - type: string
+  /required-top-level:
+    get:
+      responses:
+        "200":
+          description: description
+          content:
+            "application/json":
+              schema:
+                type: object
+                required: [a, b]
+                properties:
+                  a:
+                    type: string
+                  b:
+                    type: string
+  /required-nested:
+    get:
+      responses:
+        "200":
+          description: description
+          content:
+            "application/json":
+              schema:
+                type: object
+                required: [nested]
+                properties:
+                  nested:
+                    type: object
+                    required: [a, b]
+                    properties:
+                      a:
+                        type: string
+                      b:
+                        type: string
+  /required-anyof-ref:
+    get:
+      responses:
+        "200":
+          description: description
+          content:
+            "application/json":
+              schema:
+                anyOf:
+                  - $ref: "#/components/schemas/RequiredTwoProperties"
+                  - type: string
+
+  /required-oneof-discriminator:
+    get:
+      responses:
+        "200":
+          description: description
+          content:
+            "application/json":
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Dog"
+                  - $ref: "#/components/schemas/Cat"
+                discriminator:
+                  propertyName: petType
+
+  /min-properties-oneof-discriminator:
+    get:
+      responses:
+        "200":
+          description: description
+          content:
+            "application/json":
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Bird"
+                  - $ref: "#/components/schemas/Fish"
+                discriminator:
+                  propertyName: petType
+
+components:
+  schemas:
+    MinTwoProperties:
+      type: object
+      minProperties: 2
+      properties:
+        a:
+          type: string
+        b:
+          type: string
+    RequiredTwoProperties:
+      type: object
+      required: [a, b]
+      properties:
+        a:
+          type: string
+        b:
+          type: string
+    Dog:
+      type: object
+      required: [petType, name]
+      properties:
+        petType:
+          const: dog
+        name:
+          type: string
+    Cat:
+      type: object
+      required: [petType, name]
+      properties:
+        petType:
+          const: cat
+        name:
+          type: string
+    Bird:
+      type: object
+      minProperties: 3
+      properties:
+        petType:
+          const: bird
+        name:
+          type: string
+        wingspan:
+          type: number
+    Fish:
+      type: object
+      minProperties: 3
+      properties:
+        petType:
+          const: fish
+        name:
+          type: string
+        fins:
+          type: number

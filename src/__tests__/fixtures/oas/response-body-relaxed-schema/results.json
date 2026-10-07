@@ -1,0 +1,44 @@
+[
+  {
+    "code": "response.body.incompatible",
+    "message": "Response body is incompatible with the response body schema in the spec file: must have required property 'petType'",
+    "mockDetails": {
+      "interactionDescription": "should error when the oneOf discriminator property is missing from the response body",
+      "interactionState": "[none]",
+      "location": "[root].interactions[4].response.body",
+      "value": {
+        "name": "Rover"
+      }
+    },
+    "specDetails": {
+      "location": "[root].paths./required-oneof-discriminator.get.responses.200.content.application/json.schema.required",
+      "pathMethod": "get",
+      "pathName": "/required-oneof-discriminator",
+      "value": [
+        "petType"
+      ]
+    },
+    "type": "error"
+  },
+  {
+    "code": "response.body.incompatible",
+    "message": "Response body is incompatible with the response body schema in the spec file: tag \"petType\" must be string",
+    "mockDetails": {
+      "interactionDescription": "should error when the oneOf discriminator property is missing from the response body",
+      "interactionState": "[none]",
+      "location": "[root].interactions[4].response.body",
+      "value": {
+        "name": "Rover"
+      }
+    },
+    "specDetails": {
+      "location": "[root].paths./required-oneof-discriminator.get.responses.200.content.application/json.schema.discriminator",
+      "pathMethod": "get",
+      "pathName": "/required-oneof-discriminator",
+      "value": {
+        "propertyName": "petType"
+      }
+    },
+    "type": "error"
+  }
+]

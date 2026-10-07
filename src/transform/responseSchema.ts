@@ -21,16 +21,16 @@ export const transformReceivedSchema = (
     }
   });
 
-  stripRequired(schema);
+  relaxSchema(schema);
 
   return schema;
 };
 
-const stripRequired = (schema: SchemaObject): void => {
+const relaxSchema = (schema: SchemaObject): void => {
   traverse(schema, (s) => {
-    if (s.oneOf) {
-      return; // discriminator is required to be a valid schema
+    delete s.minProperties;
+    if (!s.oneOf) {
+      delete s.required; // oneOf keeps it: discriminator is required to be a valid schema
     }
-    delete s.required;
   });
 };

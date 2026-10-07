@@ -18,6 +18,14 @@ const baseMessage: Message = {
   },
 };
 
+const minPropertiesMessage: Message = {
+  payload: {
+    type: "object",
+    properties: { a: { type: "string" }, b: { type: "string" } },
+    minProperties: 2,
+  },
+};
+
 // Helper to call with response direction for backward-compatible tests
 const callResponse = (
   message: Message,
@@ -238,5 +246,30 @@ describe("compareMessagePayload — direction", () => {
     );
     expect(results).toHaveLength(1);
     expect(results[0].code).toBe("message.payload.incompatible");
+  });
+
+  it("enforces minProperties when direction is request", () => {
+    const results = Array.from(
+      compareMessagePayload(
+        makeAjv(),
+        minPropertiesMessage,
+        { payload: { a: "value" }, contentType: "application/json" },
+        {},
+        "[root].interactions[0].request.contents.content",
+        "[root].channels.eventsQueue.messages.myMsg",
+        "request",
+      ),
+    );
+    expect(results).toHaveLength(1);
+    expect(results[0].code).toBe("message.payload.incompatible");
+  });
+
+  it("does not enforce minProperties when direction is response", () => {
+    const results = callResponse(
+      minPropertiesMessage,
+      { a: "value" },
+      "application/json",
+    );
+    expect(results).toHaveLength(0);
   });
 });

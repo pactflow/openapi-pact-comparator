@@ -1,0 +1,37 @@
+[
+  {
+    "code": "message.payload.unvalidatable",
+    "message": "Schema with format 'application/vnd.apache.avro+json;version=1.9.0' is not supported by the spec comparator",
+    "mockDetails": {
+      "interactionDescription": "a stock-updated event with an unsupported multi-format schema",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].contents.content",
+      "value": {
+        "ticker": "ACME",
+        "price": 12.5
+      }
+    },
+    "specDetails": {
+      "location": "[root].components.messages.StockUpdated.payload.schemaFormat",
+      "value": "application/vnd.apache.avro+json;version=1.9.0"
+    },
+    "type": "warning"
+  },
+  {
+    "code": "message.matched",
+    "message": "Matched message at [root].components.messages.StockUpdated",
+    "specDetails": {
+      "location": "[root].components.messages.StockUpdated",
+      "value": {
+        "contentType": "application/json",
+        "payload": {
+          "schemaFormat": "application/vnd.apache.avro+json;version=1.9.0",
+          "schema": {
+            "$ref": "#/components/schemas/StockUpdated"
+          }
+        }
+      }
+    },
+    "type": "info"
+  }
+]

@@ -2,6 +2,7 @@ import type { SchemaObject } from "ajv";
 import type Ajv from "ajv/dist/2019";
 import { get } from "lodash-es";
 import type { Message } from "#documents/asyncapi";
+import { unwrapMultiFormatSchema } from "#documents/asyncapi";
 import type { Result } from "#results/index";
 import {
   baseMockDetails,
@@ -45,7 +46,30 @@ export function* compareMessagePayload(
 
   if (status === "skip") return;
 
-  if (!message.payload) {
+  const unwrapped = message.payload
+    ? unwrapMultiFormatSchema(message.payload)
+    : undefined;
+
+  if (unwrapped?.status === "unsupported") {
+    yield {
+      code: "message.payload.unvalidatable",
+      message: `Schema with format '${unwrapped.schemaFormat}' is not supported by the spec comparator`,
+      mockDetails: {
+        ...baseMockDetails(interactionContext),
+        location: contentLocation,
+        value: content.payload,
+      },
+      specDetails: {
+        location: `${messagePath}.payload.schemaFormat`,
+        value: unwrapped.schemaFormat,
+      },
+      type: "warning",
+    };
+    return;
+  }
+
+  const payloadSchema = unwrapped?.schema;
+  if (!payloadSchema) {
     if (content.payload !== undefined) {
       yield {
         code: "message.payload.unknown",
@@ -65,10 +89,10 @@ export function* compareMessagePayload(
     return;
   }
 
-  const schemaPath = `${messagePath}.payload`;
+  const schemaPath = `${messagePath}.payload${unwrapped.path}`;
   const schemaId = `${schemaPath}#${direction}`;
   const validate = getValidateFunction(ajv, schemaId, () => {
-    const rawSchema = structuredClone(message.payload) as SchemaObject;
+    const rawSchema = structuredClone(payloadSchema) as SchemaObject;
     return direction === "response"
       ? transformReceivedSchema(rawSchema)
       : rawSchema;

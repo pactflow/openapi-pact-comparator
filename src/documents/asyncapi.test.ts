@@ -5,6 +5,7 @@ import {
   iterateReplyMessages,
   ParserError,
   parse,
+  unwrapMultiFormatSchema,
 } from "./asyncapi";
 
 const multiMessageDoc: AsyncAPIDocument = {
@@ -239,5 +240,61 @@ describe("iterateReplyMessages", () => {
       ...iterateReplyMessages(multiMessageDoc, "receiveUserEvents", cache),
     ];
     expect(first[0]).toBe(second[0]);
+  });
+});
+
+describe("unwrapMultiFormatSchema", () => {
+  const schema = { type: "object", properties: { id: { type: "string" } } };
+
+  it("returns a plain schema unchanged", () => {
+    expect(unwrapMultiFormatSchema(schema)).toEqual({
+      status: "schema",
+      schema,
+      path: "",
+    });
+  });
+
+  it.each([
+    "application/vnd.aai.asyncapi;version=3.0.0",
+    "application/vnd.aai.asyncapi+json;version=3.0.0",
+    "application/vnd.aai.asyncapi+yaml;version=2.6.0",
+    "application/vnd.aai.asyncapi",
+    "application/schema+json;version=draft-07",
+    "application/schema+yaml;version=draft-2019-09",
+    " Application/Schema+JSON ; version=draft-07 ",
+  ])("unwraps the schema for supported format %s", (schemaFormat) => {
+    expect(unwrapMultiFormatSchema({ schemaFormat, schema })).toEqual({
+      status: "schema",
+      schema,
+      path: ".schema",
+    });
+  });
+
+  it.each([
+    "application/vnd.apache.avro;version=1.9.0",
+    "application/vnd.apache.avro+json;version=1.9.0",
+    "application/vnd.google.protobuf;version=3",
+    "application/raml+yaml;version=1.0",
+    "application/x-unknown",
+    "application/schema+json;version=draft-04",
+    "application/schema+yaml;version=draft-2020-12",
+  ])("reports unsupported format %s", (schemaFormat) => {
+    expect(unwrapMultiFormatSchema({ schemaFormat, schema })).toEqual({
+      status: "unsupported",
+      schemaFormat,
+    });
+  });
+
+  it.each([
+    ["missing", undefined],
+    ["null", null],
+    ["a string", "{}"],
+  ])("returns no schema when a supported format's schema is %s", (_, value) => {
+    expect(
+      unwrapMultiFormatSchema({
+        schemaFormat: "application/vnd.aai.asyncapi;version=3.0.0",
+        schema: value,
+      }),
+    ).toEqual({ status: "schema", schema: undefined, path: ".schema" });
   });
 });

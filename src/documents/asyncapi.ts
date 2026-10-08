@@ -68,6 +68,64 @@ export const parse = (doc: AsyncAPIDocument): void => {
   // FIXME: ideally, we validate the full document here
 };
 
+// Multi Format Schema Object formats that are (supersets of) JSON Schema and
+// can be validated directly.
+const JSON_SCHEMA_FORMATS = [
+  "application/vnd.aai.asyncapi",
+  "application/vnd.aai.asyncapi+json",
+  "application/vnd.aai.asyncapi+yaml",
+  "application/schema+json",
+  "application/schema+yaml",
+];
+const JSON_SCHEMA_MEDIA_TYPES = [
+  "application/schema+json",
+  "application/schema+yaml",
+];
+const SUPPORTED_JSON_SCHEMA_VERSIONS = ["draft-07", "draft-2019-09"];
+
+export type UnwrappedSchema =
+  | { status: "schema"; schema: object | undefined; path: string }
+  | { status: "unsupported"; schemaFormat: string };
+
+// A payload or headers value may be a Multi Format Schema Object
+// (`{ schemaFormat, schema }`) rather than a Schema Object. Ajv ignores the
+// unknown keywords and would accept anything, so it must be unwrapped first.
+// `path` is the suffix to append to the spec location of the original value.
+export const unwrapMultiFormatSchema = (value: object): UnwrappedSchema => {
+  const { schemaFormat, schema } = value as {
+    schemaFormat?: unknown;
+    schema?: unknown;
+  };
+  if (typeof schemaFormat !== "string") {
+    return { status: "schema", schema: value, path: "" };
+  }
+
+  const [rawMediaType, ...parameters] = schemaFormat.split(";");
+  const mediaType = rawMediaType.trim().toLowerCase();
+  if (!JSON_SCHEMA_FORMATS.includes(mediaType)) {
+    return { status: "unsupported", schemaFormat };
+  }
+
+  const versions = parameters
+    .map((parameter) => parameter.trim().toLowerCase())
+    .filter((parameter) => parameter.startsWith("version="))
+    .map((parameter) => parameter.slice("version=".length).trim());
+  if (
+    JSON_SCHEMA_MEDIA_TYPES.includes(mediaType) &&
+    (versions.length > 1 ||
+      (versions.length === 1 &&
+        !SUPPORTED_JSON_SCHEMA_VERSIONS.includes(versions[0])))
+  ) {
+    return { status: "unsupported", schemaFormat };
+  }
+
+  return {
+    status: "schema",
+    schema: schema !== null && typeof schema === "object" ? schema : undefined,
+    path: ".schema",
+  };
+};
+
 export interface ResolvedMessage {
   message: Message;
   path: string;

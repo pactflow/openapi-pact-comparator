@@ -1,0 +1,51 @@
+[
+  {
+    "code": "message.no.match",
+    "message": "No message in the operation matched the interaction",
+    "mockDetails": {
+      "interactionDescription": "a stock-updated event with an invalid payload against a multi-format schema",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0]",
+      "value": "a stock-updated event with an invalid payload against a multi-format schema"
+    },
+    "specDetails": {
+      "location": "[root].operations.receiveStockUpdates.messages"
+    },
+    "type": "error",
+    "causes": [
+      {
+        "code": "message.payload.incompatible",
+        "message": "Message payload is incompatible with the schema in the spec file: must NOT have additional properties - symbol",
+        "mockDetails": {
+          "interactionDescription": "a stock-updated event with an invalid payload against a multi-format schema",
+          "interactionState": "[none]",
+          "location": "[root].interactions[0].contents.content",
+          "value": {
+            "symbol": "ACME",
+            "price": "12.5"
+          }
+        },
+        "specDetails": {
+          "location": "[root].components.messages.StockUpdated.payload.schema.additionalProperties",
+          "value": false
+        },
+        "type": "error"
+      },
+      {
+        "code": "message.payload.incompatible",
+        "message": "Message payload is incompatible with the schema in the spec file: must be number",
+        "mockDetails": {
+          "interactionDescription": "a stock-updated event with an invalid payload against a multi-format schema",
+          "interactionState": "[none]",
+          "location": "[root].interactions[0].contents.content.price",
+          "value": "12.5"
+        },
+        "specDetails": {
+          "location": "[root].components.messages.StockUpdated.payload.schema.properties.price.type",
+          "value": "number"
+        },
+        "type": "error"
+      }
+    ]
+  }
+]

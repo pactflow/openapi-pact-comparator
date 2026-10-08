@@ -273,3 +273,89 @@ describe("compareMessagePayload — direction", () => {
     expect(results).toHaveLength(0);
   });
 });
+
+describe("compareMessagePayload — multi-format schema", () => {
+  const wrap = (schemaFormat: string, schema: unknown): Message => ({
+    payload: { schemaFormat, schema } as object,
+  });
+
+  it("validates against the wrapped schema for AsyncAPI formats", () => {
+    const results = callResponse(
+      wrap(
+        "application/vnd.aai.asyncapi+json;version=3.0.0",
+        baseMessage.payload,
+      ),
+      { organizationId: 12345 },
+      "application/json",
+    );
+    expect(results).toHaveLength(1);
+    expect(results[0].code).toBe("message.payload.incompatible");
+    expect(results[0].type).toBe("error");
+    expect(results[0].specDetails?.location).toBe(
+      "[root].channels.eventsQueue.messages.myMsg.payload.schema.properties.organizationId.type",
+    );
+  });
+
+  it("validates against the wrapped schema for JSON Schema formats", () => {
+    const results = callResponse(
+      wrap("application/schema+json;version=draft-07", baseMessage.payload),
+      { organizationId: 12345 },
+      "application/json",
+    );
+    expect(results.map((r) => r.code)).toEqual([
+      "message.payload.incompatible",
+    ]);
+  });
+
+  it("yields no results when payload matches the wrapped schema", () => {
+    const results = callResponse(
+      wrap("application/vnd.aai.asyncapi;version=3.0.0", baseMessage.payload),
+      { organizationId: "abc-123" },
+      "application/json",
+    );
+    expect(results).toHaveLength(0);
+  });
+
+  it("yields message.payload.unvalidatable warning for unsupported schema formats", () => {
+    const results = callResponse(
+      wrap("application/vnd.apache.avro;version=1.9.0", { type: "record" }),
+      { organizationId: "abc-123" },
+      "application/json",
+    );
+    expect(results).toHaveLength(1);
+    expect(results[0].code).toBe("message.payload.unvalidatable");
+    expect(results[0].type).toBe("warning");
+    expect(results[0].message).toBe(
+      "Schema with format 'application/vnd.apache.avro;version=1.9.0' is not supported by the spec comparator",
+    );
+    expect(results[0].specDetails?.location).toBe(
+      "[root].channels.eventsQueue.messages.myMsg.payload.schemaFormat",
+    );
+  });
+
+  it("yields a warning for unsupported JSON Schema dialect versions", () => {
+    const results = callResponse(
+      wrap("application/schema+json;version=draft-04", {
+        type: "number",
+        minimum: 5,
+        exclusiveMinimum: true,
+      }),
+      6,
+      "application/json",
+    );
+    expect(results).toHaveLength(1);
+    expect(results[0].code).toBe("message.payload.unvalidatable");
+    expect(results[0].type).toBe("warning");
+  });
+
+  it("yields message.payload.unknown warning when the wrapper has no schema", () => {
+    const results = callResponse(
+      wrap("application/vnd.aai.asyncapi;version=3.0.0", undefined),
+      { organizationId: "abc-123" },
+      "application/json",
+    );
+    expect(results).toHaveLength(1);
+    expect(results[0].code).toBe("message.payload.unknown");
+    expect(results[0].type).toBe("warning");
+  });
+});

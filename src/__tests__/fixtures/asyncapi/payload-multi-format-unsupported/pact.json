@@ -1,0 +1,24 @@
+{
+  "consumer": { "name": "consumer" },
+  "provider": { "name": "provider" },
+  "interactions": [
+    {
+      "comments": {
+        "references": {
+          "AsyncAPI": {
+            "operationId": "receiveStockUpdates"
+          }
+        }
+      },
+      "contents": {
+        "content": { "ticker": "ACME", "price": 12.5 },
+        "contentType": "application/json",
+        "encoded": false
+      },
+      "description": "a stock-updated event with an unsupported multi-format schema",
+      "pending": false,
+      "type": "Asynchronous/Messages"
+    }
+  ],
+  "metadata": { "pactSpecification": { "version": "4.0" } }
+}

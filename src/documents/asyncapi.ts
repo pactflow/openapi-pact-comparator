@@ -69,7 +69,7 @@ export const parse = (doc: AsyncAPIDocument): void => {
 };
 
 // Multi Format Schema Object formats that are (supersets of) JSON Schema and
-// can be validated directly. The version parameter is deliberately ignored.
+// can be validated directly.
 const JSON_SCHEMA_FORMATS = [
   "application/vnd.aai.asyncapi",
   "application/vnd.aai.asyncapi+json",
@@ -77,6 +77,11 @@ const JSON_SCHEMA_FORMATS = [
   "application/schema+json",
   "application/schema+yaml",
 ];
+const JSON_SCHEMA_MEDIA_TYPES = [
+  "application/schema+json",
+  "application/schema+yaml",
+];
+const SUPPORTED_JSON_SCHEMA_VERSIONS = ["draft-07", "draft-2019-09"];
 
 export type UnwrappedSchema =
   | { status: "schema"; schema: object | undefined; path: string }
@@ -95,8 +100,22 @@ export const unwrapMultiFormatSchema = (value: object): UnwrappedSchema => {
     return { status: "schema", schema: value, path: "" };
   }
 
-  const mediaType = schemaFormat.split(";")[0].trim().toLowerCase();
+  const [rawMediaType, ...parameters] = schemaFormat.split(";");
+  const mediaType = rawMediaType.trim().toLowerCase();
   if (!JSON_SCHEMA_FORMATS.includes(mediaType)) {
+    return { status: "unsupported", schemaFormat };
+  }
+
+  const versions = parameters
+    .map((parameter) => parameter.trim().toLowerCase())
+    .filter((parameter) => parameter.startsWith("version="))
+    .map((parameter) => parameter.slice("version=".length).trim());
+  if (
+    JSON_SCHEMA_MEDIA_TYPES.includes(mediaType) &&
+    (versions.length > 1 ||
+      (versions.length === 1 &&
+        !SUPPORTED_JSON_SCHEMA_VERSIONS.includes(versions[0])))
+  ) {
     return { status: "unsupported", schemaFormat };
   }
 

@@ -260,7 +260,7 @@ describe("unwrapMultiFormatSchema", () => {
     "application/vnd.aai.asyncapi+yaml;version=2.6.0",
     "application/vnd.aai.asyncapi",
     "application/schema+json;version=draft-07",
-    "application/schema+yaml;version=draft-04",
+    "application/schema+yaml;version=draft-2019-09",
     " Application/Schema+JSON ; version=draft-07 ",
   ])("unwraps the schema for supported format %s", (schemaFormat) => {
     expect(unwrapMultiFormatSchema({ schemaFormat, schema })).toEqual({
@@ -276,6 +276,8 @@ describe("unwrapMultiFormatSchema", () => {
     "application/vnd.google.protobuf;version=3",
     "application/raml+yaml;version=1.0",
     "application/x-unknown",
+    "application/schema+json;version=draft-04",
+    "application/schema+yaml;version=draft-2020-12",
   ])("reports unsupported format %s", (schemaFormat) => {
     expect(unwrapMultiFormatSchema({ schemaFormat, schema })).toEqual({
       status: "unsupported",

@@ -300,6 +300,21 @@ describe("compareMessagePayload — multi-format schema", () => {
     );
   });
 
+  it("yields a warning for unsupported JSON Schema dialect versions", () => {
+    const results = callResponse(
+      wrap("application/schema+json;version=draft-04", {
+        type: "number",
+        minimum: 5,
+        exclusiveMinimum: true,
+      }),
+      6,
+      "application/json",
+    );
+    expect(results).toHaveLength(1);
+    expect(results[0].code).toBe("message.payload.unvalidatable");
+    expect(results[0].type).toBe("warning");
+  });
+
   it("yields message.payload.unknown warning when the wrapper has no schema", () => {
     const results = callResponse(
       wrap("application/vnd.aai.asyncapi;version=3.0.0", undefined),

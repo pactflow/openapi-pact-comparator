@@ -1,0 +1,142 @@
+{
+  "consumer": {
+    "name": "consumer"
+  },
+  "provider": {
+    "name": "provider"
+  },
+  "interactions": [
+    {
+      "description": "should pass when required properties are missing from the response body",
+      "request": {
+        "method": "GET",
+        "path": "/required-top-level"
+      },
+      "response": {
+        "status": 200,
+        "body": {
+          "a": "value"
+        }
+      }
+    },
+    {
+      "description": "should pass when required properties are missing from a nested response object",
+      "request": {
+        "method": "GET",
+        "path": "/required-nested"
+      },
+      "response": {
+        "status": 200,
+        "body": {
+          "nested": {
+            "a": "value"
+          }
+        }
+      }
+    },
+    {
+      "description": "should pass when anyOf $ref schema has required properties missing from the response body",
+      "request": {
+        "method": "GET",
+        "path": "/required-anyof-ref"
+      },
+      "response": {
+        "status": 200,
+        "body": {
+          "a": "value"
+        }
+      }
+    },
+    {
+      "description": "should pass when oneOf branch required properties are missing but the discriminator is present",
+      "request": {
+        "method": "GET",
+        "path": "/required-oneof-discriminator"
+      },
+      "response": {
+        "status": 200,
+        "body": {
+          "petType": "dog"
+        }
+      }
+    },
+    {
+      "description": "should error when the oneOf discriminator property is missing from the response body",
+      "request": {
+        "method": "GET",
+        "path": "/required-oneof-discriminator"
+      },
+      "response": {
+        "status": 200,
+        "body": {
+          "name": "Rover"
+        }
+      }
+    },
+    {
+      "description": "should pass when response body is empty and schema has minProperties",
+      "request": {
+        "method": "GET",
+        "path": "/empty-body-min-properties"
+      },
+      "response": {
+        "status": 200,
+        "body": {}
+      }
+    },
+    {
+      "description": "should pass when nested response object has fewer properties than schema minProperties",
+      "request": {
+        "method": "GET",
+        "path": "/nested-min-properties"
+      },
+      "response": {
+        "status": 200,
+        "body": {
+          "nested": {
+            "a": "value"
+          }
+        }
+      }
+    },
+    {
+      "description": "should pass when allOf $ref schema has minProperties and response body has fewer properties",
+      "request": {
+        "method": "GET",
+        "path": "/allof-ref-min-properties"
+      },
+      "response": {
+        "status": 200,
+        "body": {
+          "a": "value"
+        }
+      }
+    },
+    {
+      "description": "should pass when anyOf $ref schema has minProperties and response body has fewer properties",
+      "request": {
+        "method": "GET",
+        "path": "/anyof-ref-min-properties"
+      },
+      "response": {
+        "status": 200,
+        "body": {
+          "a": "value"
+        }
+      }
+    },
+    {
+      "description": "should pass when discriminated oneOf branches have minProperties and response body has fewer properties",
+      "request": {
+        "method": "GET",
+        "path": "/min-properties-oneof-discriminator"
+      },
+      "response": {
+        "status": 200,
+        "body": {
+          "petType": "bird"
+        }
+      }
+    }
+  ]
+}

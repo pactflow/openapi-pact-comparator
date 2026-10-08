@@ -21,6 +21,14 @@ const baseMessage: Message = {
   },
 };
 
+const minPropertiesMessage: Message = {
+  headers: {
+    type: "object",
+    properties: { a: { type: "string" }, b: { type: "string" } },
+    minProperties: 2,
+  },
+};
+
 const callResponse = (
   message: Message,
   metadata: Record<string, string> | undefined,
@@ -127,6 +135,27 @@ describe("compareMessageHeaders — direction", () => {
         "response",
       ),
     );
+    expect(results).toHaveLength(0);
+  });
+
+  it("enforces minProperties on headers when direction is request", () => {
+    const results = Array.from(
+      compareMessageHeaders(
+        makeAjv(),
+        minPropertiesMessage,
+        { metadata: { a: "value" } },
+        {},
+        "[root].interactions[0].request.metadata",
+        "[root].channels.eventsQueue.messages.myMsg",
+        "request",
+      ),
+    );
+    expect(results).toHaveLength(1);
+    expect(results[0].code).toBe("message.headers.incompatible");
+  });
+
+  it("does not enforce minProperties on headers when direction is response", () => {
+    const results = callResponse(minPropertiesMessage, { a: "value" });
     expect(results).toHaveLength(0);
   });
 });

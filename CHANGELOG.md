@@ -1,5 +1,11 @@
 # @pactflow/openapi-pact-comparator
 
+## 2.3.2
+
+### Patch Changes
+
+- cae4af2: Ignore `minProperties` in response schemas, as the consumer may only declare some of the properties of a response
+
 ## 2.3.1
 
 ### Patch Changes

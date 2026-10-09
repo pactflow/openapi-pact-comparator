@@ -1,0 +1,51 @@
+{
+  "consumer": {
+    "name": "consumer"
+  },
+  "provider": {
+    "name": "provider"
+  },
+  "interactions": [
+    {
+      "type": "Asynchronous/Messages",
+      "description": "a user signed up",
+      "comments": {
+        "references": {
+          "AsyncAPI": {
+            "operationId": "receiveUserSignedUp"
+          }
+        }
+      },
+      "pending": false,
+      "contents": {
+        "content": "BnUtMTwCCmFAYi5jAg==",
+        "contentType": "avro/binary;record=com.example.UserSignedUp",
+        "contentTypeHint": "BINARY",
+        "encoded": "base64"
+      },
+      "pluginConfiguration": {
+        "avro": {
+          "record": "com.example.UserSignedUp",
+          "schemaKey": "h1",
+          "avroSchema": "{\"type\":\"record\",\"name\":\"UserSignedUp\",\"namespace\":\"com.example\",\"fields\":[{\"name\":\"userId\",\"type\":\"string\"},{\"name\":\"age\",\"type\":\"int\"},{\"name\":\"email\",\"type\":[\"null\",\"string\"],\"default\":null},{\"name\":\"plan\",\"type\":{\"type\":\"enum\",\"name\":\"Plan\",\"symbols\":[\"FREE\",\"PRO\"]}}]}"
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "pactSpecification": {
+      "version": "4.0"
+    },
+    "plugins": [
+      {
+        "name": "avro",
+        "version": "0.1.0",
+        "configuration": {
+          "h1": {
+            "avroSchema": "{\"type\":\"record\",\"name\":\"UserSignedUp\",\"namespace\":\"com.example\",\"fields\":[{\"name\":\"userId\",\"type\":\"string\"},{\"name\":\"age\",\"type\":\"int\"},{\"name\":\"email\",\"type\":[\"null\",\"string\"],\"default\":null},{\"name\":\"plan\",\"type\":{\"type\":\"enum\",\"name\":\"Plan\",\"symbols\":[\"FREE\",\"PRO\"]}}]}"
+          }
+        }
+      }
+    ]
+  }
+}

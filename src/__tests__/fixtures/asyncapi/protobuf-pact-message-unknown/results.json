@@ -1,0 +1,30 @@
+[
+  {
+    "code": "message.payload.unvalidatable",
+    "message": "Body with content type 'application/protobuf;message=.shop.Nope' is not supported by the spec comparator",
+    "mockDetails": {
+      "interactionDescription": "a message",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].contents.content",
+      "value": "\n\u0003o-1"
+    },
+    "specDetails": {
+      "location": "[root].components.messages.OrderPlaced"
+    },
+    "type": "warning"
+  },
+  {
+    "code": "message.matched",
+    "message": "Matched message at [root].components.messages.OrderPlaced",
+    "specDetails": {
+      "location": "[root].components.messages.OrderPlaced",
+      "value": {
+        "payload": {
+          "schemaFormat": "application/vnd.google.protobuf;version=3",
+          "schema": "syntax = \"proto3\";\npackage shop;\nmessage OrderPlaced { string order_id = 1; }\nmessage OrderCancelled { string order_id = 1; }\n"
+        }
+      }
+    },
+    "type": "info"
+  }
+]

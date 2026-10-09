@@ -23,8 +23,8 @@ npm run lint                            # eslint, max-warnings=0 (lint:fix to fi
 npm run prettier                        # check formatting (prettier:fix to fix)
 npm run typecheck
 npm run knip                            # unused exports/dependencies
-npm run build                           # rollup -> dist/ (index.{cjs,mjs}, cli.{cjs,mjs})
-node dist/cli.mjs --oas spec.yaml pact.json   # run the CLI
+npm run build                           # rollup -> dist/ (index.{cjs,mjs}, cli.cjs)
+node dist/cli.cjs --oas spec.yaml pact.json   # run the CLI
 ```
 
 CI runs knip, lint, prettier, typecheck and test on Node 22 and 24. PRs need a

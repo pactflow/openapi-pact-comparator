@@ -1,0 +1,61 @@
+{
+  "consumer": {
+    "name": "consumer"
+  },
+  "provider": {
+    "name": "provider"
+  },
+  "interactions": [
+    {
+      "type": "Synchronous/Messages",
+      "description": "place an order",
+      "comments": {
+        "references": {
+          "AsyncAPI": {
+            "operationId": "placeOrder"
+          }
+        }
+      },
+      "pending": false,
+      "pluginConfiguration": {
+        "protobuf": {
+          "descriptorKey": "k1"
+        }
+      },
+      "request": {
+        "contents": {
+          "content": "CgNvLTEQAQ==",
+          "contentType": "application/protobuf;message=.shop.OrderPlaced",
+          "contentTypeHint": "BINARY",
+          "encoded": "base64"
+        }
+      },
+      "response": [
+        {
+          "contents": {
+            "content": "CgNvLTE=",
+            "contentType": "application/protobuf;message=.shop.OrderCancelled",
+            "contentTypeHint": "BINARY",
+            "encoded": "base64"
+          }
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "pactSpecification": {
+      "version": "4.0"
+    },
+    "plugins": [
+      {
+        "name": "protobuf",
+        "version": "0.6.4",
+        "configuration": {
+          "k1": {
+            "protoFile": "syntax = \"proto3\";\npackage shop;\n\nmessage OrderPlaced {\n  string order_id = 1;\n  int32 quantity = 2;\n  repeated string tags = 3;\n}\n\nmessage OrderCancelled {\n  string order_id = 1;\n}\n"
+          }
+        }
+      }
+    ]
+  }
+}

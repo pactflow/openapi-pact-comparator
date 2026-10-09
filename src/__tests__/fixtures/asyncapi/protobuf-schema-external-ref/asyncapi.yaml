@@ -1,0 +1,24 @@
+asyncapi: "3.0.0"
+info:
+  title: Order Service
+  version: "1.0.0"
+components:
+  messages:
+    OrderPlaced:
+      payload:
+        schemaFormat: application/vnd.google.protobuf;version=3
+        schema:
+          $ref: "./schemas/shop.proto"
+channels:
+  main:
+    address: main
+    messages:
+      OrderPlaced:
+        $ref: "#/components/messages/OrderPlaced"
+operations:
+  receiveOrder:
+    action: receive
+    channel:
+      $ref: "#/channels/main"
+    messages:
+      - $ref: "#/channels/main/messages/OrderPlaced"

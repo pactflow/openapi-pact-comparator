@@ -1,0 +1,57 @@
+asyncapi: "3.1.0"
+info:
+  title: Order Service
+  version: "1.0.0"
+channels:
+  requests:
+    address: order-requests
+    messages:
+      OrderPlaced:
+        payload:
+          schemaFormat: application/vnd.google.protobuf;version=3
+          schema: |
+            syntax = "proto3";
+            package shop;
+
+            message OrderPlaced {
+              string order_id = 1;
+              int32 quantity = 2;
+              repeated string tags = 3;
+            }
+
+            message OrderCancelled {
+              string order_id = 1;
+            }
+
+  replies:
+    address: order-replies
+    messages:
+      OrderCancelled:
+        payload:
+          schemaFormat: application/vnd.google.protobuf;version=3
+          schema: |
+            syntax = "proto3";
+            package shop;
+
+            message OrderPlaced {
+              string order_id = 1;
+              int32 quantity = 2;
+              repeated string tags = 3;
+            }
+
+            message OrderCancelled {
+              string order_id = 1;
+            }
+
+operations:
+  placeOrder:
+    action: send
+    channel:
+      $ref: "#/channels/requests"
+    messages:
+      - $ref: "#/channels/requests/messages/OrderPlaced"
+    reply:
+      channel:
+        $ref: "#/channels/replies"
+      messages:
+        - $ref: "#/channels/replies/messages/OrderCancelled"

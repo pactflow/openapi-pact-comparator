@@ -1,0 +1,40 @@
+{
+  "consumer": {
+    "name": "consumer"
+  },
+  "provider": {
+    "name": "provider"
+  },
+  "interactions": [
+    {
+      "type": "Asynchronous/Messages",
+      "description": "a message",
+      "comments": {
+        "references": {
+          "AsyncAPI": {
+            "operationId": "receiveUser"
+          }
+        }
+      },
+      "pending": false,
+      "contents": {
+        "content": "BnUtMQ==",
+        "contentType": "avro/binary;record=UserSignedUp",
+        "contentTypeHint": "BINARY",
+        "encoded": "base64"
+      },
+      "pluginConfiguration": {
+        "avro": {
+          "record": "UserSignedUp",
+          "schemaKey": "h1",
+          "avroSchema": "{\"type\":\"record\",\"name\":\"UserSignedUp\",\"fields\":[{\"name\":\"userId\",\"type\":\"string\"}]}"
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "pactSpecification": {
+      "version": "4.0"
+    }
+  }
+}

@@ -1,0 +1,39 @@
+[
+  {
+    "code": "message.payload.unvalidatable",
+    "message": "Body with content type 'avro/binary;record=Counter' is not supported by the spec comparator",
+    "mockDetails": {
+      "interactionDescription": "a counter was read",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].contents.content",
+      "value": "������� "
+    },
+    "specDetails": {
+      "location": "[root].components.messages.Counter"
+    },
+    "type": "warning"
+  },
+  {
+    "code": "message.matched",
+    "message": "Matched message at [root].components.messages.Counter",
+    "specDetails": {
+      "location": "[root].components.messages.Counter",
+      "value": {
+        "payload": {
+          "schemaFormat": "application/vnd.apache.avro;version=1.9.0",
+          "schema": {
+            "type": "record",
+            "name": "Counter",
+            "fields": [
+              {
+                "name": "count",
+                "type": "long"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "type": "info"
+  }
+]

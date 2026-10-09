@@ -5,6 +5,13 @@
 // (see the FIXME in `parse()`), so we define only what we need here.
 import { dereferenceDoc, lastRefInChain } from "#utils/schema";
 
+import { AVRO_SCHEMA_FORMATS, avroToJsonSchema } from "./avro";
+import {
+  findProtoMessage,
+  PROTOBUF_SCHEMA_FORMATS,
+  protobufToJsonSchema,
+} from "./protobuf";
+
 export interface AsyncAPIDocument {
   asyncapi: string;
   info: { title: string; version: string };
@@ -36,6 +43,9 @@ export interface Message {
   payload?: object;
   headers?: object;
   contentType?: string;
+  name?: string;
+  title?: string;
+  messageId?: string;
 }
 
 interface Ref {
@@ -85,13 +95,71 @@ const SUPPORTED_JSON_SCHEMA_VERSIONS = ["draft-07", "draft-2019-09"];
 
 export type UnwrappedSchema =
   | { status: "schema"; schema: object | undefined; path: string }
-  | { status: "unsupported"; schemaFormat: string };
+  | { status: "unsupported"; schemaFormat: string; reason?: string };
+
+const isDict = (v: unknown): v is Record<string, unknown> =>
+  typeof v === "object" && v !== null && !Array.isArray(v);
+
+// Avro and Protobuf schemas are converted to JSON Schema on demand, when a Pact
+// interaction first needs them, and memoised against the (stable) value.
+const conversions = new WeakMap<object, UnwrappedSchema>();
+
+const convertToJsonSchema = (
+  schemaFormat: string,
+  mediaType: string,
+  schema: unknown,
+  names: string[],
+): UnwrappedSchema => {
+  const unsupported = (reason: string): UnwrappedSchema => ({
+    status: "unsupported",
+    schemaFormat,
+    reason,
+  });
+  const isAvro = AVRO_SCHEMA_FORMATS.includes(mediaType);
+  const kind = isAvro ? "Avro" : "Protobuf";
+
+  if (
+    isAvro
+      ? !isDict(schema) && typeof schema !== "string"
+      : typeof schema !== "string"
+  ) {
+    return unsupported(
+      `no ${kind} schema available (missing, or an unresolvable $ref)`,
+    );
+  }
+
+  try {
+    if (isAvro) {
+      return {
+        status: "schema",
+        schema: avroToJsonSchema(schema),
+        path: ".schema",
+      };
+    }
+    const message = findProtoMessage(schema as string, names);
+    return message
+      ? {
+          status: "schema",
+          schema: protobufToJsonSchema(message),
+          path: ".schema",
+        }
+      : unsupported(
+          `cannot choose a Protobuf message for ${names.map((n) => `'${n}'`).join(", ") || "this message"}`,
+        );
+  } catch (e) {
+    return unsupported(`invalid ${kind} schema: ${(e as Error).message}`);
+  }
+};
 
 // A payload or headers value may be a Multi Format Schema Object
 // (`{ schemaFormat, schema }`) rather than a Schema Object. Ajv ignores the
 // unknown keywords and would accept anything, so it must be unwrapped first.
 // `path` is the suffix to append to the spec location of the original value.
-export const unwrapMultiFormatSchema = (value: object): UnwrappedSchema => {
+// `names` are candidate message names, used to choose a Protobuf message.
+export const unwrapMultiFormatSchema = (
+  value: object,
+  names: string[] = [],
+): UnwrappedSchema => {
   const { schemaFormat, schema } = value as {
     schemaFormat?: unknown;
     schema?: unknown;
@@ -102,6 +170,17 @@ export const unwrapMultiFormatSchema = (value: object): UnwrappedSchema => {
 
   const [rawMediaType, ...parameters] = schemaFormat.split(";");
   const mediaType = rawMediaType.trim().toLowerCase();
+  if (
+    AVRO_SCHEMA_FORMATS.includes(mediaType) ||
+    PROTOBUF_SCHEMA_FORMATS.includes(mediaType)
+  ) {
+    let converted = conversions.get(value);
+    if (!converted) {
+      converted = convertToJsonSchema(schemaFormat, mediaType, schema, names);
+      conversions.set(value, converted);
+    }
+    return converted;
+  }
   if (!JSON_SCHEMA_FORMATS.includes(mediaType)) {
     return { status: "unsupported", schemaFormat };
   }
@@ -129,6 +208,9 @@ export const unwrapMultiFormatSchema = (value: object): UnwrappedSchema => {
 export interface ResolvedMessage {
   message: Message;
   path: string;
+  // The message with its schema $refs resolved, filled in on first use. Lives
+  // and dies with the cache that holds this entry, so it is per Comparator.
+  resolved?: Message;
 }
 
 function* iterateMessageList(
@@ -157,7 +239,13 @@ function* iterateMessageList(
       cache.set(ref.$ref, result);
       yield result;
     } else {
-      yield { message: ref as Message, path: `${inlinePathBase}[${i}]` };
+      const path = `${inlinePathBase}[${i}]`;
+      let result = cache.get(path);
+      if (!result) {
+        result = { message: ref as Message, path };
+        cache.set(path, result);
+      }
+      yield result;
     }
   }
 }

@@ -1,0 +1,33 @@
+[
+  {
+    "code": "message.no.match",
+    "message": "No message in the operation matched the interaction",
+    "mockDetails": {
+      "interactionDescription": "an order was placed",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0]",
+      "value": "an order was placed"
+    },
+    "specDetails": {
+      "location": "[root].operations.receiveOrderPlaced.messages"
+    },
+    "type": "error",
+    "causes": [
+      {
+        "code": "message.payload.incompatible",
+        "message": "Message payload is incompatible with the schema in the spec file: must be string",
+        "mockDetails": {
+          "interactionDescription": "an order was placed",
+          "interactionState": "[none]",
+          "location": "[root].interactions[0].contents.content.quantity",
+          "value": 2
+        },
+        "specDetails": {
+          "location": "[root].components.messages.OrderPlaced.payload.schema.properties.quantity.type",
+          "value": "string"
+        },
+        "type": "error"
+      }
+    ]
+  }
+]

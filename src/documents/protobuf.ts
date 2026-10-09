@@ -111,18 +111,27 @@ const allTypes = (ns: Namespace): Type[] =>
     ...("nestedArray" in n ? allTypes(n as Namespace) : []),
   ]);
 
-// Picks the message in a .proto source whose name matches one of the
-// candidates (case-insensitive), or the sole message if there is only one.
+// Picks the message in a .proto source matching a candidate, trying candidates
+// in order. Candidates are compared case-insensitively against the simple name
+// and the full name (with or without a leading dot). Falls back to the sole
+// message if there is only one.
 export const findProtoMessage = (
   source: string,
   candidates: string[],
 ): Type | undefined => {
   const types = allTypes(parseProto(source));
-  const wanted = candidates.map((c) => c.toLowerCase());
-  return (
-    types.find((t) => wanted.includes(t.name.toLowerCase())) ??
-    (types.length === 1 ? types[0] : undefined)
-  );
+  for (const candidate of candidates) {
+    const wanted = candidate.replace(/^\./, "").toLowerCase();
+    const found = types.find(
+      (t) =>
+        t.name.toLowerCase() === wanted ||
+        t.fullName.replace(/^\./, "").toLowerCase() === wanted,
+    );
+    if (found) {
+      return found;
+    }
+  }
+  return types.length === 1 ? types[0] : undefined;
 };
 
 type JsonSchema = Record<string, unknown>;
@@ -200,6 +209,17 @@ const convertMessage = (
   const required = fields.filter((f) => f.required).map((f) => f.name);
   if (required.length) {
     schema.required = required;
+  }
+  // at most one member of each oneof may be set. Single-member groups (which
+  // include proto3 `optional`'s synthetic ones) need no constraint.
+  const exclusive = type.oneofsArray.flatMap((oneof) => {
+    const names = oneof.fieldsArray.map((f) => f.name);
+    return names.flatMap((a, i) =>
+      names.slice(i + 1).map((b) => ({ required: [a, b] })),
+    );
+  });
+  if (exclusive.length) {
+    schema.not = { anyOf: exclusive };
   }
   active.delete(name);
   if (name in defs) {

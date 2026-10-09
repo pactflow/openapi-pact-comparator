@@ -98,6 +98,34 @@ describe("protobuf", () => {
     ).toBe("Only");
   });
 
+  it("tries candidates in order, by simple or full name", () => {
+    expect(findProtoMessage(protoFile, ["Owner", "Item"])?.name).toBe("Owner");
+    expect(findProtoMessage(protoFile, ["Item", "Owner"])?.name).toBe("Item");
+    expect(findProtoMessage(protoFile, ["shop.Owner"])?.name).toBe("Owner");
+    expect(findProtoMessage(protoFile, [".shop.Item"])?.name).toBe("Item");
+    expect(findProtoMessage(protoFile, ["nope", "OWNER"])?.name).toBe("Owner");
+  });
+
+  it("enforces oneof exclusivity, but not for single-member groups", () => {
+    const type = findProtoMessage(
+      `syntax = "proto3";
+       message M {
+         optional int32 opt = 1;
+         oneof choice { string a = 2; int32 b = 3; bool c = 4; }
+         oneof solo { string d = 5; }
+       }`,
+      ["M"],
+    )!;
+    const validate = new Ajv({ strict: false }).compile(
+      protobufToJsonSchema(type),
+    );
+    expect(validate({})).toBe(true);
+    expect(validate({ opt: 1, a: "x", d: "y" })).toBe(true);
+    expect(validate({ b: 1 })).toBe(true);
+    expect(validate({ a: "x", b: 1 })).toBe(false);
+    expect(validate({ b: 1, c: true })).toBe(false);
+  });
+
   it("reports unknown enum numbers as strings", () => {
     const type = protobuf
       .parse(protoFile.replace("Kind kind = 6;", "int32 kind = 6;"), {

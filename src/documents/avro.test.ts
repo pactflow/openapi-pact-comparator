@@ -105,6 +105,25 @@ describe("avro", () => {
     expect(decodeAvro(owner, wrapper, "Owner")).toEqual({ email: "a@b.c" });
   });
 
+  it("finds records by simple or full name, and throws if not found", () => {
+    const base64 = encode({ ...item, next: null });
+    const json = JSON.stringify(schema);
+    expect(decodeAvro(base64, json, "Item")).toMatchObject({ id: 5 });
+    expect(decodeAvro(base64, json, "com.example.Item")).toMatchObject({
+      id: 5,
+    });
+    expect(() => decodeAvro(base64, json, "Other")).toThrow(/not found/);
+  });
+
+  it("supports top-level primitive schemas", () => {
+    const base64 = encode("hello", { type: "string" });
+    for (const s of ["string", '"string"', { type: "string" }]) {
+      expect(decodeAvro(base64, s)).toBe("hello");
+      expect(avroToJsonSchema(s)).toEqual({ type: "string" });
+    }
+    expect(() => avroToJsonSchema("nonsense")).toThrow();
+  });
+
   it("converts to a JSON Schema that accepts the decoded payload", () => {
     const jsonSchema = avroToJsonSchema(schema);
     const ajv = new Ajv({ strict: false });

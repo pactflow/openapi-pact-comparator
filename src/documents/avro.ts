@@ -19,26 +19,53 @@ export const AVRO_SCHEMA_FORMATS = [
   "application/vnd.apache.avro+yaml",
 ];
 
+const PRIMITIVES = [
+  "null",
+  "boolean",
+  "int",
+  "long",
+  "float",
+  "double",
+  "bytes",
+  "string",
+];
+
 const parseAvroSchema = (schema: unknown): AvroType => {
   if (typeof schema === "string") {
-    schema = JSON.parse(schema); // avoid avro-js treating strings as file paths
+    const text = schema.trim();
+    try {
+      schema = JSON.parse(text);
+    } catch {
+      // not JSON: only a bare primitive name (e.g. `string`) is valid
+      if (!PRIMITIVES.includes(text)) {
+        throw new Error(`Not a valid Avro schema: ${text}`);
+      }
+      schema = text;
+    }
   }
-  return avroParse(schema);
+  // avro-js treats a bare string as a file path, so wrap type names
+  return avroParse(typeof schema === "string" ? { type: schema } : schema);
 };
 
 // A pact may hold a single record or a whole schema; when `record` names a
-// nested type, find it in the tree.
+// nested type, find it in the tree. `name` may be a full name or a simple name.
+// An explicit name that can't be found is an error, rather than silently
+// decoding as the wrong type.
 const findNamedType = (root: AvroType, name?: string): AvroType => {
-  if (!name || root.getName?.() === name) {
+  if (!name) {
     return root;
   }
+  const matches = (type: AvroType) => {
+    const fullName: string | undefined = type.getName?.();
+    return fullName === name || fullName?.endsWith(`.${name}`);
+  };
   const seen = new Set<AvroType>();
   const visit = (type: AvroType): AvroType | undefined => {
     if (seen.has(type)) {
       return undefined;
     }
     seen.add(type);
-    if (type.getName?.() === name) {
+    if (matches(type)) {
       return type;
     }
     const children: AvroType[] = [];
@@ -53,7 +80,11 @@ const findNamedType = (root: AvroType, name?: string): AvroType => {
     }
     return children.map(visit).find(Boolean);
   };
-  return visit(root) ?? root;
+  const found = visit(root);
+  if (!found) {
+    throw new Error(`Avro type '${name}' not found in schema`);
+  }
+  return found;
 };
 
 const underlying = (type: AvroType): AvroType =>

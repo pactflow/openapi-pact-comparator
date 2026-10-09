@@ -16,16 +16,16 @@ export interface AsyncAPIDocument {
   };
 }
 
-export interface Channel {
+interface Channel {
   messages?: Record<string, Message | Ref>;
 }
 
-export interface OperationReply {
+interface OperationReply {
   channel?: Ref;
   messages?: Array<Ref | Message>;
 }
 
-export interface Operation {
+interface Operation {
   action: "send" | "receive";
   channel: Ref;
   messages?: Array<Ref | Message>;
@@ -38,7 +38,7 @@ export interface Message {
   contentType?: string;
 }
 
-export interface Ref {
+interface Ref {
   $ref: string;
 }
 
@@ -138,7 +138,9 @@ function* iterateMessageList(
   doc: AsyncAPIDocument,
 ): Generator<ResolvedMessage> {
   for (const [i, ref] of messages.entries()) {
-    if (ref == null || typeof ref !== "object") continue;
+    if (ref == null || typeof ref !== "object") {
+      continue;
+    }
     if (isRef(ref)) {
       const cached = cache.get(ref.$ref);
       if (cached) {
@@ -146,7 +148,9 @@ function* iterateMessageList(
         continue;
       }
       const message = dereferenceDoc(ref, doc) as Message | undefined;
-      if (!message) continue;
+      if (!message) {
+        continue;
+      }
       const finalRef = lastRefInChain(ref, doc) ?? ref.$ref;
       const path = "[root]." + finalRef.replace(/^#\//, "").replace(/\//g, ".");
       const result: ResolvedMessage = { message, path };
@@ -164,7 +168,9 @@ export function* iterateMessages(
   cache: Map<string, ResolvedMessage>,
 ): Generator<ResolvedMessage> {
   const operation = doc.operations?.[operationId];
-  if (!operation) return;
+  if (!operation) {
+    return;
+  }
 
   const messages = Array.isArray(operation.messages) ? operation.messages : [];
   yield* iterateMessageList(
@@ -181,7 +187,9 @@ export function* iterateReplyMessages(
   cache: Map<string, ResolvedMessage>,
 ): Generator<ResolvedMessage> {
   const operation = doc.operations?.[operationId];
-  if (!operation?.reply) return;
+  if (!operation?.reply) {
+    return;
+  }
 
   const messages = Array.isArray(operation.reply.messages)
     ? operation.reply.messages

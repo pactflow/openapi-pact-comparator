@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { type Pact, type SyncInteraction, parse } from "./pact";
+
+import { type Pact, parse, type SyncInteraction } from "./pact";
 
 describe("#parser", () => {
   it("flattens headers", () => {
@@ -26,7 +27,9 @@ describe("#parser", () => {
     } as Pact;
 
     const parsed = parse(json).interactions[0];
-    if (parsed._kind !== "http") throw new Error("expected http interaction");
+    if (parsed._kind !== "http") {
+      throw new Error("expected http interaction");
+    }
     expect(parsed.request.headers!["Content-Type"]).toEqual("text/json");
     expect(parsed.request.headers!["Accept"]).toEqual(
       "text/plain,application/json,text/json",
@@ -101,8 +104,9 @@ describe("#parser", () => {
 
     const pact = parse(json as Pact);
     const interaction = pact.interactions[0];
-    if (interaction._kind !== "async")
+    if (interaction._kind !== "async") {
       throw new Error("expected async interaction");
+    }
     expect(interaction.asyncapiReferences).toEqual({
       operationId: "consumeFromEventsQueue",
     });
@@ -158,8 +162,9 @@ describe("#parser", () => {
     const pact = parse(json as Pact);
     const first = pact.interactions[0];
     const second = pact.interactions[1];
-    if (first._kind !== "async" || second._kind !== "async")
+    if (first._kind !== "async" || second._kind !== "async") {
       throw new Error("expected async interactions");
+    }
     expect(first.asyncapiReferences).toBeUndefined();
     expect(second.asyncapiReferences).toBeUndefined();
   });
@@ -231,7 +236,9 @@ describe("#parser", () => {
     const pact = parse(json as Pact);
 
     const interactions = pact.interactions.map((i) => {
-      if (i._kind !== "http") throw new Error("expected http interaction");
+      if (i._kind !== "http") {
+        throw new Error("expected http interaction");
+      }
       return i;
     });
 

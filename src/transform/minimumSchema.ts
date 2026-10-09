@@ -1,7 +1,9 @@
 import type { SchemaObject } from "ajv";
-import { cloneDeep, uniq, get, set } from "lodash-es";
+import { cloneDeep, get, set, uniq } from "lodash-es";
 import type { OpenAPIV3 } from "openapi-types";
+
 import { dereferenceOas, splitPath, traverse } from "#utils/schema";
+
 import { flattenAllOf } from "./flattenAllOf";
 
 // draft-06 onwards converts exclusiveMinimum and exclusiveMaximum to numbers

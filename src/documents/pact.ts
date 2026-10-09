@@ -167,11 +167,11 @@ export interface SyncInteraction {
   }>;
 }
 
-export interface SkippedInteraction {
+interface SkippedInteraction {
   _kind: "skip";
 }
 
-export type Interaction =
+type Interaction =
   HttpInteraction | AsyncInteraction | SyncInteraction | SkippedInteraction;
 
 export interface ParsedPact {
@@ -279,8 +279,12 @@ const cleanString = (s: string) => s.replaceAll(/[\r\n\0]/g, "");
 const flattenValues = (
   values?: null | string | Record<string, string | string[]>,
 ): undefined | string | Record<string, string> => {
-  if (!values) return undefined;
-  if (typeof values === "string") return values as string;
+  if (!values) {
+    return undefined;
+  }
+  if (typeof values === "string") {
+    return values as string;
+  }
 
   return Object.fromEntries(
     Object.entries(values || {}).map(([key, value]) => [
@@ -333,8 +337,12 @@ const interactionV4 = (i: RawInteraction): HttpInteraction => ({
 const asAsyncapiReferences = (
   asyncapiRef: unknown,
 ): { operationId?: string } | undefined => {
-  if (!asyncapiRef) return undefined;
-  if (typeof asyncapiRef !== "object") return {};
+  if (!asyncapiRef) {
+    return undefined;
+  }
+  if (typeof asyncapiRef !== "object") {
+    return {};
+  }
   return { ...asyncapiRef };
 };
 
@@ -416,15 +424,21 @@ export const parse = (pact: Pact): ParsedPact => {
   return {
     metadata,
     interactions: rawInteractions.map((i): Interaction => {
-      if (isHttpInteraction(i)) return httpParser(i);
-      if (isAsyncInteraction(i)) return parseAsyncInteraction(i);
-      if (isSyncInteraction(i)) return parseSyncInteraction(i);
+      if (isHttpInteraction(i)) {
+        return httpParser(i);
+      }
+      if (isAsyncInteraction(i)) {
+        return parseAsyncInteraction(i);
+      }
+      if (isSyncInteraction(i)) {
+        return parseSyncInteraction(i);
+      }
       return { _kind: "skip" };
     }),
   };
 };
 
-export class ParserError extends Error {
+class ParserError extends Error {
   errors: ErrorObject[];
 
   constructor(errors: ErrorObject[]) {

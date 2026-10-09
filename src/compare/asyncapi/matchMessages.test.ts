@@ -1,7 +1,9 @@
 import Ajv from "ajv/dist/2019";
 import addFormats from "ajv-formats";
 import { describe, expect, it } from "vitest";
+
 import type { AsyncAPIDocument, ResolvedMessage } from "#documents/asyncapi";
+
 import { tryMatchAllMessages } from "./matchMessages";
 
 const makeAjv = () => {

@@ -1,9 +1,11 @@
 import type Ajv from "ajv/dist/2019";
+
 import type { AsyncAPIDocument, ResolvedMessage } from "#documents/asyncapi";
 import { iterateMessages } from "#documents/asyncapi";
 import type { AsyncInteraction } from "#documents/pact";
 import type { Result } from "#results/index";
 import { baseMockDetails } from "#results/index";
+
 import { checkAsyncapiPreamble, tryMatchAllMessages } from "./matchMessages";
 
 export function* compareAsyncInteraction(

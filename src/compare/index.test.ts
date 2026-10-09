@@ -1,8 +1,10 @@
 import { describe, expect, it } from "vitest";
+
 import type { AsyncAPIDocument } from "#documents/asyncapi";
 import { ParserError } from "#documents/oas";
 import type { Pact } from "#documents/pact";
 import type { Result } from "#results/index";
+
 import { Comparator } from "./index";
 
 describe("Comparator constructor", () => {

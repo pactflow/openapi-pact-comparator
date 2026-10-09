@@ -13,7 +13,11 @@ export const bodyValidationStatus = (
   body: unknown,
   validatableTypes: string[] = [...VALIDATABLE_CONTENT_TYPES],
 ): BodyValidationStatus => {
-  if (typeof contentType !== "string") return "skip";
-  if (findMatchingType(contentType, validatableTypes)) return "validate";
+  if (typeof contentType !== "string") {
+    return "skip";
+  }
+  if (findMatchingType(contentType, validatableTypes)) {
+    return "validate";
+  }
   return body !== undefined ? "warn" : "skip";
 };

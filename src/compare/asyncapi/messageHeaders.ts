@@ -1,6 +1,7 @@
 import type { SchemaObject } from "ajv";
 import type Ajv from "ajv/dist/2019";
 import { get } from "lodash-es";
+
 import type { Message } from "#documents/asyncapi";
 import { unwrapMultiFormatSchema } from "#documents/asyncapi";
 import type { Result } from "#results/index";
@@ -23,8 +24,12 @@ export function* compareMessageHeaders(
   messagePath: string,
   direction: "request" | "response",
 ): Iterable<Result> {
-  if (!message.headers) return;
-  if (content.metadata === undefined) return;
+  if (!message.headers) {
+    return;
+  }
+  if (content.metadata === undefined) {
+    return;
+  }
 
   const unwrapped = unwrapMultiFormatSchema(message.headers);
   if (unwrapped.status === "unsupported") {
@@ -46,7 +51,9 @@ export function* compareMessageHeaders(
   }
 
   const headersSchema = unwrapped.schema;
-  if (!headersSchema) return;
+  if (!headersSchema) {
+    return;
+  }
 
   const schemaPath = `${messagePath}.headers${unwrapped.path}`;
   const schemaId = `${schemaPath}#${direction}`;

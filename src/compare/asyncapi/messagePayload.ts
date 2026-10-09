@@ -1,6 +1,7 @@
 import type { SchemaObject } from "ajv";
 import type Ajv from "ajv/dist/2019";
 import { get } from "lodash-es";
+
 import type { Message } from "#documents/asyncapi";
 import { unwrapMultiFormatSchema } from "#documents/asyncapi";
 import type { Result } from "#results/index";
@@ -11,8 +12,8 @@ import {
   formatSchemaPath,
 } from "#results/index";
 import { transformReceivedSchema } from "#transform/index";
+import { bodyValidationStatus } from "#utils/body";
 import { splitPath } from "#utils/schema";
-import { bodyValidationStatus } from "#compare/utils/body";
 import { getValidateFunction } from "#utils/validation";
 
 export function* compareMessagePayload(
@@ -44,7 +45,9 @@ export function* compareMessagePayload(
     return;
   }
 
-  if (status === "skip") return;
+  if (status === "skip") {
+    return;
+  }
 
   const unwrapped = message.payload
     ? unwrapMultiFormatSchema(message.payload)

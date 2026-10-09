@@ -4,6 +4,7 @@ import fs from "fs";
 import { load } from "js-yaml";
 import path from "path";
 import { describe, expect, it } from "vitest";
+
 import { Comparator } from "../../src/compare";
 
 const parse = (spec: string) => {
@@ -45,21 +46,31 @@ const makeRunner = (dir: string) => async () => {
 const loadDir = (dir: string) => {
   for (const entry of fs.readdirSync(dir).sort()) {
     const fullPath = path.join(dir, entry);
-    if (!fs.statSync(fullPath).isDirectory()) continue;
+    if (!fs.statSync(fullPath).isDirectory()) {
+      continue;
+    }
 
     const isSkip = entry.endsWith(".skip");
     const isOnly = entry.endsWith(".only");
     const name = entry.replace(/\.(skip|only)$/, "");
 
     if (fs.existsSync(path.join(fullPath, "pact.json"))) {
-      if (isSkip) it.skip(name);
-      else if (isOnly) it.only(name, makeRunner(fullPath));
-      else it(name, makeRunner(fullPath));
+      if (isSkip) {
+        it.skip(name);
+      } else if (isOnly) {
+        it.only(name, makeRunner(fullPath));
+      } else {
+        it(name, makeRunner(fullPath));
+      }
     } else {
       const fn = () => loadDir(fullPath);
-      if (isSkip) describe.skip(name, fn);
-      else if (isOnly) describe.only(name, fn);
-      else describe(name, fn);
+      if (isSkip) {
+        describe.skip(name, fn);
+      } else if (isOnly) {
+        describe.only(name, fn);
+      } else {
+        describe(name, fn);
+      }
     }
   }
 };

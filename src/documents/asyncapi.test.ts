@@ -1,10 +1,11 @@
 import { describe, expect, it } from "vitest";
+
 import type { AsyncAPIDocument, ResolvedMessage } from "./asyncapi";
 import {
   iterateMessages,
   iterateReplyMessages,
-  ParserError,
   parse,
+  ParserError,
   unwrapMultiFormatSchema,
 } from "./asyncapi";
 

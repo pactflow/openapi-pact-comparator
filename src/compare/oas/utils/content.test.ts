@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+
 import { findMatchingType } from "./content";
 
 describe("#findMatchingType", () => {

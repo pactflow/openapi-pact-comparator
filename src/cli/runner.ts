@@ -1,6 +1,8 @@
 import fs from "node:fs";
+
 import { load } from "js-yaml";
 import type { OpenAPIV2, OpenAPIV3 } from "openapi-types";
+
 import type { AsyncAPIDocument } from "../documents/asyncapi";
 import { Comparator, type Result } from "../index";
 
@@ -18,7 +20,7 @@ export interface ComparatorDocs {
   asyncapi?: AsyncAPIDocument;
 }
 
-export interface ComparatorLike {
+interface ComparatorLike {
   compare(pact: unknown): AsyncGenerator<Result>;
 }
 

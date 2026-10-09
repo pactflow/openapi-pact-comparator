@@ -4,13 +4,13 @@
 
 This compares OpenAPI schemas and Pact contracts to determine if they are
 compatible. It is inspired by
-[swagger-mock-validator](https://github.com/pactflow/swagger-mock-validator)
-and aims to retain a mostly compatible interface.
+[swagger-mock-validator](https://github.com/pactflow/swagger-mock-validator) and
+aims to retain a mostly compatible interface.
 
 ## Why rewrite it?
 
-[swagger-mock-validator](https://github.com/pactflow/swagger-mock-validator)
-has aged, and is very difficult to extend and improve on.
+[swagger-mock-validator](https://github.com/pactflow/swagger-mock-validator) has
+aged, and is very difficult to extend and improve on.
 
 It is also very slow primarily due to inefficient use of
 [ajv](https://ajv.js.org/); schemas are unnecessarily recompiled everytime
@@ -32,8 +32,8 @@ Instead of performing the comparison per pair of OAS + Pact, we can reuse the
 compiled OAS schemas across multiple Pacts.
 
 **A fast HTTP router is used to match provider routes**. Instead of iterating
-through an array of routes, we use [Radix
-Tree](https://en.wikipedia.org/wiki/Radix_tree) search using
+through an array of routes, we use
+[Radix Tree](https://en.wikipedia.org/wiki/Radix_tree) search using
 [find-my-way](https://github.com/delvedor/find-my-way) This allows large
 providers to be traversed quickly.
 
@@ -61,9 +61,9 @@ for (const pact of pacts) {
 ## Quirks mode
 
 To retain compatibility with
-[swagger-mock-validator](https://github.com/pactflow/swagger-mock-validator),
-an environment variable `QUIRKS` can be set [to any value]. When this is true,
-all of SMV quirks are reproduced in case you are unable to migrate immediately.
+[swagger-mock-validator](https://github.com/pactflow/swagger-mock-validator), an
+environment variable `QUIRKS` can be set [to any value]. When this is true, all
+of SMV quirks are reproduced in case you are unable to migrate immediately.
 
 The quirks can also be enabled/disabled by adding to the `info` section of the
 OAS some extensions in the form of `x-opc-config-${quirk-name}`, where quirks

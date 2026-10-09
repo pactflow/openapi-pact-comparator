@@ -47,8 +47,8 @@ With error handling omitted for brevity:
 ```
 import { Comparator } from "openapi-pact-comparator";
 
-// openapi is object from JSON.parse() or yaml.load()
-const comparator = new Comparator(openapi);
+// oas/asyncapi is object from JSON.parse() or yaml.load()
+const comparator = new Comparator({ oas, asyncapi });
 
 // pacts is array of objects the same way
 for (const pact of pacts) {
@@ -57,6 +57,24 @@ for (const pact of pacts) {
   }
 }
 ```
+
+## Avro and Protobuf
+
+Avro and Protobuf message payloads are supported for AsyncAPI, using Pact v4
+files from `pact-avro-plugin` and `pact-protobuf-plugin`. Protobuf schemas must
+be self-contained: `.proto` sources that `import` other files (including
+well-known types such as `google/protobuf/timestamp.proto`) cannot be resolved,
+and are reported as unsupported rather than compared.
+
+Payloads are decoded to JavaScript numbers, which can only represent integers
+exactly up to 2^53 (9,007,199,254,740,992). Beyond that:
+
+- Protobuf `int64`, `uint64`, `sint64`, `fixed64` and `sfixed64` values are
+  silently rounded to the nearest representable number. The comparison still
+  runs, so a rounded value could pass or fail a check it would not have with the
+  exact value.
+- Avro `long` values are not decoded at all, and the message is reported as
+  unvalidatable.
 
 ## Quirks mode
 

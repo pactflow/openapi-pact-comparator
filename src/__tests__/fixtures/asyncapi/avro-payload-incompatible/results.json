@@ -1,0 +1,51 @@
+[
+  {
+    "code": "message.no.match",
+    "message": "No message in the operation matched the interaction",
+    "mockDetails": {
+      "interactionDescription": "a user signed up",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0]",
+      "value": "a user signed up"
+    },
+    "specDetails": {
+      "location": "[root].operations.receiveUserSignedUp.messages"
+    },
+    "type": "error",
+    "causes": [
+      {
+        "code": "message.payload.incompatible",
+        "message": "Message payload is incompatible with the schema in the spec file: must be string",
+        "mockDetails": {
+          "interactionDescription": "a user signed up",
+          "interactionState": "[none]",
+          "location": "[root].interactions[0].contents.content.age",
+          "value": 30
+        },
+        "specDetails": {
+          "location": "[root].components.messages.UserSignedUp.payload.schema.properties.age.type",
+          "value": "string"
+        },
+        "type": "error"
+      },
+      {
+        "code": "message.payload.incompatible",
+        "message": "Message payload is incompatible with the schema in the spec file: must be equal to one of the allowed values",
+        "mockDetails": {
+          "interactionDescription": "a user signed up",
+          "interactionState": "[none]",
+          "location": "[root].interactions[0].contents.content.plan",
+          "value": "PRO"
+        },
+        "specDetails": {
+          "location": "[root].components.messages.UserSignedUp.payload.schema.properties.plan.enum",
+          "value": [
+            "FREE",
+            "TEAM"
+          ]
+        },
+        "type": "error"
+      }
+    ]
+  }
+]

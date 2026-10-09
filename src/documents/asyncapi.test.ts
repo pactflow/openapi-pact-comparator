@@ -272,9 +272,6 @@ describe("unwrapMultiFormatSchema", () => {
   });
 
   it.each([
-    "application/vnd.apache.avro;version=1.9.0",
-    "application/vnd.apache.avro+json;version=1.9.0",
-    "application/vnd.google.protobuf;version=3",
     "application/raml+yaml;version=1.0",
     "application/x-unknown",
     "application/schema+json;version=draft-04",
@@ -298,4 +295,104 @@ describe("unwrapMultiFormatSchema", () => {
       }),
     ).toEqual({ status: "schema", schema: undefined, path: ".schema" });
   });
+});
+
+describe("unwrapMultiFormatSchema: Avro and Protobuf", () => {
+  const AVRO = "application/vnd.apache.avro;version=1.9.0";
+  const PROTO = "application/vnd.google.protobuf;version=3";
+  const proto = `syntax = "proto3"; message A { string a = 1; } message B { string b = 1; }`;
+  const avro = {
+    type: "record",
+    name: "A",
+    fields: [{ name: "a", type: "string" }],
+  };
+
+  it("converts Avro to JSON Schema", () => {
+    expect(
+      unwrapMultiFormatSchema({ schemaFormat: AVRO, schema: avro }),
+    ).toEqual({
+      status: "schema",
+      schema: {
+        type: "object",
+        properties: { a: { type: "string" } },
+        required: ["a"],
+      },
+      path: ".schema",
+    });
+  });
+
+  it("converts Protobuf to JSON Schema, choosing the message by name", () => {
+    expect(
+      unwrapMultiFormatSchema({ schemaFormat: PROTO, schema: proto }, ["b"]),
+    ).toMatchObject({
+      status: "schema",
+      schema: { properties: { b: { type: "string" } } },
+      path: ".schema",
+    });
+  });
+
+  it("converts a wrapper shared by several messages once per message", () => {
+    // $refs are resolved per message, so each message has its own copy
+    const a = { schemaFormat: PROTO, schema: proto };
+    const b = { schemaFormat: PROTO, schema: proto };
+    expect(unwrapMultiFormatSchema(a, ["A"])).toMatchObject({
+      schema: { properties: { a: { type: "string" } } },
+    });
+    expect(unwrapMultiFormatSchema(b, ["B"])).toMatchObject({
+      schema: { properties: { b: { type: "string" } } },
+    });
+  });
+
+  it("does not convert the same value twice", () => {
+    const wrapper = { schemaFormat: AVRO, schema: avro };
+    expect(unwrapMultiFormatSchema(wrapper)).toBe(
+      unwrapMultiFormatSchema(wrapper),
+    );
+  });
+
+  it("does not modify the wrapper", () => {
+    const wrapper = { schemaFormat: AVRO, schema: structuredClone(avro) };
+    const copy = structuredClone(wrapper);
+    unwrapMultiFormatSchema(wrapper);
+    expect(wrapper).toEqual(copy);
+  });
+
+  it.each([
+    ["an unresolved Avro $ref", AVRO, undefined, /no Avro schema available/],
+    [
+      "a JSON Schema in an Avro wrapper",
+      AVRO,
+      { type: "object" },
+      /invalid Avro/,
+    ],
+    ["an unparseable Avro string", AVRO, "{not json", /invalid Avro/],
+    [
+      "an unresolved Protobuf $ref",
+      PROTO,
+      undefined,
+      /no Protobuf schema available/,
+    ],
+    [
+      "a Protobuf schema that is not a string",
+      PROTO,
+      { type: "object" },
+      /no Protobuf schema available/,
+    ],
+    ["invalid Protobuf source", PROTO, "message {", /invalid Protobuf/],
+    [
+      "a Protobuf message that cannot be chosen",
+      PROTO,
+      proto,
+      /cannot choose a Protobuf message for 'Unrelated'/,
+    ],
+  ])(
+    "reports %s as unsupported, with a reason",
+    (_, schemaFormat, schema, reason) => {
+      const result = unwrapMultiFormatSchema({ schemaFormat, schema }, [
+        "Unrelated",
+      ]);
+      expect(result).toMatchObject({ status: "unsupported", schemaFormat });
+      expect((result as { reason: string }).reason).toMatch(reason);
+    },
+  );
 });

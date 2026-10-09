@@ -1,0 +1,33 @@
+[
+  {
+    "code": "message.no.match",
+    "message": "No message in the operation matched the interaction",
+    "mockDetails": {
+      "interactionDescription": "a counter was read",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0]",
+      "value": "a counter was read"
+    },
+    "specDetails": {
+      "location": "[root].operations.receiveCounter.messages"
+    },
+    "type": "error",
+    "causes": [
+      {
+        "code": "message.payload.incompatible",
+        "message": "Message payload is incompatible with the schema in the spec file: must be string",
+        "mockDetails": {
+          "interactionDescription": "a counter was read",
+          "interactionState": "[none]",
+          "location": "[root].interactions[0].contents.content.count",
+          "value": 9007199254740992
+        },
+        "specDetails": {
+          "location": "[root].components.messages.Counter.payload.schema.properties.count.type",
+          "value": "string"
+        },
+        "type": "error"
+      }
+    ]
+  }
+]

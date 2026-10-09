@@ -16,6 +16,16 @@ import { bodyValidationStatus } from "#utils/body";
 import { splitPath } from "#utils/schema";
 import { getValidateFunction } from "#utils/validation";
 
+// Candidate names for a message: its key in the spec (the last segment of its
+// path, when it has one), then the names it declares itself.
+const messageNames = (message: Message, messagePath: string): string[] =>
+  [
+    /\.([^.[\]]+)$/.exec(messagePath)?.[1],
+    message.name,
+    message.title,
+    message.messageId,
+  ].filter((n): n is string => typeof n === "string");
+
 export function* compareMessagePayload(
   ajv: Ajv,
   message: Message,
@@ -50,13 +60,16 @@ export function* compareMessagePayload(
   }
 
   const unwrapped = message.payload
-    ? unwrapMultiFormatSchema(message.payload)
+    ? unwrapMultiFormatSchema(
+        message.payload,
+        messageNames(message, messagePath),
+      )
     : undefined;
 
   if (unwrapped?.status === "unsupported") {
     yield {
       code: "message.payload.unvalidatable",
-      message: `Schema with format '${unwrapped.schemaFormat}' is not supported by the spec comparator`,
+      message: `Schema with format '${unwrapped.schemaFormat}' is not supported by the spec comparator${unwrapped.reason ? `: ${unwrapped.reason}` : ""}`,
       mockDetails: {
         ...baseMockDetails(interactionContext),
         location: contentLocation,

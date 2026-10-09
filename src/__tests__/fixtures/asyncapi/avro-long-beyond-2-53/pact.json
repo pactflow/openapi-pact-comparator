@@ -1,0 +1,51 @@
+{
+  "consumer": {
+    "name": "consumer"
+  },
+  "provider": {
+    "name": "provider"
+  },
+  "interactions": [
+    {
+      "type": "Asynchronous/Messages",
+      "description": "a counter was read",
+      "comments": {
+        "references": {
+          "AsyncAPI": {
+            "operationId": "receiveCounter"
+          }
+        }
+      },
+      "pending": false,
+      "contents": {
+        "content": "goCAgICAgCA=",
+        "contentType": "avro/binary;record=Counter",
+        "contentTypeHint": "BINARY",
+        "encoded": "base64"
+      },
+      "pluginConfiguration": {
+        "avro": {
+          "record": "Counter",
+          "schemaKey": "h1",
+          "avroSchema": "{\"type\":\"record\",\"name\":\"Counter\",\"fields\":[{\"name\":\"count\",\"type\":\"long\"}]}"
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "pactSpecification": {
+      "version": "4.0"
+    },
+    "plugins": [
+      {
+        "name": "avro",
+        "version": "0.1.0",
+        "configuration": {
+          "h1": {
+            "avroSchema": "{\"type\":\"record\",\"name\":\"Counter\",\"fields\":[{\"name\":\"count\",\"type\":\"long\"}]}"
+          }
+        }
+      }
+    ]
+  }
+}

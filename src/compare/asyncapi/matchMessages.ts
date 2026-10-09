@@ -113,6 +113,26 @@ type MessageLocations = {
   spec: string;
 };
 
+// Resolving $refs builds new objects, so it is done once per message and kept
+// on the candidate (which the Comparator caches); downstream caches such as
+// schema conversion rely on the result being stable.
+const resolveMessage = (
+  candidate: ResolvedMessage,
+  asyncapi: AsyncAPIDocument,
+): Message => {
+  const { message } = candidate;
+  candidate.resolved ??= {
+    ...message,
+    payload: message.payload
+      ? (resolveSchemaRefs(message.payload, asyncapi) as object)
+      : undefined,
+    headers: message.headers
+      ? (resolveSchemaRefs(message.headers, asyncapi) as object)
+      : undefined,
+  };
+  return candidate.resolved;
+};
+
 export function* tryMatchAllMessages(
   ajv: Ajv,
   asyncapi: AsyncAPIDocument,
@@ -126,15 +146,7 @@ export function* tryMatchAllMessages(
   const allCauses: Result[] = [];
 
   for (const candidate of candidates) {
-    const message: Message = {
-      ...candidate.message,
-      payload: candidate.message.payload
-        ? (resolveSchemaRefs(candidate.message.payload, asyncapi) as object)
-        : undefined,
-      headers: candidate.message.headers
-        ? (resolveSchemaRefs(candidate.message.headers, asyncapi) as object)
-        : undefined,
-    };
+    const message = resolveMessage(candidate, asyncapi);
 
     const allResults: Result[] = [
       ...compareMessagePayload(

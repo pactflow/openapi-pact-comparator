@@ -1,7 +1,7 @@
 [
   {
     "code": "message.payload.unvalidatable",
-    "message": "Schema with format 'application/vnd.apache.avro+json;version=1.9.0' is not supported by the spec comparator",
+    "message": "Schema with format 'application/vnd.apache.avro+json;version=1.9.0' is not supported by the spec comparator: invalid Avro schema: unknown type: \"object\"",
     "mockDetails": {
       "interactionDescription": "a stock-updated event with an unsupported multi-format schema",
       "interactionState": "[none]",

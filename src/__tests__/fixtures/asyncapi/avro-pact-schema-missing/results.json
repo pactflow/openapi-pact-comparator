@@ -1,0 +1,39 @@
+[
+  {
+    "code": "message.payload.unvalidatable",
+    "message": "Body with content type 'avro/binary;record=UserSignedUp' is not supported by the spec comparator",
+    "mockDetails": {
+      "interactionDescription": "a message",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].contents.content",
+      "value": "\u0006u-1"
+    },
+    "specDetails": {
+      "location": "[root].components.messages.UserSignedUp"
+    },
+    "type": "warning"
+  },
+  {
+    "code": "message.matched",
+    "message": "Matched message at [root].components.messages.UserSignedUp",
+    "specDetails": {
+      "location": "[root].components.messages.UserSignedUp",
+      "value": {
+        "payload": {
+          "schemaFormat": "application/vnd.apache.avro;version=1.9.0",
+          "schema": {
+            "type": "record",
+            "name": "UserSignedUp",
+            "fields": [
+              {
+                "name": "userId",
+                "type": "string"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "type": "info"
+  }
+]

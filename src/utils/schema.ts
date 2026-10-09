@@ -7,14 +7,18 @@ export const resolveSchemaRefs = (
   doc: object,
   visited: Set<string> = new Set(),
 ): unknown => {
-  if (schema === null || typeof schema !== "object") return schema;
+  if (schema === null || typeof schema !== "object") {
+    return schema;
+  }
   if (Array.isArray(schema)) {
     return schema.map((item) => resolveSchemaRefs(item, doc, visited));
   }
   const obj = schema as Record<string, unknown>;
   if (typeof obj.$ref === "string") {
     const ref = obj.$ref;
-    if (visited.has(ref)) return {};
+    if (visited.has(ref)) {
+      return {};
+    }
     return resolveSchemaRefs(
       get(doc, splitPath(ref)),
       doc,
@@ -49,8 +53,12 @@ const followRefChain = (
   doc: object,
   seen: Set<string> = new Set(),
 ): { value: unknown; ref: string | undefined } => {
-  if (!schema.$ref) return { value: schema, ref: undefined };
-  if (seen.has(schema.$ref)) return { value: undefined, ref: undefined };
+  if (!schema.$ref) {
+    return { value: schema, ref: undefined };
+  }
+  if (seen.has(schema.$ref)) {
+    return { value: undefined, ref: undefined };
+  }
   const resolved = get(doc, splitPath(schema.$ref));
   if (resolved !== null && typeof resolved === "object" && "$ref" in resolved) {
     const next = followRefChain(

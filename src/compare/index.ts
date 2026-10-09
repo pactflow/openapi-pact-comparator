@@ -1,6 +1,7 @@
 import type Ajv from "ajv/dist/2019";
 import type Router from "find-my-way";
 import type { OpenAPIV2, OpenAPIV3 } from "openapi-types";
+
 import { compareAsyncInteraction } from "#compare/asyncapi/index";
 import { compareSyncInteraction } from "#compare/asyncapi/syncMessage";
 import { compareHttpInteraction } from "#compare/oas/index";
@@ -11,6 +12,7 @@ import type { Pact } from "#documents/pact";
 import { parse as parsePact } from "#documents/pact";
 import type { Result } from "#results/index";
 import { type Config, type ConfigKeys, DEFAULT_CONFIG } from "#utils/config";
+
 import { setupRouter } from "./oas/setup";
 import { setupAjv } from "./setup";
 
@@ -32,8 +34,12 @@ export class Comparator {
     this.#config = new Map(DEFAULT_CONFIG);
     this.#oas = options.oas;
     this.#asyncapi = options.asyncapi;
-    if (options.oas) parseOas(options.oas);
-    if (options.asyncapi) parseAsyncapi(options.asyncapi);
+    if (options.oas) {
+      parseOas(options.oas);
+    }
+    if (options.asyncapi) {
+      parseAsyncapi(options.asyncapi);
+    }
 
     const ajvOptions = {
       allErrors: true,
@@ -70,7 +76,9 @@ export class Comparator {
     for (const [index, interaction] of parsedPact.interactions.entries()) {
       switch (interaction._kind) {
         case "http":
-          if (this.#asyncapi && !this.#oas) break;
+          if (this.#asyncapi && !this.#oas) {
+            break;
+          }
           yield* compareHttpInteraction(
             this.#ajvCoerce,
             this.#ajvNocoerce,
@@ -81,7 +89,9 @@ export class Comparator {
           );
           break;
         case "async":
-          if (this.#oas && !this.#asyncapi) break;
+          if (this.#oas && !this.#asyncapi) {
+            break;
+          }
           yield* compareAsyncInteraction(
             this.#ajvNocoerce,
             this.#asyncapi,
@@ -91,7 +101,9 @@ export class Comparator {
           );
           break;
         case "sync":
-          if (this.#oas && !this.#asyncapi) break;
+          if (this.#oas && !this.#asyncapi) {
+            break;
+          }
           yield* compareSyncInteraction(
             this.#ajvNocoerce,
             this.#asyncapi,

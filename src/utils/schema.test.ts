@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+
 import { dereferenceDoc, lastRefInChain } from "./schema";
 
 describe("dereferenceDoc", () => {

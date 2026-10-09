@@ -6,7 +6,8 @@
     "moduleResolution": "bundler",
     "noEmit": true,
     "outDir": "dist",
-    "rootDir": "."
+    "rootDir": ".",
+    "verbatimModuleSyntax": true
   },
   "include": ["src/**/*.ts"],
   "exclude": ["src/**/*.test.ts"]

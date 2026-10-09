@@ -11,6 +11,7 @@ import type { Config } from "#utils/config";
 import { isSimpleSchema } from "#utils/quirks";
 import { dereferenceOas } from "#utils/schema";
 import { getValidateFunction } from "#utils/validation";
+
 import { cleanPathParameter } from "./utils/parameters";
 import { parseValue } from "./utils/parse";
 

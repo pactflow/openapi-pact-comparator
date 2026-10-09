@@ -1,4 +1,5 @@
 import type Ajv from "ajv/dist/2019";
+
 import type {
   AsyncAPIDocument,
   Message,
@@ -7,6 +8,7 @@ import type {
 import type { Result } from "#results/index";
 import { baseMockDetails } from "#results/index";
 import { resolveSchemaRefs } from "#utils/schema";
+
 import { compareMessageHeaders } from "./messageHeaders";
 import { compareMessagePayload } from "./messagePayload";
 

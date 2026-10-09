@@ -30,6 +30,8 @@ jobs:
           cache-dependency-path: "patches/*.patch"
       - name: Install dependencies
         run: npm ci --ignore-scripts && npm run patch-package
+      - name: Knip
+        run: npm run knip
       - name: Lint
         run: npm run lint
       - name: Prettier

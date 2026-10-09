@@ -4,6 +4,7 @@ import type { OpenAPIV2, OpenAPIV3 } from "openapi-types";
 
 import type { Config } from "#utils/config";
 import { dereferenceOas } from "#utils/schema";
+
 import { cleanPathParameter } from "./utils/parameters";
 
 const SUPPORTED_METHODS = [

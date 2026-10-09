@@ -1,12 +1,15 @@
 import type { SchemaObject } from "ajv";
 import { get, merge, set } from "lodash-es";
+
 import { splitPath } from "#utils/schema";
 
 function _inlinePropertyRefs(
   s: SchemaObject,
   root: SchemaObject,
 ): SchemaObject {
-  if (!s.properties) return s;
+  if (!s.properties) {
+    return s;
+  }
   const properties: Record<string, SchemaObject> = {};
   let changed = false;
   for (const key in s.properties) {

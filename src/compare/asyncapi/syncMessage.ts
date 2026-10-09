@@ -1,9 +1,11 @@
 import type Ajv from "ajv/dist/2019";
+
 import type { AsyncAPIDocument, ResolvedMessage } from "#documents/asyncapi";
 import { iterateMessages, iterateReplyMessages } from "#documents/asyncapi";
 import type { SyncInteraction } from "#documents/pact";
 import type { Result } from "#results/index";
 import { baseMockDetails } from "#results/index";
+
 import { checkAsyncapiPreamble, tryMatchAllMessages } from "./matchMessages";
 
 export function* compareSyncInteraction(
@@ -43,9 +45,13 @@ export function* compareSyncInteraction(
     noMatchMockDetails,
   )) {
     yield result;
-    if (result.code === "message.matched") requestMatched = true;
+    if (result.code === "message.matched") {
+      requestMatched = true;
+    }
   }
-  if (!requestMatched) return;
+  if (!requestMatched) {
+    return;
+  }
 
   // --- Response side ---
   const operation = doc.operations![operationId];

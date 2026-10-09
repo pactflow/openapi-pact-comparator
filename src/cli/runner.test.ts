@@ -1,5 +1,6 @@
 import { dump } from "js-yaml";
 import { beforeEach, describe, expect, it, type Mock, vi } from "vitest";
+
 import { Comparator } from "../compare";
 import type { Result } from "../index";
 import type { ComparatorDocs } from "./runner";

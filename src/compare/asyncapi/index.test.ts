@@ -1,8 +1,10 @@
 import Ajv from "ajv/dist/2019";
 import addFormats from "ajv-formats";
 import { describe, expect, it } from "vitest";
+
 import type { AsyncAPIDocument } from "#documents/asyncapi";
 import type { AsyncInteraction } from "#documents/pact";
+
 import { compareAsyncInteraction } from "./index";
 
 const makeAjv = () => {

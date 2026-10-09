@@ -1,4 +1,5 @@
 import { beforeAll, describe, expect, it } from "vitest";
+
 import { parseQuery, parseValue } from "./parse";
 
 let parser: (q: string) => unknown;

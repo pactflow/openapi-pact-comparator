@@ -1,4 +1,5 @@
 import querystring from "node:querystring";
+
 import type { SchemaObject } from "ajv";
 import type Ajv from "ajv/dist/2019";
 import type Router from "find-my-way";
@@ -16,14 +17,12 @@ import {
   formatSchemaPath,
 } from "#results/index";
 import { minimumSchema } from "#transform/index";
+import { bodyValidationStatus, VALIDATABLE_CONTENT_TYPES } from "#utils/body";
 import type { Config } from "#utils/config";
 import { isValidRequest } from "#utils/interaction";
 import { dereferenceOas, splitPath } from "#utils/schema";
 import { getValidateFunction } from "#utils/validation";
-import {
-  VALIDATABLE_CONTENT_TYPES,
-  bodyValidationStatus,
-} from "#compare/utils/body";
+
 import { findMatchingType, getByContentType } from "./utils/content";
 
 const parseBody = (
@@ -117,7 +116,9 @@ export function* compareReqBody(
     ),
   );
 
-  if (bodyStatus === "skip") return;
+  if (bodyStatus === "skip") {
+    return;
+  }
 
   if (bodyStatus === "warn" && isValidRequest(interaction)) {
     yield {

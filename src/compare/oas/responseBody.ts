@@ -13,10 +13,11 @@ import {
   formatSchemaPath,
 } from "#results/index";
 import { minimumSchema, transformReceivedSchema } from "#transform/index";
+import { bodyValidationStatus } from "#utils/body";
 import type { Config } from "#utils/config";
 import { dereferenceOas, splitPath } from "#utils/schema";
 import { getValidateFunction } from "#utils/validation";
-import { bodyValidationStatus } from "#compare/utils/body";
+
 import { findMatchingType, getByContentType } from "./utils/content";
 import { patternedStatus } from "./utils/statusCodes";
 

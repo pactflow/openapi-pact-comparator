@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import { program } from "commander";
+
 import packageJson from "../package.json";
 import { Runner } from "./cli/runner";
 

@@ -1,0 +1,50 @@
+{
+  "consumer": {
+    "name": "consumer"
+  },
+  "provider": {
+    "name": "provider"
+  },
+  "interactions": [
+    {
+      "type": "Asynchronous/Messages",
+      "description": "an order was placed",
+      "comments": {
+        "references": {
+          "AsyncAPI": {
+            "operationId": "receiveOrderPlaced"
+          }
+        }
+      },
+      "pending": false,
+      "contents": {
+        "content": "CgNvLTESBgiA4s+qBg==",
+        "contentType": "application/protobuf;message=.shop.OrderPlaced",
+        "contentTypeHint": "BINARY",
+        "encoded": "base64"
+      },
+      "pluginConfiguration": {
+        "protobuf": {
+          "descriptorKey": "k1"
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "pactSpecification": {
+      "version": "4.0"
+    },
+    "plugins": [
+      {
+        "name": "protobuf",
+        "version": "0.8.0",
+        "configuration": {
+          "k1": {
+            "protoFile": "syntax = \"proto3\";\npackage shop;\n\nimport \"google/protobuf/timestamp.proto\";\n\nmessage OrderPlaced {\n  string order_id = 1;\n  google.protobuf.Timestamp placed_at = 2;\n}\n",
+            "protoDescriptors": "CnwKCnNob3AucHJvdG8SBHNob3AiYAoLT3JkZXJQbGFjZWQSGQoIb3JkZXJfaWQYASABKAlSB29yZGVySWQSNgoJcGxhY2VkX2F0GAIgASgLMhlnb29nbGUucHJvdG9idWYuVGltZXN0YW1wUghwbGFjZWRBdGIGcHJvdG8zCl0KFWdvb2dsZV9wcm90b2J1Zi5wcm90bxIPZ29vZ2xlLnByb3RvYnVmIisKCVRpbWVzdGFtcBIPCgdzZWNvbmRzGAEgASgDEg0KBW5hbm9zGAIgASgFYgZwcm90bzM="
+          }
+        }
+      }
+    ]
+  }
+}

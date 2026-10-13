@@ -141,6 +141,45 @@ describe("protobuf", () => {
     });
   });
 
+  it("prefers the embedded descriptors over the .proto source", () => {
+    // pact-protobuf-plugin embeds both; the source may import files the pact
+    // doesn't contain, whereas protoc has resolved them into the descriptors.
+    const root = protobuf.parse(protoFile, { keepCase: true }).root;
+    const { FileDescriptorSet } = descriptor as unknown as {
+      FileDescriptorSet: protobuf.Type;
+    };
+    const set = (
+      root as unknown as { toDescriptor(v: string): protobuf.Message }
+    ).toDescriptor("proto3");
+    const protoDescriptors = Buffer.from(
+      FileDescriptorSet.encode(set).finish(),
+    ).toString("base64");
+    const unresolvable = `syntax = "proto3"; import "shop/common.proto"; package shop; message Item { string item_id = 1; }`;
+    expect(
+      decodeProtobuf(
+        encode(item),
+        { protoFile: unresolvable, protoDescriptors },
+        ".shop.Item",
+      ),
+    ).toMatchObject({ item_id: "i1", kind: "BOOK" });
+  });
+
+  it("resolves well-known type imports, and rejects other imports", () => {
+    const withTimestamp = `syntax = "proto3"; package shop; import "google/protobuf/timestamp.proto"; message Placed { google.protobuf.Timestamp at = 1; }`;
+    const placed = findProtoMessage(withTimestamp, ["Placed"])!;
+    expect(protobufToJsonSchema(placed)).toMatchObject({
+      properties: {
+        at: { type: "object", properties: { seconds: { type: "integer" } } },
+      },
+    });
+    expect(() =>
+      findProtoMessage(
+        `syntax = "proto3"; import "shop/common.proto"; message M {}`,
+        ["M"],
+      ),
+    ).toThrow(/only google\/protobuf well-known types/);
+  });
+
   it("constrains 32-bit and unsigned integers to their ranges", () => {
     const ranges = protobufToJsonSchema(
       findProtoMessage(

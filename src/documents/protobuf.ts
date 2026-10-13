@@ -16,8 +16,26 @@ export interface ProtoConfiguration {
   protoDescriptors?: string; // base64 FileDescriptorSet
 }
 
-const parseProto = (source: string): Root =>
-  protobuf.parse(source, { keepCase: true }).root.resolveAll() as Root;
+// Parses .proto source. google/protobuf well-known types are resolved from
+// protobufjs's bundled definitions; any other import can't be resolved from a
+// single embedded schema.
+const parseProto = (source: string): Root => {
+  const root = new protobuf.Root();
+  const parsed = protobuf.parse(source, root, { keepCase: true });
+  for (const name of [
+    ...(parsed.imports ?? []),
+    ...(parsed.weakImports ?? []),
+  ]) {
+    const common = protobuf.common.get(name);
+    if (!common?.nested) {
+      throw new Error(
+        `it imports "${name}"; only google/protobuf well-known types can be imported`,
+      );
+    }
+    root.addJSON(common.nested);
+  }
+  return root.resolveAll() as Root;
+};
 
 interface MessageDescriptor {
   field?: { jsonName?: string }[];
@@ -33,13 +51,13 @@ const dropJsonNames = (messages: MessageDescriptor[] = []) => {
   }
 };
 
+// Prefers the compiled descriptors pact-protobuf-plugin embeds: protoc has
+// already resolved every import into them, whereas protoFile is the bare
+// source and may import files the pact doesn't contain.
 const loadRoot = ({
   protoFile,
   protoDescriptors,
 }: ProtoConfiguration): Root => {
-  if (protoFile) {
-    return parseProto(protoFile);
-  }
   if (protoDescriptors) {
     const { FileDescriptorSet } = descriptor as unknown as {
       FileDescriptorSet: Type;
@@ -54,6 +72,9 @@ const loadRoot = ({
       protobuf.Root as unknown as { fromDescriptor(d: unknown): Root }
     ).fromDescriptor(set);
     return root.resolveAll() as Root;
+  }
+  if (protoFile) {
+    return parseProto(protoFile);
   }
   throw new Error("No protobuf schema available");
 };

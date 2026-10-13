@@ -1,0 +1,34 @@
+asyncapi: "3.0.0"
+info:
+  title: Order Service
+  version: "1.0.0"
+components:
+  messages:
+    OrderPlaced:
+      contentType: application/protobuf
+      payload:
+        schemaFormat: application/vnd.google.protobuf;version=3
+        schema: |
+          syntax = "proto3";
+          package shop;
+
+          import "google/protobuf/timestamp.proto";
+
+          message OrderPlaced {
+            string order_id = 1;
+            google.protobuf.Timestamp placed_at = 2;
+          }
+
+channels:
+  orders:
+    address: orders
+    messages:
+      OrderPlaced:
+        $ref: "#/components/messages/OrderPlaced"
+operations:
+  receiveOrderPlaced:
+    action: receive
+    channel:
+      $ref: "#/channels/orders"
+    messages:
+      - $ref: "#/channels/orders/messages/OrderPlaced"

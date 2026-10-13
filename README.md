@@ -61,20 +61,20 @@ for (const pact of pacts) {
 ## Avro and Protobuf
 
 Avro and Protobuf message payloads are supported for AsyncAPI, using Pact v4
-files from `pact-avro-plugin` and `pact-protobuf-plugin`. Protobuf schemas must
-be self-contained: `.proto` sources that `import` other files (including
-well-known types such as `google/protobuf/timestamp.proto`) cannot be resolved,
-and are reported as unsupported rather than compared.
+files from `pact-avro-plugin` and `pact-protobuf-plugin`. Protobuf well-known
+types such as `google/protobuf/timestamp.proto` can be imported. Other imports
+cannot be resolved from a single `.proto` source, so an AsyncAPI schema that
+uses them is reported as unsupported rather than compared. A pact's own schema
+is read from the descriptors the plugin embeds, which already include its
+imports.
 
 Payloads are decoded to JavaScript numbers, which can only represent integers
 exactly up to 2^53 (9,007,199,254,740,992). Beyond that:
 
-- Protobuf `int64`, `uint64`, `sint64`, `fixed64` and `sfixed64` values are
-  silently rounded to the nearest representable number. The comparison still
-  runs, so a rounded value could pass or fail a check it would not have with the
-  exact value.
-- Avro `long` values are not decoded at all, and the message is reported as
-  unvalidatable.
+- Protobuf `int64`, `uint64`, `sint64`, `fixed64` and `sfixed64` values, and
+  Avro `long` values, are silently rounded to the nearest representable number.
+  The comparison still runs, so a rounded value could pass or fail a check it
+  would not have with the exact value.
 
 ## Quirks mode
 

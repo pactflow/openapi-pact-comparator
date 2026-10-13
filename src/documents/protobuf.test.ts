@@ -140,4 +140,26 @@ describe("protobuf", () => {
       kind: "99",
     });
   });
+
+  it("constrains 32-bit and unsigned integers to their ranges", () => {
+    const ranges = protobufToJsonSchema(
+      findProtoMessage(
+        `syntax = "proto3"; message R { int32 a = 1; uint32 b = 2; uint64 c = 3; map<string, int32> d = 4; }`,
+        ["R"],
+      )!,
+    ) as { properties: Record<string, unknown> };
+    expect(ranges.properties).toEqual({
+      a: { type: "integer", minimum: -(2 ** 31), maximum: 2 ** 31 - 1 },
+      b: { type: "integer", minimum: 0, maximum: 2 ** 32 - 1 },
+      c: { type: "integer", minimum: 0 },
+      d: {
+        type: "object",
+        additionalProperties: {
+          type: "integer",
+          minimum: -(2 ** 31),
+          maximum: 2 ** 31 - 1,
+        },
+      },
+    });
+  });
 });

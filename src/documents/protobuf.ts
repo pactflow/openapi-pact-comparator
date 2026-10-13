@@ -143,6 +143,17 @@ const SCALARS: Record<string, JsonSchema> = {
   string: { type: "string" },
   bytes: { type: "string" },
 };
+const INT32 = { minimum: -(2 ** 31), maximum: 2 ** 31 - 1 };
+const UINT32 = { minimum: 0, maximum: 2 ** 32 - 1 };
+const RANGES: Record<string, JsonSchema> = {
+  int32: INT32,
+  sint32: INT32,
+  sfixed32: INT32,
+  uint32: UINT32,
+  fixed32: UINT32,
+  uint64: { minimum: 0 },
+  fixed64: { minimum: 0 },
+};
 const INTEGERS = [
   "int32",
   "uint32",
@@ -163,7 +174,7 @@ const convertField = (
 ): JsonSchema => {
   let schema: JsonSchema;
   if (INTEGERS.includes(field.type)) {
-    schema = { type: "integer" };
+    schema = { type: "integer", ...RANGES[field.type] };
   } else if (field.type in SCALARS) {
     schema = { ...SCALARS[field.type] };
   } else if (field.resolvedType && "values" in field.resolvedType) {
@@ -180,9 +191,7 @@ const convertField = (
   if (field instanceof protobuf.MapField) {
     return {
       type: "object",
-      additionalProperties: INTEGERS.includes(field.type)
-        ? { type: "integer" }
-        : schema,
+      additionalProperties: schema,
     };
   }
   return field.repeated ? { type: "array", items: schema } : schema;

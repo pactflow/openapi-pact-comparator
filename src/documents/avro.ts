@@ -149,6 +149,8 @@ export const decodeAvro = (
 
 type JsonSchema = Record<string, unknown>;
 
+const INT_RANGE = { minimum: -(2 ** 31), maximum: 2 ** 31 - 1 };
+
 const convert = (
   type: AvroType,
   defs: Record<string, JsonSchema>,
@@ -210,6 +212,7 @@ const convert = (
     case "boolean":
       return { type: "boolean" };
     case "int":
+      return { type: "integer", ...INT_RANGE };
     case "long":
       return { type: "integer" };
     case "float":

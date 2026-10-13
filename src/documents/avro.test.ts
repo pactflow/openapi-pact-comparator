@@ -156,3 +156,14 @@ describe("avroToJsonSchema unions", () => {
     expect(validate({ v: "x" })).toBe(false);
   });
 });
+
+describe("avroToJsonSchema integers", () => {
+  it("constrains int to 32 bits", () => {
+    expect(avroToJsonSchema("int")).toEqual({
+      type: "integer",
+      minimum: -(2 ** 31),
+      maximum: 2 ** 31 - 1,
+    });
+    expect(avroToJsonSchema("long")).toEqual({ type: "integer" });
+  });
+});

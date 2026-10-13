@@ -61,29 +61,43 @@ for (const pact of pacts) {
 ## Avro and Protobuf
 
 Avro and Protobuf message payloads are supported for AsyncAPI, using Pact v4
-files from `pact-avro-plugin` and `pact-protobuf-plugin`. Protobuf well-known
-types such as `google/protobuf/timestamp.proto` can be imported. Other imports
-cannot be resolved from a single `.proto` source, so an AsyncAPI schema that
-uses them is reported as unsupported rather than compared. A pact's own schema
-is read from the descriptors the plugin embeds, which already include its
-imports.
+files from `pact-avro-plugin` and `pact-protobuf-plugin`, and AsyncAPI messages
+whose payload embeds an Avro or Protobuf schema (a Multi Format Schema Object).
 
-The consumer's payload and the provider's message must be the same format. An
-Avro or Protobuf payload against a message declared as anything else, or a plain
-(for example JSON) payload against an Avro or Protobuf message, fails with
-`message.payload.format.incompatible`.
+Each interaction is compared in two passes:
 
-The provider's Protobuf message is chosen by a `proto` content type parameter,
-the payload's `x-drift-proto-message` extension, the message's key or name, or
-the only message in the schema, in that order.
+- **Values.** The consumer's example is decoded and validated against the
+  provider's schema converted to JSON Schema, as for JSON payloads.
+- **Structure.** The consumer's own schema, which the plugin embeds in the pact,
+  is compared with the provider's, the way the consumer's decoder will read the
+  provider's messages: Protobuf by field and enum number (only the fields and
+  enum values the consumer uses), Avro by writer/reader schema resolution
+  (assuming consumers decode with the writer's schema, e.g. via a schema
+  registry). This catches changes that keep the JSON shape but break the
+  consumer, such as a renumbered field, `int32` to `sint32`, a renumbered enum,
+  `int` to `long`, a new enum symbol, a field made nullable, or a renamed
+  record.
+
+A problem found by both passes is reported once. The consumer's message must be
+the same format as the provider's (`message.payload.format.incompatible`), and
+the type the pact declares (the Protobuf message, or Avro record) must be the
+type the provider's message carries. The provider's Protobuf message is chosen
+by a `proto` content type parameter, the payload's `x-drift-proto-message`
+extension, the message's key or name, or the only message in the schema, in that
+order.
+
+Protobuf schemas may import `google/protobuf` well-known types; other imports
+cannot be resolved from a single embedded schema. Consumer schemas are read from
+the descriptors the plugin embeds, which already include their imports. A
+payload or schema that cannot be decoded or compared fails with
+`message.payload.uncomparable`, rather than passing unchecked.
 
 Payloads are decoded to JavaScript numbers, which can only represent integers
 exactly up to 2^53 (9,007,199,254,740,992). Beyond that:
 
 - Protobuf `int64`, `uint64`, `sint64`, `fixed64` and `sfixed64` values, and
-  Avro `long` values, are silently rounded to the nearest representable number.
-  The comparison still runs, so a rounded value could pass or fail a check it
-  would not have with the exact value.
+  Avro `long` values, are silently rounded to the nearest representable number
+  in the value pass. The structural pass is unaffected.
 
 ## Quirks mode
 

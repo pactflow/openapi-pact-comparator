@@ -1,0 +1,33 @@
+[
+  {
+    "code": "message.no.match",
+    "message": "No message in the operation matched the interaction",
+    "mockDetails": {
+      "interactionDescription": "an OrderCreated event for a paid order",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0]",
+      "value": "an OrderCreated event for a paid order"
+    },
+    "specDetails": {
+      "location": "[root].operations.publishOrderCreated.messages"
+    },
+    "type": "error",
+    "causes": [
+      {
+        "code": "message.payload.type.incompatible",
+        "message": "The consumer's message is orders.OrderCreated, but the provider's message is orders.OrderUpdated",
+        "mockDetails": {
+          "interactionDescription": "an OrderCreated event for a paid order",
+          "interactionState": "[none]",
+          "location": "[root].interactions[0].contents.content",
+          "value": "orders.OrderCreated"
+        },
+        "specDetails": {
+          "location": "[root].components.messages.OrderUpdated.payload.schema",
+          "value": "orders.OrderUpdated"
+        },
+        "type": "error"
+      }
+    ]
+  }
+]

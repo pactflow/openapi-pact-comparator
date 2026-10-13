@@ -45,6 +45,51 @@
           ]
         },
         "type": "error"
+      },
+      {
+        "code": "message.payload.incompatible",
+        "message": "The consumer's age is int, but the provider's is string (TYPE_MISMATCH)",
+        "mockDetails": {
+          "interactionDescription": "a user signed up",
+          "interactionState": "[none]",
+          "location": "[root].interactions[0].contents.content.age",
+          "value": "int"
+        },
+        "specDetails": {
+          "location": "[root].components.messages.UserSignedUp.payload.schema.com.example.UserSignedUp.age",
+          "value": "string"
+        },
+        "type": "error"
+      },
+      {
+        "code": "message.payload.incompatible",
+        "message": "The provider may write com.example.Plan symbol TEAM, which the consumer's com.example.Plan doesn't have (MISSING_ENUM_SYMBOLS)",
+        "mockDetails": {
+          "interactionDescription": "a user signed up",
+          "interactionState": "[none]",
+          "location": "[root].interactions[0].contents.content.plan",
+          "value": "enum com.example.Plan"
+        },
+        "specDetails": {
+          "location": "[root].components.messages.UserSignedUp.payload.schema.com.example.UserSignedUp.plan",
+          "value": "enum com.example.Plan"
+        },
+        "type": "error"
+      },
+      {
+        "code": "message.payload.incompatible",
+        "message": "The consumer's example expects com.example.Plan symbol PRO, which the provider's com.example.Plan no longer has",
+        "mockDetails": {
+          "interactionDescription": "a user signed up",
+          "interactionState": "[none]",
+          "location": "[root].interactions[0].contents.content.plan",
+          "value": "enum com.example.Plan"
+        },
+        "specDetails": {
+          "location": "[root].components.messages.UserSignedUp.payload.schema.com.example.UserSignedUp.plan",
+          "value": "enum com.example.Plan"
+        },
+        "type": "error"
       }
     ]
   }

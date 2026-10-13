@@ -1,0 +1,33 @@
+[
+  {
+    "code": "message.no.match",
+    "message": "No message in the operation matched the interaction",
+    "mockDetails": {
+      "interactionDescription": "an OrderCreated event for a paid order",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0]",
+      "value": "an OrderCreated event for a paid order"
+    },
+    "specDetails": {
+      "location": "[root].operations.publishOrderCreated.messages"
+    },
+    "type": "error",
+    "causes": [
+      {
+        "code": "message.payload.incompatible",
+        "message": "The provider may write null for shipping_address, which the consumer reads as orders.Address and can't read null (TYPE_MISMATCH)",
+        "mockDetails": {
+          "interactionDescription": "an OrderCreated event for a paid order",
+          "interactionState": "[none]",
+          "location": "[root].interactions[0].contents.content.shipping_address",
+          "value": "orders.Address"
+        },
+        "specDetails": {
+          "location": "[root].components.messages.OrderCreated.payload.schema.orders.OrderCreated.shipping_address",
+          "value": "[null, orders.Address]"
+        },
+        "type": "error"
+      }
+    ]
+  }
+]

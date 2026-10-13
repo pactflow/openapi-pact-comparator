@@ -1,0 +1,33 @@
+[
+  {
+    "code": "message.no.match",
+    "message": "No message in the operation matched the interaction",
+    "mockDetails": {
+      "interactionDescription": "an OrderCreated event for a paid order",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0]",
+      "value": "an OrderCreated event for a paid order"
+    },
+    "specDetails": {
+      "location": "[root].operations.publishOrderCreated.messages"
+    },
+    "type": "error",
+    "causes": [
+      {
+        "code": "message.payload.incompatible",
+        "message": "The provider may write orders.OrderStatus symbol REFUNDED, which the consumer's orders.OrderStatus doesn't have (MISSING_ENUM_SYMBOLS)",
+        "mockDetails": {
+          "interactionDescription": "an OrderCreated event for a paid order",
+          "interactionState": "[none]",
+          "location": "[root].interactions[0].contents.content.status",
+          "value": "enum orders.OrderStatus"
+        },
+        "specDetails": {
+          "location": "[root].components.messages.OrderCreated.payload.schema.orders.OrderCreated.status",
+          "value": "enum orders.OrderStatus"
+        },
+        "type": "error"
+      }
+    ]
+  }
+]

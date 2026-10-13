@@ -1,0 +1,48 @@
+[
+  {
+    "code": "message.no.match",
+    "message": "No message in the operation matched the interaction",
+    "mockDetails": {
+      "interactionDescription": "an OrderCreated event for a paid order",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0]",
+      "value": "an OrderCreated event for a paid order"
+    },
+    "specDetails": {
+      "location": "[root].operations.publishOrderCreated.messages"
+    },
+    "type": "error",
+    "causes": [
+      {
+        "code": "message.payload.incompatible",
+        "message": "Message payload is incompatible with the schema in the spec file: must be integer",
+        "mockDetails": {
+          "interactionDescription": "an OrderCreated event for a paid order",
+          "interactionState": "[none]",
+          "location": "[root].interactions[0].contents.content.order_id",
+          "value": "ord-1001"
+        },
+        "specDetails": {
+          "location": "[root].components.messages.OrderCreated.payload.schema.properties.order_id.type",
+          "value": "integer"
+        },
+        "type": "error"
+      },
+      {
+        "code": "message.payload.incompatible",
+        "message": "The consumer's field order_id (1) is string, but the provider's is int64 (FIELD_WIRE_COMPATIBLE_TYPE)",
+        "mockDetails": {
+          "interactionDescription": "an OrderCreated event for a paid order",
+          "interactionState": "[none]",
+          "location": "[root].interactions[0].contents.content.order_id",
+          "value": "string order_id = 1"
+        },
+        "specDetails": {
+          "location": "[root].components.messages.OrderCreated.payload.schema.orders.OrderCreated.order_id",
+          "value": "int64 order_id = 1"
+        },
+        "type": "error"
+      }
+    ]
+  }
+]

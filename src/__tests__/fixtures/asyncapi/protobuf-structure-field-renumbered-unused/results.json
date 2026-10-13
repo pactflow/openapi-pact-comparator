@@ -1,0 +1,18 @@
+[
+  {
+    "code": "message.matched",
+    "message": "Matched message at [root].components.messages.OrderCreated",
+    "specDetails": {
+      "location": "[root].components.messages.OrderCreated",
+      "value": {
+        "name": "OrderCreated",
+        "contentType": "application/vnd.google.protobuf; proto=orders.OrderCreated",
+        "payload": {
+          "schemaFormat": "application/vnd.google.protobuf;version=3",
+          "schema": "// Snapshot of the Order Service schema that the consumers were built against\n// (\"v1\"). Consumers vendor this file; they do not track the provider's repo.\nsyntax = \"proto3\";\n\npackage orders;\n\nimport \"google/protobuf/timestamp.proto\";\n\nenum OrderStatus {\n  ORDER_STATUS_UNSPECIFIED = 0;\n  PENDING = 1;\n  PAID = 2;\n  SHIPPED = 3;\n}\n\nmessage LineItem {\n  string sku = 1;\n  int32 quantity = 2;\n  int64 unit_price_cents = 3;\n}\n\nmessage Address {\n  string line1 = 1;\n  string city = 2;\n  string postcode = 3;\n  string country = 4;\n}\n\nmessage OrderCreated {\n  string order_id = 1;\n  string customer_id = 12;\n  int64 total_cents = 3;\n  string currency = 4;\n  OrderStatus status = 5;\n  repeated LineItem items = 6;\n  google.protobuf.Timestamp created_at = 7;\n  Address shipping_address = 8;\n}\n"
+        }
+      }
+    },
+    "type": "info"
+  }
+]

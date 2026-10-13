@@ -1,0 +1,171 @@
+{
+  "consumer": {
+    "name": "NotificationsService"
+  },
+  "interactions": [
+    {
+      "comments": {
+        "references": {
+          "AsyncAPI": {
+            "operationId": "publishOrderCreated"
+          }
+        }
+      },
+      "contents": {
+        "content": "CghvcmQtMTAwMRIHY3VzdC00Mhj3IyIDQVVEKAIyEgoLU0tVLVJFRC1NVUcQAhjcCzoGCMDVkccGQh8KDDEgRXhhbXBsZSBTdBIJTWVsYm91cm5lGgQzMDAw",
+        "contentType": "application/protobuf;message=.orders.OrderCreated",
+        "contentTypeHint": "BINARY",
+        "encoded": "base64"
+      },
+      "description": "an OrderCreated event for a paid order",
+      "interactionMarkup": {
+        "markup": "```protobuf\nmessage OrderCreated {\n    string order_id = 1;\n    string customer_id = 2;\n    int64 total_cents = 3;\n    string currency = 4;\n    enum .orders.OrderStatus status = 5;\n    message .orders.LineItem items = 6;\n    message .google.protobuf.Timestamp created_at = 7;\n    message .orders.Address shipping_address = 8;\n}\n```\n",
+        "markupType": "COMMON_MARK"
+      },
+      "matchingRules": {
+        "body": {
+          "$.created_at.seconds": {
+            "combine": "AND",
+            "matchers": [
+              {
+                "match": "integer"
+              }
+            ]
+          },
+          "$.currency": {
+            "combine": "AND",
+            "matchers": [
+              {
+                "match": "regex",
+                "regex": "^[A-Z]{3}$"
+              }
+            ]
+          },
+          "$.customer_id": {
+            "combine": "AND",
+            "matchers": [
+              {
+                "match": "type"
+              }
+            ]
+          },
+          "$.items.*.quantity": {
+            "combine": "AND",
+            "matchers": [
+              {
+                "match": "integer"
+              }
+            ]
+          },
+          "$.items.*.sku": {
+            "combine": "AND",
+            "matchers": [
+              {
+                "match": "type"
+              }
+            ]
+          },
+          "$.items.*.unit_price_cents": {
+            "combine": "AND",
+            "matchers": [
+              {
+                "match": "integer"
+              }
+            ]
+          },
+          "$.order_id": {
+            "combine": "AND",
+            "matchers": [
+              {
+                "match": "type"
+              }
+            ]
+          },
+          "$.shipping_address.city": {
+            "combine": "AND",
+            "matchers": [
+              {
+                "match": "type"
+              }
+            ]
+          },
+          "$.shipping_address.line1": {
+            "combine": "AND",
+            "matchers": [
+              {
+                "match": "type"
+              }
+            ]
+          },
+          "$.shipping_address.postcode": {
+            "combine": "AND",
+            "matchers": [
+              {
+                "match": "type"
+              }
+            ]
+          },
+          "$.status": {
+            "combine": "AND",
+            "matchers": [
+              {
+                "match": "equality"
+              }
+            ]
+          },
+          "$.total_cents": {
+            "combine": "AND",
+            "matchers": [
+              {
+                "match": "integer"
+              }
+            ]
+          }
+        }
+      },
+      "metadata": {
+        "contentType": "application/protobuf;message=.orders.OrderCreated"
+      },
+      "pending": false,
+      "pluginConfiguration": {
+        "protobuf": {
+          "descriptorKey": "c70d61fa7a5b55382cb4f76983537d6b",
+          "message": ".orders.OrderCreated"
+        }
+      },
+      "providerStates": [
+        {
+          "name": "an order has been paid"
+        }
+      ],
+      "type": "Asynchronous/Messages"
+    }
+  ],
+  "metadata": {
+    "pact-js": {
+      "version": "16.5.0"
+    },
+    "pactRust": {
+      "ffi": "0.5.4",
+      "models": "1.3.11"
+    },
+    "pactSpecification": {
+      "version": "4.0"
+    },
+    "plugins": [
+      {
+        "configuration": {
+          "c70d61fa7a5b55382cb4f76983537d6b": {
+            "protoDescriptors": "Cv8BCh9nb29nbGUvcHJvdG9idWYvdGltZXN0YW1wLnByb3RvEg9nb29nbGUucHJvdG9idWYiOwoJVGltZXN0YW1wEhgKB3NlY29uZHMYASABKANSB3NlY29uZHMSFAoFbmFub3MYAiABKAVSBW5hbm9zQoUBChNjb20uZ29vZ2xlLnByb3RvYnVmQg5UaW1lc3RhbXBQcm90b1ABWjJnb29nbGUuZ29sYW5nLm9yZy9wcm90b2J1Zi90eXBlcy9rbm93bi90aW1lc3RhbXBwYvgBAaICA0dQQqoCHkdvb2dsZS5Qcm90b2J1Zi5XZWxsS25vd25UeXBlc2IGcHJvdG8zCsYPCgxvcmRlcnMucHJvdG8SBm9yZGVycxofZ29vZ2xlL3Byb3RvYnVmL3RpbWVzdGFtcC5wcm90byJiCghMaW5lSXRlbRIQCgNza3UYASABKAlSA3NrdRIaCghxdWFudGl0eRgCIAEoBVIIcXVhbnRpdHkSKAoQdW5pdF9wcmljZV9jZW50cxgDIAEoA1IOdW5pdFByaWNlQ2VudHMiaQoHQWRkcmVzcxIUCgVsaW5lMRgBIAEoCVIFbGluZTESEgoEY2l0eRgCIAEoCVIEY2l0eRIaCghwb3N0Y29kZRgDIAEoCVIIcG9zdGNvZGUSGAoHY291bnRyeRgEIAEoCVIHY291bnRyeSLTAgoMT3JkZXJDcmVhdGVkEhkKCG9yZGVyX2lkGAEgASgJUgdvcmRlcklkEh8KC2N1c3RvbWVyX2lkGAIgASgJUgpjdXN0b21lcklkEh8KC3RvdGFsX2NlbnRzGAMgASgDUgp0b3RhbENlbnRzEhoKCGN1cnJlbmN5GAQgASgJUghjdXJyZW5jeRIrCgZzdGF0dXMYBSABKA4yEy5vcmRlcnMuT3JkZXJTdGF0dXNSBnN0YXR1cxImCgVpdGVtcxgGIAMoCzIQLm9yZGVycy5MaW5lSXRlbVIFaXRlbXMSOQoKY3JlYXRlZF9hdBgHIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXBSCWNyZWF0ZWRBdBI6ChBzaGlwcGluZ19hZGRyZXNzGAggASgLMg8ub3JkZXJzLkFkZHJlc3NSD3NoaXBwaW5nQWRkcmVzcypPCgtPcmRlclN0YXR1cxIcChhPUkRFUl9TVEFUVVNfVU5TUEVDSUZJRUQQABILCgdQRU5ESU5HEAESCAoEUEFJRBACEgsKB1NISVBQRUQQA0qOCgoGEgQCACUBCggKAQISAwQADwoJCgIDABIDBgApCgoKAgQAEgQPABMBCgoKAwQAARIDDwgQCgsKBAQAAgASAxACEQoMCgUEAAIAARIDEAkMCgwKBQQAAgADEgMQDxAKDAoFBAACAAUSAxACCAoLCgQEAAIBEgMRAhUKDAoFBAACAQESAxEIEAoMCgUEAAIBAxIDERMUCgwKBQQAAgEFEgMRAgcKCwoEBAACAhIDEgIdCgwKBQQAAgIBEgMSCBgKDAoFBAACAgMSAxIbHAoMCgUEAAICBRIDEgIHCgoKAgQBEgQVABoBCgoKAwQBARIDFQgPCgsKBAQBAgASAxYCEwoMCgUEAQIAARIDFgkOCgwKBQQBAgADEgMWERIKDAoFBAECAAUSAxYCCAoLCgQEAQIBEgMXAhIKDAoFBAECAQESAxcJDQoMCgUEAQIBAxIDFxARCgwKBQQBAgEFEgMXAggKCwoEBAECAhIDGAIWCgwKBQQBAgIBEgMYCREKDAoFBAECAgMSAxgUFQoMCgUEAQICBRIDGAIICgsKBAQBAgMSAxkCFQoMCgUEAQIDARIDGQkQCgwKBQQBAgMDEgMZExQKDAoFBAECAwUSAxkCCAoKCgIEAhIEHAAlAQoKCgMEAgESAxwIFAoLCgQEAgIAEgMdAhYKDAoFBAICAAESAx0JEQoMCgUEAgIAAxIDHRQVCgwKBQQCAgAFEgMdAggKCwoEBAICARIDHgIZCgwKBQQCAgEBEgMeCRQKDAoFBAICAQMSAx4XGAoMCgUEAgIBBRIDHgIICgsKBAQCAgISAx8CGAoMCgUEAgICARIDHwgTCgwKBQQCAgIDEgMfFhcKDAoFBAICAgUSAx8CBwoLCgQEAgIDEgMgAhYKDAoFBAICAwESAyAJEQoMCgUEAgIDAxIDIBQVCgwKBQQCAgMFEgMgAggKCwoEBAICBBIDIQIZCgwKBQQCAgQBEgMhDhQKDAoFBAICBAMSAyEXGAoMCgUEAgIEBhIDIQINCgsKBAQCAgUSAyICHgoMCgUEAgIFARIDIhQZCgwKBQQCAgUDEgMiHB0KDAoFBAICBQQSAyICCgoMCgUEAgIFBhIDIgsTCgsKBAQCAgYSAyMCKwoMCgUEAgIGARIDIxwmCgwKBQQCAgYDEgMjKSoKDAoFBAICBgYSAyMCGwoLCgQEAgIHEgMkAh8KDAoFBAICBwESAyQKGgoMCgUEAgIHAxIDJB0eCgwKBQQCAgcGEgMkAgkKCgoCBQASBAgADQEKCgoDBQABEgMIBRAKCwoEBQACABIDCQIfCgwKBQUAAgABEgMJAhoKDAoFBQACAAISAwkdHgoLCgQFAAIBEgMKAg4KDAoFBQACAQESAwoCCQoMCgUFAAIBAhIDCgwNCgsKBAUAAgISAwsCCwoMCgUFAAICARIDCwIGCgwKBQUAAgICEgMLCQoKCwoEBQACAxIDDAIOCgwKBQUAAgMBEgMMAgkKDAoFBQACAwISAwwMDQqjAQoBDBIDAgASGpgBIFNuYXBzaG90IG9mIHRoZSBPcmRlciBTZXJ2aWNlIHNjaGVtYSB0aGF0IHRoZSBjb25zdW1lcnMgd2VyZSBidWlsdCBhZ2FpbnN0CiAoInYxIikuIENvbnN1bWVycyB2ZW5kb3IgdGhpcyBmaWxlOyB0aGV5IGRvIG5vdCB0cmFjayB0aGUgcHJvdmlkZXIncyByZXBvLgpiBnByb3RvMw==",
+            "protoFile": "// Snapshot of the Order Service schema that the consumers were built against\n// (\"v1\"). Consumers vendor this file; they do not track the provider's repo.\nsyntax = \"proto3\";\n\npackage orders;\n\nimport \"google/protobuf/timestamp.proto\";\n\nenum OrderStatus {\n  ORDER_STATUS_UNSPECIFIED = 0;\n  PENDING = 1;\n  PAID = 2;\n  SHIPPED = 3;\n}\n\nmessage LineItem {\n  string sku = 1;\n  int32 quantity = 2;\n  int64 unit_price_cents = 3;\n}\n\nmessage Address {\n  string line1 = 1;\n  string city = 2;\n  string postcode = 3;\n  string country = 4;\n}\n\nmessage OrderCreated {\n  string order_id = 1;\n  string customer_id = 2;\n  int64 total_cents = 3;\n  string currency = 4;\n  OrderStatus status = 5;\n  repeated LineItem items = 6;\n  google.protobuf.Timestamp created_at = 7;\n  Address shipping_address = 8;\n}\n"
+          }
+        },
+        "name": "protobuf",
+        "version": "0.8.0"
+      }
+    ]
+  },
+  "provider": {
+    "name": "OrderService"
+  }
+}

@@ -1,0 +1,118 @@
+asyncapi: 3.0.0
+info:
+  title: Order Service
+  version: 1.0.0
+  description: Publishes order lifecycle events to Kafka.
+channels:
+  orderCreated:
+    address: orders.created
+    messages:
+      OrderCreated:
+        $ref: "#/components/messages/OrderCreated"
+operations:
+  publishOrderCreated:
+    action: send
+    channel:
+      $ref: "#/channels/orderCreated"
+    messages:
+      - $ref: "#/channels/orderCreated/messages/OrderCreated"
+components:
+  messages:
+    OrderCreated:
+      name: OrderCreated
+      contentType: application/vnd.apache.avro
+      payload:
+        schemaFormat: application/vnd.apache.avro+json;version=1.9.0
+        schema: |-
+          {
+            "type": "record",
+            "name": "OrderCreated",
+            "namespace": "orders",
+            "doc": "Order Service schema v1. Consumers built against this version.",
+            "fields": [
+              {
+                "name": "order_id",
+                "type": "string"
+              },
+              {
+                "name": "customer_id",
+                "type": "string"
+              },
+              {
+                "name": "total_cents",
+                "type": "long"
+              },
+              {
+                "name": "currency_code",
+                "type": "string",
+                "default": "USD",
+                "aliases": [
+                  "currency"
+                ]
+              },
+              {
+                "name": "status",
+                "type": {
+                  "type": "enum",
+                  "name": "OrderStatus",
+                  "symbols": [
+                    "PENDING",
+                    "PAID",
+                    "SHIPPED"
+                  ]
+                }
+              },
+              {
+                "name": "items",
+                "type": {
+                  "type": "array",
+                  "items": {
+                    "type": "record",
+                    "name": "LineItem",
+                    "fields": [
+                      {
+                        "name": "sku",
+                        "type": "string"
+                      },
+                      {
+                        "name": "quantity",
+                        "type": "int"
+                      },
+                      {
+                        "name": "unit_price_cents",
+                        "type": "long"
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "name": "created_at",
+                "type": {
+                  "type": "long",
+                  "logicalType": "timestamp-millis"
+                }
+              },
+              {
+                "name": "shipping_address",
+                "type": {
+                  "type": "record",
+                  "name": "Address",
+                  "fields": [
+                    {
+                      "name": "line1",
+                      "type": "string"
+                    },
+                    {
+                      "name": "city",
+                      "type": "string"
+                    },
+                    {
+                      "name": "postcode",
+                      "type": "string"
+                    }
+                  ]
+                }
+              }
+            ]
+          }

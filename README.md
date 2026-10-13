@@ -68,6 +68,11 @@ uses them is reported as unsupported rather than compared. A pact's own schema
 is read from the descriptors the plugin embeds, which already include its
 imports.
 
+The consumer's payload and the provider's message must be the same format. An
+Avro or Protobuf payload against a message declared as anything else, or a plain
+(for example JSON) payload against an Avro or Protobuf message, fails with
+`message.payload.format.incompatible`.
+
 The provider's Protobuf message is chosen by a `proto` content type parameter,
 the payload's `x-drift-proto-message` extension, the message's key or name, or
 the only message in the schema, in that order.

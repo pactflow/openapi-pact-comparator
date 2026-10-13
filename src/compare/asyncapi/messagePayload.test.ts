@@ -335,17 +335,19 @@ describe("compareMessagePayload — multi-format schema", () => {
     );
   });
 
-  it("explains why an Avro schema could not be converted", () => {
+  it("fails a JSON payload against an Avro schema as a format mismatch", () => {
     const results = callResponse(
       wrap("application/vnd.apache.avro;version=1.9.0", { type: "record" }),
       { organizationId: "abc-123" },
       "application/json",
     );
-    expect(results).toHaveLength(1);
-    expect(results[0].code).toBe("message.payload.unvalidatable");
-    expect(results[0].message).toMatch(
-      /^Schema with format 'application\/vnd\.apache\.avro;version=1\.9\.0' is not supported by the spec comparator: invalid Avro schema/,
-    );
+    expect(results.map((r) => [r.code, r.type, r.message])).toEqual([
+      [
+        "message.payload.format.incompatible",
+        "error",
+        "The consumer's message is application/json, but the provider's message is Avro",
+      ],
+    ]);
   });
 
   it("yields a warning for unsupported JSON Schema dialect versions", () => {

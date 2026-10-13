@@ -5,6 +5,7 @@ import type {
   Message,
   ResolvedMessage,
 } from "#documents/asyncapi";
+import type { BinaryPayload } from "#documents/binary";
 import type { Result } from "#results/index";
 import { baseMockDetails } from "#results/index";
 import { resolveSchemaRefs } from "#utils/schema";
@@ -105,6 +106,7 @@ type MessageContent = {
   payload: unknown;
   contentType?: string;
   decodeError?: string;
+  binary?: BinaryPayload;
   metadata?: Record<string, string>;
 };
 

@@ -1,7 +1,11 @@
 import { type Static, Type } from "@sinclair/typebox";
 import Ajv, { type ErrorObject } from "ajv";
 
-import { decodeBinaryContents, type PluginContext } from "./binary";
+import {
+  type BinaryPayload,
+  decodeBinaryContents,
+  type PluginContext,
+} from "./binary";
 
 // a full schema can be found at https://github.com/pactflow/pact-schemas
 // but we don't use that here, because we try to be permissive with input
@@ -151,6 +155,7 @@ export interface AsyncInteraction {
   payload: unknown;
   contentType?: string;
   decodeError?: string;
+  binary?: BinaryPayload;
   metadata?: Record<string, string>;
 }
 
@@ -163,12 +168,14 @@ export interface SyncInteraction {
     payload: unknown;
     contentType?: string;
     decodeError?: string;
+    binary?: BinaryPayload;
     metadata?: Record<string, string>;
   };
   responses: Array<{
     payload: unknown;
     contentType?: string;
     decodeError?: string;
+    binary?: BinaryPayload;
     metadata?: Record<string, string>;
   }>;
 }
@@ -358,7 +365,12 @@ const asAsyncapiReferences = (
 const parseContents = (
   contents: RawInteraction["contents"],
   context: PluginContext,
-): { payload: unknown; contentType?: string; decodeError?: string } =>
+): {
+  payload: unknown;
+  contentType?: string;
+  decodeError?: string;
+  binary?: BinaryPayload;
+} =>
   decodeBinaryContents(contents, context) ?? {
     payload: parseAsPactV4Body(contents),
     contentType: contents?.contentType,

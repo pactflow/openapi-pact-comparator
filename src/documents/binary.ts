@@ -64,9 +64,15 @@ const pluginEntry = (
   return isDict(entry) ? entry : undefined;
 };
 
+// What is known of a consumer's binary payload, whether or not it decoded.
+export interface BinaryPayload {
+  format: "avro" | "protobuf";
+}
+
 export interface DecodedContents {
   payload: unknown;
   contentType: string;
+  binary: BinaryPayload;
   // Set when a recognised payload couldn't be decoded: the payload is then the
   // raw base64 content, and this says why.
   decodeError?: string;
@@ -91,13 +97,17 @@ export const decodeBinaryContents = (
   const { content, contentType } = contents;
   const { mediaType, params } = parseContentType(contentType);
   const config = isDict(context.interaction) ? context.interaction : {};
-  const decoded = (decode: () => unknown): DecodedContents => {
+  const decoded = (
+    binary: BinaryPayload,
+    decode: () => unknown,
+  ): DecodedContents => {
     try {
-      return { payload: decode(), contentType: DECODED_CONTENT_TYPE };
+      return { payload: decode(), contentType: DECODED_CONTENT_TYPE, binary };
     } catch (error) {
       return {
         payload: content,
         contentType,
+        binary,
         decodeError: (error as Error).message,
       };
     }
@@ -109,7 +119,7 @@ export const decodeBinaryContents = (
       avro.avroSchema ??
       pluginEntry(context, "avro", avro.schemaKey)?.avroSchema;
     const record = params.record ?? (avro.record as string | undefined);
-    return decoded(() => {
+    return decoded({ format: "avro" }, () => {
       if (schema === undefined) {
         throw new Error("the pact has no Avro schema for this message");
       }
@@ -120,7 +130,7 @@ export const decodeBinaryContents = (
   if (isProtobuf(mediaType)) {
     const protobuf = isDict(config.protobuf) ? config.protobuf : {};
     const entry = pluginEntry(context, "protobuf", protobuf.descriptorKey);
-    return decoded(() => {
+    return decoded({ format: "protobuf" }, () => {
       if (!params.message) {
         throw new Error("the pact does not name the Protobuf message");
       }

@@ -51,6 +51,7 @@ describe("decodeBinaryContents", () => {
     ).toEqual({
       payload: { id: "a1", note: "hello" },
       contentType: "application/json",
+      binary: { format: "avro" },
     });
   });
 
@@ -69,7 +70,11 @@ describe("decodeBinaryContents", () => {
         interaction: { protobuf: { descriptorKey: "k1" } },
         plugins,
       }),
-    ).toEqual({ payload: { s: "hi" }, contentType: "application/json" });
+    ).toEqual({
+      payload: { s: "hi" },
+      contentType: "application/json",
+      binary: { format: "protobuf" },
+    });
   });
 
   it.each([

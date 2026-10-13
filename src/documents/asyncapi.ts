@@ -151,6 +151,21 @@ const convertToJsonSchema = (
   }
 };
 
+/** The binary format a payload's `schemaFormat` declares, if any. */
+export const binaryFormatOf = (
+  value: object | undefined,
+): "avro" | "protobuf" | undefined => {
+  const { schemaFormat } = (value ?? {}) as { schemaFormat?: unknown };
+  const mediaType =
+    typeof schemaFormat === "string"
+      ? schemaFormat.split(";")[0].trim().toLowerCase()
+      : "";
+  if (AVRO_SCHEMA_FORMATS.includes(mediaType)) {
+    return "avro";
+  }
+  return PROTOBUF_SCHEMA_FORMATS.includes(mediaType) ? "protobuf" : undefined;
+};
+
 // A payload or headers value may be a Multi Format Schema Object
 // (`{ schemaFormat, schema }`) rather than a Schema Object. Ajv ignores the
 // unknown keywords and would accept anything, so it must be unwrapped first.

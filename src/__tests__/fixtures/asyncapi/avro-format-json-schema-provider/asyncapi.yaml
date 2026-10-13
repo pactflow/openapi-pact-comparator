@@ -1,0 +1,32 @@
+asyncapi: "3.0.0"
+info:
+  title: User Service
+  version: "1.0.0"
+components:
+  messages:
+    UserSignedUp:
+      contentType: application/json
+      payload:
+        type: object
+        properties:
+          userId:
+            type: string
+          age:
+            type: integer
+          email:
+            type: [string, "null"]
+          plan:
+            type: string
+channels:
+  userSignups:
+    address: user-signups
+    messages:
+      UserSignedUp:
+        $ref: "#/components/messages/UserSignedUp"
+operations:
+  receiveUserSignedUp:
+    action: receive
+    channel:
+      $ref: "#/channels/userSignups"
+    messages:
+      - $ref: "#/channels/userSignups/messages/UserSignedUp"

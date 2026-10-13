@@ -1,12 +1,12 @@
 [
   {
     "code": "message.payload.unvalidatable",
-    "message": "Body with content type 'avro/binary;record=UserSignedUp' is not supported by the spec comparator",
+    "message": "Body with content type 'avro/binary;record=UserSignedUp' is not supported by the spec comparator: the pact has no Avro schema for this message",
     "mockDetails": {
       "interactionDescription": "a message",
       "interactionState": "[none]",
       "location": "[root].interactions[0].contents.content",
-      "value": "\u0006u-1"
+      "value": "BnUtMQ=="
     },
     "specDetails": {
       "location": "[root].components.messages.UserSignedUp"

@@ -75,7 +75,6 @@ describe("decodeBinaryContents", () => {
   it.each([
     ["json content", { content: "{}", contentType: "application/json" }],
     ["not base64", { ...avroContents, encoded: false }],
-    ["garbage", { ...avroContents, content: "AAAA" }],
   ])("ignores %s", (_, contents) => {
     expect(
       decodeBinaryContents(contents as never, {
@@ -84,8 +83,44 @@ describe("decodeBinaryContents", () => {
     ).toBeUndefined();
   });
 
-  it("returns undefined when the schema is missing", () => {
-    expect(decodeBinaryContents(protoContents, {})).toBeUndefined();
+  it("keeps the raw content and says why when decoding fails", () => {
+    const failed = (contents: object, interaction: object, plugins?: unknown) =>
+      decodeBinaryContents(contents as never, { interaction, plugins });
+
+    expect(
+      failed({ ...avroContents, content: "AAAA" }, { avro: { avroSchema } }),
+    ).toMatchObject({
+      payload: "AAAA",
+      contentType: "avro/binary;record=Item",
+      decodeError: expect.any(String),
+    });
+    expect(failed(avroContents, {})).toMatchObject({
+      payload: avroContent,
+      decodeError: "the pact has no Avro schema for this message",
+    });
+    expect(failed(protoContents, {})).toMatchObject({
+      payload: protoContent,
+      decodeError: expect.stringContaining("schema"),
+    });
+    expect(
+      failed(
+        { ...protoContents, contentType: "application/protobuf" },
+        { protobuf: { descriptorKey: "k1" } },
+        plugins,
+      ),
+    ).toMatchObject({
+      decodeError: "the pact does not name the Protobuf message",
+    });
+    expect(
+      failed(
+        {
+          ...protoContents,
+          contentType: "application/protobuf;message=.pactissue.Nope",
+        },
+        { protobuf: { descriptorKey: "k1" } },
+        plugins,
+      ),
+    ).toMatchObject({ decodeError: expect.stringContaining("Nope") });
   });
 });
 

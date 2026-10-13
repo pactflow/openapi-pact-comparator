@@ -18,7 +18,7 @@ components:
     StockUpdated:
       contentType: application/json
       payload:
-        schemaFormat: application/vnd.apache.avro+json;version=1.9.0
+        schemaFormat: application/raml+yaml;version=1.0
         schema:
           $ref: "#/components/schemas/StockUpdated"
 channels:

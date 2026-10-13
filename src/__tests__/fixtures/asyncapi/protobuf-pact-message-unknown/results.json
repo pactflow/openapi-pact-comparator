@@ -1,12 +1,12 @@
 [
   {
     "code": "message.payload.unvalidatable",
-    "message": "Body with content type 'application/protobuf;message=.shop.Nope' is not supported by the spec comparator",
+    "message": "Body with content type 'application/protobuf;message=.shop.Nope' is not supported by the spec comparator: no such type: .shop.Nope",
     "mockDetails": {
       "interactionDescription": "a message",
       "interactionState": "[none]",
       "location": "[root].interactions[0].contents.content",
-      "value": "\n\u0003o-1"
+      "value": "CgNvLTE="
     },
     "specDetails": {
       "location": "[root].components.messages.OrderPlaced"

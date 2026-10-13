@@ -64,13 +64,21 @@ const pluginEntry = (
   return isDict(entry) ? entry : undefined;
 };
 
+export interface DecodedContents {
+  payload: unknown;
+  contentType: string;
+  // Set when a recognised payload couldn't be decoded: the payload is then the
+  // raw base64 content, and this says why.
+  decodeError?: string;
+}
+
 // Returns the decoded payload, or undefined if the contents aren't a
-// recognised binary payload or couldn't be decoded (callers then fall back to
-// regular handling).
+// recognised binary payload. A recognised payload that can't be decoded keeps
+// its raw content and records why, so it is reported rather than skipped.
 export const decodeBinaryContents = (
   contents: BinaryContents | undefined,
   context: PluginContext,
-): { payload: unknown; contentType: string } | undefined => {
+): DecodedContents | undefined => {
   if (
     typeof contents?.content !== "string" ||
     typeof contents.contentType !== "string" ||
@@ -80,32 +88,44 @@ export const decodeBinaryContents = (
     return undefined;
   }
 
-  const { mediaType, params } = parseContentType(contents.contentType);
+  const { content, contentType } = contents;
+  const { mediaType, params } = parseContentType(contentType);
   const config = isDict(context.interaction) ? context.interaction : {};
-
-  try {
-    if (isAvro(mediaType)) {
-      const avro = isDict(config.avro) ? config.avro : {};
-      const schema =
-        avro.avroSchema ??
-        pluginEntry(context, "avro", avro.schemaKey)?.avroSchema;
-      const record = params.record ?? (avro.record as string | undefined);
+  const decoded = (decode: () => unknown): DecodedContents => {
+    try {
+      return { payload: decode(), contentType: DECODED_CONTENT_TYPE };
+    } catch (error) {
       return {
-        payload: decodeAvro(contents.content, schema, record),
-        contentType: DECODED_CONTENT_TYPE,
+        payload: content,
+        contentType,
+        decodeError: (error as Error).message,
       };
     }
+  };
 
-    if (isProtobuf(mediaType) && params.message) {
-      const protobuf = isDict(config.protobuf) ? config.protobuf : {};
-      const entry = pluginEntry(context, "protobuf", protobuf.descriptorKey);
-      return {
-        payload: decodeProtobuf(contents.content, entry ?? {}, params.message),
-        contentType: DECODED_CONTENT_TYPE,
-      };
-    }
-  } catch {
-    // undecodable: leave the payload alone so it is reported as unvalidatable
+  if (isAvro(mediaType)) {
+    const avro = isDict(config.avro) ? config.avro : {};
+    const schema =
+      avro.avroSchema ??
+      pluginEntry(context, "avro", avro.schemaKey)?.avroSchema;
+    const record = params.record ?? (avro.record as string | undefined);
+    return decoded(() => {
+      if (schema === undefined) {
+        throw new Error("the pact has no Avro schema for this message");
+      }
+      return decodeAvro(content, schema, record);
+    });
+  }
+
+  if (isProtobuf(mediaType)) {
+    const protobuf = isDict(config.protobuf) ? config.protobuf : {};
+    const entry = pluginEntry(context, "protobuf", protobuf.descriptorKey);
+    return decoded(() => {
+      if (!params.message) {
+        throw new Error("the pact does not name the Protobuf message");
+      }
+      return decodeProtobuf(content, entry ?? {}, params.message);
+    });
   }
   return undefined;
 };

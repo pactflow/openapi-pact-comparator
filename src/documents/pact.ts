@@ -150,6 +150,7 @@ export interface AsyncInteraction {
   asyncapiReferences?: { operationId?: string };
   payload: unknown;
   contentType?: string;
+  decodeError?: string;
   metadata?: Record<string, string>;
 }
 
@@ -161,11 +162,13 @@ export interface SyncInteraction {
   request: {
     payload: unknown;
     contentType?: string;
+    decodeError?: string;
     metadata?: Record<string, string>;
   };
   responses: Array<{
     payload: unknown;
     contentType?: string;
+    decodeError?: string;
     metadata?: Record<string, string>;
   }>;
 }
@@ -355,7 +358,7 @@ const asAsyncapiReferences = (
 const parseContents = (
   contents: RawInteraction["contents"],
   context: PluginContext,
-): { payload: unknown; contentType?: string } =>
+): { payload: unknown; contentType?: string; decodeError?: string } =>
   decodeBinaryContents(contents, context) ?? {
     payload: parseAsPactV4Body(contents),
     contentType: contents?.contentType,

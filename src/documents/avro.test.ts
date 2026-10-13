@@ -157,6 +157,15 @@ describe("avroToJsonSchema unions", () => {
   });
 });
 
+describe("avro long", () => {
+  it("decodes values beyond 2^53 instead of throwing", () => {
+    // 2^53 is the first value avsc's own long type rejects
+    expect(decodeAvro("goCAgICAgCA=", "long")).toBe(2 ** 53);
+    expect(decodeAvro(encode(-3, "long"), "long")).toBe(-3);
+    expect(decodeAvro(encode(7, ["null", "long"]), ["null", "long"])).toBe(7);
+  });
+});
+
 describe("avroToJsonSchema integers", () => {
   it("constrains int to 32 bits", () => {
     expect(avroToJsonSchema("int")).toEqual({

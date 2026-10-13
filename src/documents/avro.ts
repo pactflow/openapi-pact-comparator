@@ -27,6 +27,27 @@ const PRIMITIVES = [
   "string",
 ];
 
+// avsc's built-in `long` throws on values beyond 2^53. Those are valid Avro, so
+// decode them to the nearest JS number instead: not exact, but good enough to
+// check against `{ type: "integer" }`.
+const lenientLong = avro.types.LongType.__with(
+  {
+    fromBuffer: (buf: Buffer) => Number(buf.readBigInt64LE()),
+    toBuffer: (n: number | bigint) => {
+      const buf = Buffer.alloc(8);
+      buf.writeBigInt64LE(BigInt(n));
+      return buf;
+    },
+    fromJSON: Number,
+    toJSON: Number,
+    isValid: (n: unknown) =>
+      typeof n === "bigint" || (typeof n === "number" && Number.isInteger(n)),
+    compare: (a: number, b: number) => (a === b ? 0 : a < b ? -1 : 1),
+  },
+  // read the 8 byte two's complement form, not the zig-zag varint
+  false,
+);
+
 const parseAvroSchema = (schema: unknown): AvroType => {
   if (typeof schema === "string") {
     const text = schema.trim();
@@ -43,7 +64,9 @@ const parseAvroSchema = (schema: unknown): AvroType => {
   if (typeof schema === "string" && !PRIMITIVES.includes(schema)) {
     throw new Error(`Not a valid Avro schema: ${schema}`);
   }
-  return avro.Type.forSchema(schema as avro.Schema);
+  return avro.Type.forSchema(schema as avro.Schema, {
+    registry: { long: lenientLong },
+  });
 };
 
 const isUnion = (type: AvroType) => type.typeName.startsWith("union");
@@ -213,7 +236,7 @@ const convert = (
       return { type: "boolean" };
     case "int":
       return { type: "integer", ...INT_RANGE };
-    case "long":
+    case "abstract:long": // see lenientLong
       return { type: "integer" };
     case "float":
     case "double":

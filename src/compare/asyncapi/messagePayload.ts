@@ -29,7 +29,7 @@ const messageNames = (message: Message, messagePath: string): string[] =>
 export function* compareMessagePayload(
   ajv: Ajv,
   message: Message,
-  content: { payload: unknown; contentType?: string },
+  content: { payload: unknown; contentType?: string; decodeError?: string },
   interactionContext: { description?: string; providerState?: string },
   contentLocation: string,
   messagePath: string,
@@ -40,7 +40,7 @@ export function* compareMessagePayload(
   if (status === "warn") {
     yield {
       code: "message.payload.unvalidatable",
-      message: `Body with content type '${content.contentType}' is not supported by the spec comparator`,
+      message: `Body with content type '${content.contentType}' is not supported by the spec comparator${content.decodeError ? `: ${content.decodeError}` : ""}`,
       mockDetails: {
         ...baseMockDetails(interactionContext),
         location: contentLocation,

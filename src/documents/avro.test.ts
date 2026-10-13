@@ -1,5 +1,5 @@
 import Ajv from "ajv";
-import avro from "avro-js";
+import avro from "avsc";
 import { describe, expect, it } from "vitest";
 
 import { avroToJsonSchema, decodeAvro } from "./avro";
@@ -31,18 +31,19 @@ const schema = {
 };
 
 const encode = (value: unknown, s: unknown = schema) =>
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (avro.parse(s) as any).toBuffer(value).toString("base64");
+  avro.Type.forSchema(s as avro.Schema)
+    .toBuffer(value)
+    .toString("base64");
 
 const item = {
   id: 5,
-  name: { string: "widget" },
+  name: "widget",
   payload: Buffer.from("hi"),
   kind: "B",
   tags: ["x"],
   counts: { a: 1 },
-  owner: { "com.example.Owner": { email: "a@b.c" } },
-  next: { "com.example.Item": null },
+  owner: { email: "a@b.c" },
+  next: null,
 };
 
 describe("avro", () => {
@@ -54,7 +55,7 @@ describe("avro", () => {
       next: null,
     };
     const decoded = decodeAvro(
-      encode({ ...item, next: { "com.example.Item": next } }),
+      encode({ ...item, next }),
       JSON.stringify(schema),
       "com.example.Item",
     );

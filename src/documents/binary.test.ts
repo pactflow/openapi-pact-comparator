@@ -1,4 +1,4 @@
-import avro from "avro-js";
+import avro from "avsc";
 import protobuf from "protobufjs";
 import { describe, expect, it } from "vitest";
 
@@ -13,8 +13,8 @@ const avroSchema = JSON.stringify({
     { name: "note", type: ["null", "string"] },
   ],
 });
-const avroContent = (avro.parse(avroSchema) as { toBuffer(v: unknown): Buffer })
-  .toBuffer({ id: "a1", note: { string: "hello" } })
+const avroContent = avro.Type.forSchema(JSON.parse(avroSchema))
+  .toBuffer({ id: "a1", note: "hello" })
   .toString("base64");
 
 const protoFile = `syntax = "proto3"; package pactissue; message MessageIn { string s = 1; }`;

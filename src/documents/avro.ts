@@ -1,17 +1,14 @@
-import avro from "avro-js";
-
-const { parse: avroParse, types } = avro;
+import avro from "avsc";
 
 // Avro support: decode binary payloads into plain JSON-compatible values, and
 // convert Avro schemas into JSON Schema describing those same plain values.
-// Both walk the type tree parsed by avro-js, which has already resolved named
-// types, namespaces and aliases.
+// Parsed with avsc, which resolves named types, namespaces and aliases.
+// Logical types are not registered, so they resolve to their underlying type.
 //
 // Plain representation: unions are unwrapped, bytes/fixed are base64 strings,
 // everything else maps to its natural JSON counterpart.
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type AvroType = any;
+type AvroType = avro.Type;
 
 export const AVRO_SCHEMA_FORMATS = [
   "application/vnd.apache.avro",
@@ -43,8 +40,34 @@ const parseAvroSchema = (schema: unknown): AvroType => {
       schema = text;
     }
   }
-  // avro-js treats a bare string as a file path, so wrap type names
-  return avroParse(typeof schema === "string" ? { type: schema } : schema);
+  if (typeof schema === "string" && !PRIMITIVES.includes(schema)) {
+    throw new Error(`Not a valid Avro schema: ${schema}`);
+  }
+  return avro.Type.forSchema(schema as avro.Schema);
+};
+
+const isUnion = (type: AvroType) => type.typeName.startsWith("union");
+
+// avsc's typings split unions into two classes.
+const branches = (type: AvroType): AvroType[] =>
+  (type as avro.types.UnwrappedUnionType | avro.types.WrappedUnionType).types;
+
+const fieldsOf = (type: AvroType) => (type as avro.types.RecordType).fields;
+
+const children = (type: AvroType): AvroType[] => {
+  if (type.typeName === "record") {
+    return fieldsOf(type).map((f) => f.type);
+  }
+  if (isUnion(type)) {
+    return branches(type);
+  }
+  if (type.typeName === "array") {
+    return [(type as avro.types.ArrayType).itemsType];
+  }
+  if (type.typeName === "map") {
+    return [(type as avro.types.MapType).valuesType];
+  }
+  return [];
 };
 
 // A pact may hold a single record or a whole schema; when `record` names a
@@ -55,30 +78,15 @@ const findNamedType = (root: AvroType, name?: string): AvroType => {
   if (!name) {
     return root;
   }
-  const matches = (type: AvroType) => {
-    const fullName: string | undefined = type.getName?.();
-    return fullName === name || fullName?.endsWith(`.${name}`);
-  };
+  const matches = (type: AvroType) =>
+    type.name === name || type.name?.endsWith(`.${name}`);
   const seen = new Set<AvroType>();
   const visit = (type: AvroType): AvroType | undefined => {
     if (seen.has(type)) {
       return undefined;
     }
     seen.add(type);
-    if (matches(type)) {
-      return type;
-    }
-    const children: AvroType[] = [];
-    if (type instanceof types.RecordType) {
-      children.push(...type.getFields().map((f: AvroType) => f.getType()));
-    } else if (type instanceof types.UnionType) {
-      children.push(...type.getTypes());
-    } else if (type instanceof types.ArrayType) {
-      children.push(type.getItemsType());
-    } else if (type instanceof types.MapType) {
-      children.push(type.getValuesType());
-    }
-    return children.map(visit).find(Boolean);
+    return matches(type) ? type : children(type).map(visit).find(Boolean);
   };
   const found = visit(root);
   if (!found) {
@@ -87,45 +95,40 @@ const findNamedType = (root: AvroType, name?: string): AvroType => {
   return found;
 };
 
-const underlying = (type: AvroType): AvroType =>
-  type instanceof types.LogicalType
-    ? underlying(type.getUnderlyingType())
-    : type;
-
 const toPlain = (type: AvroType, value: unknown): unknown => {
-  type = underlying(type);
   if (value === null || value === undefined) {
     return null;
   }
-  if (type instanceof types.UnionType) {
+  if (type.typeName === "union:wrapped") {
     // wrapped as `{ [branchName]: branchValue }`
     const [branch] = Object.keys(value as object);
-    const branchType = type
-      .getTypes()
-      .find((t: AvroType) => (t.getName() ?? t.getName(true)) === branch) as
-      AvroType | undefined;
+    const branchType = branches(type).find((t) => t.branchName === branch);
     return branchType
       ? toPlain(branchType, (value as Record<string, unknown>)[branch])
       : null;
   }
-  if (type instanceof types.RecordType) {
+  if (type.typeName === "union:unwrapped") {
+    const branchType = branches(type).find((t) => t.isValid(value));
+    return branchType ? toPlain(branchType, value) : value;
+  }
+  if (type.typeName === "record") {
     return Object.fromEntries(
-      type
-        .getFields()
-        .map((f: AvroType) => [
-          f.getName(),
-          toPlain(f.getType(), (value as Record<string, unknown>)[f.getName()]),
-        ]),
+      fieldsOf(type).map((f) => [
+        f.name,
+        toPlain(f.type, (value as Record<string, unknown>)[f.name]),
+      ]),
     );
   }
-  if (type instanceof types.ArrayType) {
-    return (value as unknown[]).map((v) => toPlain(type.getItemsType(), v));
+  if (type.typeName === "array") {
+    return (value as unknown[]).map((v) =>
+      toPlain((type as avro.types.ArrayType).itemsType, v),
+    );
   }
-  if (type instanceof types.MapType) {
+  if (type.typeName === "map") {
     return Object.fromEntries(
       Object.entries(value as object).map(([k, v]) => [
         k,
-        toPlain(type.getValuesType(), v),
+        toPlain((type as avro.types.MapType).valuesType, v),
       ]),
     );
   }
@@ -151,68 +154,70 @@ const convert = (
   defs: Record<string, JsonSchema>,
   active: Set<string>,
 ): JsonSchema => {
-  type = underlying(type);
-
-  if (type instanceof types.UnionType) {
+  if (isUnion(type)) {
     // anyOf, not oneOf: branches may overlap (e.g. int and double)
-    return {
-      anyOf: type.getTypes().map((t: AvroType) => convert(t, defs, active)),
-    };
+    return { anyOf: branches(type).map((t) => convert(t, defs, active)) };
   }
-  if (type instanceof types.ArrayType) {
-    return { type: "array", items: convert(type.getItemsType(), defs, active) };
-  }
-  if (type instanceof types.MapType) {
-    return {
-      type: "object",
-      additionalProperties: convert(type.getValuesType(), defs, active),
-    };
-  }
-  if (type instanceof types.EnumType) {
-    return { type: "string", enum: type.getSymbols() };
-  }
-  if (type instanceof types.FixedType || type instanceof types.BytesType) {
-    return { type: "string" };
-  }
-  if (type instanceof types.RecordType) {
-    const name = type.getName() as string;
-    if (active.has(name)) {
-      // recursive type: refer to the definition hoisted into $defs
-      defs[name] ??= {};
-      return { $ref: `#/$defs/${name}` };
+  switch (type.typeName) {
+    case "array":
+      return {
+        type: "array",
+        items: convert((type as avro.types.ArrayType).itemsType, defs, active),
+      };
+    case "map":
+      return {
+        type: "object",
+        additionalProperties: convert(
+          (type as avro.types.MapType).valuesType,
+          defs,
+          active,
+        ),
+      };
+    case "enum":
+      return {
+        type: "string",
+        enum: (type as avro.types.EnumType).symbols,
+      };
+    case "fixed":
+    case "bytes":
+    case "string":
+      return { type: "string" };
+    case "record": {
+      const name = type.name as string;
+      if (active.has(name)) {
+        // recursive type: refer to the definition hoisted into $defs
+        defs[name] ??= {};
+        return { $ref: `#/$defs/${name}` };
+      }
+      active.add(name);
+      const fields = fieldsOf(type);
+      const schema: JsonSchema = {
+        type: "object",
+        properties: Object.fromEntries(
+          fields.map((f) => [f.name, convert(f.type, defs, active)]),
+        ),
+        required: fields.map((f) => f.name),
+      };
+      active.delete(name);
+      if (name in defs) {
+        Object.assign(defs[name], schema);
+        return { $ref: `#/$defs/${name}` };
+      }
+      return schema;
     }
-    active.add(name);
-    const fields = type.getFields() as AvroType[];
-    const schema: JsonSchema = {
-      type: "object",
-      properties: Object.fromEntries(
-        fields.map((f) => [f.getName(), convert(f.getType(), defs, active)]),
-      ),
-      required: fields.map((f) => f.getName()),
-    };
-    active.delete(name);
-    if (name in defs) {
-      Object.assign(defs[name], schema);
-      return { $ref: `#/$defs/${name}` };
-    }
-    return schema;
+    case "null":
+      return { type: "null" };
+    case "boolean":
+      return { type: "boolean" };
+    case "int":
+    case "long":
+      return { type: "integer" };
+    case "float":
+    case "double":
+      return { type: "number" };
+    default:
+      throw new Error(`Unsupported Avro type: ${type.typeName}`);
   }
-  if (type instanceof types.NullType) {
-    return { type: "null" };
-  }
-  if (type instanceof types.BooleanType) {
-    return { type: "boolean" };
-  }
-  if (type instanceof types.IntType || type instanceof types.LongType) {
-    return { type: "integer" };
-  }
-  if (type instanceof types.FloatType || type instanceof types.DoubleType) {
-    return { type: "number" };
-  }
-  if (type instanceof types.StringType) {
-    return { type: "string" };
-  }
-  throw new Error(`Unsupported Avro type: ${type.getSchema?.()}`);
 };
 
 export const avroToJsonSchema = (schema: unknown): JsonSchema => {

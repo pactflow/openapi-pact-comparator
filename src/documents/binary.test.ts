@@ -48,10 +48,10 @@ describe("decodeBinaryContents", () => {
       decodeBinaryContents(avroContents, {
         interaction: { avro: { avroSchema, record: "Item", schemaKey: "h1" } },
       }),
-    ).toEqual({
+    ).toMatchObject({
       payload: { id: "a1", note: "hello" },
       contentType: "application/json",
-      binary: { format: "avro" },
+      binary: { format: "avro", declaredType: "Item" },
     });
   });
 
@@ -70,7 +70,7 @@ describe("decodeBinaryContents", () => {
         interaction: { protobuf: { descriptorKey: "k1" } },
         plugins,
       }),
-    ).toEqual({
+    ).toMatchObject({
       payload: { s: "hi" },
       contentType: "application/json",
       binary: { format: "protobuf" },
@@ -88,44 +88,22 @@ describe("decodeBinaryContents", () => {
     ).toBeUndefined();
   });
 
-  it("keeps the raw content and says why when decoding fails", () => {
-    const failed = (contents: object, interaction: object, plugins?: unknown) =>
-      decodeBinaryContents(contents as never, { interaction, plugins });
-
-    expect(
-      failed({ ...avroContents, content: "AAAA" }, { avro: { avroSchema } }),
-    ).toMatchObject({
+  it("keeps an undecodable payload raw, with the reason, so it is reported", () => {
+    const garbage = decodeBinaryContents(
+      { ...avroContents, content: "AAAA" },
+      { interaction: { avro: { avroSchema } } },
+    );
+    expect(garbage).toMatchObject({
       payload: "AAAA",
-      contentType: "avro/binary;record=Item",
-      decodeError: expect.any(String),
+      binary: { format: "avro", error: expect.any(String) },
     });
-    expect(failed(avroContents, {})).toMatchObject({
-      payload: avroContent,
-      decodeError: "the pact has no Avro schema for this message",
+  });
+
+  it("keeps the payload raw, with the reason, when the schema is missing", () => {
+    expect(decodeBinaryContents(protoContents, {})).toMatchObject({
+      payload: protoContents.content,
+      binary: { format: "protobuf", error: expect.any(String) },
     });
-    expect(failed(protoContents, {})).toMatchObject({
-      payload: protoContent,
-      decodeError: expect.stringContaining("schema"),
-    });
-    expect(
-      failed(
-        { ...protoContents, contentType: "application/protobuf" },
-        { protobuf: { descriptorKey: "k1" } },
-        plugins,
-      ),
-    ).toMatchObject({
-      decodeError: "the pact does not name the Protobuf message",
-    });
-    expect(
-      failed(
-        {
-          ...protoContents,
-          contentType: "application/protobuf;message=.pactissue.Nope",
-        },
-        { protobuf: { descriptorKey: "k1" } },
-        plugins,
-      ),
-    ).toMatchObject({ decodeError: expect.stringContaining("Nope") });
   });
 });
 

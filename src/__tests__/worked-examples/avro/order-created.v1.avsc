@@ -1,0 +1,51 @@
+{
+  "type": "record",
+  "name": "OrderCreated",
+  "namespace": "orders",
+  "doc": "Order Service schema v1. Consumers built against this version.",
+  "fields": [
+    { "name": "order_id", "type": "string" },
+    { "name": "customer_id", "type": "string" },
+    { "name": "total_cents", "type": "long" },
+    { "name": "currency", "type": "string", "default": "USD" },
+    {
+      "name": "status",
+      "type": {
+        "type": "enum",
+        "name": "OrderStatus",
+        "symbols": ["PENDING", "PAID", "SHIPPED"]
+      }
+    },
+    {
+      "name": "items",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "record",
+          "name": "LineItem",
+          "fields": [
+            { "name": "sku", "type": "string" },
+            { "name": "quantity", "type": "int" },
+            { "name": "unit_price_cents", "type": "long" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "created_at",
+      "type": { "type": "long", "logicalType": "timestamp-millis" }
+    },
+    {
+      "name": "shipping_address",
+      "type": {
+        "type": "record",
+        "name": "Address",
+        "fields": [
+          { "name": "line1", "type": "string" },
+          { "name": "city", "type": "string" },
+          { "name": "postcode", "type": "string" }
+        ]
+      }
+    }
+  ]
+}

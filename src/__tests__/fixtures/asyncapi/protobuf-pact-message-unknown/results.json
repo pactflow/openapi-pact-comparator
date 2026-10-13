@@ -1,30 +1,32 @@
 [
   {
-    "code": "message.payload.unvalidatable",
-    "message": "Body with content type 'application/protobuf;message=.shop.Nope' is not supported by the spec comparator: no such type: .shop.Nope",
+    "code": "message.no.match",
+    "message": "No message in the operation matched the interaction",
     "mockDetails": {
       "interactionDescription": "a message",
       "interactionState": "[none]",
-      "location": "[root].interactions[0].contents.content",
-      "value": "CgNvLTE="
+      "location": "[root].interactions[0]",
+      "value": "a message"
     },
     "specDetails": {
-      "location": "[root].components.messages.OrderPlaced"
+      "location": "[root].operations.receiveOrder.messages"
     },
-    "type": "warning"
-  },
-  {
-    "code": "message.matched",
-    "message": "Matched message at [root].components.messages.OrderPlaced",
-    "specDetails": {
-      "location": "[root].components.messages.OrderPlaced",
-      "value": {
-        "payload": {
-          "schemaFormat": "application/vnd.google.protobuf;version=3",
-          "schema": "syntax = \"proto3\";\npackage shop;\nmessage OrderPlaced { string order_id = 1; }\nmessage OrderCancelled { string order_id = 1; }\n"
-        }
+    "type": "error",
+    "causes": [
+      {
+        "code": "message.payload.uncomparable",
+        "message": "The consumer's Protobuf payload could not be decoded, so it cannot be compared: no such type: .shop.Nope",
+        "mockDetails": {
+          "interactionDescription": "a message",
+          "interactionState": "[none]",
+          "location": "[root].interactions[0].contents.content",
+          "value": "CgNvLTE="
+        },
+        "specDetails": {
+          "location": "[root].components.messages.OrderPlaced.payload"
+        },
+        "type": "error"
       }
-    },
-    "type": "info"
+    ]
   }
 ]

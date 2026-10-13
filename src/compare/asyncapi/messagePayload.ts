@@ -17,11 +17,13 @@ import { bodyValidationStatus } from "#utils/body";
 import { splitPath } from "#utils/schema";
 import { getValidateFunction } from "#utils/validation";
 
+import { compareBinaryPayload } from "./binary/index";
+
 // Candidate names for a message, in Drift's precedence: the type it declares
 // explicitly (a `proto` content type parameter, or the payload's
 // `x-drift-proto-message`), its key in the spec (the last segment of its path,
 // when it has one), then the names it declares itself.
-const messageNames = (message: Message, messagePath: string): string[] =>
+export const messageNames = (message: Message, messagePath: string): string[] =>
   [
     /;\s*proto\s*=\s*([^;\s]+)/i.exec(message.contentType ?? "")?.[1],
     (message.payload as { "x-drift-proto-message"?: unknown } | undefined)?.[
@@ -79,12 +81,7 @@ const checkFormat = (
 export function* compareMessagePayload(
   ajv: Ajv,
   message: Message,
-  content: {
-    payload: unknown;
-    contentType?: string;
-    decodeError?: string;
-    binary?: BinaryPayload;
-  },
+  content: { payload: unknown; contentType?: string; binary?: BinaryPayload },
   interactionContext: { description?: string; providerState?: string },
   contentLocation: string,
   messagePath: string,
@@ -102,12 +99,25 @@ export function* compareMessagePayload(
     return;
   }
 
+  if (content.binary || binaryFormatOf(message.payload)) {
+    yield* compareBinaryPayload(
+      ajv,
+      message,
+      content,
+      interactionContext,
+      contentLocation,
+      messagePath,
+      direction,
+    );
+    return;
+  }
+
   const status = bodyValidationStatus(content.contentType, content.payload);
 
   if (status === "warn") {
     yield {
       code: "message.payload.unvalidatable",
-      message: `Body with content type '${content.contentType}' is not supported by the spec comparator${content.decodeError ? `: ${content.decodeError}` : ""}`,
+      message: `Body with content type '${content.contentType}' is not supported by the spec comparator`,
       mockDetails: {
         ...baseMockDetails(interactionContext),
         location: contentLocation,
@@ -172,7 +182,33 @@ export function* compareMessagePayload(
     return;
   }
 
-  const schemaPath = `${messagePath}.payload${unwrapped.path}`;
+  for (const { result } of validatePayload(
+    ajv,
+    payloadSchema,
+    `${messagePath}.payload${unwrapped.path}`,
+    content.payload,
+    interactionContext,
+    contentLocation,
+    direction,
+  )) {
+    yield result;
+  }
+}
+
+/**
+ * Validates a (decoded) payload against a JSON Schema with AJV. Each result
+ * comes with the JSON pointer of the offending field, so callers can relate it
+ * to other checks.
+ */
+export function* validatePayload(
+  ajv: Ajv,
+  payloadSchema: object,
+  schemaPath: string,
+  payload: unknown,
+  interactionContext: { description?: string; providerState?: string },
+  contentLocation: string,
+  direction: "request" | "response",
+): Iterable<{ result: Result; path: string }> {
   const schemaId = `${schemaPath}#${direction}`;
   const validate = getValidateFunction(ajv, schemaId, () => {
     const rawSchema = structuredClone(payloadSchema) as SchemaObject;
@@ -180,23 +216,29 @@ export function* compareMessagePayload(
       ? transformReceivedSchema(rawSchema)
       : rawSchema;
   });
-  if (!validate(content.payload)) {
+  if (!validate(payload)) {
     for (const error of validate.errors ?? []) {
+      const field =
+        (error.params as { additionalProperty?: string }).additionalProperty ??
+        (error.params as { missingProperty?: string }).missingProperty;
       yield {
-        code: "message.payload.incompatible",
-        message: `Message payload is incompatible with the schema in the spec file: ${formatMessage(error)}`,
-        mockDetails: {
-          ...baseMockDetails(interactionContext),
-          location: `${contentLocation}${formatInstancePath(error)}`,
-          value: error.instancePath
-            ? get(content.payload, splitPath(error.instancePath))
-            : content.payload,
+        path: `${error.instancePath}${field ? `/${field}` : ""}`,
+        result: {
+          code: "message.payload.incompatible",
+          message: `Message payload is incompatible with the schema in the spec file: ${formatMessage(error)}`,
+          mockDetails: {
+            ...baseMockDetails(interactionContext),
+            location: `${contentLocation}${formatInstancePath(error)}`,
+            value: error.instancePath
+              ? get(payload, splitPath(error.instancePath))
+              : payload,
+          },
+          specDetails: {
+            location: `${schemaPath}.${formatSchemaPath(error)}`,
+            value: get(validate.schema, splitPath(error.schemaPath)),
+          },
+          type: "error",
         },
-        specDetails: {
-          location: `${schemaPath}.${formatSchemaPath(error)}`,
-          value: get(validate.schema, splitPath(error.schemaPath)),
-        },
-        type: "error",
       };
     }
   }

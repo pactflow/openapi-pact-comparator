@@ -1,0 +1,45 @@
+// Order Service schema "v2". It still compiles, every producer still encodes,
+// and every v1 consumer still *decodes* without throwing — yet most of the
+// changes below silently break a consumer. Tags [Bn]/[Nn] map to the README.
+syntax = "proto3";
+
+package orders;
+
+import "google/protobuf/timestamp.proto";
+
+enum OrderStatus {
+  ORDER_STATUS_UNSPECIFIED = 0;
+  PENDING = 1;
+  PAYMENT_PENDING = 2; // [B5] inserted mid-enum; existing values renumbered
+  PAID = 3;            // [B5] was 2
+  SHIPPED = 4;         // [B5] was 3
+  CANCELLED = 5;       // [N2] new value (non-breaking on its own)
+}
+
+message LineItem {
+  string sku = 1;
+  sint32 quantity = 2; // [B3] int32 -> sint32: same wire type, different encoding
+  int64 unit_price_cents = 3;
+}
+
+message Address {
+  string line1 = 1;
+  string city = 2;
+  string postcode = 3;
+  string country = 4;
+}
+
+message OrderCreated {
+  reserved 2, 8;
+  reserved "shipping_address";
+
+  int64 order_id = 1;                 // [B1] string -> int64 (wire-incompatible)
+  string customer_id = 12;            // [B2] renumbered 2 -> 12
+  int64 amount_minor = 3;             // [B6] renamed from total_cents (same number + type)
+  string promo_code = 4;              // [B4] `currency` removed, number 4 reused
+  OrderStatus status = 5;
+  repeated LineItem items = 6;
+  string created_at = 7;              // [B8] Timestamp message -> ISO-8601 string
+  // [B7] shipping_address (8) removed
+  string sales_channel = 20;          // [N1] new field (non-breaking)
+}

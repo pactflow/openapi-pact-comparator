@@ -105,9 +105,8 @@ export function checkAsyncapiPreamble(
 type MessageContent = {
   payload: unknown;
   contentType?: string;
-  decodeError?: string;
-  binary?: BinaryPayload;
   metadata?: Record<string, string>;
+  binary?: BinaryPayload;
 };
 
 type MessageLocations = {

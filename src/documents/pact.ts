@@ -154,9 +154,8 @@ export interface AsyncInteraction {
   asyncapiReferences?: { operationId?: string };
   payload: unknown;
   contentType?: string;
-  decodeError?: string;
-  binary?: BinaryPayload;
   metadata?: Record<string, string>;
+  binary?: BinaryPayload;
 }
 
 export interface SyncInteraction {
@@ -167,16 +166,14 @@ export interface SyncInteraction {
   request: {
     payload: unknown;
     contentType?: string;
-    decodeError?: string;
-    binary?: BinaryPayload;
     metadata?: Record<string, string>;
+    binary?: BinaryPayload;
   };
   responses: Array<{
     payload: unknown;
     contentType?: string;
-    decodeError?: string;
-    binary?: BinaryPayload;
     metadata?: Record<string, string>;
+    binary?: BinaryPayload;
   }>;
 }
 
@@ -220,6 +217,7 @@ interface RawInteraction {
     encoded?: string | boolean;
   };
   metadata?: Record<string, string>;
+  matchingRules?: Record<string, unknown>;
   pluginConfiguration?: unknown;
 }
 
@@ -234,6 +232,7 @@ interface RawSyncInteraction {
       encoded?: string | boolean;
     };
     metadata?: Record<string, string>;
+    matchingRules?: Record<string, unknown>;
   };
   response: Array<{
     contents?: {
@@ -242,6 +241,7 @@ interface RawSyncInteraction {
       encoded?: string | boolean;
     };
     metadata?: Record<string, string>;
+    matchingRules?: Record<string, unknown>;
   }>;
   comments?: {
     references?: {
@@ -365,13 +365,9 @@ const asAsyncapiReferences = (
 const parseContents = (
   contents: RawInteraction["contents"],
   context: PluginContext,
-): {
-  payload: unknown;
-  contentType?: string;
-  decodeError?: string;
-  binary?: BinaryPayload;
-} =>
-  decodeBinaryContents(contents, context) ?? {
+  matchingRules?: Record<string, unknown>,
+): { payload: unknown; contentType?: string; binary?: BinaryPayload } =>
+  decodeBinaryContents(contents, context, matchingRules) ?? {
     payload: parseAsPactV4Body(contents),
     contentType: contents?.contentType,
   };
@@ -386,10 +382,11 @@ const parseAsyncInteraction = (
     description: i.description,
     providerState: i.providerState,
     asyncapiReferences: asyncapiRef,
-    ...parseContents(i.contents, {
-      interaction: i.pluginConfiguration,
-      plugins,
-    }),
+    ...parseContents(
+      i.contents,
+      { interaction: i.pluginConfiguration, plugins },
+      i.matchingRules,
+    ),
     metadata: i.metadata,
   };
 };
@@ -406,11 +403,11 @@ const parseSyncInteraction = (
     providerState: i.providerState,
     asyncapiReferences: asyncapiRef,
     request: {
-      ...parseContents(i.request.contents, context),
+      ...parseContents(i.request.contents, context, i.request.matchingRules),
       metadata: i.request.metadata,
     },
     responses: i.response.map((r) => ({
-      ...parseContents(r.contents, context),
+      ...parseContents(r.contents, context, r.matchingRules),
       metadata: r.metadata,
     })),
   };

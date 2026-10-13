@@ -1,35 +1,35 @@
 [
   {
-    "code": "message.payload.unvalidatable",
-    "message": "Schema with format 'application/vnd.apache.avro;version=1.9.0' is not supported by the spec comparator: no Avro schema available (missing, or an unresolvable $ref)",
+    "code": "message.no.match",
+    "message": "No message in the operation matched the interaction",
     "mockDetails": {
       "interactionDescription": "a message",
       "interactionState": "[none]",
-      "location": "[root].interactions[0].contents.content",
-      "value": {
-        "userId": "u-1"
-      }
+      "location": "[root].interactions[0]",
+      "value": "a message"
     },
     "specDetails": {
-      "location": "[root].components.messages.UserSignedUp.payload.schemaFormat",
-      "value": "application/vnd.apache.avro;version=1.9.0"
+      "location": "[root].operations.receiveUser.messages"
     },
-    "type": "warning"
-  },
-  {
-    "code": "message.matched",
-    "message": "Matched message at [root].components.messages.UserSignedUp",
-    "specDetails": {
-      "location": "[root].components.messages.UserSignedUp",
-      "value": {
-        "payload": {
-          "schemaFormat": "application/vnd.apache.avro;version=1.9.0",
-          "schema": {
-            "$ref": "./schemas/user-signed-up.avsc"
+    "type": "error",
+    "causes": [
+      {
+        "code": "message.payload.uncomparable",
+        "message": "The provider's Avro schema cannot be compared: no Avro schema available (missing, or an unresolvable $ref)",
+        "mockDetails": {
+          "interactionDescription": "a message",
+          "interactionState": "[none]",
+          "location": "[root].interactions[0].contents.content",
+          "value": {
+            "userId": "u-1"
           }
-        }
+        },
+        "specDetails": {
+          "location": "[root].components.messages.UserSignedUp.payload.schemaFormat",
+          "value": "application/vnd.apache.avro;version=1.9.0"
+        },
+        "type": "error"
       }
-    },
-    "type": "info"
+    ]
   }
 ]

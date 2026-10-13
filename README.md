@@ -68,6 +68,10 @@ uses them is reported as unsupported rather than compared. A pact's own schema
 is read from the descriptors the plugin embeds, which already include its
 imports.
 
+The provider's Protobuf message is chosen by a `proto` content type parameter,
+the payload's `x-drift-proto-message` extension, the message's key or name, or
+the only message in the schema, in that order.
+
 Payloads are decoded to JavaScript numbers, which can only represent integers
 exactly up to 2^53 (9,007,199,254,740,992). Beyond that:
 

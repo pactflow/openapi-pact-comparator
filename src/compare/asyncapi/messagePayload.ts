@@ -16,10 +16,16 @@ import { bodyValidationStatus } from "#utils/body";
 import { splitPath } from "#utils/schema";
 import { getValidateFunction } from "#utils/validation";
 
-// Candidate names for a message: its key in the spec (the last segment of its
-// path, when it has one), then the names it declares itself.
+// Candidate names for a message, in Drift's precedence: the type it declares
+// explicitly (a `proto` content type parameter, or the payload's
+// `x-drift-proto-message`), its key in the spec (the last segment of its path,
+// when it has one), then the names it declares itself.
 const messageNames = (message: Message, messagePath: string): string[] =>
   [
+    /;\s*proto\s*=\s*([^;\s]+)/i.exec(message.contentType ?? "")?.[1],
+    (message.payload as { "x-drift-proto-message"?: unknown } | undefined)?.[
+      "x-drift-proto-message"
+    ],
     /\.([^.[\]]+)$/.exec(messagePath)?.[1],
     message.name,
     message.title,

@@ -65,7 +65,13 @@ const parseAvroSchema = (schema: unknown): AvroType => {
     throw new Error(`Not a valid Avro schema: ${schema}`);
   }
   return avro.Type.forSchema(schema as avro.Schema, {
+    // a bare `"long"` is looked up here; `{ "type": "long", ... }` (e.g. with a
+    // logical type) goes through the hook
     registry: { long: lenientLong },
+    typeHook: (attrs) =>
+      (attrs as { type?: unknown } | null)?.type === "long"
+        ? lenientLong
+        : undefined,
   });
 };
 

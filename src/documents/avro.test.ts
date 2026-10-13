@@ -164,6 +164,12 @@ describe("avro long", () => {
     expect(decodeAvro(encode(-3, "long"), "long")).toBe(-3);
     expect(decodeAvro(encode(7, ["null", "long"]), ["null", "long"])).toBe(7);
   });
+
+  it("treats a long with a logical type the same way", () => {
+    const timestamp = { type: "long", logicalType: "timestamp-millis" };
+    expect(decodeAvro("goCAgICAgCA=", timestamp)).toBe(2 ** 53);
+    expect(avroToJsonSchema(timestamp)).toEqual({ type: "integer" });
+  });
 });
 
 describe("avroToJsonSchema integers", () => {

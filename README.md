@@ -73,6 +73,28 @@ Avro or Protobuf payload against a message declared as anything else, or a plain
 (for example JSON) payload against an Avro or Protobuf message, fails with
 `message.payload.format.incompatible`.
 
+Each interaction is compared in two independent passes, and each reports what it
+finds:
+
+- **Values.** The consumer's example is decoded and validated against the
+  provider's schema converted to JSON Schema, as for JSON payloads.
+- **Structure.** The consumer's own schema, which the plugin embeds in the pact,
+  is compared with the provider's, the way the consumer's decoder will read the
+  provider's messages: Protobuf by field and enum number (only the fields and
+  enum values the consumer uses), Avro by writer/reader schema resolution
+  (assuming consumers decode with the writer's schema, e.g. via a schema
+  registry). This catches changes that keep the JSON shape but break the
+  consumer, such as a renumbered field, `int32` to `sint32`, a renumbered enum,
+  `int` to `long`, a new enum symbol, a field made nullable, or a renamed
+  record.
+
+The same problem can therefore be reported by both passes. The structural pass
+also reports `message.payload.type.incompatible` when the consumer's and
+provider's messages are different types (the Protobuf message, or Avro record,
+the pact declares is not the one the provider's message carries). It stays
+silent when it cannot tell, for example when a schema cannot be parsed, and the
+value pass explains why the payload was not validated.
+
 The provider's Protobuf message is chosen by a `proto` content type parameter,
 the payload's `x-drift-proto-message` extension, the message's key or name, or
 the only message in the schema, in that order.

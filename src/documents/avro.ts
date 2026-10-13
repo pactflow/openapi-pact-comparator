@@ -1,14 +1,15 @@
 import avro from "avsc";
 
-// Avro support: decode binary payloads into plain JSON-compatible values, and
-// convert Avro schemas into JSON Schema describing those same plain values.
+// Avro support: decode binary payloads into plain JSON-compatible values,
+// convert Avro schemas into JSON Schema describing those same plain values, and
+// expose the parsed type tree for structural (writer/reader) comparison.
 // Parsed with avsc, which resolves named types, namespaces and aliases.
 // Logical types are not registered, so they resolve to their underlying type.
 //
 // Plain representation: unions are unwrapped, bytes/fixed are base64 strings,
 // everything else maps to its natural JSON counterpart.
 
-type AvroType = avro.Type;
+export type AvroType = avro.Type;
 
 export const AVRO_SCHEMA_FORMATS = [
   "application/vnd.apache.avro",
@@ -48,7 +49,11 @@ const lenientLong = avro.types.LongType.__with(
   false,
 );
 
-const parseAvroSchema = (schema: unknown): AvroType => {
+// The type name, with the lenient long reported as plain `long`.
+export const typeNameOf = (type: AvroType) =>
+  type.typeName === "abstract:long" ? "long" : type.typeName;
+
+export const parseAvroSchema = (schema: unknown): AvroType => {
   if (typeof schema === "string") {
     const text = schema.trim();
     try {
@@ -75,13 +80,33 @@ const parseAvroSchema = (schema: unknown): AvroType => {
   });
 };
 
-const isUnion = (type: AvroType) => type.typeName.startsWith("union");
+export const isUnion = (type: AvroType) => type.typeName.startsWith("union");
 
 // avsc's typings split unions into two classes.
-const branches = (type: AvroType): AvroType[] =>
+export const branches = (type: AvroType): AvroType[] =>
   (type as avro.types.UnwrappedUnionType | avro.types.WrappedUnionType).types;
 
+export const unqualified = (name: string) => name.split(".").pop() ?? name;
+
 const fieldsOf = (type: AvroType) => (type as avro.types.RecordType).fields;
+
+// Whether a reader's named type accepts a writer's, per Avro: matching
+// unqualified names, or a reader alias naming the writer's type.
+export const namesMatch = (writer: AvroType, reader: AvroType) => {
+  const writerName = unqualified(writer.name ?? "");
+  return (
+    writerName === unqualified(reader.name ?? "") ||
+    (reader.aliases ?? []).some((alias) => unqualified(alias) === writerName)
+  );
+};
+
+// The records a payload schema can carry: itself, or a union's record branches.
+export const recordsOf = (type: AvroType): AvroType[] =>
+  type.typeName === "record"
+    ? [type]
+    : isUnion(type)
+      ? branches(type).filter((t) => t.typeName === "record")
+      : [];
 
 const children = (type: AvroType): AvroType[] => {
   if (type.typeName === "record") {
@@ -103,7 +128,7 @@ const children = (type: AvroType): AvroType[] => {
 // nested type, find it in the tree. `name` may be a full name or a simple name.
 // An explicit name that can't be found is an error, rather than silently
 // decoding as the wrong type.
-const findNamedType = (root: AvroType, name?: string): AvroType => {
+export const findNamedType = (root: AvroType, name?: string): AvroType => {
   if (!name) {
     return root;
   }

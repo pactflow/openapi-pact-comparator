@@ -51,7 +51,13 @@ describe("decodeBinaryContents", () => {
     ).toEqual({
       payload: { id: "a1", note: "hello" },
       contentType: "application/json",
-      binary: { format: "avro" },
+      binary: {
+        format: "avro",
+        declaredType: "Item",
+        avroSchema,
+        content: avroContent,
+        matchingRulePaths: [],
+      },
     });
   });
 
@@ -73,8 +79,24 @@ describe("decodeBinaryContents", () => {
     ).toEqual({
       payload: { s: "hi" },
       contentType: "application/json",
-      binary: { format: "protobuf" },
+      binary: {
+        format: "protobuf",
+        declaredType: ".pactissue.MessageIn",
+        protobuf: { protoFile, protoDescriptors: undefined },
+        content: protoContent,
+        matchingRulePaths: [],
+      },
     });
+  });
+
+  it("records the paths named by the matching rules", () => {
+    expect(
+      decodeBinaryContents(
+        avroContents,
+        { interaction: { avro: { avroSchema } } },
+        { body: { "$.id": { matchers: [] } } },
+      )?.binary.matchingRulePaths,
+    ).toEqual(["$.id"]);
   });
 
   it.each([

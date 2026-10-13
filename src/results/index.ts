@@ -8,6 +8,7 @@ type ErrorCode =
   | "message.operation.unknown"
   | "message.payload.format.incompatible"
   | "message.payload.incompatible"
+  | "message.payload.type.incompatible"
   | "message.references.missing"
   | "message.reply.missing"
   | "message.spec.missing"
@@ -28,6 +29,7 @@ type ErrorCode =
 
 type WarningCode =
   | "message.headers.unvalidatable"
+  | "message.payload.risky"
   | "message.payload.unknown"
   | "message.payload.unvalidatable"
   | "message.response.missing"

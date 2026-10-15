@@ -1,0 +1,26 @@
+asyncapi: "3.0.0"
+info:
+  title: Counter Service
+  version: "1.0.0"
+components:
+  messages:
+    Counter:
+      payload:
+        schemaFormat: application/vnd.google.protobuf;version=3
+        schema: |
+          syntax = "proto3";
+          package shop;
+          message Counter { int64 count = 1; }
+channels:
+  main:
+    address: main
+    messages:
+      Counter:
+        $ref: "#/components/messages/Counter"
+operations:
+  receiveCounter:
+    action: receive
+    channel:
+      $ref: "#/channels/main"
+    messages:
+      - $ref: "#/channels/main/messages/Counter"

@@ -1,0 +1,39 @@
+[
+  {
+    "code": "message.no.match",
+    "message": "No message in the operation matched the interaction",
+    "mockDetails": {
+      "interactionDescription": "an order was placed",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0]",
+      "value": "an order was placed"
+    },
+    "specDetails": {
+      "location": "[root].operations.receiveOrderPlaced.messages"
+    },
+    "type": "error",
+    "causes": [
+      {
+        "code": "message.payload.format.incompatible",
+        "message": "The consumer's message is application/json, but the provider's message is Protobuf",
+        "mockDetails": {
+          "interactionDescription": "an order was placed",
+          "interactionState": "[none]",
+          "location": "[root].interactions[0].contents.content",
+          "value": {
+            "order_id": "o-1",
+            "quantity": 2,
+            "tags": [
+              "a"
+            ]
+          }
+        },
+        "specDetails": {
+          "location": "[root].components.messages.OrderPlaced.payload",
+          "value": "application/vnd.google.protobuf;version=3"
+        },
+        "type": "error"
+      }
+    ]
+  }
+]

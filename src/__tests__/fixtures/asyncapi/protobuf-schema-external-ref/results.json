@@ -1,0 +1,35 @@
+[
+  {
+    "code": "message.payload.unvalidatable",
+    "message": "Schema with format 'application/vnd.google.protobuf;version=3' is not supported by the spec comparator: no Protobuf schema available (missing, or an unresolvable $ref)",
+    "mockDetails": {
+      "interactionDescription": "a message",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].contents.content",
+      "value": {
+        "order_id": "o-1"
+      }
+    },
+    "specDetails": {
+      "location": "[root].components.messages.OrderPlaced.payload.schemaFormat",
+      "value": "application/vnd.google.protobuf;version=3"
+    },
+    "type": "warning"
+  },
+  {
+    "code": "message.matched",
+    "message": "Matched message at [root].components.messages.OrderPlaced",
+    "specDetails": {
+      "location": "[root].components.messages.OrderPlaced",
+      "value": {
+        "payload": {
+          "schemaFormat": "application/vnd.google.protobuf;version=3",
+          "schema": {
+            "$ref": "./schemas/shop.proto"
+          }
+        }
+      }
+    },
+    "type": "info"
+  }
+]

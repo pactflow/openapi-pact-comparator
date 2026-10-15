@@ -1,0 +1,16 @@
+[
+  {
+    "code": "message.matched",
+    "message": "Matched message at [root].components.messages.Counter",
+    "specDetails": {
+      "location": "[root].components.messages.Counter",
+      "value": {
+        "payload": {
+          "schemaFormat": "application/vnd.google.protobuf;version=3",
+          "schema": "syntax = \"proto3\";\npackage shop;\nmessage Counter { int64 count = 1; }\n"
+        }
+      }
+    },
+    "type": "info"
+  }
+]

@@ -1,0 +1,33 @@
+{
+  "consumer": {
+    "name": "consumer"
+  },
+  "provider": {
+    "name": "provider"
+  },
+  "interactions": [
+    {
+      "type": "Asynchronous/Messages",
+      "description": "a message",
+      "comments": {
+        "references": {
+          "AsyncAPI": {
+            "operationId": "receiveUser"
+          }
+        }
+      },
+      "pending": false,
+      "contents": {
+        "content": "BnUtMQ==",
+        "contentType": "avro/binary;record=UserSignedUp",
+        "contentTypeHint": "BINARY",
+        "encoded": "base64"
+      }
+    }
+  ],
+  "metadata": {
+    "pactSpecification": {
+      "version": "4.0"
+    }
+  }
+}

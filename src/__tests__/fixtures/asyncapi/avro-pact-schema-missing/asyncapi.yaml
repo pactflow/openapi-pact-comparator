@@ -1,0 +1,28 @@
+asyncapi: "3.0.0"
+info:
+  title: User Service
+  version: "1.0.0"
+components:
+  messages:
+    UserSignedUp:
+      payload:
+        schemaFormat: application/vnd.apache.avro;version=1.9.0
+        schema:
+          type: record
+          name: UserSignedUp
+          fields:
+            - name: userId
+              type: string
+channels:
+  main:
+    address: main
+    messages:
+      UserSignedUp:
+        $ref: "#/components/messages/UserSignedUp"
+operations:
+  receiveUser:
+    action: receive
+    channel:
+      $ref: "#/channels/main"
+    messages:
+      - $ref: "#/channels/main/messages/UserSignedUp"

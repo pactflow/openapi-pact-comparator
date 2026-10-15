@@ -1,0 +1,49 @@
+{
+  "consumer": {
+    "name": "consumer"
+  },
+  "provider": {
+    "name": "provider"
+  },
+  "interactions": [
+    {
+      "type": "Asynchronous/Messages",
+      "description": "a counter was read",
+      "comments": {
+        "references": {
+          "AsyncAPI": {
+            "operationId": "receiveCounter"
+          }
+        }
+      },
+      "pending": false,
+      "contents": {
+        "content": "CIGAgICAgIAQ",
+        "contentType": "application/protobuf;message=.shop.Counter",
+        "contentTypeHint": "BINARY",
+        "encoded": "base64"
+      },
+      "pluginConfiguration": {
+        "protobuf": {
+          "descriptorKey": "k1"
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "pactSpecification": {
+      "version": "4.0"
+    },
+    "plugins": [
+      {
+        "name": "protobuf",
+        "version": "0.6.4",
+        "configuration": {
+          "k1": {
+            "protoFile": "syntax = \"proto3\";\npackage shop;\nmessage Counter { int64 count = 1; }\n"
+          }
+        }
+      }
+    ]
+  }
+}

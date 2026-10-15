@@ -1,0 +1,38 @@
+{
+  "consumer": {
+    "name": "consumer"
+  },
+  "provider": {
+    "name": "provider"
+  },
+  "interactions": [
+    {
+      "type": "Asynchronous/Messages",
+      "description": "a user signed up",
+      "comments": {
+        "references": {
+          "AsyncAPI": {
+            "operationId": "receiveUserSignedUp"
+          }
+        }
+      },
+      "pending": false,
+      "contents": {
+        "content": {
+          "userId": "u-1",
+          "age": 30,
+          "email": null,
+          "plan": "FREE"
+        },
+        "contentType": "application/json",
+        "contentTypeHint": "DEFAULT",
+        "encoded": false
+      }
+    }
+  ],
+  "metadata": {
+    "pactSpecification": {
+      "version": "4.0"
+    }
+  }
+}

@@ -320,7 +320,7 @@ describe("compareMessagePayload — multi-format schema", () => {
 
   it("yields message.payload.unvalidatable warning for unsupported schema formats", () => {
     const results = callResponse(
-      wrap("application/vnd.apache.avro;version=1.9.0", { type: "record" }),
+      wrap("application/raml+yaml;version=1.0", { type: "record" }),
       { organizationId: "abc-123" },
       "application/json",
     );
@@ -328,11 +328,26 @@ describe("compareMessagePayload — multi-format schema", () => {
     expect(results[0].code).toBe("message.payload.unvalidatable");
     expect(results[0].type).toBe("warning");
     expect(results[0].message).toBe(
-      "Schema with format 'application/vnd.apache.avro;version=1.9.0' is not supported by the spec comparator",
+      "Schema with format 'application/raml+yaml;version=1.0' is not supported by the spec comparator",
     );
     expect(results[0].specDetails?.location).toBe(
       "[root].channels.eventsQueue.messages.myMsg.payload.schemaFormat",
     );
+  });
+
+  it("fails a JSON payload against an Avro schema as a format mismatch", () => {
+    const results = callResponse(
+      wrap("application/vnd.apache.avro;version=1.9.0", { type: "record" }),
+      { organizationId: "abc-123" },
+      "application/json",
+    );
+    expect(results.map((r) => [r.code, r.type, r.message])).toEqual([
+      [
+        "message.payload.format.incompatible",
+        "error",
+        "The consumer's message is application/json, but the provider's message is Avro",
+      ],
+    ]);
   });
 
   it("yields a warning for unsupported JSON Schema dialect versions", () => {

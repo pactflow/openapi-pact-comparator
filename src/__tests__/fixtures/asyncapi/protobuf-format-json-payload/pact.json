@@ -1,0 +1,37 @@
+{
+  "consumer": {
+    "name": "consumer"
+  },
+  "provider": {
+    "name": "provider"
+  },
+  "interactions": [
+    {
+      "type": "Asynchronous/Messages",
+      "description": "an order was placed",
+      "comments": {
+        "references": {
+          "AsyncAPI": {
+            "operationId": "receiveOrderPlaced"
+          }
+        }
+      },
+      "pending": false,
+      "contents": {
+        "content": {
+          "order_id": "o-1",
+          "quantity": 2,
+          "tags": ["a"]
+        },
+        "contentType": "application/json",
+        "contentTypeHint": "DEFAULT",
+        "encoded": false
+      }
+    }
+  ],
+  "metadata": {
+    "pactSpecification": {
+      "version": "4.0"
+    }
+  }
+}

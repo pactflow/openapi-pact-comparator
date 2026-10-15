@@ -1,0 +1,30 @@
+[
+  {
+    "code": "message.matched",
+    "message": "Matched message at [root].channels.requests.messages.OrderPlaced",
+    "specDetails": {
+      "location": "[root].channels.requests.messages.OrderPlaced",
+      "value": {
+        "payload": {
+          "schemaFormat": "application/vnd.google.protobuf;version=3",
+          "schema": "syntax = \"proto3\";\npackage shop;\n\nmessage OrderPlaced {\n  string order_id = 1;\n  int32 quantity = 2;\n  repeated string tags = 3;\n}\n\nmessage OrderCancelled {\n  string order_id = 1;\n}\n"
+        }
+      }
+    },
+    "type": "info"
+  },
+  {
+    "code": "message.matched",
+    "message": "Matched message at [root].channels.replies.messages.OrderCancelled",
+    "specDetails": {
+      "location": "[root].channels.replies.messages.OrderCancelled",
+      "value": {
+        "payload": {
+          "schemaFormat": "application/vnd.google.protobuf;version=3",
+          "schema": "syntax = \"proto3\";\npackage shop;\n\nmessage OrderPlaced {\n  string order_id = 1;\n  int32 quantity = 2;\n  repeated string tags = 3;\n}\n\nmessage OrderCancelled {\n  string order_id = 1;\n}\n"
+        }
+      }
+    },
+    "type": "info"
+  }
+]

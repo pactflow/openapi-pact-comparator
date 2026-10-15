@@ -1,0 +1,38 @@
+[
+  {
+    "code": "message.no.match",
+    "message": "No message in the operation matched the interaction",
+    "mockDetails": {
+      "interactionDescription": "a user signed up",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0]",
+      "value": "a user signed up"
+    },
+    "specDetails": {
+      "location": "[root].operations.receiveUserSignedUp.messages"
+    },
+    "type": "error",
+    "causes": [
+      {
+        "code": "message.payload.format.incompatible",
+        "message": "The consumer's message is application/json, but the provider's message is Avro",
+        "mockDetails": {
+          "interactionDescription": "a user signed up",
+          "interactionState": "[none]",
+          "location": "[root].interactions[0].contents.content",
+          "value": {
+            "userId": "u-1",
+            "age": 30,
+            "email": null,
+            "plan": "FREE"
+          }
+        },
+        "specDetails": {
+          "location": "[root].components.messages.UserSignedUp.payload",
+          "value": "application/vnd.apache.avro;version=1.9.0"
+        },
+        "type": "error"
+      }
+    ]
+  }
+]

@@ -1,0 +1,17 @@
+[
+  {
+    "code": "message.matched",
+    "message": "Matched message at [root].components.messages.OrderPlaced",
+    "specDetails": {
+      "location": "[root].components.messages.OrderPlaced",
+      "value": {
+        "contentType": "application/protobuf",
+        "payload": {
+          "schemaFormat": "application/vnd.google.protobuf;version=3",
+          "schema": "syntax = \"proto3\";\npackage shop;\n\nimport \"google/protobuf/timestamp.proto\";\n\nmessage OrderPlaced {\n  string order_id = 1;\n  google.protobuf.Timestamp placed_at = 2;\n}\n"
+        }
+      }
+    },
+    "type": "info"
+  }
+]

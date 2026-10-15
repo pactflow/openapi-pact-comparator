@@ -1,0 +1,39 @@
+[
+  {
+    "code": "message.no.match",
+    "message": "No message in the operation matched the interaction",
+    "mockDetails": {
+      "interactionDescription": "an order was placed",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0]",
+      "value": "an order was placed"
+    },
+    "specDetails": {
+      "location": "[root].operations.receiveOrderPlaced.messages"
+    },
+    "type": "error",
+    "causes": [
+      {
+        "code": "message.payload.format.incompatible",
+        "message": "The consumer's message is Protobuf, but the provider's message is Avro",
+        "mockDetails": {
+          "interactionDescription": "an order was placed",
+          "interactionState": "[none]",
+          "location": "[root].interactions[0].contents.content",
+          "value": {
+            "tags": [
+              "a"
+            ],
+            "order_id": "o-1",
+            "quantity": 2
+          }
+        },
+        "specDetails": {
+          "location": "[root].components.messages.UserSignedUp.payload",
+          "value": "application/vnd.apache.avro;version=1.9.0"
+        },
+        "type": "error"
+      }
+    ]
+  }
+]

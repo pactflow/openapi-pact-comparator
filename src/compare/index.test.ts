@@ -125,3 +125,55 @@ describe("Comparator.compare routing", () => {
     expect(results[1]).toMatchObject({ code: "message.matched", type: "info" });
   });
 });
+
+describe("Comparator isolation", () => {
+  // Both documents share the very same message object, but resolve its $ref
+  // against different components, so nothing may be carried between Comparators.
+  const message = { payload: { $ref: "#/components/schemas/Count" } };
+  const docWith = (countType: string): AsyncAPIDocument =>
+    ({
+      asyncapi: "3.0.0",
+      info: { title: "Counter", version: "1.0.0" },
+      components: { schemas: { Count: { type: countType } } },
+      channels: { main: { messages: { Count: message } } },
+      operations: {
+        receiveCount: {
+          action: "receive",
+          channel: { $ref: "#/channels/main" },
+          messages: [{ $ref: "#/channels/main/messages/Count" }],
+        },
+      },
+    }) as unknown as AsyncAPIDocument;
+
+  const pact = {
+    metadata: { pactSpecification: { version: "4.0" } },
+    interactions: [
+      {
+        type: "Asynchronous/Messages",
+        description: "a count",
+        comments: {
+          references: { AsyncAPI: { operationId: "receiveCount" } },
+        },
+        contents: {
+          content: 5,
+          contentType: "application/json",
+          encoded: false,
+        },
+      },
+    ],
+  } as unknown as Pact;
+
+  const codes = async (asyncapi: AsyncAPIDocument) => {
+    const results: Result[] = [];
+    for await (const result of new Comparator({ asyncapi }).compare(pact)) {
+      results.push(result);
+    }
+    return results.map((r) => r.code);
+  };
+
+  it("does not reuse resolved messages across Comparators", async () => {
+    expect(await codes(docWith("string"))).toEqual(["message.no.match"]);
+    expect(await codes(docWith("integer"))).toEqual(["message.matched"]);
+    expect(await codes(docWith("string"))).toEqual(["message.no.match"]);
+  });
+});

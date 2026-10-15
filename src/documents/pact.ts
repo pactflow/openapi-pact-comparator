@@ -1,6 +1,12 @@
 import { type Static, Type } from "@sinclair/typebox";
 import Ajv, { type ErrorObject } from "ajv";
 
+import {
+  type BinaryPayload,
+  decodeBinaryContents,
+  type PluginContext,
+} from "./binary";
+
 // a full schema can be found at https://github.com/pactflow/pact-schemas
 // but we don't use that here, because we try to be permissive with input
 
@@ -106,6 +112,7 @@ export const Pact = Type.Object({
         }),
       ),
       pactSpecificationVersion: Type.Optional(Type.String()),
+      plugins: Type.Optional(Type.Array(Type.Unknown())),
       "pact-specification": Type.Optional(
         Type.Object({
           version: Type.String(),
@@ -147,6 +154,8 @@ export interface AsyncInteraction {
   asyncapiReferences?: { operationId?: string };
   payload: unknown;
   contentType?: string;
+  decodeError?: string;
+  binary?: BinaryPayload;
   metadata?: Record<string, string>;
 }
 
@@ -158,11 +167,15 @@ export interface SyncInteraction {
   request: {
     payload: unknown;
     contentType?: string;
+    decodeError?: string;
+    binary?: BinaryPayload;
     metadata?: Record<string, string>;
   };
   responses: Array<{
     payload: unknown;
     contentType?: string;
+    decodeError?: string;
+    binary?: BinaryPayload;
     metadata?: Record<string, string>;
   }>;
 }
@@ -207,6 +220,7 @@ interface RawInteraction {
     encoded?: string | boolean;
   };
   metadata?: Record<string, string>;
+  pluginConfiguration?: unknown;
 }
 
 interface RawSyncInteraction {
@@ -346,22 +360,45 @@ const asAsyncapiReferences = (
   return { ...asyncapiRef };
 };
 
-const parseAsyncInteraction = (i: RawInteraction): AsyncInteraction => {
+// Avro / Protobuf contents are decoded to plain objects here, so subsequent
+// processing can treat them like any other JSON payload.
+const parseContents = (
+  contents: RawInteraction["contents"],
+  context: PluginContext,
+): {
+  payload: unknown;
+  contentType?: string;
+  decodeError?: string;
+  binary?: BinaryPayload;
+} =>
+  decodeBinaryContents(contents, context) ?? {
+    payload: parseAsPactV4Body(contents),
+    contentType: contents?.contentType,
+  };
+
+const parseAsyncInteraction = (
+  i: RawInteraction,
+  plugins: unknown,
+): AsyncInteraction => {
   const asyncapiRef = asAsyncapiReferences(i.comments?.references?.AsyncAPI);
   return {
     _kind: "async",
     description: i.description,
     providerState: i.providerState,
     asyncapiReferences: asyncapiRef,
-    payload: parseAsPactV4Body(i.contents),
-    contentType: i.contents?.contentType,
+    ...parseContents(i.contents, {
+      interaction: i.pluginConfiguration,
+      plugins,
+    }),
     metadata: i.metadata,
   };
 };
 
 const parseSyncInteraction = (
   i: RawInteraction & RawSyncInteraction,
+  plugins: unknown,
 ): SyncInteraction => {
+  const context = { interaction: i.pluginConfiguration, plugins };
   const asyncapiRef = asAsyncapiReferences(i.comments?.references?.AsyncAPI);
   return {
     _kind: "sync",
@@ -369,13 +406,11 @@ const parseSyncInteraction = (
     providerState: i.providerState,
     asyncapiReferences: asyncapiRef,
     request: {
-      payload: parseAsPactV4Body(i.request.contents),
-      contentType: i.request.contents?.contentType,
+      ...parseContents(i.request.contents, context),
       metadata: i.request.metadata,
     },
     responses: i.response.map((r) => ({
-      payload: parseAsPactV4Body(r.contents),
-      contentType: r.contents?.contentType,
+      ...parseContents(r.contents, context),
       metadata: r.metadata,
     })),
   };
@@ -428,10 +463,10 @@ export const parse = (pact: Pact): ParsedPact => {
         return httpParser(i);
       }
       if (isAsyncInteraction(i)) {
-        return parseAsyncInteraction(i);
+        return parseAsyncInteraction(i, metadata?.plugins);
       }
       if (isSyncInteraction(i)) {
-        return parseSyncInteraction(i);
+        return parseSyncInteraction(i, metadata?.plugins);
       }
       return { _kind: "skip" };
     }),

@@ -1,0 +1,35 @@
+[
+  {
+    "code": "message.payload.unvalidatable",
+    "message": "Schema with format 'application/vnd.apache.avro;version=1.9.0' is not supported by the spec comparator: no Avro schema available (missing, or an unresolvable $ref)",
+    "mockDetails": {
+      "interactionDescription": "a message",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].contents.content",
+      "value": {
+        "userId": "u-1"
+      }
+    },
+    "specDetails": {
+      "location": "[root].components.messages.UserSignedUp.payload.schemaFormat",
+      "value": "application/vnd.apache.avro;version=1.9.0"
+    },
+    "type": "warning"
+  },
+  {
+    "code": "message.matched",
+    "message": "Matched message at [root].components.messages.UserSignedUp",
+    "specDetails": {
+      "location": "[root].components.messages.UserSignedUp",
+      "value": {
+        "payload": {
+          "schemaFormat": "application/vnd.apache.avro;version=1.9.0",
+          "schema": {
+            "$ref": "#/components/schemas/UserSignedUp"
+          }
+        }
+      }
+    },
+    "type": "info"
+  }
+]

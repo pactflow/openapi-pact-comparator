@@ -1,0 +1,33 @@
+[
+  {
+    "code": "message.payload.unvalidatable",
+    "message": "Schema with format 'application/vnd.google.protobuf;version=3' is not supported by the spec comparator: cannot choose a Protobuf message for 'OrderShipped'",
+    "mockDetails": {
+      "interactionDescription": "a message",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].contents.content",
+      "value": {
+        "order_id": "o-1"
+      }
+    },
+    "specDetails": {
+      "location": "[root].components.messages.OrderShipped.payload.schemaFormat",
+      "value": "application/vnd.google.protobuf;version=3"
+    },
+    "type": "warning"
+  },
+  {
+    "code": "message.matched",
+    "message": "Matched message at [root].components.messages.OrderShipped",
+    "specDetails": {
+      "location": "[root].components.messages.OrderShipped",
+      "value": {
+        "payload": {
+          "schemaFormat": "application/vnd.google.protobuf;version=3",
+          "schema": "syntax = \"proto3\";\npackage shop;\nmessage OrderPlaced { string order_id = 1; }\nmessage OrderCancelled { string order_id = 1; }\n"
+        }
+      }
+    },
+    "type": "info"
+  }
+]

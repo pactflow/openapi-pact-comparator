@@ -1,0 +1,49 @@
+{
+  "consumer": {
+    "name": "consumer"
+  },
+  "provider": {
+    "name": "provider"
+  },
+  "interactions": [
+    {
+      "type": "Asynchronous/Messages",
+      "description": "a message",
+      "comments": {
+        "references": {
+          "AsyncAPI": {
+            "operationId": "receiveOrder"
+          }
+        }
+      },
+      "pending": false,
+      "contents": {
+        "content": "CgNvLTE=",
+        "contentType": "application/protobuf;message=.shop.Nope",
+        "contentTypeHint": "BINARY",
+        "encoded": "base64"
+      },
+      "pluginConfiguration": {
+        "protobuf": {
+          "descriptorKey": "k1"
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "pactSpecification": {
+      "version": "4.0"
+    },
+    "plugins": [
+      {
+        "name": "protobuf",
+        "version": "0.6.4",
+        "configuration": {
+          "k1": {
+            "protoFile": "syntax = \"proto3\";\npackage shop;\nmessage OrderPlaced { string order_id = 1; }\nmessage OrderCancelled { string order_id = 1; }\n"
+          }
+        }
+      }
+    ]
+  }
+}

@@ -6,6 +6,7 @@ type ErrorCode =
   | "message.headers.incompatible"
   | "message.no.match"
   | "message.operation.unknown"
+  | "message.payload.format.incompatible"
   | "message.payload.incompatible"
   | "message.references.missing"
   | "message.reply.missing"

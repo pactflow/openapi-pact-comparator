@@ -60,8 +60,6 @@ export class Comparator {
   }
 
   async *compare(pact: Pact): AsyncGenerator<Result> {
-    this.#resolvedMessages = new Map();
-
     if (this.#oas && !this.#router) {
       for (const [key, value] of Object.entries(this.#oas.info)) {
         if (key.startsWith("x-opc-config-")) {

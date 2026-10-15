@@ -1,0 +1,18 @@
+[
+  {
+    "code": "message.matched",
+    "message": "Matched message at [root].components.messages.OrderCreated",
+    "specDetails": {
+      "location": "[root].components.messages.OrderCreated",
+      "value": {
+        "name": "OrderCreated",
+        "contentType": "application/vnd.apache.avro",
+        "payload": {
+          "schemaFormat": "application/vnd.apache.avro+json;version=1.9.0",
+          "schema": "{\n  \"type\": \"record\",\n  \"name\": \"OrderCreated\",\n  \"namespace\": \"com.acme.orders\",\n  \"doc\": \"Order Service schema v1. Consumers built against this version.\",\n  \"fields\": [\n    {\n      \"name\": \"order_id\",\n      \"type\": \"string\"\n    },\n    {\n      \"name\": \"customer_id\",\n      \"type\": \"string\"\n    },\n    {\n      \"name\": \"total_cents\",\n      \"type\": \"long\"\n    },\n    {\n      \"name\": \"currency\",\n      \"type\": \"string\",\n      \"default\": \"USD\"\n    },\n    {\n      \"name\": \"status\",\n      \"type\": {\n        \"type\": \"enum\",\n        \"name\": \"OrderStatus\",\n        \"symbols\": [\n          \"PENDING\",\n          \"PAID\",\n          \"SHIPPED\"\n        ]\n      }\n    },\n    {\n      \"name\": \"items\",\n      \"type\": {\n        \"type\": \"array\",\n        \"items\": {\n          \"type\": \"record\",\n          \"name\": \"LineItem\",\n          \"fields\": [\n            {\n              \"name\": \"sku\",\n              \"type\": \"string\"\n            },\n            {\n              \"name\": \"quantity\",\n              \"type\": \"int\"\n            },\n            {\n              \"name\": \"unit_price_cents\",\n              \"type\": \"long\"\n            }\n          ]\n        }\n      }\n    },\n    {\n      \"name\": \"created_at\",\n      \"type\": {\n        \"type\": \"long\",\n        \"logicalType\": \"timestamp-millis\"\n      }\n    },\n    {\n      \"name\": \"shipping_address\",\n      \"type\": {\n        \"type\": \"record\",\n        \"name\": \"Address\",\n        \"fields\": [\n          {\n            \"name\": \"line1\",\n            \"type\": \"string\"\n          },\n          {\n            \"name\": \"city\",\n            \"type\": \"string\"\n          },\n          {\n            \"name\": \"postcode\",\n            \"type\": \"string\"\n          }\n        ]\n      }\n    }\n  ]\n}"
+        }
+      }
+    },
+    "type": "info"
+  }
+]

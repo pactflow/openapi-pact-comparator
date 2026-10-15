@@ -1,0 +1,159 @@
+[
+  {
+    "code": "message.no.match",
+    "message": "No message in the operation matched the interaction",
+    "mockDetails": {
+      "interactionDescription": "an OrderCreated event for a paid order",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0]",
+      "value": "an OrderCreated event for a paid order"
+    },
+    "specDetails": {
+      "location": "[root].operations.publishOrderCreated.messages"
+    },
+    "type": "error",
+    "causes": [
+      {
+        "code": "message.payload.incompatible",
+        "message": "Message payload is incompatible with the schema in the spec file: must NOT have additional properties - customer_id",
+        "mockDetails": {
+          "interactionDescription": "an OrderCreated event for a paid order",
+          "interactionState": "[none]",
+          "location": "[root].interactions[0].contents.content",
+          "value": {
+            "order_id": "ord-1001",
+            "customer_id": "cust-42",
+            "total_cents": 4599,
+            "currency": "AUD",
+            "status": "PAID",
+            "items": [
+              {
+                "sku": "SKU-RED-MUG",
+                "quantity": 2,
+                "unit_price_cents": 1500
+              }
+            ],
+            "created_at": 1759827600000,
+            "shipping_address": {
+              "line1": "1 Example St",
+              "city": "Melbourne",
+              "postcode": "3000"
+            }
+          }
+        },
+        "specDetails": {
+          "location": "[root].components.messages.OrderCreated.payload.schema.additionalProperties",
+          "value": false
+        },
+        "type": "error"
+      },
+      {
+        "code": "message.payload.incompatible",
+        "message": "Message payload is incompatible with the schema in the spec file: must NOT have additional properties - currency",
+        "mockDetails": {
+          "interactionDescription": "an OrderCreated event for a paid order",
+          "interactionState": "[none]",
+          "location": "[root].interactions[0].contents.content",
+          "value": {
+            "order_id": "ord-1001",
+            "customer_id": "cust-42",
+            "total_cents": 4599,
+            "currency": "AUD",
+            "status": "PAID",
+            "items": [
+              {
+                "sku": "SKU-RED-MUG",
+                "quantity": 2,
+                "unit_price_cents": 1500
+              }
+            ],
+            "created_at": 1759827600000,
+            "shipping_address": {
+              "line1": "1 Example St",
+              "city": "Melbourne",
+              "postcode": "3000"
+            }
+          }
+        },
+        "specDetails": {
+          "location": "[root].components.messages.OrderCreated.payload.schema.additionalProperties",
+          "value": false
+        },
+        "type": "error"
+      },
+      {
+        "code": "message.payload.incompatible",
+        "message": "The consumer reads customer_id, which the provider's orders.OrderCreated no longer writes, and the consumer's schema has no default for it (READER_FIELD_MISSING_DEFAULT_VALUE)",
+        "mockDetails": {
+          "interactionDescription": "an OrderCreated event for a paid order",
+          "interactionState": "[none]",
+          "location": "[root].interactions[0].contents.content.customer_id",
+          "value": "string"
+        },
+        "specDetails": {
+          "location": "[root].components.messages.OrderCreated.payload.schema.orders.OrderCreated"
+        },
+        "type": "error"
+      },
+      {
+        "code": "message.payload.incompatible",
+        "message": "The consumer reads currency, which the provider no longer writes; it would always receive its default \"USD\", but its example expects \"AUD\"",
+        "mockDetails": {
+          "interactionDescription": "an OrderCreated event for a paid order",
+          "interactionState": "[none]",
+          "location": "[root].interactions[0].contents.content.currency",
+          "value": "string"
+        },
+        "specDetails": {
+          "location": "[root].components.messages.OrderCreated.payload.schema.orders.OrderCreated"
+        },
+        "type": "error"
+      },
+      {
+        "code": "message.payload.incompatible",
+        "message": "The provider may write orders.OrderStatus symbol REFUNDED, which the consumer's orders.OrderStatus doesn't have (MISSING_ENUM_SYMBOLS)",
+        "mockDetails": {
+          "interactionDescription": "an OrderCreated event for a paid order",
+          "interactionState": "[none]",
+          "location": "[root].interactions[0].contents.content.status",
+          "value": "enum orders.OrderStatus"
+        },
+        "specDetails": {
+          "location": "[root].components.messages.OrderCreated.payload.schema.orders.OrderCreated.status",
+          "value": "enum orders.OrderStatus"
+        },
+        "type": "error"
+      },
+      {
+        "code": "message.payload.incompatible",
+        "message": "The consumer's quantity is int, but the provider's is long (TYPE_MISMATCH)",
+        "mockDetails": {
+          "interactionDescription": "an OrderCreated event for a paid order",
+          "interactionState": "[none]",
+          "location": "[root].interactions[0].contents.content.items[].quantity",
+          "value": "int"
+        },
+        "specDetails": {
+          "location": "[root].components.messages.OrderCreated.payload.schema.orders.LineItem.quantity",
+          "value": "long"
+        },
+        "type": "error"
+      },
+      {
+        "code": "message.payload.incompatible",
+        "message": "The provider may write null for shipping_address, which the consumer reads as orders.Address and can't read null (TYPE_MISMATCH)",
+        "mockDetails": {
+          "interactionDescription": "an OrderCreated event for a paid order",
+          "interactionState": "[none]",
+          "location": "[root].interactions[0].contents.content.shipping_address",
+          "value": "orders.Address"
+        },
+        "specDetails": {
+          "location": "[root].components.messages.OrderCreated.payload.schema.orders.OrderCreated.shipping_address",
+          "value": "[null, orders.Address]"
+        },
+        "type": "error"
+      }
+    ]
+  }
+]

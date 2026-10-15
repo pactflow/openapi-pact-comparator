@@ -17,6 +17,8 @@ import { bodyValidationStatus } from "#utils/body";
 import { splitPath } from "#utils/schema";
 import { getValidateFunction } from "#utils/validation";
 
+import { compareBinaryStructure } from "./binary/index";
+
 // Candidate names for a message, in Drift's precedence: the type it declares
 // explicitly (a `proto` content type parameter, or the payload's
 // `x-drift-proto-message`), its key in the spec (the last segment of its path,
@@ -76,15 +78,21 @@ const checkFormat = (
   };
 };
 
+type PayloadContent = {
+  payload: unknown;
+  contentType?: string;
+  decodeError?: string;
+  binary?: BinaryPayload;
+};
+
+// Avro and Protobuf payloads are compared in two independent passes (once
+// their formats agree), each reporting what it finds: the value pass validates the consumer's decoded
+// example against the provider's schema, and the structural pass compares the
+// consumer's own schema with the provider's.
 export function* compareMessagePayload(
   ajv: Ajv,
   message: Message,
-  content: {
-    payload: unknown;
-    contentType?: string;
-    decodeError?: string;
-    binary?: BinaryPayload;
-  },
+  content: PayloadContent,
   interactionContext: { description?: string; providerState?: string },
   contentLocation: string,
   messagePath: string,
@@ -102,6 +110,35 @@ export function* compareMessagePayload(
     return;
   }
 
+  yield* comparePayloadValues(
+    ajv,
+    message,
+    content,
+    interactionContext,
+    contentLocation,
+    messagePath,
+    direction,
+  );
+  yield* compareBinaryStructure(
+    message,
+    content,
+    messageNames(message, messagePath),
+    interactionContext,
+    contentLocation,
+    messagePath,
+    direction,
+  );
+}
+
+function* comparePayloadValues(
+  ajv: Ajv,
+  message: Message,
+  content: PayloadContent,
+  interactionContext: { description?: string; providerState?: string },
+  contentLocation: string,
+  messagePath: string,
+  direction: "request" | "response",
+): Iterable<Result> {
   const status = bodyValidationStatus(content.contentType, content.payload);
 
   if (status === "warn") {

@@ -1,0 +1,36 @@
+[
+  {
+    "code": "message.no.match",
+    "message": "No message in the operation matched the interaction",
+    "mockDetails": {
+      "interactionDescription": "an OrderCreated event for a paid order",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0]",
+      "value": "an OrderCreated event for a paid order"
+    },
+    "specDetails": {
+      "location": "[root].operations.publishOrderCreated.messages"
+    },
+    "type": "error",
+    "causes": [
+      {
+        "code": "message.payload.type.incompatible",
+        "message": "The consumer's message is the record OrderCreated, but the provider's union carries OrderPlaced, OrderCancelled",
+        "mockDetails": {
+          "interactionDescription": "an OrderCreated event for a paid order",
+          "interactionState": "[none]",
+          "location": "[root].interactions[0].contents.content",
+          "value": "orders.OrderCreated"
+        },
+        "specDetails": {
+          "location": "[root].components.messages.OrderCreated.payload.schema",
+          "value": [
+            "OrderPlaced",
+            "OrderCancelled"
+          ]
+        },
+        "type": "error"
+      }
+    ]
+  }
+]

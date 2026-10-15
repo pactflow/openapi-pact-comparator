@@ -1,0 +1,65 @@
+asyncapi: 3.0.0
+info:
+  title: Order Service
+  version: 1.0.0
+  description: Publishes order lifecycle events to Kafka.
+channels:
+  orderCreated:
+    address: orders.created
+    messages:
+      OrderCreated:
+        $ref: "#/components/messages/OrderCreated"
+operations:
+  publishOrderCreated:
+    action: send
+    channel:
+      $ref: "#/channels/orderCreated"
+    messages:
+      - $ref: "#/channels/orderCreated/messages/OrderCreated"
+components:
+  messages:
+    OrderCreated:
+      name: OrderCreated
+      contentType: application/vnd.google.protobuf; proto=orders.OrderCreated
+      payload:
+        schemaFormat: application/vnd.google.protobuf;version=3
+        schema: |
+          // Snapshot of the Order Service schema that the consumers were built against
+          // ("v1"). Consumers vendor this file; they do not track the provider's repo.
+          syntax = "proto3";
+
+          package orders;
+
+          import "google/protobuf/timestamp.proto";
+
+          enum OrderStatus {
+            ORDER_STATUS_UNSPECIFIED = 0;
+            PENDING = 1;
+            PAYMENT_PENDING = 2;
+            PAID = 3;
+            SHIPPED = 4;
+          }
+
+          message LineItem {
+            string sku = 1;
+            int32 quantity = 2;
+            int64 unit_price_cents = 3;
+          }
+
+          message Address {
+            string line1 = 1;
+            string city = 2;
+            string postcode = 3;
+            string country = 4;
+          }
+
+          message OrderCreated {
+            string order_id = 1;
+            string customer_id = 2;
+            int64 total_cents = 3;
+            string currency = 4;
+            OrderStatus status = 5;
+            repeated LineItem items = 6;
+            google.protobuf.Timestamp created_at = 7;
+            Address shipping_address = 8;
+          }

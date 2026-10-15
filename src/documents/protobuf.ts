@@ -19,7 +19,7 @@ export interface ProtoConfiguration {
 // Parses .proto source. google/protobuf well-known types are resolved from
 // protobufjs's bundled definitions; any other import can't be resolved from a
 // single embedded schema.
-const parseProto = (source: string): Root => {
+export const parseProto = (source: string): Root => {
   const root = new protobuf.Root();
   const parsed = protobuf.parse(source, root, { keepCase: true });
   for (const name of [
@@ -54,7 +54,7 @@ const dropJsonNames = (messages: MessageDescriptor[] = []) => {
 // Prefers the compiled descriptors pact-protobuf-plugin embeds: protoc has
 // already resolved every import into them, whereas protoFile is the bare
 // source and may import files the pact doesn't contain.
-const loadRoot = ({
+export const loadRoot = ({
   protoFile,
   protoDescriptors,
 }: ProtoConfiguration): Root => {

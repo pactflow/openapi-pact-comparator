@@ -64,17 +64,28 @@ const pluginEntry = (
   return isDict(entry) ? entry : undefined;
 };
 
-// What is known of a consumer's binary payload, whether or not it decoded.
+// The consumer's binary payload, as written by the plugin. Kept alongside the
+// decoded payload so the comparison knows the consumer's format and declared
+// type, and has the consumer's own schema for a structural comparison.
 export interface BinaryPayload {
   format: "avro" | "protobuf";
+  // The record (Avro) or message (Protobuf) the pact declares.
+  declaredType?: string;
+  // The consumer's schema: an Avro schema, or Protobuf descriptors / source.
+  avroSchema?: unknown;
+  protobuf?: { protoFile?: string; protoDescriptors?: string };
+  // The example, base64 encoded.
+  content: string;
+  // Paths named by the interaction's matching rules.
+  matchingRulePaths: string[];
 }
 
 export interface DecodedContents {
   payload: unknown;
   contentType: string;
   binary: BinaryPayload;
-  // Set when a recognised payload couldn't be decoded: the payload is then the
-  // raw base64 content, and this says why.
+  // Set when the payload couldn't be decoded: the payload is then the raw
+  // base64 content, and this says why.
   decodeError?: string;
 }
 
@@ -84,6 +95,7 @@ export interface DecodedContents {
 export const decodeBinaryContents = (
   contents: BinaryContents | undefined,
   context: PluginContext,
+  matchingRules?: Record<string, unknown>,
 ): DecodedContents | undefined => {
   if (
     typeof contents?.content !== "string" ||
@@ -97,6 +109,10 @@ export const decodeBinaryContents = (
   const { content, contentType } = contents;
   const { mediaType, params } = parseContentType(contentType);
   const config = isDict(context.interaction) ? context.interaction : {};
+  const matchingRulePaths = Object.keys(
+    (isDict(matchingRules?.body) ? matchingRules.body : undefined) ??
+      (isDict(matchingRules?.content) ? matchingRules.content : {}),
+  );
   const decoded = (
     binary: BinaryPayload,
     decode: () => unknown,
@@ -119,23 +135,45 @@ export const decodeBinaryContents = (
       avro.avroSchema ??
       pluginEntry(context, "avro", avro.schemaKey)?.avroSchema;
     const record = params.record ?? (avro.record as string | undefined);
-    return decoded({ format: "avro" }, () => {
-      if (schema === undefined) {
-        throw new Error("the pact has no Avro schema for this message");
-      }
-      return decodeAvro(content, schema, record);
-    });
+    return decoded(
+      {
+        format: "avro",
+        declaredType: record,
+        avroSchema: schema,
+        content,
+        matchingRulePaths,
+      },
+      () => {
+        if (schema === undefined) {
+          throw new Error("the pact has no Avro schema for this message");
+        }
+        return decodeAvro(content, schema, record);
+      },
+    );
   }
 
   if (isProtobuf(mediaType)) {
     const protobuf = isDict(config.protobuf) ? config.protobuf : {};
     const entry = pluginEntry(context, "protobuf", protobuf.descriptorKey);
-    return decoded({ format: "protobuf" }, () => {
-      if (!params.message) {
-        throw new Error("the pact does not name the Protobuf message");
-      }
-      return decodeProtobuf(content, entry ?? {}, params.message);
-    });
+    const message = params.message ?? (protobuf.message as string | undefined);
+    return decoded(
+      {
+        format: "protobuf",
+        declaredType: message,
+        protobuf: {
+          protoFile: entry?.protoFile as string | undefined,
+          protoDescriptors: entry?.protoDescriptors as string | undefined,
+        },
+        content,
+        matchingRulePaths,
+      },
+      () => {
+        if (!message) {
+          throw new Error("the pact does not name the Protobuf message");
+        }
+        return decodeProtobuf(content, entry ?? {}, message);
+      },
+    );
   }
   return undefined;
 };

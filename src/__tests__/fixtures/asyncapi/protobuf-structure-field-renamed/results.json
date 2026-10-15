@@ -1,0 +1,69 @@
+[
+  {
+    "code": "message.no.match",
+    "message": "No message in the operation matched the interaction",
+    "mockDetails": {
+      "interactionDescription": "an OrderCreated event for a paid order",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0]",
+      "value": "an OrderCreated event for a paid order"
+    },
+    "specDetails": {
+      "location": "[root].operations.publishOrderCreated.messages"
+    },
+    "type": "error",
+    "causes": [
+      {
+        "code": "message.payload.incompatible",
+        "message": "Message payload is incompatible with the schema in the spec file: must NOT have additional properties - currency",
+        "mockDetails": {
+          "interactionDescription": "an OrderCreated event for a paid order",
+          "interactionState": "[none]",
+          "location": "[root].interactions[0].contents.content",
+          "value": {
+            "items": [
+              {
+                "sku": "SKU-RED-MUG",
+                "quantity": 2,
+                "unit_price_cents": 1500
+              }
+            ],
+            "order_id": "ord-1001",
+            "customer_id": "cust-42",
+            "total_cents": 4599,
+            "currency": "AUD",
+            "status": "PAID",
+            "created_at": {
+              "seconds": 1759800000
+            },
+            "shipping_address": {
+              "line1": "1 Example St",
+              "city": "Melbourne",
+              "postcode": "3000"
+            }
+          }
+        },
+        "specDetails": {
+          "location": "[root].components.messages.OrderCreated.payload.schema.additionalProperties",
+          "value": false
+        },
+        "type": "error"
+      },
+      {
+        "code": "message.payload.incompatible",
+        "message": "The consumer reads field 4 as currency, but the provider's field 4 is promo_code (FIELD_SAME_NAME)",
+        "mockDetails": {
+          "interactionDescription": "an OrderCreated event for a paid order",
+          "interactionState": "[none]",
+          "location": "[root].interactions[0].contents.content.currency",
+          "value": "string currency = 4"
+        },
+        "specDetails": {
+          "location": "[root].components.messages.OrderCreated.payload.schema.orders.OrderCreated.promo_code",
+          "value": "string promo_code = 4"
+        },
+        "type": "error"
+      }
+    ]
+  }
+]

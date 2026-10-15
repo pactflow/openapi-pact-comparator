@@ -27,6 +27,21 @@
           "value": "string"
         },
         "type": "error"
+      },
+      {
+        "code": "message.payload.incompatible",
+        "message": "The consumer's field count (1) is int64, but the provider's is string (FIELD_WIRE_COMPATIBLE_TYPE)",
+        "mockDetails": {
+          "interactionDescription": "a counter was read",
+          "interactionState": "[none]",
+          "location": "[root].interactions[0].contents.content.count",
+          "value": "int64 count = 1"
+        },
+        "specDetails": {
+          "location": "[root].components.messages.Counter.payload.schema.shop.Counter.count",
+          "value": "string count = 1"
+        },
+        "type": "error"
       }
     ]
   }

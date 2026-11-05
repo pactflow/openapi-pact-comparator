@@ -1,0 +1,35 @@
+[
+  {
+    "code": "request.path-parameter.incompatible",
+    "message": "Value is incompatible with path parameter \"id\" of GET /users/{id} defined in the spec file: must be integer",
+    "mockDetails": {
+      "interactionDescription": "GET /users/abc (parameter fails without the servers path)",
+      "interactionState": "[none]",
+      "location": "[root].interactions[1].request.path",
+      "value": "/users/abc"
+    },
+    "specDetails": {
+      "location": "[root].paths./users/{id}.get.parameters[0].schema.type",
+      "pathMethod": "get",
+      "pathName": "/users/{id}",
+      "value": "integer"
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.path-or-method.unknown",
+    "message": "Path or method not defined in spec file: GET /api/users/abc",
+    "mockDetails": {
+      "interactionDescription": "GET /api/users/abc (servers path does not fit a template)",
+      "interactionState": "[none]",
+      "location": "[root].interactions[2].request.path",
+      "value": "/api/users/abc"
+    },
+    "specDetails": {
+      "location": "[root].paths",
+      "pathMethod": null,
+      "pathName": null
+    },
+    "type": "error"
+  }
+]

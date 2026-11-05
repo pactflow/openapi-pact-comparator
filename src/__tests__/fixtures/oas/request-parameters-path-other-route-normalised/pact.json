@@ -1,0 +1,75 @@
+{
+  "consumer": {
+    "name": "consumer"
+  },
+  "provider": {
+    "name": "provider"
+  },
+  "metadata": {
+    "pactSpecification": {
+      "version": "2.0.0"
+    }
+  },
+  "interactions": [
+    {
+      "description": "GET /case/b/c (other route differs by case)",
+      "request": {
+        "method": "GET",
+        "path": "/case/b/c"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /url-slashes//k/b/c (duplicate slash in the URL)",
+      "request": {
+        "method": "GET",
+        "path": "/url-slashes//k/b/c"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /spec-slashes/k/b/c (duplicate slash in the other route)",
+      "request": {
+        "method": "GET",
+        "path": "/spec-slashes/k/b/c"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /caf%C3%A9/b/c (percent-encoded URL)",
+      "request": {
+        "method": "GET",
+        "path": "/caf%C3%A9/b/c"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /colon:v1/b/c (literal colon in the other route)",
+      "request": {
+        "method": "GET",
+        "path": "/colon:v1/b/c"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /no-other-route/b/c (no other route fits)",
+      "request": {
+        "method": "GET",
+        "path": "/no-other-route/b/c"
+      },
+      "response": {
+        "status": 200
+      }
+    }
+  ]
+}

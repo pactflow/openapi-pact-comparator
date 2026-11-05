@@ -1,0 +1,49 @@
+openapi: 3.0.0
+info:
+  title: Other route found after the router's normalisation
+  version: 1.0.0
+  x-opc-config-case-insensitive: true
+  x-opc-config-ignore-duplicate-slashes: true
+paths:
+  /case/b/{z}:
+    get: &integerZ
+      parameters:
+        - name: z
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: ok
+  /CASE/{x}/c:
+    get: &stringX
+      parameters:
+        - name: x
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: ok
+  /url-slashes/k/b/{z}:
+    get: *integerZ
+  /url-slashes/k/{x}/c:
+    get: *stringX
+  /spec-slashes/k/b/{z}:
+    get: *integerZ
+  /spec-slashes//k/{x}/c:
+    get: *stringX
+  /café/b/{z}:
+    get: *integerZ
+  /café/{x}/c:
+    get: *stringX
+  /colon:v1/b/{z}:
+    get: *integerZ
+  /colon:v1/{x}/c:
+    get: *stringX
+  /no-other-route/b/{z}:
+    get: *integerZ
+  /no-other-route/d/{x}/c:
+    get: *stringX

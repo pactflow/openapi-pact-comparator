@@ -1,0 +1,18 @@
+openapi: 3.0.3
+info:
+  title: path parameters
+  version: 1.0.0
+servers:
+  - url: https://example.com/api
+paths:
+  /users/{id}:
+    get:
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: ok

@@ -1,7 +1,7 @@
 [
   {
-    "code": "request.path-or-method.unknown",
-    "message": "Path or method not defined in spec file: GET /integer/abc",
+    "code": "request.path-parameter.incompatible",
+    "message": "Value is incompatible with path parameter \"id\" of GET /integer/{id} defined in the spec file: must be integer",
     "mockDetails": {
       "interactionDescription": "should error when path does not match integer spec",
       "interactionState": "[none]",
@@ -9,30 +9,16 @@
       "value": "/integer/abc"
     },
     "specDetails": {
-      "location": "[root].paths",
-      "pathMethod": null,
-      "pathName": null,
-      "value": {
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "type": "integer"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "description"
-          }
-        }
-      }
+      "location": "[root].paths./integer/{id}.get.parameters[0].schema.type",
+      "pathMethod": "get",
+      "pathName": "/integer/{id}",
+      "value": "integer"
     },
     "type": "error"
   },
   {
-    "code": "request.path-or-method.unknown",
-    "message": "Path or method not defined in spec file: GET /boolean/abc",
+    "code": "request.path-parameter.incompatible",
+    "message": "Value is incompatible with path parameter \"id\" of GET /boolean/{id} defined in the spec file: must be boolean",
     "mockDetails": {
       "interactionDescription": "should error when path does not match boolean spec",
       "interactionState": "[none]",
@@ -40,24 +26,10 @@
       "value": "/boolean/abc"
     },
     "specDetails": {
-      "location": "[root].paths",
-      "pathMethod": null,
-      "pathName": null,
-      "value": {
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "type": "boolean"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "description"
-          }
-        }
-      }
+      "location": "[root].paths./boolean/{id}.get.parameters[0].schema.type",
+      "pathMethod": "get",
+      "pathName": "/boolean/{id}",
+      "value": "boolean"
     },
     "type": "error"
   },

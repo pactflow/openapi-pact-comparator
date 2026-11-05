@@ -142,7 +142,7 @@
       }
     },
     {
-      "description": "GET /a/b (chosen candidate fails while another is valid)",
+      "description": "GET /a/b (chosen route fails, another route accepts)",
       "request": {
         "method": "GET",
         "path": "/a/b"
@@ -189,6 +189,130 @@
       },
       "response": {
         "status": 200
+      }
+    },
+    {
+      "description": "GET /a/b (other route's response status is undefined)",
+      "request": {
+        "method": "GET",
+        "path": "/a/b"
+      },
+      "response": {
+        "status": 418
+      }
+    },
+    {
+      "description": "GET /g/k/h (several other routes accept, router precedence picks the earlier static segment)",
+      "request": {
+        "method": "GET",
+        "path": "/g/k/h"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /g/k/h (pinned to the same route: this status exists only on the later route)",
+      "request": {
+        "method": "GET",
+        "path": "/g/k/h"
+      },
+      "response": {
+        "status": 201
+      }
+    },
+    {
+      "description": "GET /j/k/h (first other route also fails, the next one accepts)",
+      "request": {
+        "method": "GET",
+        "path": "/j/k/h"
+      },
+      "response": {
+        "status": 201
+      }
+    },
+    {
+      "description": "GET /l/m (other route lacks the method)",
+      "request": {
+        "method": "GET",
+        "path": "/l/m"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "POST /l/m (only route for the method)",
+      "request": {
+        "method": "POST",
+        "path": "/l/m"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "POST /e/f (other route's request body is compatible)",
+      "request": {
+        "method": "POST",
+        "path": "/e/f",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "count": 1
+        }
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "POST /e/f (other route's request body is incompatible)",
+      "request": {
+        "method": "POST",
+        "path": "/e/f",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "count": "abc"
+        }
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /s/t (other route's response body is compatible)",
+      "request": {
+        "method": "GET",
+        "path": "/s/t"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "count": 1
+        }
+      }
+    },
+    {
+      "description": "GET /s/t (other route's response body is incompatible)",
+      "request": {
+        "method": "GET",
+        "path": "/s/t"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "count": "abc"
+        }
       }
     }
   ]

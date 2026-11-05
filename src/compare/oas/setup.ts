@@ -133,41 +133,55 @@ export function setupRouter(
 }
 
 /**
- * Finds every route other than `excluded` that the URL fits structurally.
+ * Yields every other route for the method that fits the URL, in router
+ * precedence.
  *
- * The router resolves a URL to its single most specific route, so seeing the
- * rest takes one single-route router per route. Only a path parameter failure
- * reaches this code, and a route gets its router the first time a URL shares
- * its literal prefix. The router decodes a percent-encoded path before matching,
- * so such a URL can't be compared to a prefix and every route is checked.
+ * The router resolves a URL to a single route, so seeing the rest takes one
+ * single-route router per route. Only a path parameter failure reaches this
+ * code, and a route gets its router the first time a URL shares its literal
+ * prefix. The router decodes a percent-encoded path before matching, so such a
+ * URL can't be compared to a prefix and every route is checked. Precedence comes
+ * from a router holding just the remaining routes, which ranks them as the full
+ * router would.
  */
-export function findOtherRoutes(
+export function* findOtherRoutes(
   router: OasRouter,
   method: HTTPMethod,
   url: string,
   excluded: RouteStore,
-): Router.FindResult<Router.HTTPVersion.V1>[] {
+): Generator<Router.FindResult<Router.HTTPVersion.V1>> {
   const registry = registries.get(router)!;
   const urlPath = url.split(/[?#]/, 1)[0];
   const literalPath = urlPath.includes("%")
     ? undefined
     : registry.normalisePath(urlPath);
-  const results: Router.FindResult<Router.HTTPVersion.V1>[] = [];
-  for (const route of registry.routes.get(method) || []) {
+  const remaining = (registry.routes.get(method) || []).filter((route) => {
     if (
       route.store === excluded ||
       (literalPath !== undefined && !literalPath.startsWith(route.prefix))
     ) {
-      continue;
+      return false;
     }
     if (!route.router) {
       route.router = registry.createRouter();
       route.router.on(method, route.path, () => {}, route.store);
     }
-    const result = route.router.find(method, url);
-    if (result) {
-      results.push(result);
+    return route.router.find(method, url);
+  });
+
+  while (remaining.length) {
+    const ranking = registry.createRouter();
+    for (const route of remaining) {
+      ranking.on(method, route.path, () => {}, route.store);
     }
+    const next = ranking.find(method, url);
+    if (!next) {
+      return;
+    }
+    yield next;
+    remaining.splice(
+      remaining.findIndex((route) => route.store === next.store),
+      1,
+    );
   }
-  return results;
 }

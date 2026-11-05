@@ -181,6 +181,46 @@
       "response": {
         "status": 200
       }
+    },
+    {
+      "description": "should error when an item fails the label exploded integer array spec",
+      "request": {
+        "method": "GET",
+        "path": "/label/explode-true/.1.abc"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "should error when an item fails the label non-exploded integer array spec",
+      "request": {
+        "method": "GET",
+        "path": "/label/explode-false/.1,abc"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "should error when an item fails the matrix exploded integer array spec",
+      "request": {
+        "method": "GET",
+        "path": "/matrix/explode-true/;1;abc"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "should error when an item fails the matrix non-exploded integer array spec",
+      "request": {
+        "method": "GET",
+        "path": "/matrix/explode-false/;1,abc"
+      },
+      "response": {
+        "status": 200
+      }
     }
   ]
 }

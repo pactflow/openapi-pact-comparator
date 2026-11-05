@@ -60,10 +60,8 @@ export function* compareHttpInteraction(
           )
           .substring(1);
 
-  const route = router.find(
-    method.toUpperCase() as HTTPMethod,
-    [pathWithLeadingSlash, stringQuery].filter(Boolean).join("?"),
-  );
+  const url = [pathWithLeadingSlash, stringQuery].filter(Boolean).join("?");
+  const route = router.find(method.toUpperCase() as HTTPMethod, url);
 
   if (!route || pathWithLeadingSlash.includes("?")) {
     yield {
@@ -86,7 +84,7 @@ export function* compareHttpInteraction(
   }
 
   const results = Array.from(
-    compareReqPath(ajvCoerce, route, interaction, index, config),
+    compareReqPath(ajvCoerce, router, route, url, interaction, index, config),
   );
 
   if (results.length) {

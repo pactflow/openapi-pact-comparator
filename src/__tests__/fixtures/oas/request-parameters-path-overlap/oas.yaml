@@ -1,0 +1,117 @@
+openapi: 3.0.3
+info:
+  title: path parameters
+  version: 1.0.0
+paths:
+  /users/{id}:
+    get:
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: ok
+    delete:
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: ok
+  /users/me:
+    get:
+      responses:
+        "200":
+          description: ok
+    post:
+      responses:
+        "200":
+          description: ok
+  /a/{x}:
+    get:
+      parameters:
+        - in: path
+          name: x
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: ok
+  /{y}/b:
+    get:
+      parameters:
+        - in: path
+          name: y
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: ok
+  /p/{x}:
+    get:
+      parameters:
+        - in: path
+          name: x
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: ok
+  /{q}/r:
+    get:
+      parameters:
+        - in: path
+          name: q
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: ok
+  /m/{first}/{second}:
+    get:
+      parameters:
+        - in: path
+          name: first
+          required: true
+          schema:
+            type: integer
+        - in: path
+          name: second
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: ok
+  /n/{id}:
+    get:
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: ok
+  /n/{id}/o:
+    get:
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: ok

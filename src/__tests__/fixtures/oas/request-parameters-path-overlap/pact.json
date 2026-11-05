@@ -1,0 +1,195 @@
+{
+  "consumer": {
+    "name": "consumer"
+  },
+  "provider": {
+    "name": "provider"
+  },
+  "metadata": {
+    "pactSpecification": {
+      "version": "2.0.0"
+    }
+  },
+  "interactions": [
+    {
+      "description": "GET /users/me (literal path wins over the template)",
+      "request": {
+        "method": "GET",
+        "path": "/users/me"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "POST /users/me (literal path, other method)",
+      "request": {
+        "method": "POST",
+        "path": "/users/me"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /users/1 (template matches)",
+      "request": {
+        "method": "GET",
+        "path": "/users/1"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /a/1 (first template matches)",
+      "request": {
+        "method": "GET",
+        "path": "/a/1"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /z/b (second template matches)",
+      "request": {
+        "method": "GET",
+        "path": "/z/b"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /1/r (second template matches when the first does not fit)",
+      "request": {
+        "method": "GET",
+        "path": "/1/r"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /n/abc/o (longer template matches)",
+      "request": {
+        "method": "GET",
+        "path": "/n/abc/o"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /users/abc (only candidate fails on its parameter)",
+      "request": {
+        "method": "GET",
+        "path": "/users/abc"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "DELETE /users/abc (parameter fails on another defined method)",
+      "request": {
+        "method": "DELETE",
+        "path": "/users/abc"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "POST /users/abc (method not defined on the template)",
+      "request": {
+        "method": "POST",
+        "path": "/users/abc"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "PUT /users/abc (method not defined anywhere)",
+      "request": {
+        "method": "PUT",
+        "path": "/users/abc"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "POST /users/1 (method not defined on the template, valid parameter)",
+      "request": {
+        "method": "POST",
+        "path": "/users/1"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /n/abc (one failing candidate, the longer template does not fit)",
+      "request": {
+        "method": "GET",
+        "path": "/n/abc"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /a/b (chosen candidate fails while another is valid)",
+      "request": {
+        "method": "GET",
+        "path": "/a/b"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /p/r (two candidates fail)",
+      "request": {
+        "method": "GET",
+        "path": "/p/r"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /m/abc/def (two parameters fail)",
+      "request": {
+        "method": "GET",
+        "path": "/m/abc/def"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /m/1/def (second parameter fails)",
+      "request": {
+        "method": "GET",
+        "path": "/m/1/def"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "DELETE /users/me (literal path lacks the method, template fails)",
+      "request": {
+        "method": "DELETE",
+        "path": "/users/me"
+      },
+      "response": {
+        "status": 200
+      }
+    }
+  ]
+}

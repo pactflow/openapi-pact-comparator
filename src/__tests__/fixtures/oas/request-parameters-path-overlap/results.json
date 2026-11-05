@@ -1,0 +1,219 @@
+[
+  {
+    "code": "request.path-parameter.incompatible",
+    "message": "Value is incompatible with path parameter \"id\" of GET /users/{id} defined in the spec file: must be integer",
+    "mockDetails": {
+      "interactionDescription": "GET /users/abc (only candidate fails on its parameter)",
+      "interactionState": "[none]",
+      "location": "[root].interactions[7].request.path",
+      "value": "/users/abc"
+    },
+    "specDetails": {
+      "location": "[root].paths./users/{id}.get.parameters[0].schema.type",
+      "pathMethod": "get",
+      "pathName": "/users/{id}",
+      "value": "integer"
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.path-parameter.incompatible",
+    "message": "Value is incompatible with path parameter \"id\" of DELETE /users/{id} defined in the spec file: must be integer",
+    "mockDetails": {
+      "interactionDescription": "DELETE /users/abc (parameter fails on another defined method)",
+      "interactionState": "[none]",
+      "location": "[root].interactions[8].request.path",
+      "value": "/users/abc"
+    },
+    "specDetails": {
+      "location": "[root].paths./users/{id}.delete.parameters[0].schema.type",
+      "pathMethod": "delete",
+      "pathName": "/users/{id}",
+      "value": "integer"
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.path-or-method.unknown",
+    "message": "Path or method not defined in spec file: POST /users/abc",
+    "mockDetails": {
+      "interactionDescription": "POST /users/abc (method not defined on the template)",
+      "interactionState": "[none]",
+      "location": "[root].interactions[9].request.path",
+      "value": "/users/abc"
+    },
+    "specDetails": {
+      "location": "[root].paths",
+      "pathMethod": null,
+      "pathName": null
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.path-or-method.unknown",
+    "message": "Path or method not defined in spec file: PUT /users/abc",
+    "mockDetails": {
+      "interactionDescription": "PUT /users/abc (method not defined anywhere)",
+      "interactionState": "[none]",
+      "location": "[root].interactions[10].request.path",
+      "value": "/users/abc"
+    },
+    "specDetails": {
+      "location": "[root].paths",
+      "pathMethod": null,
+      "pathName": null
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.path-or-method.unknown",
+    "message": "Path or method not defined in spec file: POST /users/1",
+    "mockDetails": {
+      "interactionDescription": "POST /users/1 (method not defined on the template, valid parameter)",
+      "interactionState": "[none]",
+      "location": "[root].interactions[11].request.path",
+      "value": "/users/1"
+    },
+    "specDetails": {
+      "location": "[root].paths",
+      "pathMethod": null,
+      "pathName": null
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.path-parameter.incompatible",
+    "message": "Value is incompatible with path parameter \"id\" of GET /n/{id} defined in the spec file: must be integer",
+    "mockDetails": {
+      "interactionDescription": "GET /n/abc (one failing candidate, the longer template does not fit)",
+      "interactionState": "[none]",
+      "location": "[root].interactions[12].request.path",
+      "value": "/n/abc"
+    },
+    "specDetails": {
+      "location": "[root].paths./n/{id}.get.parameters[0].schema.type",
+      "pathMethod": "get",
+      "pathName": "/n/{id}",
+      "value": "integer"
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.path-or-method.unknown",
+    "message": "Path or method not defined in spec file: GET /a/b",
+    "mockDetails": {
+      "interactionDescription": "GET /a/b (chosen candidate fails while another is valid)",
+      "interactionState": "[none]",
+      "location": "[root].interactions[13].request.path",
+      "value": "/a/b"
+    },
+    "specDetails": {
+      "location": "[root].paths",
+      "pathMethod": null,
+      "pathName": null,
+      "value": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "x",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ok"
+          }
+        }
+      }
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.path-parameter.incompatible",
+    "message": "Value is incompatible with path parameter \"x\" of GET /p/{x} defined in the spec file: must be integer",
+    "mockDetails": {
+      "interactionDescription": "GET /p/r (two candidates fail)",
+      "interactionState": "[none]",
+      "location": "[root].interactions[14].request.path",
+      "value": "/p/r"
+    },
+    "specDetails": {
+      "location": "[root].paths./p/{x}.get.parameters[0].schema.type",
+      "pathMethod": "get",
+      "pathName": "/p/{x}",
+      "value": "integer"
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.path-parameter.incompatible",
+    "message": "Value is incompatible with path parameter \"first\" of GET /m/{first}/{second} defined in the spec file: must be integer",
+    "mockDetails": {
+      "interactionDescription": "GET /m/abc/def (two parameters fail)",
+      "interactionState": "[none]",
+      "location": "[root].interactions[15].request.path",
+      "value": "/m/abc/def"
+    },
+    "specDetails": {
+      "location": "[root].paths./m/{first}/{second}.get.parameters[0].schema.type",
+      "pathMethod": "get",
+      "pathName": "/m/{first}/{second}",
+      "value": "integer"
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.path-parameter.incompatible",
+    "message": "Value is incompatible with path parameter \"second\" of GET /m/{first}/{second} defined in the spec file: must be integer",
+    "mockDetails": {
+      "interactionDescription": "GET /m/abc/def (two parameters fail)",
+      "interactionState": "[none]",
+      "location": "[root].interactions[15].request.path",
+      "value": "/m/abc/def"
+    },
+    "specDetails": {
+      "location": "[root].paths./m/{first}/{second}.get.parameters[1].schema.type",
+      "pathMethod": "get",
+      "pathName": "/m/{first}/{second}",
+      "value": "integer"
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.path-parameter.incompatible",
+    "message": "Value is incompatible with path parameter \"second\" of GET /m/{first}/{second} defined in the spec file: must be integer",
+    "mockDetails": {
+      "interactionDescription": "GET /m/1/def (second parameter fails)",
+      "interactionState": "[none]",
+      "location": "[root].interactions[16].request.path",
+      "value": "/m/1/def"
+    },
+    "specDetails": {
+      "location": "[root].paths./m/{first}/{second}.get.parameters[1].schema.type",
+      "pathMethod": "get",
+      "pathName": "/m/{first}/{second}",
+      "value": "integer"
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.path-parameter.incompatible",
+    "message": "Value is incompatible with path parameter \"id\" of DELETE /users/{id} defined in the spec file: must be integer",
+    "mockDetails": {
+      "interactionDescription": "DELETE /users/me (literal path lacks the method, template fails)",
+      "interactionState": "[none]",
+      "location": "[root].interactions[17].request.path",
+      "value": "/users/me"
+    },
+    "specDetails": {
+      "location": "[root].paths./users/{id}.delete.parameters[0].schema.type",
+      "pathMethod": "delete",
+      "pathName": "/users/{id}",
+      "value": "integer"
+    },
+    "type": "error"
+  }
+]

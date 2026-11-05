@@ -1,0 +1,184 @@
+[
+  {
+    "code": "request.path-or-method.unknown",
+    "message": "Path or method not defined in spec file: GET /case/b/c",
+    "mockDetails": {
+      "interactionDescription": "GET /case/b/c (other route differs by case)",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].request.path",
+      "value": "/case/b/c"
+    },
+    "specDetails": {
+      "location": "[root].paths",
+      "pathMethod": null,
+      "pathName": null,
+      "value": {
+        "parameters": [
+          {
+            "name": "z",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ok"
+          }
+        }
+      }
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.path-or-method.unknown",
+    "message": "Path or method not defined in spec file: GET /url-slashes//k/b/c",
+    "mockDetails": {
+      "interactionDescription": "GET /url-slashes//k/b/c (duplicate slash in the URL)",
+      "interactionState": "[none]",
+      "location": "[root].interactions[1].request.path",
+      "value": "/url-slashes//k/b/c"
+    },
+    "specDetails": {
+      "location": "[root].paths",
+      "pathMethod": null,
+      "pathName": null,
+      "value": {
+        "parameters": [
+          {
+            "name": "z",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ok"
+          }
+        }
+      }
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.path-or-method.unknown",
+    "message": "Path or method not defined in spec file: GET /spec-slashes/k/b/c",
+    "mockDetails": {
+      "interactionDescription": "GET /spec-slashes/k/b/c (duplicate slash in the other route)",
+      "interactionState": "[none]",
+      "location": "[root].interactions[2].request.path",
+      "value": "/spec-slashes/k/b/c"
+    },
+    "specDetails": {
+      "location": "[root].paths",
+      "pathMethod": null,
+      "pathName": null,
+      "value": {
+        "parameters": [
+          {
+            "name": "z",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ok"
+          }
+        }
+      }
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.path-or-method.unknown",
+    "message": "Path or method not defined in spec file: GET /caf%C3%A9/b/c",
+    "mockDetails": {
+      "interactionDescription": "GET /caf%C3%A9/b/c (percent-encoded URL)",
+      "interactionState": "[none]",
+      "location": "[root].interactions[3].request.path",
+      "value": "/caf%C3%A9/b/c"
+    },
+    "specDetails": {
+      "location": "[root].paths",
+      "pathMethod": null,
+      "pathName": null,
+      "value": {
+        "parameters": [
+          {
+            "name": "z",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ok"
+          }
+        }
+      }
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.path-or-method.unknown",
+    "message": "Path or method not defined in spec file: GET /colon:v1/b/c",
+    "mockDetails": {
+      "interactionDescription": "GET /colon:v1/b/c (literal colon in the other route)",
+      "interactionState": "[none]",
+      "location": "[root].interactions[4].request.path",
+      "value": "/colon:v1/b/c"
+    },
+    "specDetails": {
+      "location": "[root].paths",
+      "pathMethod": null,
+      "pathName": null,
+      "value": {
+        "parameters": [
+          {
+            "name": "z",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ok"
+          }
+        }
+      }
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.path-parameter.incompatible",
+    "message": "Value is incompatible with path parameter \"z\" of GET /no-other-route/b/{z} defined in the spec file: must be integer",
+    "mockDetails": {
+      "interactionDescription": "GET /no-other-route/b/c (no other route fits)",
+      "interactionState": "[none]",
+      "location": "[root].interactions[5].request.path",
+      "value": "/no-other-route/b/c"
+    },
+    "specDetails": {
+      "location": "[root].paths./no-other-route/b/{z}.get.parameters[0].schema.type",
+      "pathMethod": "get",
+      "pathName": "/no-other-route/b/{z}",
+      "value": "integer"
+    },
+    "type": "error"
+  }
+]

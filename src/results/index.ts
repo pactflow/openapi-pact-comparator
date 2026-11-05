@@ -18,6 +18,7 @@ type ErrorCode =
   | "request.content-type.incompatible"
   | "request.header.incompatible"
   | "request.path-or-method.unknown"
+  | "request.path-parameter.incompatible"
   | "request.query.incompatible"
   | "request.spec.missing"
   | "response.body.incompatible"

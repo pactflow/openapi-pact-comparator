@@ -1,0 +1,45 @@
+{
+  "consumer": {
+    "name": "consumer"
+  },
+  "provider": {
+    "name": "provider"
+  },
+  "metadata": {
+    "pactSpecification": {
+      "version": "2.0.0"
+    }
+  },
+  "interactions": [
+    {
+      "description": "GET /users/1 (servers path is not part of the match)",
+      "request": {
+        "method": "GET",
+        "path": "/users/1"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /users/abc (parameter fails without the servers path)",
+      "request": {
+        "method": "GET",
+        "path": "/users/abc"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /api/users/abc (servers path does not fit a template)",
+      "request": {
+        "method": "GET",
+        "path": "/api/users/abc"
+      },
+      "response": {
+        "status": 200
+      }
+    }
+  ]
+}

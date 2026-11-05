@@ -99,39 +99,6 @@
     "type": "error"
   },
   {
-    "code": "request.path-or-method.unknown",
-    "message": "Path or method not defined in spec file: GET /a/b",
-    "mockDetails": {
-      "interactionDescription": "GET /a/b (chosen candidate fails while another is valid)",
-      "interactionState": "[none]",
-      "location": "[root].interactions[13].request.path",
-      "value": "/a/b"
-    },
-    "specDetails": {
-      "location": "[root].paths",
-      "pathMethod": null,
-      "pathName": null,
-      "value": {
-        "parameters": [
-          {
-            "in": "path",
-            "name": "x",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "ok"
-          }
-        }
-      }
-    },
-    "type": "error"
-  },
-  {
     "code": "request.path-parameter.incompatible",
     "message": "Value is incompatible with path parameter \"x\" of GET /p/{x} defined in the spec file: must be integer",
     "mockDetails": {
@@ -212,6 +179,99 @@
       "location": "[root].paths./users/{id}.delete.parameters[0].schema.type",
       "pathMethod": "delete",
       "pathName": "/users/{id}",
+      "value": "integer"
+    },
+    "type": "error"
+  },
+  {
+    "code": "response.status.unknown",
+    "message": "Response status code not defined in spec file: 418",
+    "mockDetails": {
+      "interactionDescription": "GET /a/b (other route's response status is undefined)",
+      "interactionState": "[none]",
+      "location": "[root].interactions[18].response.status",
+      "value": 418
+    },
+    "specDetails": {
+      "location": "[root].paths./{y}/b.get.responses",
+      "pathMethod": "get",
+      "pathName": "/{y}/b",
+      "value": {
+        "200": {
+          "description": "ok"
+        }
+      }
+    },
+    "type": "error"
+  },
+  {
+    "code": "response.status.unknown",
+    "message": "Response status code not defined in spec file: 201",
+    "mockDetails": {
+      "interactionDescription": "GET /g/k/h (pinned to the same route: this status exists only on the later route)",
+      "interactionState": "[none]",
+      "location": "[root].interactions[20].response.status",
+      "value": 201
+    },
+    "specDetails": {
+      "location": "[root].paths./g/{x}/h.get.responses",
+      "pathMethod": "get",
+      "pathName": "/g/{x}/h",
+      "value": {
+        "200": {
+          "description": "ok"
+        }
+      }
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.path-parameter.incompatible",
+    "message": "Value is incompatible with path parameter \"x\" of GET /l/{x} defined in the spec file: must be integer",
+    "mockDetails": {
+      "interactionDescription": "GET /l/m (other route lacks the method)",
+      "interactionState": "[none]",
+      "location": "[root].interactions[22].request.path",
+      "value": "/l/m"
+    },
+    "specDetails": {
+      "location": "[root].paths./l/{x}.get.parameters[0].schema.type",
+      "pathMethod": "get",
+      "pathName": "/l/{x}",
+      "value": "integer"
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.body.incompatible",
+    "message": "Request body is incompatible with the request body schema in the spec file: must be integer",
+    "mockDetails": {
+      "interactionDescription": "POST /e/f (other route's request body is incompatible)",
+      "interactionState": "[none]",
+      "location": "[root].interactions[25].request.body.count",
+      "value": "abc"
+    },
+    "specDetails": {
+      "location": "[root].paths./{y}/f.post.requestBody.content.application/json.schema.properties.count.type",
+      "pathMethod": "post",
+      "pathName": "/{y}/f",
+      "value": "integer"
+    },
+    "type": "error"
+  },
+  {
+    "code": "response.body.incompatible",
+    "message": "Response body is incompatible with the response body schema in the spec file: must be integer",
+    "mockDetails": {
+      "interactionDescription": "GET /s/t (other route's response body is incompatible)",
+      "interactionState": "[none]",
+      "location": "[root].interactions[27].response.body.count",
+      "value": "abc"
+    },
+    "specDetails": {
+      "location": "[root].paths./{y}/t.get.responses.200.content.application/json.schema.properties.count.type",
+      "pathMethod": "get",
+      "pathName": "/{y}/t",
       "value": "integer"
     },
     "type": "error"

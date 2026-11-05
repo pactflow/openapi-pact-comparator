@@ -115,3 +115,139 @@ paths:
       responses:
         "200":
           description: ok
+  /{p}/k/h:
+    get:
+      parameters:
+        - in: path
+          name: p
+          required: true
+          schema:
+            type: string
+      responses:
+        "201":
+          description: ok
+  /g/k/{q}:
+    get:
+      parameters:
+        - in: path
+          name: q
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: ok
+  /g/{x}/h:
+    get:
+      parameters:
+        - in: path
+          name: x
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: ok
+  /j/k/{q}:
+    get:
+      parameters:
+        - in: path
+          name: q
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: ok
+  /j/{x}/h:
+    get:
+      parameters:
+        - in: path
+          name: x
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: ok
+  /l/{x}:
+    get:
+      parameters:
+        - in: path
+          name: x
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: ok
+  /{y}/m:
+    post:
+      parameters:
+        - in: path
+          name: y
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: ok
+  /e/{x}:
+    post:
+      parameters:
+        - in: path
+          name: x
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: ok
+  /{y}/f:
+    post:
+      parameters:
+        - in: path
+          name: y
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                count:
+                  type: integer
+      responses:
+        "200":
+          description: ok
+  /s/{x}:
+    get:
+      parameters:
+        - in: path
+          name: x
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: ok
+  /{y}/t:
+    get:
+      parameters:
+        - in: path
+          name: y
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer

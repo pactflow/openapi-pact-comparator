@@ -1,7 +1,7 @@
 [
   {
-    "code": "request.path-or-method.unknown",
-    "message": "Path or method not defined in spec file: GET /simple/explode-true/1,2,abc",
+    "code": "request.path-parameter.incompatible",
+    "message": "Value is incompatible with path parameter \"id.2\" of GET /simple/explode-true/{id*} defined in the spec file: must be integer",
     "mockDetails": {
       "interactionDescription": "should error when path does not match simple exploded integer array spec",
       "interactionState": "[none]",
@@ -9,38 +9,16 @@
       "value": "/simple/explode-true/1,2,abc"
     },
     "specDetails": {
-      "location": "[root].paths",
-      "pathMethod": null,
-      "pathName": null,
-      "value": {
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "integer"
-              },
-              "minItems": 1
-            },
-            "style": "simple",
-            "explode": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "description"
-          }
-        }
-      }
+      "location": "[root].paths./simple/explode-true/{id*}.get.parameters[0].schema.items.type",
+      "pathMethod": "get",
+      "pathName": "/simple/explode-true/{id*}",
+      "value": "integer"
     },
     "type": "error"
   },
   {
-    "code": "request.path-or-method.unknown",
-    "message": "Path or method not defined in spec file: GET /simple/explode-false/1,2,abc",
+    "code": "request.path-parameter.incompatible",
+    "message": "Value is incompatible with path parameter \"id.2\" of GET /simple/explode-false/{id} defined in the spec file: must be integer",
     "mockDetails": {
       "interactionDescription": "should error when path does not match simple non-exploded integer array spec",
       "interactionState": "[none]",
@@ -48,32 +26,10 @@
       "value": "/simple/explode-false/1,2,abc"
     },
     "specDetails": {
-      "location": "[root].paths",
-      "pathMethod": null,
-      "pathName": null,
-      "value": {
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "integer"
-              },
-              "minItems": 1
-            },
-            "style": "simple",
-            "explode": false
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "description"
-          }
-        }
-      }
+      "location": "[root].paths./simple/explode-false/{id}.get.parameters[0].schema.items.type",
+      "pathMethod": "get",
+      "pathName": "/simple/explode-false/{id}",
+      "value": "integer"
     },
     "type": "error"
   },
@@ -138,6 +94,74 @@
       "location": "[root].paths",
       "pathMethod": null,
       "pathName": null
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.path-parameter.incompatible",
+    "message": "Value is incompatible with path parameter \"id.1\" of GET /label/explode-true/{.id*} defined in the spec file: must be integer",
+    "mockDetails": {
+      "interactionDescription": "should error when an item fails the label exploded integer array spec",
+      "interactionState": "[none]",
+      "location": "[root].interactions[18].request.path",
+      "value": "/label/explode-true/.1.abc"
+    },
+    "specDetails": {
+      "location": "[root].paths./label/explode-true/{.id*}.get.parameters[0].schema.items.type",
+      "pathMethod": "get",
+      "pathName": "/label/explode-true/{.id*}",
+      "value": "integer"
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.path-parameter.incompatible",
+    "message": "Value is incompatible with path parameter \"id.1\" of GET /label/explode-false/{.id} defined in the spec file: must be integer",
+    "mockDetails": {
+      "interactionDescription": "should error when an item fails the label non-exploded integer array spec",
+      "interactionState": "[none]",
+      "location": "[root].interactions[19].request.path",
+      "value": "/label/explode-false/.1,abc"
+    },
+    "specDetails": {
+      "location": "[root].paths./label/explode-false/{.id}.get.parameters[0].schema.items.type",
+      "pathMethod": "get",
+      "pathName": "/label/explode-false/{.id}",
+      "value": "integer"
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.path-parameter.incompatible",
+    "message": "Value is incompatible with path parameter \"id.1\" of GET /matrix/explode-true/{;id*} defined in the spec file: must be integer",
+    "mockDetails": {
+      "interactionDescription": "should error when an item fails the matrix exploded integer array spec",
+      "interactionState": "[none]",
+      "location": "[root].interactions[20].request.path",
+      "value": "/matrix/explode-true/;1;abc"
+    },
+    "specDetails": {
+      "location": "[root].paths./matrix/explode-true/{;id*}.get.parameters[0].schema.items.type",
+      "pathMethod": "get",
+      "pathName": "/matrix/explode-true/{;id*}",
+      "value": "integer"
+    },
+    "type": "error"
+  },
+  {
+    "code": "request.path-parameter.incompatible",
+    "message": "Value is incompatible with path parameter \"id.1\" of GET /matrix/explode-false/{;id} defined in the spec file: must be integer",
+    "mockDetails": {
+      "interactionDescription": "should error when an item fails the matrix non-exploded integer array spec",
+      "interactionState": "[none]",
+      "location": "[root].interactions[21].request.path",
+      "value": "/matrix/explode-false/;1,abc"
+    },
+    "specDetails": {
+      "location": "[root].paths./matrix/explode-false/{;id}.get.parameters[0].schema.items.type",
+      "pathMethod": "get",
+      "pathName": "/matrix/explode-false/{;id}",
+      "value": "integer"
     },
     "type": "error"
   }

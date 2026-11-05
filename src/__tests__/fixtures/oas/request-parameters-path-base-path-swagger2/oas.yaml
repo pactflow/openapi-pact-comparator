@@ -1,0 +1,16 @@
+swagger: "2.0"
+info:
+  title: path parameters
+  version: 1.0.0
+basePath: /v1
+paths:
+  /users/{id}:
+    get:
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: integer
+      responses:
+        "200":
+          description: ok

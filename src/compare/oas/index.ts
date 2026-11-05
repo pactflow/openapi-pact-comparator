@@ -15,6 +15,7 @@ import { compareReqQuery } from "./requestQuery";
 import { compareReqSecurity } from "./requestSecurity";
 import { compareResBody } from "./responseBody";
 import { compareResHeader } from "./responseHeader";
+import { findOtherRoutes } from "./setup";
 
 export function* compareHttpInteraction(
   ajvCoerce: Ajv,
@@ -61,7 +62,7 @@ export function* compareHttpInteraction(
           .substring(1);
 
   const url = [pathWithLeadingSlash, stringQuery].filter(Boolean).join("?");
-  const route = router.find(method.toUpperCase() as HTTPMethod, url);
+  let route = router.find(method.toUpperCase() as HTTPMethod, url);
 
   if (!route || pathWithLeadingSlash.includes("?")) {
     yield {
@@ -84,12 +85,32 @@ export function* compareHttpInteraction(
   }
 
   const results = Array.from(
-    compareReqPath(ajvCoerce, router, route, url, interaction, index, config),
+    compareReqPath(ajvCoerce, route, interaction, index, config),
   );
 
   if (results.length) {
-    yield* results;
-    return;
+    // the router commits to one route without checking parameter schemas
+    let acceptingRoute;
+    for (const otherRoute of findOtherRoutes(
+      router,
+      method.toUpperCase() as HTTPMethod,
+      url,
+      route.store,
+    )) {
+      if (
+        !Array.from(
+          compareReqPath(ajvCoerce, otherRoute, interaction, index, config),
+        ).length
+      ) {
+        acceptingRoute = otherRoute;
+        break;
+      }
+    }
+    if (!acceptingRoute) {
+      yield* results;
+      return;
+    }
+    route = acceptingRoute;
   }
 
   yield* compareReqSecurity(ajvCoerce, route, interaction, index, config);

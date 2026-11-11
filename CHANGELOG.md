@@ -1,5 +1,20 @@
 # @pactflow/openapi-pact-comparator
 
+## 2.5.0
+
+### Minor Changes
+
+- 6826439: When a path fits a template, a parameter fails its schema and no other route
+  accepts the URL, report `request.path-parameter.incompatible`, naming the
+  parameter and the document's path. Previously it was reported as
+  `request.path-or-method.unknown`, which said the path was not defined. Anything
+  matching on that code string for this case needs updating. The interaction still
+  fails.
+- afeb2bb: When the most specific route fails on a path parameter, compare the interaction
+  against another route that fits the URL and defines the method, in router
+  precedence. `/a/b` against `/a/{x}` with an integer `x` and `/{y}/b` now matches
+  `/{y}/b`. It previously failed with `request.path-or-method.unknown`.
+
 ## 2.4.0
 
 ### Minor Changes

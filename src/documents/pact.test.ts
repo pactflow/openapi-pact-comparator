@@ -119,6 +119,28 @@ describe("#parser", () => {
     expect(interaction.providerState).toBe("an org exists");
   });
 
+  // pact_models matches V4 types exactly and ignores any other interaction.
+  it("skips interactions whose type differs from a V4 type only in case", () => {
+    const request = { method: "GET", path: "/path" };
+    const response = { status: 200 };
+    const json = {
+      interactions: [
+        { type: "synchronous/http", description: "http", request, response },
+        { type: "asynchronous/messages", description: "async" },
+        {
+          type: "SYNCHRONOUS/MESSAGES",
+          description: "sync",
+          request: {},
+          response: [],
+        },
+      ],
+    };
+
+    const pact = parse(json as Pact);
+    expect(pact.interactions).toHaveLength(3);
+    pact.interactions.forEach((i) => expect(i._kind).toBe("skip"));
+  });
+
   it("does not crash and skips interactions with non-string type values", () => {
     const request = { method: "GET", path: "/path" };
     const response = { status: 200 };

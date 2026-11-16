@@ -253,18 +253,17 @@ interface RawSyncInteraction {
   };
 }
 
+// V4 types match exactly, as in pact_models. Any other type is skipped.
 const isHttpInteraction = (i: RawInteraction) =>
-  i.type === undefined ||
-  (typeof i.type === "string" && i.type.toLowerCase() === "synchronous/http");
+  i.type === undefined || i.type === "Synchronous/HTTP";
 
 const isAsyncInteraction = (i: RawInteraction) =>
-  typeof i.type === "string" &&
-  i.type.toLowerCase() === "asynchronous/messages";
+  i.type === "Asynchronous/Messages";
 
 const isSyncInteraction = (
   i: RawInteraction,
 ): i is RawInteraction & RawSyncInteraction =>
-  typeof i.type === "string" && i.type.toLowerCase() === "synchronous/messages";
+  i.type === "Synchronous/Messages";
 
 const parseAsPactV4Body = (body: unknown) => {
   if (!body) {

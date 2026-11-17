@@ -1,5 +1,15 @@
 # @pactflow/openapi-pact-comparator
 
+## 2.6.0
+
+### Minor Changes
+
+- 4601ee7: Match V4 interaction types exactly, as pact_models does. An interaction whose
+  type differs from `Synchronous/HTTP`, `Asynchronous/Messages` or
+  `Synchronous/Messages` only in case is now skipped, like any unknown type. It
+  was previously compared. A malformed interaction of that kind no longer fails
+  the whole pact with a parser error, because it is no longer validated.
+
 ## 2.5.0
 
 ### Minor Changes

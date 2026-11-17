@@ -232,6 +232,63 @@ describe("output PactFlow reads to classify interactions", () => {
     expect(ALLOW_LIST_CODES).not.toContain(errors[0].code);
   });
 
+  it("reports an unknown operationId on a Synchronous/Messages interaction as message.operation.unknown", async () => {
+    const sync = {
+      type: "Synchronous/Messages",
+      description: "place an order",
+      comments: {
+        references: { AsyncAPI: { operationId: "noSuchOperation" } },
+      },
+      request: {
+        contents: {
+          content: { orderId: "o-1" },
+          contentType: "application/json",
+          encoded: false,
+        },
+      },
+      response: [
+        {
+          contents: {
+            content: { status: "ok" },
+            contentType: "application/json",
+            encoded: false,
+          },
+        },
+      ],
+    };
+    const results = await compare(
+      { asyncapi },
+      pactOf(message("sendOrder"), sync),
+    );
+
+    const errors = results.filter((r) => r.type === "error");
+    expect(errors).toHaveLength(1);
+    expect(errors[0].code).toBe("message.operation.unknown");
+    expect(errors[0].mockDetails.location).toMatch(
+      /^\[root\]\.interactions\[1\]/,
+    );
+  });
+
+  it("indexes interactions after dropping non-object entries", async () => {
+    const results = await compare(
+      { asyncapi },
+      pactOf(
+        null as never,
+        message("sendOrder"),
+        "text" as never,
+        message("noSuchOperation"),
+      ),
+    );
+
+    const errors = results.filter((r) => r.type === "error");
+    expect(errors).toHaveLength(1);
+    expect(errors[0].code).toBe("message.operation.unknown");
+    // Non-object entries are removed first, so this is the second remaining interaction.
+    expect(errors[0].mockDetails.location).toMatch(
+      /^\[root\]\.interactions\[1\]/,
+    );
+  });
+
   it("emits no error for a passing HTTP interaction", async () => {
     const results = await compare({ oas }, pactOf(http("GET", "/orders")));
 

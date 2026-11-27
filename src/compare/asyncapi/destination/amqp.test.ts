@@ -92,6 +92,49 @@ describe("amqp", () => {
     });
   });
 
+  it("treats a binding without `is` as a routing-key binding", () => {
+    const channel = {
+      address: "a.*",
+      bindings: { amqp: { exchange: { name: "events", type: "topic" } } },
+    };
+    expect(amqp.check("/exchanges/events/a.b", channel).status).toBe("match");
+    expect(amqp.check("/exchanges/events/a.b.c", channel).status).toBe(
+      "mismatch",
+    );
+  });
+
+  it("does not compare an exchange destination with a queue binding", () => {
+    const channel = {
+      address: "a.*",
+      bindings: {
+        amqp: {
+          is: "queue",
+          queue: { name: "q" },
+          exchange: { name: "events", type: "topic" },
+        },
+      },
+    };
+    expect(amqp.check("/exchanges/events/x.y.z", channel)).toEqual({
+      status: "unvalidatable",
+      reason:
+        "the destination is an exchange but the channel's AMQP binding is `is: queue`",
+      spec: { location: ".bindings.amqp.is", value: "queue" },
+    });
+  });
+
+  it("does not compare a queue destination with a routing-key binding", () => {
+    const channel = {
+      address: "a.b",
+      bindings: { amqp: { queue: { name: "q" } } },
+    };
+    expect(amqp.check("/queues/q", channel)).toEqual({
+      status: "unvalidatable",
+      reason:
+        "the destination is a queue but the channel's AMQP binding is `is: routingKey`",
+      spec: { location: ".bindings.amqp.is", value: undefined },
+    });
+  });
+
   it.each([
     ["audit.events.users", topicChannel("audit.#")],
     ["/queues/my-queue", topicChannel("audit.#")],

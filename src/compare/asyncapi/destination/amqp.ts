@@ -91,6 +91,17 @@ export const amqp: DestinationProtocol = {
       };
     }
     const binding = channel.bindings?.amqp;
+    // `is` defaults to `routingKey`; `exchange` applies to routing-key
+    // channels and `queue` to queue channels.
+    const is = binding?.is ?? "routingKey";
+    const kind = "queue" in target ? "queue" : "routingKey";
+    if (is !== kind) {
+      return {
+        status: "unvalidatable",
+        reason: `the destination is ${kind === "queue" ? "a queue" : "an exchange"} but the channel's AMQP binding is \`is: ${is}\``,
+        spec: { location: ".bindings.amqp.is", value: binding?.is },
+      };
+    }
 
     if ("queue" in target) {
       return (

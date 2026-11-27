@@ -126,9 +126,10 @@ channel is on (the servers it lists, or all servers in the document):
 | anything else, or mixed | `address`                                                                                                                                                                          | no `.` or `/`             | not compared                                                  |
 
 A destination that cannot be compared (an AMQP destination that is not a
-RabbitMQ address, a binding without the name to compare, or an address with
-wildcards for an unknown protocol) is reported with
-`message.destination.unvalidatable`, a warning.
+RabbitMQ address, a queue destination for a channel whose AMQP binding is not
+`is: queue` or an exchange destination for one that is, a binding without the
+name to compare, or an address with wildcards for an unknown protocol) is
+reported with `message.destination.unvalidatable`, a warning.
 
 ## Quirks mode
 

@@ -15,6 +15,7 @@ import {
 export interface AsyncAPIDocument {
   asyncapi: string;
   info: { title: string; version: string };
+  servers?: Record<string, Server>;
   channels?: Record<string, Channel>;
   operations?: Record<string, Operation>;
   components?: {
@@ -23,7 +24,23 @@ export interface AsyncAPIDocument {
   };
 }
 
-interface Channel {
+interface Server {
+  protocol?: string;
+}
+
+interface ChannelBindings {
+  kafka?: { topic?: string };
+  amqp?: {
+    is?: string;
+    exchange?: { name?: string; type?: string };
+    queue?: { name?: string };
+  };
+}
+
+export interface Channel {
+  address?: string | null;
+  servers?: Ref[];
+  bindings?: ChannelBindings;
   messages?: Record<string, Message | Ref>;
 }
 
@@ -283,6 +300,38 @@ export function* iterateMessages(
     doc,
   );
 }
+
+export const resolveOperationChannel = (
+  doc: AsyncAPIDocument,
+  operationId: string,
+): { channel: Channel; path: string } | undefined => {
+  const ref = doc.operations?.[operationId]?.channel;
+  if (ref == null || typeof ref !== "object" || !isRef(ref)) {
+    return undefined;
+  }
+  const channel = dereferenceDoc(ref, doc) as Channel | undefined;
+  if (channel == null || typeof channel !== "object") {
+    return undefined;
+  }
+  const finalRef = lastRefInChain(ref, doc) ?? ref.$ref;
+  const path = "[root]." + finalRef.replace(/^#\//, "").replace(/\//g, ".");
+  return { channel, path };
+};
+
+export const channelProtocols = (
+  doc: AsyncAPIDocument,
+  channel: Channel,
+): string[] => {
+  const servers = Array.isArray(channel.servers)
+    ? channel.servers
+        .filter(isRef)
+        .map((ref) => dereferenceDoc(ref, doc) as Server | undefined)
+    : Object.values(doc.servers ?? {});
+  return servers
+    .map((server) => server?.protocol)
+    .filter((protocol): protocol is string => typeof protocol === "string")
+    .map((protocol) => protocol.toLowerCase());
+};
 
 export function* iterateReplyMessages(
   doc: AsyncAPIDocument,

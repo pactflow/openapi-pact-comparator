@@ -1,0 +1,23 @@
+asyncapi: "3.0.0"
+info:
+  title: Event Service
+  version: "1.0.0"
+channels:
+  events:
+    address: "orders.*"
+    messages:
+      Event:
+        payload:
+          type: object
+          properties:
+            id:
+              type: string
+          required:
+            - id
+operations:
+  sendEvent:
+    action: send
+    channel:
+      $ref: "#/channels/events"
+    messages:
+      - $ref: "#/channels/events/messages/Event"

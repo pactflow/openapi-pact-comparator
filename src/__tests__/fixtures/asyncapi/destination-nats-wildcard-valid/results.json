@@ -1,0 +1,23 @@
+[
+  {
+    "code": "message.matched",
+    "message": "Matched message at [root].channels.events.messages.Event",
+    "specDetails": {
+      "location": "[root].channels.events.messages.Event",
+      "value": {
+        "payload": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        }
+      }
+    },
+    "type": "info"
+  }
+]

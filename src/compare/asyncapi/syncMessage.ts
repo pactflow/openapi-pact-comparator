@@ -6,7 +6,9 @@ import type { SyncInteraction } from "#documents/pact";
 import type { Result } from "#results/index";
 import { baseMockDetails } from "#results/index";
 
+import type { DestinationRegistry } from "./destination/registry";
 import { checkAsyncapiPreamble, tryMatchAllMessages } from "./matchMessages";
+import { compareMessageDestination } from "./messageDestination";
 
 export function* compareSyncInteraction(
   ajv: Ajv,
@@ -14,6 +16,7 @@ export function* compareSyncInteraction(
   cache: Map<string, ResolvedMessage>,
   interaction: SyncInteraction,
   index: number,
+  destinationRegistry?: DestinationRegistry,
 ): Iterable<Result> {
   const preamble = checkAsyncapiPreamble(asyncapi, interaction, index, "sync");
   if (!preamble.ok) {
@@ -21,6 +24,15 @@ export function* compareSyncInteraction(
     return;
   }
   const { asyncapi: doc, operationId } = preamble;
+
+  yield* compareMessageDestination(
+    doc,
+    operationId,
+    interaction.request.metadata,
+    interaction,
+    `[root].interactions[${index}].request.metadata`,
+    destinationRegistry,
+  );
 
   const noMatchMockDetails = {
     ...baseMockDetails(interaction),

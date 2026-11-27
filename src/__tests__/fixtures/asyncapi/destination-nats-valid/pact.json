@@ -1,0 +1,37 @@
+{
+  "consumer": {
+    "name": "consumer"
+  },
+  "provider": {
+    "name": "provider"
+  },
+  "interactions": [
+    {
+      "comments": {
+        "references": {
+          "AsyncAPI": {
+            "operationId": "sendEvent"
+          }
+        }
+      },
+      "contents": {
+        "content": {
+          "id": "e-1"
+        },
+        "contentType": "application/json",
+        "encoded": false
+      },
+      "description": "an event on a parameterised subject",
+      "metadata": {
+        "destination": "r1.eu-west-1.tenant.status"
+      },
+      "pending": false,
+      "type": "Asynchronous/Messages"
+    }
+  ],
+  "metadata": {
+    "pactSpecification": {
+      "version": "4.0"
+    }
+  }
+}

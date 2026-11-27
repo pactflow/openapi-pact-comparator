@@ -3,6 +3,7 @@ import type { ErrorObject } from "ajv";
 type InfoCode = "message.matched";
 
 type ErrorCode =
+  | "message.destination.incompatible"
   | "message.headers.incompatible"
   | "message.no.match"
   | "message.operation.unknown"
@@ -29,6 +30,7 @@ type ErrorCode =
   | "response.status.unknown";
 
 type WarningCode =
+  | "message.destination.unvalidatable"
   | "message.headers.unvalidatable"
   | "message.payload.risky"
   | "message.payload.unknown"

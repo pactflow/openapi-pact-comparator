@@ -1,0 +1,38 @@
+[
+  {
+    "code": "message.destination.incompatible",
+    "message": "Message destination \"orderEvents\" does not match the Kafka topic \"orders.created\"",
+    "mockDetails": {
+      "interactionDescription": "an event on the channel name instead of the topic",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].metadata.destination",
+      "value": "orderEvents"
+    },
+    "specDetails": {
+      "location": "[root].channels.events.bindings.kafka.topic",
+      "value": "orders.created"
+    },
+    "type": "error"
+  },
+  {
+    "code": "message.matched",
+    "message": "Matched message at [root].channels.events.messages.Event",
+    "specDetails": {
+      "location": "[root].channels.events.messages.Event",
+      "value": {
+        "payload": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        }
+      }
+    },
+    "type": "info"
+  }
+]

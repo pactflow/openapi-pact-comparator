@@ -51,6 +51,21 @@ describe("amqp", () => {
     expect(amqp.check(destination, topicChannel(address)).status).toBe(status);
   });
 
+  it("matches many `#` without backtracking", () => {
+    const address = `${"#.".repeat(30)}z`;
+    const routingKey = Array.from({ length: 30 }, (_, i) => `t${i}`).join(".");
+    const started = performance.now();
+    expect(
+      amqp.check(`/exchanges/events/${routingKey}`, topicChannel(address))
+        .status,
+    ).toBe("mismatch");
+    expect(
+      amqp.check(`/exchanges/events/${routingKey}.z`, topicChannel(address))
+        .status,
+    ).toBe("match");
+    expect(performance.now() - started).toBeLessThan(1000);
+  });
+
   it.each([
     ["orders.*", "orders.*", "match"],
     ["orders.*", "orders.created", "mismatch"],

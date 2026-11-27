@@ -19,32 +19,41 @@ export interface TokenRules {
   many?: { token: string; min: 0 | 1; lastOnly: boolean };
 }
 
+// matches[p][v]: pattern tokens from p match value tokens from v. Filled from
+// the end so each state is computed once.
 const matchTokens = (
   pattern: string[],
   value: string[],
   rules: TokenRules,
 ): boolean => {
-  if (pattern.length === 0) {
-    return value.length === 0;
-  }
-  const [head, ...rest] = pattern;
-  const { many } = rules;
-  if (many && head === many.token && (!many.lastOnly || rest.length === 0)) {
-    for (let skip = many.min; skip <= value.length; skip++) {
-      if (matchTokens(rest, value.slice(skip), rules)) {
-        return true;
-      }
-    }
-    return false;
-  }
-  if (value.length === 0) {
-    return false;
-  }
-  return (
-    (head === rules.one ||
-      segmentPattern(head, escapeRegExp(rules.separator)).test(value[0])) &&
-    matchTokens(rest, value.slice(1), rules)
+  const { many, one } = rules;
+  const excluded = escapeRegExp(rules.separator);
+  const matches = Array.from({ length: pattern.length + 1 }, () =>
+    new Array<boolean>(value.length + 1).fill(false),
   );
+  matches[pattern.length][value.length] = true;
+  for (let p = pattern.length - 1; p >= 0; p--) {
+    const head = pattern[p];
+    const isLast = p === pattern.length - 1;
+    if (many && head === many.token && (!many.lastOnly || isLast)) {
+      // Matches zero or more tokens from v when `matches[p + 1][w]` holds for
+      // some w >= v + min.
+      let anyFrom = false;
+      for (let v = value.length; v >= 0; v--) {
+        if (v + many.min <= value.length) {
+          anyFrom ||= matches[p + 1][v + many.min];
+        }
+        matches[p][v] = anyFrom;
+      }
+      continue;
+    }
+    const segment = head === one ? undefined : segmentPattern(head, excluded);
+    for (let v = value.length - 1; v >= 0; v--) {
+      matches[p][v] =
+        matches[p + 1][v + 1] && (!segment || segment.test(value[v]));
+    }
+  }
+  return matches[0][0];
 };
 
 export const matchesTokens = (

@@ -1,0 +1,37 @@
+{
+  "consumer": {
+    "name": "consumer"
+  },
+  "provider": {
+    "name": "provider"
+  },
+  "interactions": [
+    {
+      "comments": {
+        "references": {
+          "AsyncAPI": {
+            "operationId": "sendEvent"
+          }
+        }
+      },
+      "contents": {
+        "content": {
+          "id": "e-1"
+        },
+        "contentType": "application/json",
+        "encoded": false
+      },
+      "description": "an event on a subject matched by wildcards",
+      "metadata": {
+        "destination": "id.wake.t1.e1.x"
+      },
+      "pending": false,
+      "type": "Asynchronous/Messages"
+    }
+  ],
+  "metadata": {
+    "pactSpecification": {
+      "version": "4.0"
+    }
+  }
+}

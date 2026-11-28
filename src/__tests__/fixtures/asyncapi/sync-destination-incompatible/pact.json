@@ -1,0 +1,49 @@
+{
+  "consumer": {
+    "name": "consumer"
+  },
+  "provider": {
+    "name": "provider"
+  },
+  "interactions": [
+    {
+      "type": "Synchronous/Messages",
+      "description": "a request on the wrong subject",
+      "comments": {
+        "references": {
+          "AsyncAPI": {
+            "operationId": "sendEvent"
+          }
+        }
+      },
+      "request": {
+        "contents": {
+          "content": {
+            "id": "e-1"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "metadata": {
+          "destination": "test.requests.wrong"
+        }
+      },
+      "response": [
+        {
+          "contents": {
+            "content": {
+              "id": "r-1"
+            },
+            "contentType": "application/json",
+            "encoded": false
+          }
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "pactSpecification": {
+      "version": "4.0"
+    }
+  }
+}

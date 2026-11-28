@@ -1,0 +1,38 @@
+[
+  {
+    "code": "message.destination.unvalidatable",
+    "message": "Message destination was not compared: the address contains wildcard characters, which have no defined meaning for the channel's protocol",
+    "mockDetails": {
+      "interactionDescription": "an event on a channel without servers",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].metadata.destination",
+      "value": "orders.created"
+    },
+    "specDetails": {
+      "location": "[root].channels.events.address",
+      "value": "orders.*"
+    },
+    "type": "warning"
+  },
+  {
+    "code": "message.matched",
+    "message": "Matched message at [root].channels.events.messages.Event",
+    "specDetails": {
+      "location": "[root].channels.events.messages.Event",
+      "value": {
+        "payload": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        }
+      }
+    },
+    "type": "info"
+  }
+]

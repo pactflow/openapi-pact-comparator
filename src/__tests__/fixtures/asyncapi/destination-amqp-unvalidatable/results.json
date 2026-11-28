@@ -1,0 +1,38 @@
+[
+  {
+    "code": "message.destination.unvalidatable",
+    "message": "Message destination was not compared: the destination is not a RabbitMQ address (/queues/:queue, /exchanges/:exchange or /exchanges/:exchange/:routing-key)",
+    "mockDetails": {
+      "interactionDescription": "an event with a bare routing key",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].metadata.destination",
+      "value": "audit.events.users.signup"
+    },
+    "specDetails": {
+      "location": "[root].channels.events.address",
+      "value": "audit.events.#"
+    },
+    "type": "warning"
+  },
+  {
+    "code": "message.matched",
+    "message": "Matched message at [root].channels.events.messages.Event",
+    "specDetails": {
+      "location": "[root].channels.events.messages.Event",
+      "value": {
+        "payload": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        }
+      }
+    },
+    "type": "info"
+  }
+]

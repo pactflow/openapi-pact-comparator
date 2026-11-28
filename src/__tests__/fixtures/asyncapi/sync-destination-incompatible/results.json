@@ -1,0 +1,59 @@
+[
+  {
+    "code": "message.destination.incompatible",
+    "message": "Message destination \"test.requests.wrong\" does not match the channel address \"test.requests\"",
+    "mockDetails": {
+      "interactionDescription": "a request on the wrong subject",
+      "interactionState": "[none]",
+      "location": "[root].interactions[0].request.metadata.destination",
+      "value": "test.requests.wrong"
+    },
+    "specDetails": {
+      "location": "[root].channels.events.address",
+      "value": "test.requests"
+    },
+    "type": "error"
+  },
+  {
+    "code": "message.matched",
+    "message": "Matched message at [root].channels.events.messages.Event",
+    "specDetails": {
+      "location": "[root].channels.events.messages.Event",
+      "value": {
+        "payload": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        }
+      }
+    },
+    "type": "info"
+  },
+  {
+    "code": "message.matched",
+    "message": "Matched message at [root].channels.events.messages.Event",
+    "specDetails": {
+      "location": "[root].channels.events.messages.Event",
+      "value": {
+        "payload": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        }
+      }
+    },
+    "type": "info"
+  }
+]

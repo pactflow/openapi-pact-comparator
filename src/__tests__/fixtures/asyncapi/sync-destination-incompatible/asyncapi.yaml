@@ -1,0 +1,30 @@
+asyncapi: "3.0.0"
+info:
+  title: Event Service
+  version: "1.0.0"
+servers:
+  broker:
+    host: broker.example.com
+    protocol: nats
+channels:
+  events:
+    address: test.requests
+    messages:
+      Event:
+        payload:
+          type: object
+          properties:
+            id:
+              type: string
+          required:
+            - id
+operations:
+  sendEvent:
+    action: send
+    channel:
+      $ref: "#/channels/events"
+    messages:
+      - $ref: "#/channels/events/messages/Event"
+    reply:
+      messages:
+        - $ref: "#/channels/events/messages/Event"

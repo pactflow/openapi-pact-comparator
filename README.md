@@ -107,6 +107,30 @@ exactly up to 2^53 (9,007,199,254,740,992). Beyond that:
   The comparison still runs, so a rounded value could pass or fail a check it
   would not have with the exact value.
 
+## Message destination
+
+When an AsyncAPI message interaction has a `destination` in its metadata
+(`request.metadata` for synchronous messages), it is compared with the channel
+of the operation the interaction references. A mismatch fails with
+`message.destination.incompatible`. Interactions without a destination are not
+checked.
+
+How the destination is compared depends on the `protocol` of the servers the
+channel is on (the servers it lists, or all servers in the document):
+
+| Protocol                | Compared with                                                                                                                                                                      | `{parameter}`             | Wildcards in the address                                      |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- | ------------------------------------------------------------- |
+| `nats`                  | `address`                                                                                                                                                                          | one `.`-separated token   | `*` one token, a final `>` one or more                        |
+| `kafka`, `kafka-secure` | `bindings.kafka.topic`, or `address` when there is no topic                                                                                                                        | one `.`-separated segment | none                                                          |
+| `amqp`, `amqps`         | a RabbitMQ address (`/queues/:queue`, `/exchanges/:exchange[/:routing-key]`) against `bindings.amqp.queue.name`, `bindings.amqp.exchange.name` and, for the routing key, `address` | one `.`-separated word    | `*` one word and `#` zero or more, on a `topic` exchange only |
+| anything else, or mixed | `address`                                                                                                                                                                          | no `.` or `/`             | not compared                                                  |
+
+A destination that cannot be compared (an AMQP destination that is not a
+RabbitMQ address, a queue destination for a channel whose AMQP binding is not
+`is: queue` or an exchange destination for one that is, a binding without the
+name to compare, or an address with wildcards for an unknown protocol) is
+reported with `message.destination.unvalidatable`, a warning.
+
 ## Quirks mode
 
 To retain compatibility with
